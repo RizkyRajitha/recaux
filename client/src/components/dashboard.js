@@ -10,7 +10,21 @@ class dashboard extends Component {
   state = {
     logedin: true,
     email: "",
-    greet: ""
+    id: "",
+    greet: "",
+    emailverified: false
+  };
+
+  verifyemail = () => {
+    //this.props.history.push('/fogotpassword')
+    axios
+      .post("http://localhost:3001/usr/sendconfirmemail/" + this.state.id)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   greet = () => {
@@ -29,8 +43,7 @@ class dashboard extends Component {
   };
 
   componentDidMount() {
-
-    this.greet()
+    this.greet();
     console.log("mount");
 
     var jwt = localStorage.getItem("jwt");
@@ -56,7 +69,11 @@ class dashboard extends Component {
         console.log("sucsess" + result.data);
         if (result.data) {
           console.log(result.data);
-          this.setState({ email: result.data.email });
+          this.setState({
+            email: result.data.email,
+            emailverified: result.data.emailverified,
+            id: result.data.id
+          });
 
           this.setState({ logedin: true });
         } else {
@@ -73,7 +90,9 @@ class dashboard extends Component {
     if (this.state.logedin == true) {
       return (
         <div className="App">
-          <h1>{this.state.greet} buddy {this.state.email}</h1>
+          <h1>
+            {this.state.greet} buddy {this.state.email}
+          </h1>
 
           <div class="card  bg-ligh mb-3 w-75">
             <div class="card-body">
@@ -102,6 +121,19 @@ class dashboard extends Component {
               </a>
             </div>
           </div>
+          {!this.state.emailverified && (
+            <div class="alert alert-danger" role="alert">
+              please verify your email
+              <br />
+              <button
+                type="button"
+                class="btn btn-info"
+                onClick={this.verifyemail}
+              >
+                verify email
+              </button>
+            </div>
+          )}
         </div>
       );
     } else {

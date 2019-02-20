@@ -5,6 +5,7 @@ const User = require("../db/users");
 const ObjectID = require("mongodb").ObjectID;
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
+//const mailhandleremailconfirm = require('../config/emailhandler')
 
 router.post("/reg", (req, res) => {
   console.log(req.body);
@@ -98,6 +99,35 @@ router.get("/user/:id", (req, res, next) => {
   )(req, res, next);
 });
 
+router.post("/sendconfirmemail/:id", (req, res) => {
+  console.log(req.params.id);
+
+  User.findById(ObjectID(req.params.id))
+    .then(doc => {
+      emailhandler.mailhandleremailconfirm(doc.email, doc._id);
+      res.status(200).send("email sent");
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+router.post("/confirmemail/:id", (req, res) => {
+  console.log(req.params.id);
+
+  User.findOneAndUpdate(
+    { _id: ObjectID(req.params.id) },
+    { $set: { emailverified: true } }
+  )
+    .then(doc => {
+      console.log("verified + " + doc.emailverified);
+      res.send("email verified");
+    })
+    .catch(err => {
+      console.log("error confirming email");
+    });
+});
+
 router.post("/fogotpassword", (req, res) => {
   var email = req.body.email;
 
@@ -106,7 +136,7 @@ router.post("/fogotpassword", (req, res) => {
       console.log(result + "not found error");
       res.send("no user found");
     } else {
-      emailhandler(email, result[0]._id);
+      emailhandler.mailhandlerpasswordreset(email, result[0]._id);
       console.log(result[0]._id);
       res.json(result);
     }

@@ -40,7 +40,7 @@ console.log('inform')
   render() {
     return (
       <div>
-        <h1>we all forget and thats cool </h1>
+        <h1>we all forget and that's cool </h1>
         <br />
         <h1> just enter your registered email</h1>
         <div className="container">

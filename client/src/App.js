@@ -9,6 +9,7 @@ import Dashboard from "./components/dashboard";
 import Navbar from './components/navbar'
 import fogotpassword from './components/fogotpassword'
 import resetpassword from './components/resetpassword'
+import emailconfirm from './components/emailverify'
 
 import { BrowserRouter, Route } from "react-router-dom";
 
@@ -24,6 +25,7 @@ class App extends Component {
           <Route path="/Login" component={Login} />
           <Route path="/fogotpassword" component={fogotpassword} />
           <Route path="/resetpassword/:id" component={resetpassword} />
+          <Route path="/confirmemail/:id" component={emailconfirm} />
         </div>
       </BrowserRouter>
     );

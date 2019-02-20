@@ -12,9 +12,10 @@ var userSchema = new Schema({
     type: String
   },
   hash: {
-    type: String}
-  ,emailverified:{
-    type:Boolean
+    type: String
+  },
+  emailverified: {
+    type: Boolean
   }
 });
 
@@ -76,7 +77,8 @@ userSchema.methods.generateJWT = function() {
   return jwt.sign(
     {
       email: this.email,
-      id: this._id
+      id: this._id,
+      emailverified: this.emailverified
     },
     "authdemo",
     { expiresIn: "10m" }
