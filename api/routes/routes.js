@@ -37,9 +37,6 @@ router.post("/login1", function(req, res, next) {
       console.log("error no user");
       return next(err);
     }
-
-    //console.log('err - '+err+' user - '+ user+' info - '+info.message)
-
     if (!user) {
       console.log("error no1");
       console.log(info.message);
@@ -122,11 +119,21 @@ router.post("/resetpassword/:id", (req, res) => {
   console.log(id);
   console.log(newpassword);
   // res.send("hahahaha  " + id);
-  User.findById(ObjectID(id))
+  User.findById({ _id: ObjectID(id) })
     .then(result => {
       console.log("found " + result.email);
-      result.setpass("1234");
-      res.send("password changed succesfully");
+
+      result.hash = newpassword;
+      result
+        .save()
+        .then(doc => {
+          console.log("password changed succesfully");
+          res.send("password changed succesfully");
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).send(err);
+        });
     })
     .catch(err => {
       console.log(err);

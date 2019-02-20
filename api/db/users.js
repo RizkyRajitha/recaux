@@ -12,10 +12,9 @@ var userSchema = new Schema({
     type: String
   },
   hash: {
-    type: String
-  },
-  salt: {
-    type: String
+    type: String}
+  ,emailverified:{
+    type:Boolean
   }
 });
 
@@ -27,15 +26,22 @@ userSchema.pre("save", function(next) {
   next();
 });
 
+// userSchema.pre("update", function(next) {
+//   console.log("updating.....");
+//   this.salt = bcrypt.genSaltSync(saltRounds);
+//   const hash = bcrypt.hashSync(this.hash, this.salt);
+//   this.update({}, { $set: { hash: hash } });
+//   next();
+// });
+
 // userSchema.methods.setpass = function(password) {
 //   console.log(this.email);
 //   console.log("in set pass");
-//   bcrypt.genSalt(saltRounds, function(err, salt) {
-//     bcrypt.hash(password, salt, function(err, hashpassword) {
-//       console.log("hased ook - "+hashpassword +" err -   "+ err);
-//       this.hash = hashpassword;
-//     });
-//   });
+//   const sslat = bcrypt.genSaltSync(saltRounds);
+//   const hashpassword = bcrypt.hashSync(password, sslat);
+//   this.hash = hashpassword;
+//   //this.salt = sslat;
+//   console.log(this.hash);
 // };
 
 // console.log(this.email);
@@ -47,8 +53,9 @@ userSchema.pre("save", function(next) {
 
 userSchema.methods.verifypass = function(password) {
   console.log("very pass - " + this.email + "\n hash - " + this.hash);
-
-  return bcrypt.compareSync(password, this.hash); // true
+  const sts = bcrypt.compareSync(password, this.hash);
+  console.log(" pass verified - " + sts);
+  return sts;
 };
 // });
 
@@ -72,7 +79,7 @@ userSchema.methods.generateJWT = function() {
       id: this._id
     },
     "authdemo",
-    { expiresIn: "1m" }
+    { expiresIn: "10m" }
   );
 };
 

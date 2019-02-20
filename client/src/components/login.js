@@ -162,7 +162,7 @@ class login extends Component {
         </div>
       );
     } else {
-      return <Redirect to={`/user`} />;
+      return <Redirect to={`/dashboard`} />;
     }
   }
 }

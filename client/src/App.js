@@ -5,7 +5,7 @@ import "./App.css";
 import Login from "./components/login";
 import Home from "./components/home";
 import About from "./components/register";
-import User from "./components/dashboard";
+import Dashboard from "./components/dashboard";
 import Navbar from './components/navbar'
 import fogotpassword from './components/fogotpassword'
 import resetpassword from './components/resetpassword'
@@ -19,7 +19,7 @@ class App extends Component {
         <div className="App">
         <Navbar  />
           <Route exac path="/home" component={Home} />
-          <Route path="/user" component={User} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={About} />
           <Route path="/Login" component={Login} />
           <Route path="/fogotpassword" component={fogotpassword} />
