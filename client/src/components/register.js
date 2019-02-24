@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 //import jsonwebtoken from "jsonwebtoken";
-import {Redirect} from 'react-router-dom'
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 class Register extends Component {
   state = {
     email: "",
-    registered:false,
+    registered: false,
     password: ""
   };
 
@@ -50,13 +50,14 @@ class Register extends Component {
 
     axios
       .post(
-        "http://localhost:3001/usr/reg",
+        "/usr/reg",
         { email: this.state.email, password: this.state.password },
         config
       )
       .then(response => {
+        console.log("resonse came - -");
         console.log(response.data);
-this.setState({registered:true})
+        this.setState({ registered: true });
         localStorage.setItem("jwt", response.data);
       })
       .catch(err => {
@@ -65,8 +66,7 @@ this.setState({registered:true})
   };
 
   render() {
-    
-    if(this.state.registered===false){
+    if (this.state.registered === false) {
       return (
         <div className="container">
           <div class="row">
@@ -83,7 +83,7 @@ this.setState({registered:true})
                     onChange={this.changeHandler}
                   />
                 </div>
-  
+
                 <div class="form-group">
                   <label>email</label>
                   <input
@@ -94,7 +94,7 @@ this.setState({registered:true})
                     placeholder="enter email"
                   />
                 </div>
-  
+
                 <div class="form-group">
                   <label>password</label>
                   <input
@@ -105,7 +105,7 @@ this.setState({registered:true})
                     onChange={this.changeHandler}
                   />
                 </div>
-  
+
                 {/* <div class="form-group">
                   <label>re enter password</label>
                   <input
@@ -124,10 +124,9 @@ this.setState({registered:true})
           </div>
         </div>
       );
-    }else{
-      return <Redirect to={'/user'}/>
+    } else {
+      return <Redirect to={"/user"} />;
     }
-
   }
 }
 

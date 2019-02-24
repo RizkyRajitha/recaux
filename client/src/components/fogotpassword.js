@@ -23,7 +23,7 @@ console.log('inform')
 
     axios
       .post(
-        "http://localhost:3001/usr/fogotpassword",
+        "/usr/fogotpassword",
         { email: this.state.email}
        
       ).then(res=>{

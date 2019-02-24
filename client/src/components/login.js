@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import "../App.css";
 const jsonwebtoken = require("jsonwebtoken");
-const request = require("request");
+//const request = require("request");
+const axios = require("axios");
 
 class login extends Component {
   state = {
@@ -27,9 +28,6 @@ class login extends Component {
   };
 
   componentDidMount() {
-
-   
-
     var jwt = localStorage.getItem("jwt");
     console.log("comp mount");
     console.log(jwt);
@@ -51,9 +49,9 @@ class login extends Component {
     }
   }
 
-  fogotpasswordhandler = ()=>{
-    this.props.history.push('/fogotpassword')
-  }
+  fogotpasswordhandler = () => {
+    this.props.history.push("/fogotpassword");
+  };
 
   btn1handler = e => {
     e.preventDefault();
@@ -71,40 +69,61 @@ class login extends Component {
     } else {
       console.log("sending..............");
       console.log(this.state.email + this.state.password);
-      request.post(
-        "http://localhost:3001/usr/login1",
-        {
-          form: {
-            email: this.state.email,
-            password: this.state.password
-          }
-        },
-        (err, res, body) => {
-          console.log("errr - " + err);
-          console.log("response - " + res);
-          console.log("body - " + body);
 
-          if (body !== "false") {
-            console.log("body - " + body);
-            localStorage.setItem("jwt", body);
+      var params = new URLSearchParams();
+      params.append("email", this.state.email);
+      params.append("password", this.state.password);
+      // data: {
+      //   email: this.state.email,
+      //   password: this.state.password
+      // }
 
-            this.setState({
-              loggedIn: true,
-              showError: false,
-              showNullError: false
-            });
-          } else {
-            console.log(err);
-            this.setState({
-              loggedIn: false,
-              showError: true,
-              showNullError: false
-            });
-          }
+      axios.post("/usr/login1", params).then(data=>{
+        console.log(data)
+        var body = data.data
+        console.log("body - " + body);
+        localStorage.setItem("jwt", body);
 
-          // this.setState({ email: data.email, id: data.id });
-        }
-      );
+        this.setState({
+          loggedIn: true,
+          showError: false,
+          showNullError: false
+        });
+
+      }).catch(err=>{
+        console.log(err)
+        this.setState({
+          loggedIn: false,
+          showError: true,
+          showNullError: false
+        });
+      })
+
+      // axios.post("/usr/login1", params, (err, res, body) => {
+      //   console.log("errr - " + err);
+      //   console.log("response - " + res);
+      //   console.log("body - " + body);
+
+      //   if (body !== "false") {
+          // console.log("body - " + body);
+          // localStorage.setItem("jwt", body);
+
+          // this.setState({
+          //   loggedIn: true,
+          //   showError: false,
+          //   showNullError: false
+          // });
+      //   } else {
+      //     console.log(err);
+          // this.setState({
+          //   loggedIn: false,
+          //   showError: true,
+          //   showNullError: false
+          // });
+      //   }
+
+      //   // this.setState({ email: data.email, id: data.id });
+      // });
     }
   };
 
@@ -117,7 +136,6 @@ class login extends Component {
           <div className="row">
             <div className="col-sm" />
             <div className="col-sm">
-              
               <form onSubmit={this.btn1handler}>
                 <h1> hi this is auth demo </h1>
                 <div className="form-group">
@@ -140,11 +158,20 @@ class login extends Component {
                     onChange={this.changehandlerpass}
                   />
                 </div>
-                <input type="submit" className="btn btn-primary" value="sign in" />
+                <input
+                  type="submit"
+                  className="btn btn-primary"
+                  value="sign in"
+                />
               </form>
-              <br></br>
-              <input type="button" className="btn btn-primary" value="fogot password" onClick={this.fogotpasswordhandler}  />
-            
+              <br />
+              <input
+                type="button"
+                className="btn btn-primary"
+                value="fogot password"
+                onClick={this.fogotpasswordhandler}
+              />
+
               {showNullError && (
                 <div>
                   <p>The username or password cannot be null.</p>

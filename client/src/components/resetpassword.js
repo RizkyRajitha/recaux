@@ -35,7 +35,7 @@ class resetpassword extends Component {
     console.log("passs - " + this.state.pass1 + "idd -- " + this.state.id);
 
     axios
-      .post(`http://localhost:3001/usr/resetpassword/${this.state.id}`, {
+      .post(`/usr/resetpassword/${this.state.id}`, {
         password: this.state.pass1
       })
       .then(Response => {

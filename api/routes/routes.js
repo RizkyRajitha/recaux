@@ -7,6 +7,12 @@ require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
+router.use(function(req, res) {
+	res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+
+
 router.post("/reg", (req, res) => {
   console.log(req.body);
 
