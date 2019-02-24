@@ -18,7 +18,7 @@ class dashboard extends Component {
   verifyemail = () => {
     //this.props.history.push('/fogotpassword')
     axios
-      .post("http://localhost:3001/usr/sendconfirmemail/" + this.state.id)
+      .post("/usr/sendconfirmemail/" + this.state.id)
       .then(res => {
         console.log(res);
       })
@@ -64,7 +64,7 @@ class dashboard extends Component {
       headers: { authorization: jwt }
     };
     axios
-      .get("http://localhost:3001/usr/dashboard", config)
+      .get("/usr/dashboard", config)
       .then(result => {
         console.log("sucsess" + result.data);
         if (result.data) {
