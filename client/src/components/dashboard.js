@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
-
 const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
 
@@ -40,6 +39,15 @@ class dashboard extends Component {
     } else {
       this.setState({ greet: "Good morning" });
     }
+  };
+
+  reg = e => {
+    e.preventDefault();
+    this.props.history.push("/register");
+  };
+  addcandidate = e => {
+    e.preventDefault();
+    this.props.history.push("/addcandidate");
   };
 
   componentDidMount() {
@@ -94,7 +102,16 @@ class dashboard extends Component {
             {this.state.greet} buddy {this.state.email}
           </h1>
 
-          <div class="card  bg-ligh mb-3 w-75">
+          <button onClick={this.reg} className="btn btn-info">
+            register new user
+          </button>
+          <br />
+          <br />
+          <button onClick={this.addcandidate} className="btn btn-info">
+            add new candidate
+          </button>
+
+          <div class="card  bg-dark mb-3 w-75">
             <div class="card-body">
               <h5 class="card-title">jayasinghe</h5>
               <p class="card-text">
@@ -108,7 +125,7 @@ class dashboard extends Component {
             </div>
           </div>
 
-          <div class="card bg-ligh w-75">
+          <div class="card bg-dark w-75">
             <div class="card-body">
               <h5 class="card-title">Pasidu Perera </h5>
               <p class="card-text">

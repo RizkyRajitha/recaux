@@ -2,14 +2,16 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../db/users");
+const Candidate = require('../db/candidates')
 const ObjectID = require("mongodb").ObjectID;
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
+const path = require('path')
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
-router.use(function(req, res) {
-	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
-});
+// router.use(function(req, res) {
+// 	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
+// });
 
 
 
@@ -176,6 +178,32 @@ router.post("/resetpassword/:id", (req, res) => {
       res.send("error");
     });
 });
+
+router.post('/getcandidate/:id',(req,res)=>{
+
+  
+
+
+})
+
+router.post('/addcandidate',(req,res)=>{
+  console.log(req.body)
+
+  const newcandidate = new Candidate({
+    email:req.body.candidateemail,
+    name:req.body.candidatename,
+    jobspec:req.body.candidatejobspec
+  })
+
+  newcandidate.save().then(result=>{
+    res.status(200).json(result)
+  }).catch(err=>{
+    res.status(403).json(err)
+  })
+
+    
+
+})
 
 // router.get(
 //   "/protected",
