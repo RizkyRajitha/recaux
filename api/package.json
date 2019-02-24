@@ -5,28 +5,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server":"nodemon server.js",
-    "start":"nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "crypto-js": "^3.1.9-1",
     "errorhandler": "^1.5.0",
     "express": "^4.16.4",
-    "express-session": "^1.15.6",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.9",
     "morgan": "^1.9.1",
     "nodemailer": "^5.1.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0",
-    "request": "^2.88.0"
+    "passport-local": "^1.0.0"
   }
 }

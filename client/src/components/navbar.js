@@ -11,7 +11,7 @@ const navbar = props => {
 
   return (
     <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
-      <a className="navbar-brand" href="/home">
+      <a className="navbar-brand" href="/">
         Rect@Aux
       </a>
       <button
@@ -27,11 +27,7 @@ const navbar = props => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
-          <li className="nav-item active">
-            <a className="nav-link" href="/home">
-              Home{" "}
-            </a>
-          </li>
+          
           <li className="nav-item">
             <a className="nav-link" href="/dashboard">
               Dashboard
@@ -42,11 +38,11 @@ const navbar = props => {
               Login
             </a>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <a className="nav-link" href="/register">
               Register
             </a>
-          </li>
+          </li> */}
           
         </ul>
         <button className="btn btn-outline-danger  " onClick={logoutHandler}>

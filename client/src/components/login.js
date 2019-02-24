@@ -137,7 +137,9 @@ class login extends Component {
             <div className="col-sm" />
             <div className="col-sm">
               <form onSubmit={this.btn1handler}>
-                <h1> hi this is auth demo </h1>
+                <br></br>
+                <br></br>
+                <br></br>
                 <div className="form-group">
                   <label> enter username </label>
                   <input
