@@ -11,8 +11,8 @@ const keys = require("./config/keys");
 const port = process.env.PORT || 3001;
 
 mongoose.Promise = global.Promise;
-
-const mongodbAPI = "mongodb://127.0.0.1:27017/authdb" || keys.mongouri;
+//"mongodb://127.0.0.1:27017/authdb" ||
+const mongodbAPI = "mongodb://127.0.0.1:27017/authdb"; //keys.mongouri;
 const app = express();
 app.use(passport.initialize());
 app.use(cors());

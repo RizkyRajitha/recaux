@@ -10,7 +10,8 @@ import Navbar from "./components/navbar";
 import fogotpassword from "./components/fogotpassword";
 import resetpassword from "./components/resetpassword";
 import emailconfirm from "./components/emailverify";
-import Addcandidate from './components/addCandidate'
+import Addcandidate from './components/addCandidate';
+import adminlogin from './components/adminlogin';
 
 import { BrowserRouter, Route } from "react-router-dom";
 
@@ -28,6 +29,7 @@ class App extends Component {
           <Route path="/fogotpassword" component={fogotpassword} />
           <Route path="/resetpassword/:id" component={resetpassword} />
           <Route path="/confirmemail/:id" component={emailconfirm} />
+          <Route path="/admin" component={adminlogin} />
         </div>
       </BrowserRouter>
     );

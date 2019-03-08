@@ -11,11 +11,17 @@ var userSchema = new Schema({
   email: {
     type: String
   },
+  firstName: { type: String },
+
+  lastName: { type: String },
   hash: {
     type: String
   },
   emailverified: {
     type: Boolean
+  },
+  userType: {
+    type: String
   }
 });
 

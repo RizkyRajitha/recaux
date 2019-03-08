@@ -8,7 +8,8 @@ class Addcandidate extends Component {
     email: "",
     jobspec: "",
     login: false,
-    addedsucsess: false
+    addedsucsess: false,
+    expat:new Date()
   };
   chngehandl = e => {
     //console.log(e.target.name,)
@@ -27,7 +28,10 @@ class Addcandidate extends Component {
     } catch (error) {
       console.log(error);
       if (error) {
+        this.setState({expat:  error.expiredAt})
         this.setState({ login: false });
+
+        //console.log(error.expiredAt.getHour())//+"  "+error.expiredAt.getMinutes())
       }
     }
   }
@@ -111,7 +115,7 @@ class Addcandidate extends Component {
     } else {
       return (
         <div>
-          <h1>please login to continue</h1>
+          <h1>Session expired at {  this.state.expat.toString()}please login to continue</h1>
         </div>
       );
     }

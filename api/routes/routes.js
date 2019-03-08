@@ -22,7 +22,9 @@ router.post("/reg", (req, res) => {
 
   const newuser = new User({
     email: req.body.email,
-    hash: req.body.password
+    hash: req.body.password,
+    firstName:req.body.firstname,
+    lastName:req.body.lastname
   });
   console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
   //newuser.setpass(req.body.password);

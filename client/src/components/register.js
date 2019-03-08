@@ -7,7 +7,9 @@ class Register extends Component {
   state = {
     email: "",
     registered: false,
-    password: ""
+    password: "",
+    firstname:'',
+    lastname:''
   };
 
   changeHandler = e => {
@@ -51,7 +53,7 @@ class Register extends Component {
     axios
       .post(
         "/usr/reg",
-        { email: this.state.email, password: this.state.password },
+        { email: this.state.email, password: this.state.password,firstname:this.state.firstname,lastname:this.state.lastname },
         config
       )
       .then(response => {
@@ -92,6 +94,28 @@ class Register extends Component {
                     id="email"
                     onChange={this.changeHandler}
                     placeholder="enter email"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>first Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="firstname"
+                    onChange={this.changeHandler}
+                    placeholder="enter firstname"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>last Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="lastname"
+                    onChange={this.changeHandler}
+                    placeholder="enter lastname"
                   />
                 </div>
 
