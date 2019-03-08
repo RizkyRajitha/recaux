@@ -11,7 +11,8 @@ class dashboard extends Component {
     email: "",
     id: "",
     greet: "",
-    emailverified: false
+    emailverified: false,
+    candidatedata : []
   };
 
   verifyemail = () => {
@@ -50,6 +51,18 @@ class dashboard extends Component {
     this.props.history.push("/addcandidate");
   };
 
+  getcandidatedata = () => [
+    axios
+      .get("/usr/getcandidate")
+      .then(data => {
+        console.log(data);
+        this.state.andidatedata = data.data
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  ];
+
   componentDidMount() {
     this.greet();
     console.log("mount");
@@ -84,6 +97,8 @@ class dashboard extends Component {
           });
 
           this.setState({ logedin: true });
+
+          this.getcandidatedata();
         } else {
           this.setState({ logedin: false });
         }
@@ -124,6 +139,23 @@ class dashboard extends Component {
               </a>
             </div>
           </div>
+
+          {this.candidatedata.forEach(element => {
+                      (<div class="card  bg-dark mb-3 w-75">
+                      <div class="card-body">
+                        <h5 class="card-title">{element.name}</h5>
+                        <p class="card-text">
+                          <ul>
+                            <li>job spechification : {element.jobspec }</li>
+                          </ul>
+                        </p>
+                        <a href="/candidate/" class="btn btn-primary">
+                          view
+                        </a>
+                      </div>
+                    </div>)
+          })}
+
 
           <div class="card bg-dark w-75">
             <div class="card-body">

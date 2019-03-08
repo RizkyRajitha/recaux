@@ -2,18 +2,16 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../db/users");
-const Candidate = require('../db/candidates')
+const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
-const path = require('path')
+const path = require("path");
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
 // router.use(function(req, res) {
 // 	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
 // });
-
-
 
 router.post("/reg", (req, res) => {
   console.log(req.body);
@@ -23,8 +21,8 @@ router.post("/reg", (req, res) => {
   const newuser = new User({
     email: req.body.email,
     hash: req.body.password,
-    firstName:req.body.firstname,
-    lastName:req.body.lastname
+    firstName: req.body.firstname,
+    lastName: req.body.lastname
   });
   console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
   //newuser.setpass(req.body.password);
@@ -181,31 +179,50 @@ router.post("/resetpassword/:id", (req, res) => {
     });
 });
 
-router.post('/getcandidate/:id',(req,res)=>{
+router.get("/getcandidate", (req, res) => {
 
-  
+      console.log("hiiii");
+     // var iid = req.params.id;
+      //console.log(iid);
 
+      Candidate.find()
+        .then(result => {
+          res.status(200).json(result);
+          console.log("candidates found");
+        })
+        .catch(err => {
+          console.log("error - " + err);
+        });
 
-})
+      // User.findById(ObjectID(iid))
+      //   .then(result => {
+      //     console.log("found" + result);
+      //     res.json(result);
+      //   })
+      //   .catch(err => {
+      //     console.log("err - " + err);
+      //   });
+   
+});
 
-router.post('/addcandidate',(req,res)=>{
-  console.log(req.body)
+router.post("/addcandidate", (req, res) => {
+  console.log(req.body);
 
   const newcandidate = new Candidate({
-    email:req.body.candidateemail,
-    name:req.body.candidatename,
-    jobspec:req.body.candidatejobspec
-  })
+    email: req.body.candidateemail,
+    name: req.body.candidatename,
+    jobspec: req.body.candidatejobspec
+  });
 
-  newcandidate.save().then(result=>{
-    res.status(200).json(result)
-  }).catch(err=>{
-    res.status(403).json(err)
-  })
-
-    
-
-})
+  newcandidate
+    .save()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      res.status(403).json(err);
+    });
+});
 
 // router.get(
 //   "/protected",

@@ -9,7 +9,7 @@ class Addcandidate extends Component {
     jobspec: "",
     login: false,
     addedsucsess: false,
-    expat:new Date()
+    expat: new Date()
   };
   chngehandl = e => {
     //console.log(e.target.name,)
@@ -28,7 +28,7 @@ class Addcandidate extends Component {
     } catch (error) {
       console.log(error);
       if (error) {
-        this.setState({expat:  error.expiredAt})
+        this.setState({ expat: error.expiredAt });
         this.setState({ login: false });
 
         //console.log(error.expiredAt.getHour())//+"  "+error.expiredAt.getMinutes())
@@ -53,6 +53,10 @@ class Addcandidate extends Component {
       .catch(err => {
         console.log(err);
       });
+
+    document.querySelector("#name").value = "";
+    document.querySelector("#email").value = "";
+    document.querySelector("#job").value = "";
   };
 
   render() {
@@ -63,9 +67,12 @@ class Addcandidate extends Component {
             <div className="row">
               <div className="col-sm" />
               <div className="col-sm">
-                {this.state.addedsucsess && (<div class="alert alert-success" role="alert">
-                  candidate added successfully
-                </div>)}
+                {this.state.addedsucsess && (
+                  <div class="alert alert-success" role="alert">
+                    candidate added successfully
+                  </div>
+                )}
+
                 <form onSubmit={this.btn1handler}>
                   <br />
                   <br />
@@ -77,6 +84,7 @@ class Addcandidate extends Component {
                       className="form-control"
                       onChange={this.chngehandl}
                       placeholder="enter candidate name"
+                      id="name"
                     />
                   </div>
                   <div className="form-group">
@@ -86,6 +94,7 @@ class Addcandidate extends Component {
                       className="form-control"
                       placeholder="enter candidate email"
                       onChange={this.chngehandl}
+                      id="email"
                     />
                   </div>
                   <div className="form-group">
@@ -96,6 +105,7 @@ class Addcandidate extends Component {
                       className="form-control"
                       placeholder="enter candidate job spec"
                       onChange={this.chngehandl}
+                      id="job"
                     />
                   </div>
                   <input
@@ -115,7 +125,10 @@ class Addcandidate extends Component {
     } else {
       return (
         <div>
-          <h1>Session expired at {  this.state.expat.toString()}please login to continue</h1>
+          <h1>
+            Session expired at {this.state.expat.toString()}please login to
+            continue
+          </h1>
         </div>
       );
     }
