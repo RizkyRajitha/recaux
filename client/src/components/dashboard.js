@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
+import CandidateCard from "./CandidateCard";
 import "../App.css";
 import axios from "axios";
 const jsonwebtoken = require("jsonwebtoken");
+
+//import { CandidateCard } from "./CandidateCard";
 // const request = require("request");
 
 class dashboard extends Component {
@@ -12,7 +15,7 @@ class dashboard extends Component {
     id: "",
     greet: "",
     emailverified: false,
-    candidatedata : []
+    candidatedata: []
   };
 
   verifyemail = () => {
@@ -56,7 +59,7 @@ class dashboard extends Component {
       .get("/usr/getcandidate")
       .then(data => {
         console.log(data);
-        this.state.andidatedata = data.data
+        this.setState({ candidatedata: data.data });
       })
       .catch(err => {
         console.log(err);
@@ -110,7 +113,11 @@ class dashboard extends Component {
   }
 
   render() {
+
+    
+
     if (this.state.logedin == true) {
+      var cndetailes = this.state.candidatedata;
       return (
         <div className="App">
           <h1>
@@ -140,36 +147,12 @@ class dashboard extends Component {
             </div>
           </div>
 
-          {this.candidatedata.forEach(element => {
-                      (<div class="card  bg-dark mb-3 w-75">
-                      <div class="card-body">
-                        <h5 class="card-title">{element.name}</h5>
-                        <p class="card-text">
-                          <ul>
-                            <li>job spechification : {element.jobspec }</li>
-                          </ul>
-                        </p>
-                        <a href="/candidate/" class="btn btn-primary">
-                          view
-                        </a>
-                      </div>
-                    </div>)
-          })}
+      { cndetailes.map((can,iid)=>{
+        //console.log(can.name+can.email+can.jobspec)
+        return <CandidateCard name = {can.name} email = {can.email} jobspec = {can.jobspec}  />
 
+      })}
 
-          <div class="card bg-dark w-75">
-            <div class="card-body">
-              <h5 class="card-title">Pasidu Perera </h5>
-              <p class="card-text">
-                <ul>
-                  <li>job spechification : Senior Software Engineer</li>
-                </ul>
-              </p>
-              <a href="/candidate/" class="btn btn-primary">
-                view
-              </a>
-            </div>
-          </div>
           {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">
               please verify your email
