@@ -3,9 +3,10 @@ import React from "react";
 const CandidateCard = props => {
   return (
     <div>
-      <div class="card  bg-dark mb-3 w-75">
+      
+      <div class="card  bg-light mb-3 w-75">
         <div class="card-body">
-          <h5 class="card-title">{props.name}</h5>
+          <h4 class="card-title">{props.name}</h4>
           <p class="card-text">
             <ul>
               <li>job spechification :{props.jobspec}</li>

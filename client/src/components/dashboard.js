@@ -113,9 +113,6 @@ class dashboard extends Component {
   }
 
   render() {
-
-    
-
     if (this.state.logedin == true) {
       var cndetailes = this.state.candidatedata;
       return (
@@ -124,34 +121,50 @@ class dashboard extends Component {
             {this.state.greet} buddy {this.state.email}
           </h1>
 
-          <button onClick={this.reg} className="btn btn-info">
-            register new user
-          </button>
-          <br />
-          <br />
-          <button onClick={this.addcandidate} className="btn btn-info">
-            add new candidate
-          </button>
-
-          <div class="card  bg-dark mb-3 w-75">
-            <div class="card-body">
-              <h5 class="card-title">jayasinghe</h5>
-              <p class="card-text">
-                <ul>
-                  <li>job spechification : Quality Assuarance Engineer</li>
-                </ul>
-              </p>
-              <a href="/candidate/" class="btn btn-primary">
-                view
-              </a>
-            </div>
+          <div >
+            <button onClick={this.reg} className="btn btn-info">
+              register new user
+            </button>
+            <br />
+            <br />
+            <button onClick={this.addcandidate} className="btn btn-info">
+              add new candidate
+            </button>
+            <br />
+            <br />
           </div>
 
-      { cndetailes.map((can,iid)=>{
-        //console.log(can.name+can.email+can.jobspec)
-        return <CandidateCard name = {can.name} email = {can.email} jobspec = {can.jobspec}  />
+          <div className="jumbotron">
+            <h1 class="display-3">Hello, world!</h1>
+            <p class="lead">
+              This is a simple hero unit, a simple jumbotron-style component for
+              calling extra attention to featured content or information.
+            </p>
+            <hr class="my-4" />
+            <p>
+              It uses utility classes for typography and spacing to space
+              content out within the larger container.
+            </p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="/home" role="button">
+                Learn more
+              </a>
+            </p>
+          </div>
 
-      })}
+          <div className="container">
+            {cndetailes.map((can, iid) => {
+              //console.log(can.name+can.email+can.jobspec)
+              return (
+                <CandidateCard
+                  name={can.name}
+                  email={can.email}
+                  jobspec={can.jobspec}
+                />
+              );
+            })}
+          </div>
+          
 
           {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">

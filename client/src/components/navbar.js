@@ -27,7 +27,6 @@ const navbar = props => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
-          
           <li className="nav-item">
             <a className="nav-link" href="/dashboard">
               Dashboard
@@ -43,7 +42,6 @@ const navbar = props => {
               Register
             </a>
           </li> */}
-          
         </ul>
         <button className="btn btn-outline-danger  " onClick={logoutHandler}>
           Logout

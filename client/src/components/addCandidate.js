@@ -8,7 +8,7 @@ class Addcandidate extends Component {
     email: "",
     jobspec: "",
     login: false,
-    addedsucsess: false,
+    addedsucsess: 0,
     expat: new Date()
   };
   chngehandl = e => {
@@ -48,9 +48,10 @@ class Addcandidate extends Component {
       .post("/usr/addcandidate", params)
       .then(data => {
         console.log(data.data);
-        this.setState({ addedsucsess: true });
+        this.setState({ addedsucsess: 2 });
       })
       .catch(err => {
+        this.setState({ addedsucsess: 1 });
         console.log(err);
       });
 
@@ -67,9 +68,14 @@ class Addcandidate extends Component {
             <div className="row">
               <div className="col-sm" />
               <div className="col-sm">
-                {this.state.addedsucsess && (
+                {this.state.addedsucsess==2 && (
                   <div class="alert alert-success" role="alert">
                     candidate added successfully
+                  </div>
+                )}
+                {this.state.addedsucsess==1 && (
+                  <div class="alert alert-danger" role="alert">
+                    error occured connecting to the server
                   </div>
                 )}
 
