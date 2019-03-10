@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 
 const str = "heshan";
 
+const ss = 'aaaaa'
+
 var salt = bcrypt.genSaltSync(10);
 var hash = bcrypt.hashSync(str, salt);
 
