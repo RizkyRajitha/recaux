@@ -121,7 +121,7 @@ class dashboard extends Component {
             {this.state.greet} buddy {this.state.email}
           </h1>
 
-          <div >
+          <div>
             <button onClick={this.reg} className="btn btn-info">
               register new user
             </button>
@@ -160,11 +160,11 @@ class dashboard extends Component {
                   name={can.name}
                   email={can.email}
                   jobspec={can.jobspec}
+                  _id={can._id}
                 />
               );
             })}
           </div>
-          
 
           {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">

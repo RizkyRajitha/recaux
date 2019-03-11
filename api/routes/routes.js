@@ -180,29 +180,42 @@ router.post("/resetpassword/:id", (req, res) => {
 });
 
 router.get("/getcandidate", (req, res) => {
+  console.log("hiiii");
+  // var iid = req.params.id;
+  //console.log(iid);
 
-      console.log("hiiii");
-     // var iid = req.params.id;
-      //console.log(iid);
+  Candidate.find()
+    .then(result => {
+      res.status(200).json(result);
+      console.log("candidates found");
+    })
+    .catch(err => {
+      console.log("error - " + err);
+    });
 
-      Candidate.find()
-        .then(result => {
-          res.status(200).json(result);
-          console.log("candidates found");
-        })
-        .catch(err => {
-          console.log("error - " + err);
-        });
+  // User.findById(ObjectID(iid))
+  //   .then(result => {
+  //     console.log("found" + result);
+  //     res.json(result);
+  //   })
+  //   .catch(err => {
+  //     console.log("err - " + err);
+  //   });
+});
 
-      // User.findById(ObjectID(iid))
-      //   .then(result => {
-      //     console.log("found" + result);
-      //     res.json(result);
-      //   })
-      //   .catch(err => {
-      //     console.log("err - " + err);
-      //   });
-   
+router.get("/getcandidate/:id", (req, res) => {
+  console.log("hiiii");
+  var iid = req.params.id;
+  console.log(iid);
+
+  Candidate.findById(ObjectID(iid))
+    .then(result => {
+      res.status(200).json(result);
+      console.log("candidates found");
+    })
+    .catch(err => {
+      console.log("error - " + err);
+    });
 });
 
 router.post("/addcandidate", (req, res) => {

@@ -7,7 +7,7 @@ const es = require("express-session");
 const bp = require("body-parser");
 const passport = require("passport");
 
-const keys = require("./config/keys");
+//const keys = require("./config/keys");
 const port = process.env.PORT || 3001;
 
 mongoose.Promise = global.Promise;
