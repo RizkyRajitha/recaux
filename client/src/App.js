@@ -13,6 +13,7 @@ import emailconfirm from "./components/emailverify";
 import Addcandidate from "./components/addCandidate";
 import adminlogin from "./components/adminlogin";
 import CandidateView from "./components/CandidateView";
+import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
 
@@ -22,7 +23,8 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Navbar />
-          <Route exact path="/" component={Home} />
+          <TemporaryDrawer />
+          <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />
           <Route path="/addcandidate" component={Addcandidate} />

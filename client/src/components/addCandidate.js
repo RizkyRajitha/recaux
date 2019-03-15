@@ -9,15 +9,18 @@ class Addcandidate extends Component {
     jobspec: "",
     login: false,
     addedsucsess: 0,
-    expat: new Date()
+    expat: new Date(),
+    nullfielderr: false
   };
   chngehandl = e => {
     //console.log(e.target.name,)
     this.setState({ [e.target.name]: e.target.value });
+
     //console.log(this.state);
   };
 
   componentDidMount() {
+    //this.setState({nullfielderr:false})
     var token = localStorage.getItem("jwt");
     try {
       var data = jwt.verify(token, "authdemo");
@@ -37,27 +40,34 @@ class Addcandidate extends Component {
   }
 
   btn1handler = e => {
+    this.setState({ addedsucsess: 0 });
     e.preventDefault();
-    console.log("submited");
-    var params = new URLSearchParams();
-    params.append("candidatename", this.state.name);
-    params.append("candidateemail", this.state.email);
-    params.append("candidatejobspec", this.state.jobspec);
-    this.setState({ addedsucsess: false });
-    axios
-      .post("/usr/addcandidate", params)
-      .then(data => {
-        console.log(data.data);
-        this.setState({ addedsucsess: 2 });
-      })
-      .catch(err => {
-        this.setState({ addedsucsess: 1 });
-        console.log(err);
-      });
+    var can = this.state;
+    if (can.name && can.email && can.jobspec) {
+      console.log("submited");
+      var params = new URLSearchParams();
+      params.append("candidatename", this.state.name);
+      params.append("candidateemail", this.state.email);
+      params.append("candidatejobspec", this.state.jobspec);
+      this.setState({ addedsucsess: false });
+      axios
+        .post("/usr/addcandidate", params)
+        .then(data => {
+          console.log(data.data);
+          this.setState({ addedsucsess: 2, name: "", jobspec: "", email: "" });
+        })
+        .catch(err => {
+          this.setState({ addedsucsess: 1 });
+          console.log(err);
+        });
 
-    document.querySelector("#name").value = "";
-    document.querySelector("#email").value = "";
-    document.querySelector("#job").value = "";
+      document.querySelector("#name").value = "";
+      document.querySelector("#email").value = "";
+      document.querySelector("#job").value = "";
+      this.setState({ nullfielderr: false });
+    } else {
+      this.setState({ nullfielderr: true });
+    }
   };
 
   render() {
@@ -68,12 +78,17 @@ class Addcandidate extends Component {
             <div className="row">
               <div className="col-sm" />
               <div className="col-sm">
-                {this.state.addedsucsess==2 && (
+                {this.state.addedsucsess == 2 && (
                   <div class="alert alert-success" role="alert">
                     candidate added successfully
                   </div>
                 )}
-                {this.state.addedsucsess==1 && (
+                {this.state.nullfielderr && (
+                  <div class="alert alert-danger" role="alert">
+                    please fill the form
+                  </div>
+                )}
+                {this.state.addedsucsess == 1 && (
                   <div class="alert alert-danger" role="alert">
                     error occured connecting to the server
                   </div>

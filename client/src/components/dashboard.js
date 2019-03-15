@@ -15,7 +15,8 @@ class dashboard extends Component {
     id: "",
     greet: "",
     emailverified: false,
-    candidatedata: []
+    candidatedata: [],
+    
   };
 
   verifyemail = () => {
@@ -153,7 +154,7 @@ class dashboard extends Component {
           </div>
 
           <div className="container">
-            {cndetailes.map((can, iid) => {
+            {cndetailes.reverse().map((can, iid) => {
               //console.log(can.name+can.email+can.jobspec)
               return (
                 <CandidateCard
@@ -161,6 +162,7 @@ class dashboard extends Component {
                   email={can.email}
                   jobspec={can.jobspec}
                   _id={can._id}
+                  date = {can.date}
                 />
               );
             })}

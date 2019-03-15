@@ -218,13 +218,28 @@ router.get("/getcandidate/:id", (req, res) => {
     });
 });
 
+
+router.get('/test',(req,res)=>{
+
+  
+  var ada = new Date();
+  console.log(ada)
+  res.send(ada)
+
+})
+
+
 router.post("/addcandidate", (req, res) => {
   console.log(req.body);
 
+
+
+  
   const newcandidate = new Candidate({
     email: req.body.candidateemail,
     name: req.body.candidatename,
-    jobspec: req.body.candidatejobspec
+    jobspec: req.body.candidatejobspec,
+    date:new Date()
   });
 
   newcandidate
