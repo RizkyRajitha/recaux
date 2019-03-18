@@ -24,7 +24,7 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Navbar />
-          <TemporaryDrawer />
+          {/* <TemporaryDrawer /> */}
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />

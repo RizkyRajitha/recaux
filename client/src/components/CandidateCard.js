@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import '../App.css'
+import "./candidatecard.css";
 
 class CandidateCard extends Component {
   cnadidateview = () => {
@@ -23,10 +23,15 @@ class CandidateCard extends Component {
     return (
       <div>
         <div class="card  bg-light mb-3 w-75">
+        <h1 className="badge">
+              <span class="badge badge-pill badge-danger">hahhah</span>
+            </h1>
           <div class="card-body">
+            
             <h4 class="card-title">{this.props.name}</h4>
-            <div >
-            <h2 className='divecancard'> {d} </h2><br></br>
+            <div>
+              <h2 className="divecancard"> {d} </h2>
+              <br />
             </div>
             <p class="card-text">
               <ul>

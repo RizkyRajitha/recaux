@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import './candidateview.css'
 
 class CandidateView extends Component {
   state = {
@@ -41,27 +42,31 @@ class CandidateView extends Component {
     }
     return (
       <div>
-        <div className="container">
-          <ul>
-            <li> {d}</li>
+       
+        
+        <div className="canview">
+          <div className="canview2" >
+          <ul className='list'>
+            <li> date reciver : {d}</li>
             <li> name : {this.state.data.name}</li>
             <li> email : {this.state.data.email}</li>
             <li> job spec : {this.state.data.jobspec}</li>
           </ul>
+          </div>
 
           <div class="form-group">
-            <label for="exampleFormControlSelect2">
+          <label for="exampleFormControlSelect2">
               change candidate status
             </label>
-            <select class="form-control" id="exampleFormControlSelect2">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+            <select class="form-control" id="status" onChange={this.chngehandlsel}>
+              <option id='status'>1</option>
+              <option id='status'>2</option>
+              <option id='status'>3</option>
+              <option id='status'>4</option>
+              <option id='status'>5</option>
             </select>
           </div>
-          <button onClick={this.evalHndler}>evaluate</button>
+          <button onClick={this.evalHndler} className='btn btn-primary'>evaluate</button>
         </div>
       </div>
     );

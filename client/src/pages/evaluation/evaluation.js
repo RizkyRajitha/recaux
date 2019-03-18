@@ -1,14 +1,14 @@
 import React, { Component } from "react";
+import "./evaluation.css";
 
 const axios = require("axios");
 
 class evaluation extends Component {
   state = {
-    data: {
-      name: "",
-      jobspec: "",
-      marks: ""
-    },
+    name: "",
+    jobspec: "",
+    marks: null,
+    status: "",
     success_added_flag: false
   };
 
@@ -20,19 +20,42 @@ class evaluation extends Component {
   submithndler = () => {
     const id = this.props.match.params.id;
 
+    var payload={
+      name:this.state.name,
+      jobspec:this.state.jobspec,
+      marks:this.state.marks,
+      status:this.state.status
+    }
+
+    console.log(payload)
+
     axios
-      .post("/evaluation/" + id, { data: this.state.data })
+      .post("/evaluation/" + id, { data: payload })
       .then(res => {
+        console.log(res)
         this.setState({ success_added_flag: true });
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       });
+
+      this.props.history.push('/getcandidate/'+id)
   };
+  chngehandl = e => {
+    //console.log(e.target.name,)
+    this.setState({ [e.target.name]: e.target.value });
+
+    console.log(this.state);
+  };
+
+  chngehandlsel = e=>{
+    this.setState({ status: e.target.value });
+    console.log(this.state);
+  }
 
   render() {
     return (
-      <div>
+      <div className="eval">
         <form onSubmit={this.submithndler}>
           <br />
           <br />
@@ -49,12 +72,12 @@ class evaluation extends Component {
           </div>
           <div className="form-group">
             <input
-              type="text"
-              name="email"
+              type="number"
+              name="marks"
               className="form-control"
-              placeholder="enter candidate email"
+              placeholder="enter candidate marks"
               onChange={this.chngehandl}
-              id="email"
+              id="marks"
             />
           </div>
           <div className="form-group">
@@ -67,6 +90,18 @@ class evaluation extends Component {
               onChange={this.chngehandl}
               id="job"
             />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect2">
+              change candidate status
+            </label>
+            <select class="form-control" id="status" onChange={this.chngehandlsel}>
+              <option id='status'>1</option>
+              <option id='status'>2</option>
+              <option id='status'>3</option>
+              <option id='status'>4</option>
+              <option id='status'>5</option>
+            </select>
           </div>
           <input type="submit" className="btn btn-primary" value="add" />
         </form>
