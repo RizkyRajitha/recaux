@@ -12,7 +12,7 @@ import resetpassword from "./pages/resetpassword";
 import emailconfirm from "./pages/emailverify";
 import Addcandidate from "./pages/addCandidate";
 import adminlogin from "./pages/adminlogin";
-import CandidateView from "./pages/candidateview/CandidateView";
+import CandidateView from './pages/candidateview/CandidateView'
 import Evaluation from './pages/evaluation/evaluation'
 import TemporaryDrawer from "./sidenav";
 

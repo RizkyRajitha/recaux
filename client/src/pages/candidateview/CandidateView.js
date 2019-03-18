@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { threadId } from "worker_threads";
 
 class CandidateView extends Component {
   state = {
     data: [],
-    current_status:""
+    current_status: ""
   };
 
   componentDidMount() {
@@ -14,9 +13,10 @@ class CandidateView extends Component {
     this.wtf();
   }
 
-  evalHndler=()=>{
-    this.props.history.push("/evaluation");
-  }
+  evalHndler = () => {
+    const id = this.props.match.params.id;
+    this.props.history.push("/evaluation/"+id);
+  };
 
   wtf = () => {
     const id = this.props.match.params.id;
@@ -64,7 +64,7 @@ class CandidateView extends Component {
           <button onClick={this.evalHndler}>evaluate</button>
         </div>
       </div>
-    )
+    );
   }
 }
 
