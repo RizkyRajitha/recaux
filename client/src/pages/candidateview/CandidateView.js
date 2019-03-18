@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { threadId } from "worker_threads";
 
 class CandidateView extends Component {
   state = {
-    data: []
+    data: [],
+    current_status:""
   };
 
   componentDidMount() {
@@ -11,6 +13,11 @@ class CandidateView extends Component {
     console.log(id);
     this.wtf();
   }
+
+  evalHndler=()=>{
+    this.props.history.push("/evaluation");
+  }
+
   wtf = () => {
     const id = this.props.match.params.id;
     axios
@@ -34,18 +41,30 @@ class CandidateView extends Component {
     }
     return (
       <div>
-        <h1> ho ho yamo yami </h1>
-
         <div className="container">
           <ul>
-            <li>  {d}</li>
+            <li> {d}</li>
             <li> name : {this.state.data.name}</li>
             <li> email : {this.state.data.email}</li>
             <li> job spec : {this.state.data.jobspec}</li>
           </ul>
+
+          <div class="form-group">
+            <label for="exampleFormControlSelect2">
+              change candidate status
+            </label>
+            <select class="form-control" id="exampleFormControlSelect2">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </div>
+          <button onClick={this.evalHndler}>evaluate</button>
         </div>
       </div>
-    );
+    )
   }
 }
 

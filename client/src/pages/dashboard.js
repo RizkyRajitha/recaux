@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import CandidateCard from "./CandidateCard";
+import CandidateCard from "../components/CandidateCard";
 import "../App.css";
 import axios from "axios";
 const jsonwebtoken = require("jsonwebtoken");

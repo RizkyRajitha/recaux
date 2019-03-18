@@ -2,17 +2,18 @@ import React, { Component } from "react";
 import "./App.css";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
-import Login from "./components/login";
+import Login from "./pages/login";
 import Home from "./components/home";
-import Register from "./components/register";
-import Dashboard from "./components/dashboard";
+import Register from "./pages/register";
+import Dashboard from "./pages/dashboard";
 import Navbar from "./components/navbar";
-import fogotpassword from "./components/fogotpassword";
-import resetpassword from "./components/resetpassword";
-import emailconfirm from "./components/emailverify";
-import Addcandidate from "./components/addCandidate";
-import adminlogin from "./components/adminlogin";
-import CandidateView from "./components/CandidateView";
+import fogotpassword from "./pages/fogotpassword";
+import resetpassword from "./pages/resetpassword";
+import emailconfirm from "./pages/emailverify";
+import Addcandidate from "./pages/addCandidate";
+import adminlogin from "./pages/adminlogin";
+import CandidateView from "./pages/candidateview/CandidateView";
+import Evaluation from './pages/evaluation/evaluation'
 import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
@@ -34,6 +35,7 @@ class App extends Component {
           <Route path="/confirmemail/:id" component={emailconfirm} />
           <Route path="/admin" component={adminlogin} />
           <Route path="/getcandidate/:id" component={CandidateView} />
+          <Route path="/evaluation/:id" component={Evaluation} />
         </div>
       </BrowserRouter>
     );
