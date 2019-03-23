@@ -161,7 +161,11 @@ router.post("/fogotpassword", (req, res) => {
       console.log(result[0]._id);
       res.json(result);
     }
-  });
+  }).catch(err=>{
+    console.log('error - - - ')
+    res.send("no_user_found");
+
+  })
 });
 
 router.post("/resetpassword/:id", (req, res) => {
