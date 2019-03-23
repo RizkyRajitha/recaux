@@ -100,6 +100,7 @@ class Addcandidate extends Component {
                   <br />
                   <div className="form-group">
                     <input
+                    required
                       type="text"
                       name="name"
                       className="form-control"
@@ -110,6 +111,7 @@ class Addcandidate extends Component {
                   </div>
                   <div className="form-group">
                     <input
+                    required
                       type="text"
                       name="email"
                       className="form-control"
@@ -121,6 +123,8 @@ class Addcandidate extends Component {
                   <div className="form-group">
                     <label> </label>
                     <input
+                    
+                    required
                       type="text"
                       name="jobspec"
                       className="form-control"

@@ -12,8 +12,11 @@ var candidateSchema = new Schema({
   jobspec: {
     type: String
   },
-  date:{
-    type:Date
+  date: {
+    type: Date
+  },
+  status: {
+    type: String
   }
 });
 

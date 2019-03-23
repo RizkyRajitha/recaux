@@ -135,7 +135,7 @@ class dashboard extends Component {
             <br />
           </div>
 
-          <div className="jumbotron">
+          {/* <div className="jumbotron">
             <h1 class="display-3">Hello, world!</h1>
             <p class="lead">
               This is a simple hero unit, a simple jumbotron-style component for
@@ -151,7 +151,7 @@ class dashboard extends Component {
                 Learn more
               </a>
             </p>
-          </div>
+          </div> */}
 
           <div className="container">
             {cndetailes.reverse().map((can, iid) => {
@@ -163,6 +163,7 @@ class dashboard extends Component {
                   jobspec={can.jobspec}
                   _id={can._id}
                   date = {can.date}
+                  status={can.status}
                 />
               );
             })}

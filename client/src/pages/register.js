@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-//import jsonwebtoken from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 
@@ -8,8 +8,8 @@ class Register extends Component {
     email: "",
     registered: false,
     password: "",
-    firstname:'',
-    lastname:''
+    firstname: "",
+    lastname: ""
   };
 
   changeHandler = e => {
@@ -38,14 +38,33 @@ class Register extends Component {
   //   }
   // };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const jwt = localStorage.getItem("jwt");
+    console.log('jwt token -- - -- >>>'+jwt);
+
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      console.log('payload - '+pay);
+      console.log('************************************' )
+
+      
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
+  }
 
   submitHandler = e => {
     e.preventDefault();
     console.log(this.state);
 
+    var jwt = localStorage.getItem("jwt");
+
     var config = {
-      headers: { authorization: "Header-Value" }
+      headers: { authorization: jwt }
     };
 
     //axios.post('/save', { firstName: 'Marlon' }, config);
@@ -53,7 +72,12 @@ class Register extends Component {
     axios
       .post(
         "/usr/reg",
-        { email: this.state.email, password: this.state.password,firstname:this.state.firstname,lastname:this.state.lastname },
+        {
+          email: this.state.email,
+          password: this.state.password,
+          firstname: this.state.firstname,
+          lastname: this.state.lastname
+        },
         config
       )
       .then(response => {
@@ -78,6 +102,7 @@ class Register extends Component {
                 <div class="form-group">
                   <label>username</label>
                   <input
+                    required
                     type="text"
                     className="form-control"
                     id="username"
@@ -89,6 +114,7 @@ class Register extends Component {
                 <div class="form-group">
                   <label>email</label>
                   <input
+                    required
                     type="email"
                     className="form-control"
                     id="email"
@@ -100,6 +126,7 @@ class Register extends Component {
                 <div class="form-group">
                   <label>first Name</label>
                   <input
+                    required
                     type="text"
                     className="form-control"
                     id="firstname"
@@ -111,6 +138,7 @@ class Register extends Component {
                 <div class="form-group">
                   <label>last Name</label>
                   <input
+                    required
                     type="text"
                     className="form-control"
                     id="lastname"
@@ -122,6 +150,7 @@ class Register extends Component {
                 <div class="form-group">
                   <label>password</label>
                   <input
+                    required
                     type="password"
                     id="password"
                     placeholder="enter password"
@@ -149,7 +178,7 @@ class Register extends Component {
         </div>
       );
     } else {
-      return <Redirect to={"/user"} />;
+      return <Redirect to={"/dashboard"} />;
     }
   }
 }

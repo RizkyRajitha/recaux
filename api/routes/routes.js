@@ -13,30 +13,43 @@ const path = require("path");
 // 	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
 // });
 
-router.post("/reg", (req, res) => {
-  console.log(req.body);
+router.post("/reg", (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
 
-  console.log(`************${req.headers.authorization}****************`);
+      console.log('-----in reg ------')
+      console.log(info);
+      
 
-  const newuser = new User({
-    email: req.body.email,
-    hash: req.body.password,
-    firstName: req.body.firstname,
-    lastName: req.body.lastname
-  });
-  console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
-  //newuser.setpass(req.body.password);
-  newuser
-    .save()
-    .then(result => {
-      console.log("succsess");
-      var token = result.generateJWT();
-      return res.status(200).send(token);
-    })
-    .catch(err => {
-      console.log(" reg err -  " + err);
-      res.status(403).json(err);
-    });
+      if(user){
+        console.log(`************${req.headers.authorization}****************`);
+
+      const newuser = new User({
+        email: req.body.email,
+        hash: req.body.password,
+        firstName: req.body.firstname,
+        lastName: req.body.lastname
+      });
+      console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
+      //newuser.setpass(req.body.password);
+      newuser
+        .save()
+        .then(result => {
+          console.log("succsess");
+          //var token = result.generateJWT();
+          return res.status(200).send({});
+        })
+        .catch(err => {
+          console.log(" reg err -  " + err);
+          res.status(403).json(err);
+        });
+      }
+
+
+    }
+  )(req, res, next);
 });
 
 router.post("/login1", function(req, res, next) {
@@ -91,7 +104,7 @@ router.get("/user/:id", (req, res, next) => {
       console.log("user - " + user);
       console.log("info -- " + info);
 
-      console.log("hiiii");
+      console.log("user authenticated.....");
       var iid = req.params.id;
       console.log(iid);
 
@@ -218,28 +231,20 @@ router.get("/getcandidate/:id", (req, res) => {
     });
 });
 
-
-router.get('/test',(req,res)=>{
-
-  
+router.get("/test", (req, res) => {
   var ada = new Date();
-  console.log(ada)
-  res.send(ada)
-
-})
-
+  console.log(ada);
+  res.send(ada);
+});
 
 router.post("/addcandidate", (req, res) => {
   console.log(req.body);
 
-
-
-  
   const newcandidate = new Candidate({
     email: req.body.candidateemail,
     name: req.body.candidatename,
     jobspec: req.body.candidatejobspec,
-    date:new Date()
+    date: new Date()
   });
 
   newcandidate
@@ -249,6 +254,29 @@ router.post("/addcandidate", (req, res) => {
     })
     .catch(err => {
       res.status(403).json(err);
+    });
+});
+
+router.post("/updatestatus/:id", (req, res) => {
+  console.log(req.params.id);
+  var id = req.params.id;
+  console.log(req.body.status);
+  Candidate.findById(ObjectID(id))
+    .then(doc => {
+      console.log("doc");
+      console.log(doc);
+      doc.status = req.body.status;
+      doc
+        .save()
+        .then(res => {
+          //console.log(res)
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
     });
 });
 

@@ -78,26 +78,28 @@ class login extends Component {
       //   password: this.state.password
       // }
 
-      axios.post("/usr/login1", params).then(data=>{
-        console.log(data)
-        var body = data.data
-        console.log("body - " + body);
-        localStorage.setItem("jwt", body);
+      axios
+        .post("/usr/login1", params)
+        .then(data => {
+          console.log(data);
+          var body = data.data;
+          console.log("body - " + body);
+          localStorage.setItem("jwt", body);
 
-        this.setState({
-          loggedIn: true,
-          showError: false,
-          showNullError: false
+          this.setState({
+            loggedIn: true,
+            showError: false,
+            showNullError: false
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({
+            loggedIn: false,
+            showError: true,
+            showNullError: false
+          });
         });
-
-      }).catch(err=>{
-        console.log(err)
-        this.setState({
-          loggedIn: false,
-          showError: true,
-          showNullError: false
-        });
-      })
 
       // axios.post("/usr/login1", params, (err, res, body) => {
       //   console.log("errr - " + err);
@@ -105,21 +107,21 @@ class login extends Component {
       //   console.log("body - " + body);
 
       //   if (body !== "false") {
-          // console.log("body - " + body);
-          // localStorage.setItem("jwt", body);
+      // console.log("body - " + body);
+      // localStorage.setItem("jwt", body);
 
-          // this.setState({
-          //   loggedIn: true,
-          //   showError: false,
-          //   showNullError: false
-          // });
+      // this.setState({
+      //   loggedIn: true,
+      //   showError: false,
+      //   showNullError: false
+      // });
       //   } else {
       //     console.log(err);
-          // this.setState({
-          //   loggedIn: false,
-          //   showError: true,
-          //   showNullError: false
-          // });
+      // this.setState({
+      //   loggedIn: false,
+      //   showError: true,
+      //   showNullError: false
+      // });
       //   }
 
       //   // this.setState({ email: data.email, id: data.id });
@@ -137,21 +139,21 @@ class login extends Component {
             <div className="col-sm" />
             <div className="col-sm">
               <form onSubmit={this.btn1handler}>
-                <br></br>
-                <br></br>
-                <br></br>
+                <br />
+                <br />
+                <br />
                 <div className="form-group">
-                  <label> enter username </label>
+                  {/* <label> enter email </label> */}
                   <input
                     type="text"
                     name="uname"
                     className="form-control"
                     onChange={this.changehandleremail}
-                    placeholder="enter user name"
+                    placeholder="enter email"
                   />
                 </div>
                 <div className="form-group">
-                  <label> enter password </label>
+                  {/* <label> enter password </label> */}
                   <input
                     type="text"
                     name="pass"

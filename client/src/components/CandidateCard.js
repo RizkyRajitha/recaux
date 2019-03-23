@@ -24,7 +24,7 @@ class CandidateCard extends Component {
       <div>
         <div class="card  bg-light mb-3 w-75">
         <h1 className="badge">
-              <span class="badge badge-pill badge-danger">hahhah</span>
+              <span class="badge badge-pill badge-danger">{this.props.status}</span>
             </h1>
           <div class="card-body">
             
