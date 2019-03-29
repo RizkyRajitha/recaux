@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import CandidateCard from "../components/CandidateCard";
-import "../App.css";
+import Navbar from "../../components/navbarloogedin";
+import CandidateCard from "../../components/CandidateCard";
+import "./dashboard.css";
 import axios from "axios";
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -13,10 +14,11 @@ class dashboard extends Component {
     logedin: true,
     email: "",
     id: "",
+    firstName: "",
+    lastName: "",
     greet: "",
     emailverified: false,
-    candidatedata: [],
-    
+    candidatedata: []
   };
 
   verifyemail = () => {
@@ -50,12 +52,18 @@ class dashboard extends Component {
     e.preventDefault();
     this.props.history.push("/register");
   };
+
+  usrprofile = e => {
+    e.preventDefault();
+    this.props.history.push("/user/" + this.state.id);
+  };
+
   addcandidate = e => {
     e.preventDefault();
     this.props.history.push("/addcandidate");
   };
 
-  getcandidatedata = () => [
+  getcandidatedata = () => {
     axios
       .get("/usr/getcandidate")
       .then(data => {
@@ -64,8 +72,8 @@ class dashboard extends Component {
       })
       .catch(err => {
         console.log(err);
-      })
-  ];
+      });
+  };
 
   componentDidMount() {
     this.greet();
@@ -93,15 +101,18 @@ class dashboard extends Component {
       .then(result => {
         console.log("sucsess" + result.data);
         if (result.data) {
+          console.log("menna apu data");
           console.log(result.data);
           this.setState({
             email: result.data.email,
             emailverified: result.data.emailverified,
-            id: result.data.id
+            id: result.data.id,
+            firstName: result.data.firstName,
+            lastName: result.data.lastName
           });
 
           this.setState({ logedin: true });
-
+          console.log(this.state);
           this.getcandidatedata();
         } else {
           this.setState({ logedin: false });
@@ -117,23 +128,21 @@ class dashboard extends Component {
     if (this.state.logedin == true) {
       var cndetailes = this.state.candidatedata;
       return (
-        <div className="App">
+        <div className="dashboardmain">
+          <Navbar />
+
+        
           <h1>
-            {this.state.greet} buddy {this.state.email}
+            {this.state.greet} {this.state.firstName} 
           </h1>
 
-          <div>
-            <button onClick={this.reg} className="btn btn-info">
-              register new user
+          <button
+              onClick={this.usrprofile}
+              className="btn btn-info"
+              id="userprofile"
+            >
+              edit profile
             </button>
-            <br />
-            <br />
-            <button onClick={this.addcandidate} className="btn btn-info">
-              add new candidate
-            </button>
-            <br />
-            <br />
-          </div>
 
           {/* <div className="jumbotron">
             <h1 class="display-3">Hello, world!</h1>
@@ -153,7 +162,7 @@ class dashboard extends Component {
             </p>
           </div> */}
 
-          <div className="container">
+          {/* <div className="container">
             {cndetailes.reverse().map((can, iid) => {
               //console.log(can.name+can.email+can.jobspec)
               return (
@@ -162,12 +171,15 @@ class dashboard extends Component {
                   email={can.email}
                   jobspec={can.jobspec}
                   _id={can._id}
-                  date = {can.date}
+                  date={can.date}
                   status={can.status}
                 />
               );
             })}
-          </div>
+          </div> */}
+
+          <br></br>
+          <br></br>
 
           {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">

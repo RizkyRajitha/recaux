@@ -23,10 +23,16 @@ class emailverify extends Component {
   }
 
   render() {
-    if (this.state.sucsess) {
-      return <div>waiting..............</div>;
+    if (!this.state.sucsess) {
+      return (
+        <div class="alert alert-dark" role="alert">
+  please wait 
+</div>
+      );
     } else {
-      return <div>email confirmed</div>;
+      return (<div class="alert alert-success" role="alert">
+      email confirmed
+    </div>)
     }
   }
 }

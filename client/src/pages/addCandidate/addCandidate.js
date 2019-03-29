@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import Navbar from '../../components/navbarloogedin'
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+
 
 class Addcandidate extends Component {
   state = {
@@ -74,6 +76,7 @@ class Addcandidate extends Component {
     if (this.state.login) {
       return (
         <div>
+          < Navbar/>
           <div className="container">
             <div className="row">
               <div className="col-sm" />

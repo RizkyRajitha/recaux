@@ -1,0 +1,19 @@
+
+.maindiv{
+    background-image: url('./main-home.jpg');
+    position: fixed;
+    align-self: center;
+    height: 100%;
+    width: 100%;
+    background-color: powderblue;
+  }
+
+  #uname{
+      color: rgba(0, 0, 0, .5);
+      width: 100%;
+  }
+  #pass{
+    color: rgba(0, 0, 0, .5);
+    width: 100%;
+}
+

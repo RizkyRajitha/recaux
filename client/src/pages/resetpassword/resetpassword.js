@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import "../App.css";
+import Navbar from "../../components/navbarloogedin";
+import "../../App.css";
 
 const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
@@ -10,7 +11,8 @@ class resetpassword extends Component {
     id: "",
     pass1: "",
     pass2: "",
-    passchangeok: false
+    passchangeok: false,
+    massmissmatch:false
   };
 
   componentDidMount() {
@@ -34,28 +36,42 @@ class resetpassword extends Component {
 
     console.log("passs - " + this.state.pass1 + "idd -- " + this.state.id);
 
+    var match = this.state.pass1===this.state.pass2
+
+   if(match){
+    this.setState({massmissmatch:false})
     axios
-      .post(`/usr/resetpassword/${this.state.id}`, {
-        password: this.state.pass1
-      })
-      .then(Response => {
-        console.log(Response.data);
-        if (Response.data === "password changed succesfully") {
-          this.setState({ passchangeok: true });
-          setTimeout(() => {
-            this.redirectlogin();
-          }, 200);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    .post(`/usr/resetpassword/${this.state.id}`, {
+      password: this.state.pass1
+    })
+    .then(Response => {
+      console.log(Response.data);
+      if (Response.data === "password changed succesfully") {
+        this.setState({ passchangeok: true });
+        setTimeout(() => {
+          this.redirectlogin();
+        }, 200);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+   }else{
+
+    this.setState({massmissmatch:true})
+
+   }
   };
 
   render() {
     return (
       <div>
+        <Navbar />
         <h1> reset your password </h1>
+
+        {this.state.massmissmatch && (<div class="alert alert-warning" role="alert">
+  password does not match
+</div>)}
 
         <div className="container">
           <div className="row">
@@ -65,7 +81,8 @@ class resetpassword extends Component {
                 <div className="form-group">
                   <label>enter your new password</label>
                   <input
-                    type="text"
+                    required
+                    type="password"
                     name="pass1"
                     id="pass1"
                     placeholder="enter your new password "
@@ -76,7 +93,8 @@ class resetpassword extends Component {
                 <div className="form-group">
                   <label>re enter your new password</label>
                   <input
-                    type="text"
+                    required
+                    type="password"
                     name="pass2"
                     id="pass2"
                     placeholder="re enter your password "

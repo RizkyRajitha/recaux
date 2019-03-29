@@ -1,0 +1,12 @@
+/* #userprofile{
+    position:relative;
+    
+    top: 50%;
+    left: 35%;
+} */
+
+.dashboardmain{
+    background-color: #666666;
+    height: 600px;
+    width: 100%;
+}

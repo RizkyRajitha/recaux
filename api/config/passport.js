@@ -3,6 +3,7 @@ const localstratergy = require("passport-local").Strategy;
 const passJWT = require("passport-jwt");
 const JWTstratagy = passJWT.Strategy;
 const ExtractJWT = passJWT.ExtractJwt;
+const ObjectID = require("mongodb").ObjectID;
 
 const users = require("../db/users");
 
@@ -64,7 +65,7 @@ passport.use(
     },
     (payload, done) => {
       console.log('in jwt passport')
-      console.log(payload);
+     // console.log(payload);
 
       if(payload===undefined){
         return done(true,"errro",'not a valid user');
@@ -77,6 +78,65 @@ passport.use(
     }
   )
 );
+
+
+/*
+
+
+passport.use(
+  "jwtstrategy",
+  new JWTstratagy(
+    {
+      jwtFromRequest: JJWTExtractor,
+      secretOrKey: "authdemo",
+    },
+    (payload, done) => {
+      console.log('in jwt passport')
+      console.log(payload);
+
+      if(payload===undefined){
+        return done(true,"errro",'not a valid user');
+      }
+
+      if (Date.now > payload.expiresIn) {
+        return done('errro',"expired",'expired');
+      }
+      else{
+        console.log('payload - '+payload.id)
+        console.log('payload  eemail - '+payload.email)
+        users.findById(ObjectID(payload.id)).then((result) => {
+
+
+          if(result.verifypass()){
+
+          var sentdata = {email :result.email,
+          fname:result.firstName,
+        lname:result.lastName,
+      varifyemail:result.emailverified,
+    }
+
+          return done(null, sentdata,'valid user');
+          }
+
+
+          
+        }).catch((err) => {
+          return done(true,"errro",'incorrect password');
+        });
+
+        
+
+       
+      }
+      
+    }
+  )
+);
+
+*/
+
+
+
 
 // pp.use(
 //   new localstratergy(

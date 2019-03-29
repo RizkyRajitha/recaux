@@ -1,21 +1,26 @@
 import React, { Component } from "react";
 import jsonwebtoken from "jsonwebtoken";
 import { Redirect } from "react-router-dom";
+import Navbar from '../../components/navbarloogedin'
 import axios from "axios";
 
 class Register extends Component {
   state = {
     email: "",
     registered: false,
-    password: "",
+    password1: "",
+    password2: "",
     firstname: "",
-    lastname: ""
+    lastname: "",
+    errorpassmatch:false
   };
 
   changeHandler = e => {
     this.setState({
       [e.target.id]: e.target.value
     });
+
+    console.log(this.state)
   };
 
   // changeHandlerPassword = e => {
@@ -67,14 +72,21 @@ class Register extends Component {
       headers: { authorization: jwt }
     };
 
-    //axios.post('/save', { firstName: 'Marlon' }, config);
+    const passmatch = this.state.password1===this.state.password2
+    
 
-    axios
+    console.log(passmatch)
+
+    if(passmatch){
+      this.setState({
+        errorpassmatch:false
+        })
+      axios
       .post(
         "/usr/reg",
         {
           email: this.state.email,
-          password: this.state.password,
+          password: this.state.password1,
           firstname: this.state.firstname,
           lastname: this.state.lastname
         },
@@ -89,30 +101,32 @@ class Register extends Component {
       .catch(err => {
         console.log(err);
       });
+    }
+    else{
+
+      this.setState({ errorpassmatch:true })
+    }
+
+   
   };
 
   render() {
     if (this.state.registered === false) {
       return (
-        <div className="container">
+        <div >
+        <Navbar/>
           <div class="row">
             <div class="col-sm" />
             <div class="col-sm">
               <form onSubmit={this.submitHandler}>
-                <div class="form-group">
-                  <label>username</label>
-                  <input
-                    required
-                    type="text"
-                    className="form-control"
-                    id="username"
-                    placeholder="enter username"
-                    onChange={this.changeHandler}
-                  />
-                </div>
+                
+                <br></br>
+                <br></br>
 
+                {this.state.errorpassmatch && (<div class="alert alert-warning" role="alert">
+  password does not match
+</div>)}
                 <div class="form-group">
-                  <label>email</label>
                   <input
                     required
                     type="email"
@@ -124,7 +138,6 @@ class Register extends Component {
                 </div>
 
                 <div class="form-group">
-                  <label>first Name</label>
                   <input
                     required
                     type="text"
@@ -136,7 +149,6 @@ class Register extends Component {
                 </div>
 
                 <div class="form-group">
-                  <label>last Name</label>
                   <input
                     required
                     type="text"
@@ -148,13 +160,25 @@ class Register extends Component {
                 </div>
 
                 <div class="form-group">
-                  <label>password</label>
+                  
                   <input
                     required
                     type="password"
-                    id="password"
+                    id="password1"
                     placeholder="enter password"
                     className="form-control"
+                    onChange={this.changeHandler}
+                  />
+                </div>
+
+                <div class="form-group">
+                  
+                  <input
+                    required
+                    type="password"
+                    className="form-control"
+                    id="password2"
+                    placeholder="re enter password"
                     onChange={this.changeHandler}
                   />
                 </div>
@@ -170,7 +194,7 @@ class Register extends Component {
                   />
                   <label className="psscheck" />
                 </div> */}
-                <input type="submit" class="btn btn-primary" value="sign in" />
+                <input type="submit" class="btn btn-primary" value="Add User" />
               </form>
             </div>
             <div class="col-sm" />

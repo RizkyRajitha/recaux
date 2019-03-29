@@ -18,36 +18,32 @@ router.post("/reg", (req, res, next) => {
     "jwtstrategy",
     { session: false },
     (err, user, info) => {
-
-      console.log('-----in reg ------')
+      console.log("-----in reg ------");
       console.log(info);
-      
 
-      if(user){
+      if (user) {
         console.log(`************${req.headers.authorization}****************`);
 
-      const newuser = new User({
-        email: req.body.email,
-        hash: req.body.password,
-        firstName: req.body.firstname,
-        lastName: req.body.lastname
-      });
-      console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
-      //newuser.setpass(req.body.password);
-      newuser
-        .save()
-        .then(result => {
-          console.log("succsess");
-          //var token = result.generateJWT();
-          return res.status(200).send({});
-        })
-        .catch(err => {
-          console.log(" reg err -  " + err);
-          res.status(403).json(err);
+        const newuser = new User({
+          email: req.body.email,
+          hash: req.body.password,
+          firstName: req.body.firstname,
+          lastName: req.body.lastname
         });
+        console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
+        //newuser.setpass(req.body.password);
+        newuser
+          .save()
+          .then(result => {
+            console.log("succsess");
+            //var token = result.generateJWT();
+            return res.status(200).send({});
+          })
+          .catch(err => {
+            console.log(" reg err -  " + err);
+            res.status(403).json(err);
+          });
       }
-
-
     }
   )(req, res, next);
 });
@@ -89,7 +85,21 @@ router.get("/dashboard", (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
-        res.send(user);
+        User.findById(ObjectID(user.id))
+          .then(result => {
+            const senddata = {
+              id: result._id,
+              email: result.email,
+              emailverified: result.emailverified,
+              firstName: result.firstName,
+              lastName: result.lastName
+            };
+            console.log(senddata);
+            res.status(200).json(senddata);
+          })
+          .catch(err => {
+            res.status(403).json(err);
+          });
       }
     }
   )(req, res, next);
@@ -110,11 +120,57 @@ router.get("/user/:id", (req, res, next) => {
 
       User.findById(ObjectID(iid))
         .then(result => {
+          const senddata = {
+            id: result._id,
+            email: result.email,
+            emailverified: result.emailverified,
+            firstName: result.firstName,
+            lastName: result.lastName
+          };
+
           console.log("found" + result);
-          res.json(result);
+          res.json(senddata);
         })
         .catch(err => {
           console.log("err - " + err);
+        });
+    }
+  )(req, res, next);
+});
+
+router.post("/edituser/:id", (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + user);
+      console.log("info -- " + info);
+
+      console.log("user authenticated.....");
+      var iid = req.params.id;
+
+      console.log(iid);
+      console.log("***********************");
+      console.log(req.body);
+
+      User.findOneAndUpdate(
+        { _id: ObjectID(iid) },
+        {
+          $set: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email
+          }
+        }
+      )
+        .then(result => {
+          console.log("edit - " + result);
+          res.json(result);
+        })
+        .catch(err => {
+          console.log(err);
+          res.json(err);
         });
     }
   )(req, res, next);
@@ -152,20 +208,51 @@ router.post("/confirmemail/:id", (req, res) => {
 router.post("/fogotpassword", (req, res) => {
   var email = req.body.email;
 
-  User.find({ email: email }).then(result => {
-    if (!result) {
-      console.log(result + "not found error");
-      res.send("no user found");
-    } else {
-      emailhandler.mailhandlerpasswordreset(email, result[0]._id);
-      console.log(result[0]._id);
-      res.json(result);
-    }
-  }).catch(err=>{
-    console.log('error - - - ')
-    res.send("no_user_found");
+  User.find({ email: email })
+    .then(result => {
+      if (!result) {
+        console.log(result + "not found error");
+        res.send("no user found");
+      } else {
+        emailhandler.mailhandlerpasswordreset(email, result[0]._id);
+        console.log(result[0]._id);
+        res.json(result);
+      }
+    })
+    .catch(err => {
+      console.log("error - - - ");
+      res.send("no_user_found");
+    });
+});
 
-  })
+router.post("/changepass/:id", (req, res) => {
+  id = req.params.id;
+  newpassword = req.body.password;
+  console.log(id);
+  console.log('pppppppppppppppppppppppppp')
+  console.log(newpassword);
+  console.log('pppppppppppppppppppppppppp')
+ 
+  User.findById({ _id: ObjectID(id) })
+    .then(result => {
+      console.log("found " + result.email);
+
+      result.hash = newpassword;
+      result
+        .save()
+        .then(doc => {
+          console.log("password changed succesfully");
+          res.send("password changed succesfully");
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).send(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+      res.send("error");
+    });
 });
 
 router.post("/resetpassword/:id", (req, res) => {

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import "../App.css";
+import "./login.css";
+import Navbar from '../../components/navbar'
+
 const jsonwebtoken = require("jsonwebtoken");
 //const request = require("request");
 const axios = require("axios");
@@ -12,7 +14,8 @@ class login extends Component {
     // password: "",
     loggedIn: false,
     showError: false,
-    showNullError: false
+    showNullError: false,
+    creaderror:false
   };
 
   changehandleremail = event => {
@@ -56,6 +59,7 @@ class login extends Component {
   btn1handler = e => {
     e.preventDefault();
 
+    this.setState({creaderror:true})
     console.log("cliking");
 
     if (this.state.email === "" || this.state.password === "") {
@@ -81,9 +85,12 @@ class login extends Component {
       axios
         .post("/usr/login1", params)
         .then(data => {
+          console.log('awe mewwa - - -popopopopo')
           console.log(data);
           var body = data.data;
-          console.log("body - " + body);
+          
+          if(body){
+            console.log("body - " + body);
           localStorage.setItem("jwt", body);
 
           this.setState({
@@ -91,6 +98,14 @@ class login extends Component {
             showError: false,
             showNullError: false
           });
+          }
+          else{
+
+            this.setState({creaderror:true})
+
+          }
+
+
         })
         .catch(err => {
           console.log(err);
@@ -134,62 +149,72 @@ class login extends Component {
 
     if (!loggedIn) {
       return (
-        <div className="container">
+        
+        <div className="maindiv">
+        <Navbar />
+          <div>
           <div className="row">
             <div className="col-sm" />
             <div className="col-sm">
-              <form onSubmit={this.btn1handler}>
-                <br />
-                <br />
-                <br />
-                <div className="form-group">
-                  {/* <label> enter email </label> */}
-                  <input
-                    type="text"
-                    name="uname"
-                    className="form-control"
-                    onChange={this.changehandleremail}
-                    placeholder="enter email"
-                  />
-                </div>
-                <div className="form-group">
-                  {/* <label> enter password </label> */}
-                  <input
-                    type="text"
-                    name="pass"
-                    className="form-control"
-                    placeholder="enter password"
-                    onChange={this.changehandlerpass}
-                  />
-                </div>
-                <input
-                  type="submit"
-                  className="btn btn-primary"
-                  value="sign in"
-                />
-              </form>
-              <br />
+
+            {this.state.creaderror && (
+           <div class="alert alert-danger" role="alert">
+           Invalid Creadentials
+         </div>
+          )}
+          <form onSubmit={this.btn1handler}>
+            <br />
+            <br />
+            <br />
+            <div className="form-group">
+              {/* <label> enter email </label> */}
               <input
-                type="button"
-                className="btn btn-primary"
-                value="fogot password"
-                onClick={this.fogotpasswordhandler}
+                id="uname"
+                required
+                type="text"
+                name="uname"
+                className="form-control"
+                onChange={this.changehandleremail}
+                placeholder="enter email"
               />
-
-              {showNullError && (
-                <div>
-                  <p>The username or password cannot be null.</p>
-                </div>
-              )}
-
-              {showError && (
-                <div>
-                  <p>The username or password is incorrect dude XD.</p>
-                </div>
-              )}
             </div>
+            <div className="form-group">
+              {/* <label> enter password </label> */}
+              <input
+                required
+                id="pass"
+                type="password"
+                name="pass"
+                className="form-control"
+                placeholder="enter password"
+                onChange={this.changehandlerpass}
+              />
+            </div>
+            <input type="submit" className="btn btn-primary" value="sign in" />
+          </form>
+          <br />
+          <input
+            type="button"
+            className="btn btn-primary"
+            value="fogot password"
+            onClick={this.fogotpasswordhandler}
+          />
+
+{showNullError && (
+            <div>
+              <p>The username or password cannot be null.</p>
+            </div>
+          )}
+
+          {showError && (
+            <div>
+              <p>The username or password is incorrect dude XD.</p>
+            </div>
+          )}
+          </div>
             <div className="col-sm" />
           </div>
+        </div>
         </div>
       );
     } else {

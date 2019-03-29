@@ -2,28 +2,32 @@ import React, { Component } from "react";
 import "./App.css";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
-import Login from "./pages/login";
+import Login from "./pages/login/login";
 import Home from "./components/home";
-import Register from "./pages/register";
-import Dashboard from "./pages/dashboard";
+import Register from "./pages/register/register";
+import Dashboard from "./pages/dashboard/dashboard";
 import Navbar from "./components/navbar";
-import fogotpassword from "./pages/fogotpassword";
-import resetpassword from "./pages/resetpassword";
-import emailconfirm from "./pages/emailverify";
-import Addcandidate from "./pages/addCandidate";
+import fogotpassword from "./pages/fogotpassword/fogotpassword";
+import resetpassword from "./pages/resetpassword/resetpassword";
+import emailconfirm from "./pages/emailverify/emailverify";
+import Addcandidate from "./pages/addCandidate/addCandidate";
 import adminlogin from "./pages/adminlogin";
 import CandidateView from './pages/candidateview/CandidateView'
 import Evaluation from './pages/evaluation/evaluation'
-import TemporaryDrawer from "./sidenav";
+import Userprofile from './pages/userprofile/user'
+import Changepass from './pages/changepass/changepass'
+//import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
 
 class App extends Component {
+
+
   render() {
     return (
       <BrowserRouter>
         <div className="App">
-          <Navbar />
+          {/* <Navbar /> */}
           {/* <TemporaryDrawer /> */}
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
@@ -36,6 +40,8 @@ class App extends Component {
           <Route path="/admin" component={adminlogin} />
           <Route path="/getcandidate/:id" component={CandidateView} />
           <Route path="/evaluation/:id" component={Evaluation} />
+          <Route path="/user/:id" component={Userprofile} />
+          <Route path="/changepass/:id" component={Changepass} />
         </div>
       </BrowserRouter>
     );

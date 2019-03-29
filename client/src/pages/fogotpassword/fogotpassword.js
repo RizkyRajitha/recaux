@@ -41,14 +41,16 @@ class fogotpassword extends Component {
 
     if(this.state.errnotfound){
       return(
-        <div>
+       
+        <div> <br></br>
           <h1> please check your email and try again </h1>
         </div>
       )
     }
     else if(this.state.succsee){
       return(
-        <div> <h1> reset link set to your email </h1>
+        
+        <div class="alert alert-primary" role="alert"> <br></br><h1> reset link set to your email </h1>
         </div>
       )
     }
