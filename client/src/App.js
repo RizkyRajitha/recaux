@@ -16,6 +16,7 @@ import CandidateView from './pages/candidateview/CandidateView'
 import Evaluation from './pages/evaluation/evaluation'
 import Userprofile from './pages/userprofile/user'
 import Changepass from './pages/changepass/changepass'
+import Avatar from './pages/avatar'
 //import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
@@ -42,6 +43,7 @@ class App extends Component {
           <Route path="/evaluation/:id" component={Evaluation} />
           <Route path="/user/:id" component={Userprofile} />
           <Route path="/changepass/:id" component={Changepass} />
+          <Route path="/avatar" component={Avatar} />
         </div>
       </BrowserRouter>
     );
