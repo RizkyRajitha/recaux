@@ -17,6 +17,10 @@ var candidateSchema = new Schema({
   },
   status: {
     type: String
+  },
+  evaluation:{
+    marks:Number,
+    
   }
 });
 

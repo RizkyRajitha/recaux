@@ -8,7 +8,7 @@ require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 const path = require("path");
 
-const profileimgupload = require('./avatar')
+const profileimgupload = require('./avatar.route')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
@@ -328,7 +328,19 @@ router.get("/getcandidate/:id", (req, res) => {
 router.get("/test", (req, res) => {
   var ada = new Date();
   console.log(ada);
-  res.send(ada);
+  const newuser = new User({
+    email: 'admin@auxenta.com',
+    hash: "admin",
+  });
+
+  newuser.save().then((result) => {
+      res.send(result);
+  }).catch((err) => {
+    res.json(err)
+    
+  });
+
+
 });
 
 router.post("/addcandidate", (req, res) => {
@@ -374,7 +386,17 @@ router.post("/updatestatus/:id", (req, res) => {
     });
 });
 
-router.post('/avatar',profileimgupload.profileimgup)
+router.post('/evaluation/:id',(req,res)=>{
+  console.log('eval')
+
+  console.log(req.params.id)
+  console.log('bodtyyy '+req.body.name)
+  console.log('bodtyyy '+req.body.marks)
+  
+
+})
+
+router.post('/avatar/:id',profileimgupload.profileimgup)
 
 
 

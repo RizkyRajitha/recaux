@@ -131,7 +131,7 @@ class dashboard extends Component {
         <div className="dashboardmain">
           <Navbar />
 
-        
+          
           <h1>
             {this.state.greet} {this.state.firstName} 
           </h1>
@@ -142,6 +142,17 @@ class dashboard extends Component {
               id="userprofile"
             >
               edit profile
+            </button>
+
+            <br></br>
+            <br></br>
+
+            <button
+              onClick={this.addcandidate}
+              className="btn btn-info"
+              id="addcan"
+            >
+              Add new candidate
             </button>
 
           {/* <div className="jumbotron">

@@ -4,8 +4,9 @@ const path = require("path");
 const storage = multer.diskStorage({
   destination: "../assets/avatar",
   filename: function(req, file, cb) {
+      console.log(req.params.id)
       
-      cb(null,file.fieldname+'-'+Date.now()+path.extname(file.originalname))
+      cb(null,req.params.id+path.extname(file.originalname))
   }
 });
 

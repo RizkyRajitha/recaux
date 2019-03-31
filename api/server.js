@@ -3,10 +3,6 @@ const path = require("path");
 const eh = require("errorhandler");
 const cors = require("cors");
 const mongoose = require("mongoose");
-<<<<<<< HEAD
-
-=======
->>>>>>> 43bcd3cd8e319d8524a80e96c1d2e66a2153df8d
 const bp = require("body-parser");
 const passport = require("passport");
 
@@ -23,10 +19,9 @@ app.use(require("morgan")("dev"));
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 
+app.use("/static", express.static(path.join(__dirname, "../assets")));
 
 app.use("/usr", require("./routes/routes"));
-
-app.use(express.static("client/build"));
 
 // app.get("/user", (req,res)=>{
 

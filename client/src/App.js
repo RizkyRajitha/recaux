@@ -12,18 +12,16 @@ import resetpassword from "./pages/resetpassword/resetpassword";
 import emailconfirm from "./pages/emailverify/emailverify";
 import Addcandidate from "./pages/addCandidate/addCandidate";
 import adminlogin from "./pages/adminlogin";
-import CandidateView from './pages/candidateview/CandidateView'
-import Evaluation from './pages/evaluation/evaluation'
-import Userprofile from './pages/userprofile/user'
-import Changepass from './pages/changepass/changepass'
-import Avatar from './pages/avatar'
+import CandidateView from "./pages/candidateview/CandidateView";
+import Evaluation from "./pages/evaluation/evaluation";
+import Userprofile from "./pages/userprofile/user";
+import Changepass from "./pages/changepass/changepass";
+import Avatar from "./pages/avatar";
 //import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
 
 class App extends Component {
-
-
   render() {
     return (
       <BrowserRouter>
@@ -43,7 +41,7 @@ class App extends Component {
           <Route path="/evaluation/:id" component={Evaluation} />
           <Route path="/user/:id" component={Userprofile} />
           <Route path="/changepass/:id" component={Changepass} />
-          <Route path="/avatar" component={Avatar} />
+          <Route path="/avatar/:id" component={Avatar} />
         </div>
       </BrowserRouter>
     );
