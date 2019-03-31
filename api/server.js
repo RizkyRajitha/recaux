@@ -3,7 +3,7 @@ const path = require("path");
 const eh = require("errorhandler");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const es = require("express-session");
+
 const bp = require("body-parser");
 const passport = require("passport");
 
