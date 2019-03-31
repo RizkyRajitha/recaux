@@ -7,6 +7,9 @@ const ObjectID = require("mongodb").ObjectID;
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 const path = require("path");
+
+const profileimgupload = require('./avatar')
+
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
 // router.use(function(req, res) {
@@ -370,6 +373,13 @@ router.post("/updatestatus/:id", (req, res) => {
       console.log(err);
     });
 });
+
+router.post('/avatar',profileimgupload.profileimgup)
+
+
+
+
+
 
 // router.get(
 //   "/protected",

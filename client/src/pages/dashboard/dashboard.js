@@ -162,7 +162,7 @@ class dashboard extends Component {
             </p>
           </div> */}
 
-          {/* <div className="container">
+          <div className="container">
             {cndetailes.reverse().map((can, iid) => {
               //console.log(can.name+can.email+can.jobspec)
               return (
@@ -176,7 +176,7 @@ class dashboard extends Component {
                 />
               );
             })}
-          </div> */}
+          </div>
 
           <br></br>
           <br></br>

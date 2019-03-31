@@ -29,7 +29,7 @@ userSchema.pre("save", function(next) {
   console.log("savin.....");
   this.salt = bcrypt.genSaltSync(saltRounds);
   this.hash = bcrypt.hashSync(this.hash, this.salt);
-
+   bcrypt.hash()
   next();
 });
 
