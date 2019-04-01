@@ -1,17 +1,25 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./candidateview.css";
+import { Document } from 'react-pdf/dist/entry.webpack';
 
 class CandidateView extends Component {
   state = {
     data: [],
     status: "",
-    status_change: ""
+    status_change: "",
+    file: null
+  };
+
+  chngehndlcv = e => {
+    this.setState({ file: e.target.files[0] });
+    console.log(e.target.files);
   };
 
   componentDidMount() {
     const id = this.props.match.params.id;
     console.log(id);
+
     this.wtf();
   }
 
@@ -23,10 +31,10 @@ class CandidateView extends Component {
   chngehandlsel = e => {
     this.setState({ status: e.target.value });
     console.log(this.state.status);
-    var id =  this.props.match.params.id ;
-    var payload = { status: e.target.value};
+    var id = this.props.match.params.id;
+    var payload = { status: e.target.value };
     axios
-      .post("/usr/updatestatus/"+id,{data:payload})
+      .post("/usr/updatestatus/" + id, { data: payload })
       .then(res => {
         this.setState({ status_change: "1" });
       })
@@ -34,6 +42,31 @@ class CandidateView extends Component {
         console.log(err);
         this.setState({ status_change: "0" });
       });
+  };
+
+  addcv = e => {
+    e.preventDefault();
+    console.log("can cv clik");
+    console.log(this.props.match.params.id);
+
+    const formdata = new FormData();
+    formdata.append("cv", this.state.file);
+    //
+
+    var config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    axios
+      .post("/usr/cv/" + this.props.match.params.id, formdata, config)
+      .then(result => {
+        console.log("awoooo" + result);
+      })
+      .catch(err => {});
+
+   
   };
 
   wtf = () => {
@@ -82,21 +115,28 @@ class CandidateView extends Component {
                 HR interview
               </option>
               <option id="status" value="onhold">
-                {" "}
-                onhold{" "}
+                onhold
               </option>
               <option id="status" value="accepted">
                 accepted
               </option>
               <option id="status" value="shortlisted">
-                {" "}
-                shortlisted{" "}
+                shortlisted
               </option>
             </select>
           </div>
           <button onClick={this.evalHndler} className="btn btn-primary">
             evaluate
           </button>
+
+          <br />
+          <br />
+          <form onSubmit={this.addcv}>
+            <input type="file" name="cv" onChange={this.chngehndlcv} />
+            <input type="submit" value="submit" />
+          </form>
+
+          <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/>
         </div>
       </div>
     );
