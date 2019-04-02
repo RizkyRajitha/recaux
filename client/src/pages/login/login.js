@@ -151,7 +151,10 @@ class login extends Component {
       return (
         
         <div className="maindiv">
-        <Navbar />
+          <Navbar />
+        <div className="wrapper">
+                <div className="form-wrapper">
+      
           <div>
           <div className="row">
             <div className="col-sm" />
@@ -213,6 +216,8 @@ class login extends Component {
           )}
           </div>
             <div className="col-sm" />
+          </div>
+          </div>
           </div>
         </div>
         </div>

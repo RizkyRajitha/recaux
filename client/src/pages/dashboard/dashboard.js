@@ -143,6 +143,16 @@ class dashboard extends Component {
             >
               edit profile
             </button>
+            <br></br>
+            <br></br>
+            
+            <button
+              onClick={this.addcandidate}
+              className="btn btn-info"
+              id="userprofile"
+            >
+              add candidate
+            </button>
 
           {/* <div className="jumbotron">
             <h1 class="display-3">Hello, world!</h1>

@@ -17,6 +17,13 @@ var candidateSchema = new Schema({
   },
   status: {
     type: String
+  },evaluationData:{
+    evaluatorId:String,
+    evaluationMarks:Number,
+    acadamicBackground:String,
+    indusrtyExperiance:String,
+    currentPosition:String,
+    JobPeriod:String
   }
 });
 
