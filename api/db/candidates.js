@@ -16,7 +16,7 @@ var candidateSchema = new Schema({
     type: Date
   },
   status: {
-    type: String
+    type: String,default:'New'
   },evaluationData:{
     evaluatorId:String,
     evaluationMarks:Number,

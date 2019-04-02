@@ -30,7 +30,7 @@ class evaluation extends Component {
     console.log(payload)
 
     axios
-      .post("/evaluation/" + id, { data: payload })
+      .post("/usr/evaluation/" + id,  payload )
       .then(res => {
         console.log(res)
         this.setState({ success_added_flag: true });

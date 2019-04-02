@@ -14,9 +14,12 @@ class Avatar extends Component {
   submitHndle = e => {
     e.preventDefault();
     console.log("hahah");
+    console.log(this.props.match.params.id)
 
     const formdata = new FormData();
     formdata.append("avatar", this.state.file);
+    //
+
     var config = {
       headers: {
         "content-type": "multipart/form-data"
@@ -24,7 +27,7 @@ class Avatar extends Component {
     };
 
     axios
-      .post("/usr/avatar", formdata, config)
+      .post("/usr/avatar/"+this.props.match.params.id, formdata, config)
       .then(result => {
         console.log("awoooo" + result);
       })
@@ -38,7 +41,8 @@ class Avatar extends Component {
           <input type="file" name="avatar" onChange={this.chngehndl} />
           <input type="submit" value="submit" />
         </form>
-      </div>
+        <img src='http://localhost:3001/static/avatar/5ca04e530593d404f8d61d63.png' height='100' width = '100' />
+      </div> 
     );
   }
 }
