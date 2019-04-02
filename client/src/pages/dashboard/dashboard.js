@@ -82,6 +82,7 @@ class dashboard extends Component {
     var jwt = localStorage.getItem("jwt");
     var now = new Date();
     console.log(now.getHours());
+
     // try {
     //   var dashboard = jsonwebtoken.verify(jwt)
     //   if(dashboard){
@@ -103,6 +104,7 @@ class dashboard extends Component {
         if (result.data) {
           console.log("menna apu data");
           console.log(result.data);
+
           this.setState({
             email: result.data.email,
             emailverified: result.data.emailverified,
@@ -114,6 +116,8 @@ class dashboard extends Component {
           this.setState({ logedin: true });
           console.log(this.state);
           this.getcandidatedata();
+
+          localStorage.setItem("userId", result.data.id);
         } else {
           this.setState({ logedin: false });
         }
@@ -131,59 +135,44 @@ class dashboard extends Component {
         <div className="dashboardmain">
           <Navbar />
 
-          
-          <h1>
-            {this.state.greet} {this.state.firstName} 
+          <h1 className='greet'>
+            {this.state.greet} {this.state.firstName}
           </h1>
+          <br />
+          <br />
+          <button
+            onClick={this.usrprofile}
+            className="btn btn-info"
+            id="userprofile"
+          >
+            edit profile
+          </button>
+          <br />
+          <br />
 
           <button
-              onClick={this.usrprofile}
-              className="btn btn-info"
-              id="userprofile"
-            >
-              edit profile
-            </button>
-            <br></br>
-            <br></br>
-            
-            <button
-              onClick={this.addcandidate}
-              className="btn btn-info"
-              id="userprofile"
-            >
-              add candidate
-            </button>
+            onClick={this.addcandidate}
+            className="btn btn-info"
+            id="addcan"
+          >
+            Add new candidate
+          </button>
 
-            <br></br>
-            <br></br>
+          {!this.state.emailverified && (
+            <div class="alert alert-danger" role="alert">
+              please verify your email
+              <br />
+              <button
+                type="button"
+                class="btn btn-info"
+                onClick={this.verifyemail}
+              >
+                verify email
+              </button>
+            </div>
+          )}
 
-            <button
-              onClick={this.addcandidate}
-              className="btn btn-info"
-              id="addcan"
-            >
-              Add new candidate
-            </button>
-
-          {/* <div className="jumbotron">
-            <h1 class="display-3">Hello, world!</h1>
-            <p class="lead">
-              This is a simple hero unit, a simple jumbotron-style component for
-              calling extra attention to featured content or information.
-            </p>
-            <hr class="my-4" />
-            <p>
-              It uses utility classes for typography and spacing to space
-              content out within the larger container.
-            </p>
-            <p class="lead">
-              <a class="btn btn-primary btn-lg" href="/home" role="button">
-                Learn more
-              </a>
-            </p>
-          </div> */}
-
-          <div className="container">
+          <div className="cardcontainer">
             {cndetailes.reverse().map((can, iid) => {
               //console.log(can.name+can.email+can.jobspec)
               return (
@@ -199,22 +188,8 @@ class dashboard extends Component {
             })}
           </div>
 
-          <br></br>
-          <br></br>
-
-          {!this.state.emailverified && (
-            <div class="alert alert-danger" role="alert">
-              please verify your email
-              <br />
-              <button
-                type="button"
-                class="btn btn-info"
-                onClick={this.verifyemail}
-              >
-                verify email
-              </button>
-            </div>
-          )}
+          <br />
+          <br />
         </div>
       );
     } else {

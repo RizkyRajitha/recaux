@@ -1,12 +1,35 @@
-/* #userprofile{
-    position:relative;
-    
-    top: 50%;
-    left: 35%;
-} */
+#userprofile{
+    position: absolute;
+    top: 20%;
+    left:90%;
+}
+
+#addcan {
+    position: absolute;
+    top: 20%;
+    left:75%;
+   
+}
 
 .dashboardmain{
     background-color: #666666;
     height: 600px;
     width: 100%;
+}
+
+.card{
+    text-align: center
+   
+}
+.cardcontainer{
+   
+    position: absolute;
+    top: 55%;
+    left:25%;
+    width: 60%;
+
+}
+
+.greet{
+    color: #    ;
 }

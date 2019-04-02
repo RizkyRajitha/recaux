@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./candidateview.css";
-import { Document } from 'react-pdf/dist/entry.webpack';
+import Navbar from "../../components/navbarloogedin";
+// import { Document } from 'react-pdf/dist/entry.webpack';
 
 class CandidateView extends Component {
   state = {
     data: [],
     status: "",
-    status_change: "",
+    status_change: 0,
     file: null
   };
 
@@ -29,18 +30,21 @@ class CandidateView extends Component {
   };
 
   chngehandlsel = e => {
-    this.setState({ status: e.target.value });
-    console.log(this.state.status);
+    this.setState({ status_change: 0 });
+    // this.setState({ status: e.target.value });
+    console.log("status 1k malli" + e.target.value);
     var id = this.props.match.params.id;
     var payload = { status: e.target.value };
     axios
-      .post("/usr/updatestatus/" + id, { data: payload })
+      .post("/usr/updatestatus/" + id, payload)
       .then(res => {
-        this.setState({ status_change: "1" });
+        console.log(res);
+        this.setState({ status_change: 1 });
+        console.log("awoooooooooo");
       })
       .catch(err => {
         console.log(err);
-        this.setState({ status_change: "0" });
+        this.setState({ status_change: 0 });
       });
   };
 
@@ -65,8 +69,6 @@ class CandidateView extends Component {
         console.log("awoooo" + result);
       })
       .catch(err => {});
-
-   
   };
 
   wtf = () => {
@@ -92,13 +94,32 @@ class CandidateView extends Component {
     }
     return (
       <div>
+        <Navbar />
         <div className="canview">
           <div className="canview2">
-            <ul className="list">
-              <li> date reciver : {d}</li>
-              <li> name : {this.state.data.name}</li>
-              <li> email : {this.state.data.email}</li>
-              <li> job spec : {this.state.data.jobspec}</li>
+            {this.state.status_change === 1 && (
+              <div class="alert alert-primary" role="alert">
+                status change succsessfuly
+              </div>
+            )}
+            <ul className="list-group list-group-flush ">
+              <li className="list-group-item"> date reciver : {d}</li>
+              <li className="list-group-item">
+                {" "}
+                name : {this.state.data.name}
+              </li>
+              <li className="list-group-item">
+                {" "}
+                email : {this.state.data.email}
+              </li>
+              <li className="list-group-item">
+                {" "}
+                job spec : {this.state.data.jobspec}
+              </li>
+              <li className="list-group-item">
+                {" "}
+                current candidate status : {this.state.data.status}
+              </li>
             </ul>
           </div>
 
@@ -111,6 +132,7 @@ class CandidateView extends Component {
               id="status"
               onChange={this.chngehandlsel}
             >
+              <option selected>Select...</option>
               <option id="status" value="hr_interview">
                 HR interview
               </option>
@@ -136,7 +158,7 @@ class CandidateView extends Component {
             <input type="submit" value="submit" />
           </form>
 
-          <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/>
+          {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>
       </div>
     );

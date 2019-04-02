@@ -6,6 +6,7 @@
     "@material-ui/core": "^3.9.2",
     "axios": "^0.18.0",
     "jsonwebtoken": "^8.4.0",
+    "materialize-css": "^1.0.0-rc.2",
     "pdfjs-dist": "^2.0.943",
     "react": "^16.8.2",
     "react-burger-menu": "^2.6.5",

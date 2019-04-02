@@ -7,24 +7,55 @@ class evaluation extends Component {
   state = {
     name: "",
     jobspec: "",
-    marks: null,
     status: "",
-    success_added_flag: false
+    success_added_flag: false,
+    evaluatorId:String,
+    candidateId:String,
+    evaluationMarks:Number,
+    acadamicBackground:String,
+    indusrtyExperiance:String,
+    currentPosition:String,
+    JobPeriod:String,
+    data:[]
   };
 
   componentWillMount() {
     const id = this.props.match.params.id;
-    console.log(id);
+    this.setState({candidateId:id})
+    const userid = localStorage.getItem('userId');
+    console.log(userid)
+    this.setState({evaluatorId:userid})
+
+
+    axios
+    .get("/usr/getcandidate/" + id)
+    .then(res => {
+      this.setState({ data: res.data });
+      console.log(res);
+      console.log(this.state);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
   }
 
-  submithndler = () => {
+  submithndler = (e) => {
+    e.preventDefault();
+
+    console.log(this.state)
+
+
     const id = this.props.match.params.id;
 
     var payload={
-      name:this.state.name,
-      jobspec:this.state.jobspec,
-      marks:this.state.marks,
-      status:this.state.status
+      evaluatorId:this.state.evaluatorId,
+      candidateId:this.state.candidateId,
+    evaluationMarks:this.state.evaluationMarks,
+    acadamicBackground:this.state.acadamicBackground,
+    indusrtyExperiance:this.state.indusrtyExperiance,
+    currentPosition:this.state.currentPosition,
+    JobPeriod:this.state.JobPeriod
     }
 
     console.log(payload)
@@ -39,7 +70,7 @@ class evaluation extends Component {
         console.log(err);
       });
 
-      this.props.history.push('/getcandidate/'+id)
+    //   this.props.history.push('/getcandidate/'+id)
   };
   chngehandl = e => {
     //console.log(e.target.name,)
@@ -60,37 +91,70 @@ class evaluation extends Component {
           <br />
           <br />
           <br />
+
+          <h6> name : {this.state.data.name}</h6>
+              <h6> email : {this.state.data.email}</h6>
+              <h6> job spec : {this.state.data.jobspec}</h6>
+
+
           <div className="form-group">
             <input
               type="text"
-              name="name"
+              name="acadamicBackground"
               className="form-control"
               onChange={this.chngehandl}
-              placeholder="enter candidate name"
+              placeholder="enter candidate acadamicBackground "
               id="name"
             />
           </div>
           <div className="form-group">
             <input
               type="number"
-              name="marks"
+              name="evaluationMarks"
               className="form-control"
               placeholder="enter candidate marks"
               onChange={this.chngehandl}
-              id="marks"
+              id="evaluationMarks"
             />
           </div>
           <div className="form-group">
             <label> </label>
             <input
               type="text"
-              name="jobspec"
+              name="indusrtyExperiance"
               className="form-control"
-              placeholder="enter candidate job spec"
+              placeholder="enter candidate indusrty Experiance"
               onChange={this.chngehandl}
               id="job"
             />
           </div>
+          <div className="form-group">
+            <label> </label>
+            <input
+              type="text"
+              name="currentPosition"
+              className="form-control"
+              placeholder="enter candidate currentPosition"
+              onChange={this.chngehandl}
+              id="job"
+            />
+          </div>
+
+         
+          <div className="form-group">
+            <label> </label>
+            <input
+              type="text"
+              name="JobPeriod"
+              className="form-control"
+              placeholder="enter candidate Job Period"
+              onChange={this.chngehandl}
+              id="job"
+            />
+          </div>
+
+
+
           <div class="form-group">
             <label for="exampleFormControlSelect2">
               change candidate status

@@ -7,8 +7,9 @@ const ObjectID = require("mongodb").ObjectID;
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 const path = require("path");
+const Evaluation = require("../db/evaluation");
 
-const profileimgupload = require('./fileupload.route')
+const profileimgupload = require("./fileupload.route");
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
@@ -232,10 +233,10 @@ router.post("/changepass/:id", (req, res) => {
   id = req.params.id;
   newpassword = req.body.password;
   console.log(id);
-  console.log('pppppppppppppppppppppppppp')
+  console.log("pppppppppppppppppppppppppp");
   console.log(newpassword);
-  console.log('pppppppppppppppppppppppppp')
- 
+  console.log("pppppppppppppppppppppppppp");
+
   User.findById({ _id: ObjectID(id) })
     .then(result => {
       console.log("found " + result.email);
@@ -329,18 +330,18 @@ router.get("/test", (req, res) => {
   var ada = new Date();
   console.log(ada);
   const newuser = new User({
-    email: 'admin@auxenta.com',
-    hash: "admin",
+    email: "admin@auxenta.com",
+    hash: "admin"
   });
 
-  newuser.save().then((result) => {
+  newuser
+    .save()
+    .then(result => {
       res.send(result);
-  }).catch((err) => {
-    res.json(err)
-    
-  });
-
-
+    })
+    .catch(err => {
+      res.json(err);
+    });
 });
 
 router.post("/addcandidate", (req, res) => {
@@ -367,42 +368,55 @@ router.post("/updatestatus/:id", (req, res) => {
   console.log(req.params.id);
   var id = req.params.id;
   console.log(req.body.status);
-  Candidate.findById(ObjectID(id))
+  Candidate.findByIdAndUpdate(
+    ObjectID(id),
+    { $set: { status: req.body.status } },
+    { new: true }
+  )
     .then(doc => {
       console.log("doc");
       console.log(doc);
-      doc.status = req.body.status;
-      doc
-        .save()
-        .then(res => {
-          //console.log(res)
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      res.json(doc);
     })
     .catch(err => {
       console.log(err);
+      res.json(err)
     });
 });
 
-router.post('/evaluation/:id',(req,res)=>{
-  console.log('eval')
+router.post("/evaluation/:id", (req, res) => {
+  console.log("eval");
 
-  console.log(req.params.id)
-  console.log('bodtyyy '+req.body.name)
-  console.log('bodtyyy '+req.body.marks)
-  
+  console.log(req.params.id);
 
-})
+  console.log(req.body);
 
-router.post('/avatar/:id',profileimgupload.profileimgup)
-router.post('/cv/:id',profileimgupload.cvupload)
+  console.log("bodtyyy " + req.body.evaluatorId);
+  console.log("bodtyyy " + req.body.evaluationMarks);
 
+  const eval = new Evaluation({
+    candidateId: req.body.candidateId,
+    evaluatorId: req.body.evaluatorId,
+    evaluationMarks: req.body.evaluationMarks,
+    acadamicBackground: req.body.acadamicBackground,
+    indusrtyExperiance: req.body.indusrtyExperiance,
+    currentPosition: req.body.currentPosition,
+    JobPeriod: req.body.JobPeriod
+  });
 
+  eval
+    .save()
+    .then(doc => {
+      console.log(doc);
+      res.status(200).json(doc);
+    })
+    .catch(er => {
+      console.log(er);
+    });
+});
 
-
-
+router.post("/avatar/:id", profileimgupload.profileimgup);
+router.post("/cv/:id", profileimgupload.cvupload);
 
 // router.get(
 //   "/protected",

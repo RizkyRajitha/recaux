@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import "./App.css";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
+
+// import 'materialize-css/dist/css/materialize.min.css'
+
+// import M from 'materialize-css/dist/js/materialize.min.js'
+
 import Login from "./pages/login/login";
 import Home from "./components/home";
 import Register from "./pages/register/register";
