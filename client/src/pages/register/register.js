@@ -12,7 +12,9 @@ class Register extends Component {
     password2: "",
     firstname: "",
     lastname: "",
-    errorpassmatch:false
+    usertype:"",
+    errorpassmatch:false,
+    duplicateemalifound:false
   };
 
   changeHandler = e => {
@@ -88,7 +90,8 @@ class Register extends Component {
           email: this.state.email,
           password: this.state.password1,
           firstname: this.state.firstname,
-          lastname: this.state.lastname
+          lastname: this.state.lastname,
+          usertype:this.state.usertype
         },
         config
       )
@@ -96,10 +99,17 @@ class Register extends Component {
         console.log("resonse came - -");
         console.log(response.data);
         this.setState({ registered: true });
-        localStorage.setItem("jwt", response.data);
+        //localStorage.setItem("jwt", response.data);
       })
       .catch(err => {
         console.log(err);
+        console.log(err.response.data==11000);
+
+        if(err.response.data==11000){
+            this.setState({duplicateemalifound:true})
+            document.querySelectorAll('.form-group').value=''
+        }
+        //if(err)
       });
     }
     else{
@@ -109,6 +119,12 @@ class Register extends Component {
 
    
   };
+
+  chngehandlsel =e=>{
+
+    this.setState({usertype:e.target.value})
+
+  }
 
   render() {
     if (this.state.registered === false) {
@@ -125,6 +141,9 @@ class Register extends Component {
 
                 {this.state.errorpassmatch && (<div class="alert alert-warning" role="alert">
   password does not match
+</div>)}
+{this.state.duplicateemalifound && (<div class="alert alert-warning" role="alert">
+Duplicate email Found
 </div>)}
                 <div class="form-group">
                   <input
@@ -182,6 +201,30 @@ class Register extends Component {
                     onChange={this.changeHandler}
                   />
                 </div>
+
+                <div class="form-group">
+            <label for="exampleFormControlSelect2">
+              select user type
+            </label>
+            <select
+              class="form-control"
+              id="status"
+              onChange={this.chngehandlsel}
+            >
+              <option selected>Select...</option>
+              <option id="status" value="hr_staff">
+                HR staff
+              </option>
+              <option id="status" value="depthead">
+                Department head
+              </option>
+              <option id="status" value="admin">
+                Admin
+              </option>
+              
+            </select>
+          </div>
+
 
                 {/* <div class="form-group">
                   <label>re enter password</label>

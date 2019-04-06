@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 
 var candidateSchema = new Schema({
   email: {
-    type: String
+    type: String,
+    unique:true,required:true
   },
   name: {
     type: String

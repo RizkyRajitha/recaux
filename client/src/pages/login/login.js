@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
 import "./login.css";
-import "materialize-css";
+//import "materialize-css";
 import Navbar from "../../components/navbar";
 
 const jsonwebtoken = require("jsonwebtoken");

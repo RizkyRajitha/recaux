@@ -22,6 +22,24 @@ class Changepass extends Component {
   componentWillMount() {
     this.setState({ id: this.props.match.params.id });
     //var jwt = localStorage.getItem('jwt')
+
+    const jwt = localStorage.getItem("jwt");
+    console.log('jwt token -- - -- >>>'+jwt);
+
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      console.log('payload - '+pay);
+      console.log('************************************' )
+
+      
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
+
   }
 
   submitHndl = e => {

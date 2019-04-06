@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Navbar from "../../components/navbarloogedin";
 import axios from "axios";
-import jwt from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import "./user.css";
 
 class Userprofile extends Component {
@@ -35,21 +35,21 @@ class Userprofile extends Component {
   };
 
   componentDidMount() {
-    var token = localStorage.getItem("jwt");
-    try {
-      var data = jwt.verify(token, "authdemo");
-      console.log(data);
-      if (data) {
-        this.setState({ login: true });
-      }
-    } catch (error) {
-      console.log(error);
-      if (error) {
-        this.setState({ expat: error.expiredAt });
-        this.setState({ login: false });
+    const jwt = localStorage.getItem("jwt");
+    console.log('jwt token -- - -- >>>'+jwt);
 
-        //console.log(error.expiredAt.getHour())//+"  "+error.expiredAt.getMinutes())
-      }
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      console.log('payload - '+pay);
+      console.log('************************************' )
+
+      
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
     }
 
     console.log(this.props.match.params.id);

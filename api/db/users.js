@@ -9,18 +9,26 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
   email: {
-    type: String
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
   },
-  firstName: { type: String },
+  firstName: { 
+    type: String 
+  },
 
-  lastName: { type: String },
+  lastName: {
+     type: String 
+    }
+     ,
   hash: {
     type: String
   },
   emailverified: {
     type: Boolean
   },
-  userType: {
+  usertype: {
     type: String
   }
 });
@@ -29,7 +37,6 @@ userSchema.pre("save", function(next) {
   console.log("savin.....");
   this.salt = bcrypt.genSaltSync(saltRounds);
   this.hash = bcrypt.hashSync(this.hash, this.salt);
-   bcrypt.hash()
   next();
 });
 

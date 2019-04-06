@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./evaluation.css";
+import jsonwebtoken from 'jsonwebtoken'
 
 const axios = require("axios");
 
@@ -20,6 +21,25 @@ class evaluation extends Component {
   };
 
   componentWillMount() {
+
+    const jwt = localStorage.getItem("jwt");
+    console.log('jwt token -- - -- >>>'+jwt);
+
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      console.log('payload - '+pay);
+      console.log('************************************' )
+
+      
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
+
+
     const id = this.props.match.params.id;
     this.setState({candidateId:id})
     const userid = localStorage.getItem('userId');

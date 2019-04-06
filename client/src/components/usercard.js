@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./candidatecard.css";
 
-class CandidateCard extends Component {
+class UserCard extends Component {
   cnadidateview = () => {
     console.log(this.props);
     this.props.history.push("/getcandidate/" + this.props._id);
@@ -15,10 +15,6 @@ class CandidateCard extends Component {
       var d = dd.toJSON().slice(0, 10);
       console.log();
     }
-
-    //   .toJSON()
-    //   .slice(0, 10)
-    //   .replace(/-/g, "/");
 
     return (
       <div>
@@ -59,4 +55,4 @@ class CandidateCard extends Component {
   }
 }
 
-export default withRouter(CandidateCard);
+export default withRouter(UserCard);

@@ -32,7 +32,8 @@ router.post("/reg", (req, res, next) => {
           email: req.body.email,
           hash: req.body.password,
           firstName: req.body.firstname,
-          lastName: req.body.lastname
+          lastName: req.body.lastname,
+          usertype: req.body.usertype
         });
         console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
         //newuser.setpass(req.body.password);
@@ -45,7 +46,13 @@ router.post("/reg", (req, res, next) => {
           })
           .catch(err => {
             console.log(" reg err -  " + err);
-            res.status(403).json(err);
+
+            if (err.code === 11000) {
+              console.log(" reg err duplicate email found ");
+              res.status(403).json(err.code);
+            } else {
+              res.status(403).json(err);
+            }
           });
       }
     }
@@ -380,7 +387,7 @@ router.post("/updatestatus/:id", (req, res) => {
     })
     .catch(err => {
       console.log(err);
-      res.json(err)
+      res.json(err);
     });
 });
 

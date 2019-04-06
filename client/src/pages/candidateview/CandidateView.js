@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./candidateview.css";
+import jsonwebtoken from 'jsonwebtoken'
 import Navbar from "../../components/navbarloogedin";
 // import { Document } from 'react-pdf/dist/entry.webpack';
 
@@ -20,6 +21,23 @@ class CandidateView extends Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     console.log(id);
+
+    const jwt = localStorage.getItem("jwt");
+    console.log('jwt token -- - -- >>>'+jwt);
+
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      console.log('payload - '+pay);
+      console.log('************************************' )
+
+      
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
 
     this.wtf();
   }
