@@ -80,7 +80,7 @@ class adminlogin extends Component {
       // }
 
       axios
-        .post("/usr/login1", params)
+        .post("/usr/adminlogin", params)
         .then(data => {
           console.log(data);
           var body = data.data;

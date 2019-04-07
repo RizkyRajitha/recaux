@@ -9,7 +9,8 @@ const emailhandler = require("../config/emailhandler");
 const path = require("path");
 const Evaluation = require("../db/evaluation");
 
-const profileimgupload = require("./fileupload.route");
+const profileimgupload = require("./fileupload.routes");
+const adminROutes = require('./admin.routes')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
@@ -26,6 +27,9 @@ router.post("/reg", (req, res, next) => {
       console.log(info);
 
       if (user) {
+
+       
+
         console.log(`************${req.headers.authorization}****************`);
 
         const newuser = new User({
@@ -37,23 +41,42 @@ router.post("/reg", (req, res, next) => {
         });
         console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
         //newuser.setpass(req.body.password);
-        newuser
-          .save()
-          .then(result => {
-            console.log("succsess");
-            //var token = result.generateJWT();
-            return res.status(200).send({});
-          })
-          .catch(err => {
-            console.log(" reg err -  " + err);
+        console.log('>>>>><<<<<<'+user.usertype)
 
-            if (err.code === 11000) {
-              console.log(" reg err duplicate email found ");
-              res.status(403).json(err.code);
-            } else {
-              res.status(403).json(err);
-            }
-          });
+        User.findById(ObjectID(user.id)).then((doc) => {
+          console.log(doc.usertype)
+          if(doc.usertype==='admin'){
+            newuser
+            .save()
+            .then(result => {
+              console.log("succsess");
+              //var token = result.generateJWT();
+              return res.status(200).send({});
+            })
+            .catch(err => {
+              console.log(" reg err -  " + err);
+  
+              if (err.code === 11000) {
+                console.log(" reg err duplicate email found ");
+                res.status(403).json(err.code);
+              } else {
+                res.status(403).json(err);
+              }
+            });
+          }else{
+            res.status(403).json('no_previladges');
+          }
+
+
+          
+        }).catch((err) => {
+          
+        });
+
+
+        
+
+
       }
     }
   )(req, res, next);
@@ -424,6 +447,11 @@ router.post("/evaluation/:id", (req, res) => {
 
 router.post("/avatar/:id", profileimgupload.profileimgup);
 router.post("/cv/:id", profileimgupload.cvupload);
+router.post('/adminlogin',adminROutes.adminLogin)
+
+
+
+
 
 // router.get(
 //   "/protected",

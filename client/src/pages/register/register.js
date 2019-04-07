@@ -14,7 +14,8 @@ class Register extends Component {
     lastname: "",
     usertype:"",
     errorpassmatch:false,
-    duplicateemalifound:false
+    duplicateemalifound:false,
+    noPrev:false
   };
 
   changeHandler = e => {
@@ -109,6 +110,16 @@ class Register extends Component {
             this.setState({duplicateemalifound:true})
             document.querySelectorAll('.form-group').value=''
         }
+
+        if(err.response.data=='no_previladges'){
+          this.setState({noPrev:true})
+
+          setTimeout(()=>{
+            this.props.history.push("/dashboard");
+          },5000)
+
+          //document.querySelectorAll('.form-group').value=''
+      }
         //if(err)
       });
     }
@@ -144,6 +155,9 @@ class Register extends Component {
 </div>)}
 {this.state.duplicateemalifound && (<div class="alert alert-warning" role="alert">
 Duplicate email Found
+</div>)}
+{this.state.noPrev && (<div class="alert alert-warning" role="alert">
+You have no Previladges to add new users, please contact your Administrator
 </div>)}
                 <div class="form-group">
                   <input
