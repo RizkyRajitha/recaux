@@ -5,6 +5,7 @@ const Navbar = props => {
   const logoutHandler = e => {
     console.log("loggeeeeeeee");
     localStorage.removeItem("jwt");
+    localStorage.removeItem("userId");
 
     props.history.push("/login");
   };

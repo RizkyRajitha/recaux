@@ -29,7 +29,7 @@ var options = {
   explorer : true
 };
  
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
 
 app.use(eh());
