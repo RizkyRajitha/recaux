@@ -41,7 +41,7 @@ class Avatar extends Component {
           <input type="file" name="avatar" onChange={this.chngehndl} />
           <input type="submit" value="submit" />
         </form>
-        <img src='http://localhost:3001/static/avatar/5ca04e530593d404f8d61d63.png' height='100' width = '100' />
+        <img src={`http://localhost:3001/static/avatar/${this.props.match.params.id}.jpg`} />
       </div> 
     );
   }
