@@ -11,7 +11,7 @@ import Login from "./pages/login/login";
 import Home from "./components/home";
 import Register from "./pages/register/register";
 import Dashboard from "./pages/dashboard/dashboard";
-import Navbar from "./components/navbar";
+import Navbar from "./components/navbar_metcss";
 import fogotpassword from "./pages/fogotpassword/fogotpassword";
 import resetpassword from "./pages/resetpassword/resetpassword";
 import emailconfirm from "./pages/emailverify/emailverify";
@@ -31,7 +31,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-          {/* <Navbar /> */}
+         
           {/* <TemporaryDrawer /> */}
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />

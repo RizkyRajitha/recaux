@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
 import "./login.css";
-//import "materialize-css";
-import Navbar from "../../components/navbar";
+import M from "materialize-css";
+import Navbar from "../../components/navbar_metcss";
 
 const jsonwebtoken = require("jsonwebtoken");
 //const request = require("request");
@@ -32,6 +32,7 @@ class login extends Component {
   };
 
   componentDidMount() {
+    M.toast({ html: "I am a toast!" });
     var jwt = localStorage.getItem("jwt");
     console.log("comp mount");
     console.log(jwt);
@@ -142,80 +143,80 @@ class login extends Component {
     if (!loggedIn) {
       return (
         <div className="maindiv">
-          <Navbar />
+         
           <div className="wrapper">
             <div className="form-wrapper">
               <div>
                 {/* <div className="row">
                   <div className="col-sm" />
                   <div className="col-sm"> */}
-                    {this.state.creaderror && (
-                      <div class="alert alert-danger" role="alert">
-                        Invalid Creadentials
-                      </div>
-                    )}
-                    <form onSubmit={this.btn1handler}>
-                      <br />
-                      <br />
-                      <br />
-                      <div className="form-group">
-                        {/* <label> enter email </label> */}
-                        <input
-                          id="uname"
-                          required
-                          type="text"
-                          name="uname"
-                          className="form-control"
-                          onChange={this.changehandleremail}
-                          placeholder="enter email"
-                        />
-                      </div>
-                      <div className="form-group">
-                        {/* <label> enter password </label> */}
-                        <input
-                          required
-                          id="pass"
-                          type="password"
-                          name="pass"
-                          className="form-control"
-                          placeholder="enter password"
-                          onChange={this.changehandlerpass}
-                        />
-                      </div>
-                      <div className="submit">
-                        <input
-                          type="submit"
-                          className="btn btn-primary"
-                          value="sign in"
-                          id="submit"
-                        />
-                      </div>
-                    </form>
-                    <br />
-                    <br />
-
-                    <div>
-                      <Link to="/fogotpassword">
-                        <a>Forgotten password</a>
-                      </Link>
-                    </div>
-
-                    {showNullError && (
-                      <div>
-                        <p>The username or password cannot be null.</p>
-                      </div>
-                    )}
-
-                    {showError && (
-                      <div>
-                        <p>The username or password is incorrect dude XD.</p>
-                      </div>
-                    )}
+                {this.state.creaderror && (
+                  <div class="alert alert-danger" role="alert">
+                    Invalid Creadentials
                   </div>
-                  <div className="col-sm" />
-                {/* </div>
+                )}
+                <form onSubmit={this.btn1handler}>
+                  <br />
+                  <br />
+                  <br />
+                  <div className="form-group">
+                    {/* <label> enter email </label> */}
+                    <input
+                      id="uname"
+                      required
+                      type="text"
+                      name="uname"
+                      className="form-control"
+                      onChange={this.changehandleremail}
+                      placeholder="enter email"
+                    />
+                  </div>
+                  <div className="form-group">
+                    {/* <label> enter password </label> */}
+                    <input
+                      required
+                      id="pass"
+                      type="password"
+                      name="pass"
+                      className="form-control"
+                      placeholder="enter password"
+                      onChange={this.changehandlerpass}
+                    />
+                  </div>
+                  <div className="submit">
+                    <input
+                      type="submit"
+                      className="btn  waves-light light-blue darken-3"
+                      value="sign in"
+                      id="submit"
+                    />
+                  </div>
+                </form>
+                <br />
+                <br />
+
+                <div>
+                  <Link to="/fogotpassword">
+                    <a>Forgotten password</a>
+                  </Link>
+                </div>
+
+                {showNullError && (
+                  <div>
+                    <p>The username or password cannot be null.</p>
+                  </div>
+                )}
+
+                {showError && (
+                  <div>
+                    <p>The username or password is incorrect dude XD.</p>
+                  </div>
+                )}
+              </div>
+              <div className="col-sm" />
+              {/* </div>
               </div>*/}
-            </div> 
+            </div>
           </div>
         </div>
       );

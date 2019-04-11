@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import Navbar from "../../components/navbarloogedin";
 import "../../App.css";
 
-const jsonwebtoken = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
 class resetpassword extends Component {
@@ -12,13 +11,26 @@ class resetpassword extends Component {
     pass1: "",
     pass2: "",
     passchangeok: false,
-    massmissmatch:false
+    massmissmatch: false,
+    exp: false
   };
 
   componentDidMount() {
-    var id = this.props.match.params.id;
-    console.log(id);
-    this.setState({ id: id });
+    
+    try {
+      const iid = jwt.verify(this.props.match.params.id, "authdemo");
+      console.log(iid.id);
+      console.log(iid.id);
+      this.setState({ id: iid.id });
+    } catch (error) {
+     
+      this.setState({ exp: true });
+      console.log(error);
+
+      setTimeout(() => {
+        this.props.history.push("/login");
+      }, 2000);
+    }
   }
 
   changeHandler = e => {
@@ -36,90 +48,98 @@ class resetpassword extends Component {
 
     console.log("passs - " + this.state.pass1 + "idd -- " + this.state.id);
 
-    var match = this.state.pass1===this.state.pass2
+    var match = this.state.pass1 === this.state.pass2;
 
-   if(match){
-    this.setState({massmissmatch:false})
-    axios
-    .post(`/usr/resetpassword/${this.state.id}`, {
-      password: this.state.pass1
-    })
-    .then(Response => {
-      console.log(Response.data);
-      if (Response.data === "password changed succesfully") {
-        this.setState({ passchangeok: true });
-        setTimeout(() => {
-          this.redirectlogin();
-        }, 200);
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
-   }else{
-
-    this.setState({massmissmatch:true})
-
-   }
+    if (match) {
+      this.setState({ massmissmatch: false });
+      axios
+        .post(`/usr/resetpassword/${this.state.id}`, {
+          password: this.state.pass1
+        })
+        .then(Response => {
+          console.log(Response.data);
+          if (Response.data === "password changed succesfully") {
+            this.setState({ passchangeok: true });
+            setTimeout(() => {
+              this.redirectlogin();
+            }, 200);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      this.setState({ massmissmatch: true });
+    }
   };
 
   render() {
-    return (
-      <div>
-        <Navbar />
-        <h1> reset your password </h1>
+    if (!this.state.exp) {
+      return (
+        <div>
+         
+          <h1> reset your password </h1>
 
-        {this.state.massmissmatch && (<div class="alert alert-warning" role="alert">
-  password does not match
-</div>)}
-
-        <div className="container">
-          <div className="row">
-            <div className="col-sm" />
-            <div className="col-sm">
-              <form onSubmit={this.submithandler}>
-                <div className="form-group">
-                  <label>enter your new password</label>
-                  <input
-                    required
-                    type="password"
-                    name="pass1"
-                    id="pass1"
-                    placeholder="enter your new password "
-                    className="form-control"
-                    onChange={this.changeHandler}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>re enter your new password</label>
-                  <input
-                    required
-                    type="password"
-                    name="pass2"
-                    id="pass2"
-                    placeholder="re enter your password "
-                    className="form-control"
-                    onChange={this.changeHandler}
-                  />
-                </div>
-                <input
-                  type="submit"
-                  className="btn btn-primary"
-                  value="reset password"
-                />
-              </form>
-              {this.state.passchangeok === true && (
-                <div>
-                  {" "}
-                  <h1>password changed succesfully</h1>{" "}
-                </div>
-              )}
+          {this.state.massmissmatch && (
+            <div class="alert alert-warning" role="alert">
+              password does not match
             </div>
-            <div className="col-sm" />
+          )}
+
+          <div className="container">
+            <div className="row">
+              <div className="col-sm" />
+              <div className="col-sm">
+                <form onSubmit={this.submithandler}>
+                  <div className="form-group">
+                    <label>enter your new password</label>
+                    <input
+                      required
+                      type="password"
+                      name="pass1"
+                      id="pass1"
+                      placeholder="enter your new password "
+                      className="form-control"
+                      onChange={this.changeHandler}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>re enter your new password</label>
+                    <input
+                      required
+                      type="password"
+                      name="pass2"
+                      id="pass2"
+                      placeholder="re enter your password "
+                      className="form-control"
+                      onChange={this.changeHandler}
+                    />
+                  </div>
+                  <input
+                    type="submit"
+                    className="btn btn-primary"
+                    value="reset password"
+                  />
+                </form>
+                {this.state.passchangeok === true && (
+                  <div>
+                    {" "}
+                    <h1>password changed succesfully</h1>{" "}
+                  </div>
+                )}
+              </div>
+              <div className="col-sm" />
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div>
+          <h1> Link expired </h1>
+        </div>
+      );
+    }
   }
 }
 

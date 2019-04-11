@@ -30,7 +30,12 @@ var userSchema = new Schema({
   },
   usertype: {
     type: String
-  }
+  },
+  candidatesAssinged:{
+    type:String,
+    default:0
+  },
+  assinngedCandidates:[[]]
 });
 
 userSchema.pre("save", function(next) {

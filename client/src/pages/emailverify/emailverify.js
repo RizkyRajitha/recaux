@@ -1,16 +1,22 @@
 import React, { Component } from "react";
 import axios from "axios";
+const jwt = require('jsonwebtoken')
 
 class emailverify extends Component {
   state = {
-    sucsess: false
+    sucsess: false,
+    exp:false
   };
 
   componentDidMount() {
-    console.log(this.props.match.params.id);
-    axios
+    console.log('token - '+this.props.match.params.id);
+
+    try {
+      const iid = jwt.verify(this.props.match.params.id,'authdemo')
+      console.log(iid)
+      axios
       .post(
-        "/usr/confirmemail/" + this.props.match.params.id
+        "/usr/confirmemail/" + iid.id
       )
       .then(res => {
         this.setState({ sucsess: true });
@@ -20,6 +26,18 @@ class emailverify extends Component {
         this.setState({ sucsess: false });
         console.log(err);
       });
+
+    } catch (error) {
+
+      this.setState({ exp: true });
+        console.log(error);
+      
+    }
+
+
+   
+
+    
   }
 
   render() {
@@ -29,7 +47,16 @@ class emailverify extends Component {
   please wait 
 </div>
       );
-    } else {
+    }
+    if (this.state.exp) {
+      return (
+        <div class="alert alert-dark" role="alert">
+  token expired , please try again
+</div>
+      );
+    }
+    
+    else {
       return (<div class="alert alert-success" role="alert">
       email confirmed
     </div>)

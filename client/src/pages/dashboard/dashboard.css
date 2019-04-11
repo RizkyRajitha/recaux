@@ -21,15 +21,35 @@
     text-align: center
    
 }
-.cardcontainer{
+#cardcontainer1{
    
     position: absolute;
-    top: 55%;
-    left:25%;
-    width: 60%;
-
+    top: 44%;
+    left:1%;
+    width: 39%;
+    background-color: #3f51b5 ;
+    text-align: center;
+    
+}
+#cardcontainer2{
+   
+    position: absolute;
+    top: 44%;
+    left:41%;
+    width: 57%;
+    background-color: #00bcd4;
+    text-align: center;
+    
 }
 
 .greet{
     color: #    ;
+}
+
+#verifyemail{
+    background-color: #e53935;
+    height: 70px;
+}
+#verifyemailbtn{
+    background-color: #e53935;
 }

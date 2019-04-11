@@ -10,7 +10,7 @@ const path = require("path");
 const Evaluation = require("../db/evaluation");
 
 const profileimgupload = require("./fileupload.routes");
-const adminROutes = require('./admin.routes')
+const adminRoutes = require('./admin.routes')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
@@ -126,7 +126,8 @@ router.get("/dashboard", (req, res, next) => {
               email: result.email,
               emailverified: result.emailverified,
               firstName: result.firstName,
-              lastName: result.lastName
+              lastName: result.lastName,
+              usertype:result.usertype
             };
             console.log(senddata);
             res.status(200).json(senddata);
@@ -213,8 +214,10 @@ router.post("/edituser/:id", (req, res, next) => {
 router.post("/sendconfirmemail/:id", (req, res) => {
   console.log(req.params.id);
 
+
   User.findById(ObjectID(req.params.id))
     .then(doc => {
+      console.log('tryna sent')
       emailhandler.mailhandleremailconfirm(doc.email, doc._id);
       res.status(200).send("email sent");
     })
@@ -254,7 +257,7 @@ router.post("/fogotpassword", (req, res) => {
       }
     })
     .catch(err => {
-      console.log("error - - - ");
+      console.log("error - - - "+err);
       res.send("no_user_found");
     });
 });
@@ -357,21 +360,41 @@ router.get("/getcandidate/:id", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  var ada = new Date();
-  console.log(ada);
-  const newuser = new User({
-    email: "admin@auxenta.com",
-    hash: "admin"
-  });
+  // var ada = new Date();
+  // console.log(ada);
+  // const newuser = new User({
+  //   email: "admin@auxenta.com",
+  //   hash: "admin"
+  // });
 
-  newuser
-    .save()
-    .then(result => {
-      res.send(result);
-    })
-    .catch(err => {
-      res.json(err);
-    });
+  // newuser
+  //   .save()
+  //   .then(result => {
+  //     res.send(result);
+  //   })
+  //   .catch(err => {
+  //     res.json(err);
+  //   });
+
+can = ['aa','bb']
+
+  User.findOneAndUpdate(
+    { _id: ObjectID('5ca98a6200d8ab4264d7dffc') },
+    {
+      $set: {
+        assinngedCandidates:can
+      }
+    }
+  ).then(result=>{
+    console.log(result)
+    res.send(result)
+  }).catch(err=>{
+console.log(err)
+  })
+
+
+
+
 });
 
 router.post("/addcandidate", (req, res) => {
@@ -447,7 +470,8 @@ router.post("/evaluation/:id", (req, res) => {
 
 router.post("/avatar/:id", profileimgupload.profileimgup);
 router.post("/cv/:id", profileimgupload.cvupload);
-router.post('/adminlogin',adminROutes.adminLogin)
+router.post('/adminlogin',adminRoutes.adminLogin)
+router.get("/userdata",adminRoutes.userlist)
 
 
 

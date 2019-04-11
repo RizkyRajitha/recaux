@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import Navbar from "../../components/navbarloogedin";
 import CandidateCard from "../../components/CandidateCard";
 import "./dashboard.css";
+import Navbar from "../../components/navbar_metcss";
 import axios from "axios";
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -17,8 +17,10 @@ class dashboard extends Component {
     firstName: "",
     lastName: "",
     greet: "",
+    usertype: "",
     emailverified: false,
-    candidatedata: []
+    candidatedata: [],
+    userdata: []
   };
 
   verifyemail = () => {
@@ -64,15 +66,41 @@ class dashboard extends Component {
   };
 
   getcandidatedata = () => {
+    console.log("in candidate  data");
     axios
       .get("/usr/getcandidate")
       .then(data => {
-        console.log(data);
+        console.log("candidate data - - - " + data.data);
         this.setState({ candidatedata: data.data });
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  getuserdata = () => {
+    console.log("in user data");
+    console.log("usr type" + this.state.usertype);
+    console.log(this.state);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    if (this.state.usertype === "admin") {
+      axios
+        .get("/usr/userdata", config)
+        .then(data => {
+          console.log("user data - - - " + data.data);
+          this.setState({ userdata: data.data });
+          console.log(this.state);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
   componentDidMount() {
@@ -110,12 +138,14 @@ class dashboard extends Component {
             emailverified: result.data.emailverified,
             id: result.data.id,
             firstName: result.data.firstName,
-            lastName: result.data.lastName
+            lastName: result.data.lastName,
+            usertype: result.data.usertype
           });
 
           this.setState({ logedin: true });
-          console.log(this.state);
+          //console.log(this.state);
           this.getcandidatedata();
+          this.getuserdata();
 
           localStorage.setItem("userId", result.data.id);
         } else {
@@ -126,6 +156,10 @@ class dashboard extends Component {
         this.setState({ logedin: false });
         console.log("error" + err);
       });
+
+    setTimeout(() => {
+      console.log(this.state);
+    }, 1000);
   }
 
   render() {
@@ -134,8 +168,7 @@ class dashboard extends Component {
       return (
         <div className="dashboardmain">
           <Navbar />
-
-          <h1 className='greet'>
+          <h1 className="greet">
             {this.state.greet} {this.state.firstName}
           </h1>
           <br />
@@ -159,33 +192,54 @@ class dashboard extends Component {
           </button>
 
           {!this.state.emailverified && (
-            <div class="alert alert-danger" role="alert">
-              please verify your email
-              <br />
-              <button
-                type="button"
-                class="btn btn-info"
-                onClick={this.verifyemail}
-              >
-                verify email
-              </button>
+            <div className="row">
+              <div id="verifyemail" className="col-s12-m12-l12">
+                please verify your email
+                <br />
+                <button
+                  type="button"
+                  class="btn "
+                  id="verifyemailbtn"
+                  onClick={this.verifyemail}
+                >
+                  verify email
+                </button>
+              </div>
             </div>
           )}
 
-          <div className="cardcontainer">
-            {cndetailes.reverse().map((can, iid) => {
-              //console.log(can.name+can.email+can.jobspec)
-              return (
-                <CandidateCard
-                  name={can.name}
-                  email={can.email}
-                  jobspec={can.jobspec}
-                  _id={can._id}
-                  date={can.date}
-                  status={can.status}
-                />
-              );
-            })}
+          <div class="row">
+            <div class="col-s4-m4-l4" id="cardcontainer1">
+              {cndetailes.reverse().map((can, iid) => {
+                //console.log(can.name+can.email+can.jobspec)
+                return (
+                  <CandidateCard
+                    name={can.name}
+                    email={can.email}
+                    jobspec={can.jobspec}
+                    _id={can._id}
+                    date={can.date}
+                    status={can.status}
+                  />
+                );
+              })}
+            </div>
+
+            <div class="col-s8 " id="cardcontainer2">
+              {cndetailes.map((can, iid) => {
+                //console.log(can.name+can.email+can.jobspec)
+                return (
+                  <CandidateCard
+                    name={can.name}
+                    email={can.email}
+                    jobspec={can.jobspec}
+                    _id={can._id}
+                    date={can.date}
+                    status={can.status}
+                  />
+                );
+              })}
+            </div>
           </div>
 
           <br />
