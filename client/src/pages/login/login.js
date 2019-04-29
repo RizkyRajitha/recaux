@@ -1,197 +1,98 @@
-import React, { Component } from "react";
-import { Redirect, Link } from "react-router-dom";
+import React,{useState,useEffect} from "react";
+import { withFormik, Form, Field } from "formik";
+import {Link} from 'react-router-dom'
+import * as Yup from "yup";
+import axios from 'axios'
+import jsonwebtoken from 'jsonwebtoken'
 import "./login.css";
-import M from "materialize-css";
 import Navbar from "../../components/navbar_metcss";
 
-const jsonwebtoken = require("jsonwebtoken");
-//const request = require("request");
-const axios = require("axios");
+const Formic = ({ errors,history,touched,isSubmitting }) => {
 
-class login extends Component {
-  state = {
-    token: "",
-    // email: "",
-    // password: "",
-    loggedIn: false,
-    showError: false,
-    showNullError: false,
-    creaderror: false
-  };
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    // Update the document title using the browser API
+    console.log('i am mounted .......')
+    console.log(localStorage.getItem('userid'))
 
-  changehandleremail = event => {
-    this.setState({
-      email: event.target.value
-    });
-  };
+    var jwt = localStorage.getItem('jwt')
 
-  changehandlerpass = event => {
-    this.setState({
-      password: event.target.value
-    });
-  };
-
-  componentDidMount() {
-    M.toast({ html: "I am a toast!" });
-    var jwt = localStorage.getItem("jwt");
-    console.log("comp mount");
-    console.log(jwt);
     try {
-      var tk = jsonwebtoken.verify(jwt, "authdemo");
-      if (tk) {
-        console.log("loged in");
-        this.setState({
-          loggedIn: true,
-          email: tk.email
-        });
-      }
+      
+      var decode = jsonwebtoken.verify(jwt,'authdemo')
+
+      console.log('decode jwt - '+JSON.stringify(decode))
+      history.push('/dashboard')
+
     } catch (error) {
-      console.log("not logged in" + error);
-
-      this.setState({
-        loggedIn: false
-      });
+      console.log(error)
     }
-  }
+    
+  });
 
-  btn1handler = e => {
-    e.preventDefault();
 
-    // this.setState({ creaderror: true });
-    console.log("cliking");
-
-    if (this.state.email === "" || this.state.password === "") {
-      console.log(this.state.email + "   " + this.state.password);
-      console.log("wtf");
-      this.setState({
-        loggedIn: false,
-        showError: false,
-        showNullError: true
-      });
-    } else {
-      console.log("sending..............");
-      console.log(this.state.email + this.state.password);
-
-      var params = new URLSearchParams();
-      params.append("email", this.state.email);
-      params.append("password", this.state.password);
-      // data: {
-      //   email: this.state.email,
-      //   password: this.state.password
-      // }
-
-      axios
-        .post("/usr/login1", params)
-        .then(data => {
-          console.log("awe mewwa - - -popopopopo");
-          console.log(data);
-          var body = data.data;
-
-          if (body) {
-            console.log("body - " + body);
-            localStorage.setItem("jwt", body);
-
-            this.setState({
-              loggedIn: true,
-              showError: false,
-              showNullError: false
-            });
-          } else {
-            this.setState({ creaderror: true });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({
-            loggedIn: false,
-            showError: true,
-            showNullError: false
-          });
-        });
-
-      // axios.post("/usr/login1", params, (err, res, body) => {
-      //   console.log("errr - " + err);
-      //   console.log("response - " + res);
-      //   console.log("body - " + body);
-
-      //   if (body !== "false") {
-      // console.log("body - " + body);
-      // localStorage.setItem("jwt", body);
-
-      // this.setState({
-      //   loggedIn: true,
-      //   showError: false,
-      //   showNullError: false
-      // });
-      //   } else {
-      //     console.log(err);
-      // this.setState({
-      //   loggedIn: false,
-      //   showError: true,
-      //   showNullError: false
-      // });
-      //   }
-
-      //   // this.setState({ email: data.email, id: data.id });
-      // });
-    }
-  };
-
-  render() {
-    const { email, password, showError, loggedIn, showNullError } = this.state;
-
-    if (!loggedIn) {
+  
       return (
         <div className="maindiv">
-         
           <div className="wrapper">
             <div className="form-wrapper">
               <div>
-                {/* <div className="row">
-                  <div className="col-sm" />
-                  <div className="col-sm"> */}
-                {this.state.creaderror && (
-                  <div class="alert alert-danger" role="alert">
-                    Invalid Creadentials
-                  </div>
-                )}
-                <form onSubmit={this.btn1handler}>
+                <br />
+            
+{errors.invalidcred && <div class="alert alert-danger" role="alert">
+{errors.invalidcred}
+</div>}
+          
+       
+{/* 
+<Form>
+      {errors.invalidcred && <p>{errors.invalidcred} </p>}
+        <div className="row">
+          {console.log("errors " + JSON.stringify(errors.email1))}
+          <div class="input-field col s6 offset-s3">
+            {errors.email1 && <p>{errors.email1} </p>}
+            <Field name="email1" id="papa" type="email" placeholder="Email" />
+          </div>
+        </div>
+        <div className="row">
+        {errors.password && <p>{errors.password} </p>}
+          <div class="input-field col s6 offset-s3 ">
+            <Field name="password" type="password" placeholder="Password" />
+          </div>
+        </div>
+        <input type="submit" value="Go...." />
+      </Form> */}
+
+                <Form >
                   <br />
                   <br />
                   <br />
                   <div className="form-group">
                     {/* <label> enter email </label> */}
-                    <input
-                      id="uname"
-                      required
-                      type="text"
-                      name="uname"
-                      className="form-control"
-                      onChange={this.changehandleremail}
-                      placeholder="enter email"
-                    />
+                    
+{ touched.email1 && errors.email1 && <p>{errors.email1} </p>}
+<Field name="email1" id="papa" type="text" placeholder="Email" />
+
+
                   </div>
                   <div className="form-group">
                     {/* <label> enter password </label> */}
-                    <input
-                      required
-                      id="pass"
-                      type="password"
-                      name="pass"
-                      className="form-control"
-                      placeholder="enter password"
-                      onChange={this.changehandlerpass}
-                    />
+                    { touched.password && errors.password && <p>{errors.password} </p>}
+          
+            <Field name="password" type="password" placeholder="Password" />
+       
                   </div>
+                 
                   <div className="submit">
                     <input
                       type="submit"
-                      className="btn  waves-light light-blue darken-3"
+                      className="btn btn-raised btn-primary"
                       value="sign in"
                       id="submit"
+                      
                     />
                   </div>
-                </form>
+                </Form>
                 <br />
                 <br />
 
@@ -201,29 +102,134 @@ class login extends Component {
                   </Link>
                 </div>
 
-                {showNullError && (
-                  <div>
-                    <p>The username or password cannot be null.</p>
-                  </div>
-                )}
 
-                {showError && (
-                  <div>
-                    <p>The username or password is incorrect dude XD.</p>
-                  </div>
-                )}
+                
               </div>
-              <div className="col-sm" />
-              {/* </div>
-              </div>*/}
+              <div />
+             
             </div>
           </div>
         </div>
       );
-    } else {
-      return <Redirect to={`/dashboard`} />;
-    }
+   
   }
-}
 
-export default login;
+
+
+  const Login = withFormik({
+  
+    mapPropsToValues({ email1, password }) {
+      return {
+        email1: email1 || "",
+        password: password || ""
+      };
+    },
+    
+  
+    handleSubmit(values ,{props,setErrors,resetForm} ) {
+      console.log(values);
+      var params = new URLSearchParams();
+        params.append("email", values.email1);
+        params.append("password", values.password);
+        // data: {
+        //   email: this.state.email,
+        //   password: this.state.password
+        // }
+  
+        axios
+          .post("/usr/login1", params)
+          .then(data => {
+            console.log("awe mewwa - - -popopopopo");
+            console.log(data);
+            var body = data.data;
+  
+            if (body) {
+              console.log("body - " + body);
+              localStorage.setItem("jwt", body);
+              console.log(props)
+              props.history.push('/dashboard')
+              
+            } else {
+              setErrors({'invalidcred':"invalid Creadentials"})
+              
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            
+          });
+  
+  
+    },
+    validationSchema: Yup.object().shape({
+      email1: Yup.string()
+        .email()
+        .required("Required"),
+      password: Yup.string()
+        .required()
+    })
+  })(Formic);
+  
+  export default Login
+  
+
+
+
+/**
+ * 
+ * 
+ * 
+ import React from "react";
+import { withFormik, Form, Field } from "formik";
+import * as Yup from "yup";
+
+const Formic = ({ errors }) => {
+  return (
+    <div>
+      <Form>
+        <div className="row">
+          {console.log("errors " + errors.email1)}
+          <div class="input-field col s6 offset-s3">
+            {errors.email1 && <p>{errors.email1} </p>}
+            <Field name="email1" id="papa" type="email" placeholder="Email" />
+          </div>
+        </div>
+        <div className="row">
+        {errors.password && <p>{errors.password} </p>}
+          <div class="input-field col s6 offset-s3 ">
+            <Field name="password" type="password" placeholder="Password" />
+          </div>
+        </div>
+        <input type="submit" value="Go...." />
+      </Form>
+    </div>
+  );
+};
+
+const Formicktest = withFormik({
+  mapPropsToValues({ email1, password }) {
+    return {
+      email1: email1 || "",
+      password: password || ""
+    };
+  },
+
+  handleSubmit(values) {
+    console.log(values);
+  },
+  validationSchema: Yup.object().shape({
+    email1: Yup.string()
+      .email()
+      .required("Required"),
+    password: Yup.string()
+      .required()
+      .min(3)
+      .max(6)
+  })
+})(Formic);
+
+export default Formicktest;
+
+
+
+ */

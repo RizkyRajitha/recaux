@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import jsonwebtoken from "jsonwebtoken";
 import { Redirect } from "react-router-dom";
-import Navbar from '../../components/navbarloogedin'
+import Navbar from '../../components/navbar'
 import axios from "axios";
 
 class Register extends Component {

@@ -1,3 +1,7 @@
 #navlogo{
     position: relative;
 }
+#logoutbtn{
+    align-self: right;
+    margin-left: 1650px;
+}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import './nav.css'
 
 const Navbar = props => {
   const logoutHandler = e => {
@@ -27,22 +28,25 @@ const Navbar = props => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
-          {/* <li className="nav-item">
+          <li className="nav-item">
             <a className="nav-link" href="/dashboard">
               Dashboard
             </a>
-          </li> */}
+          </li>
           <li className="nav-item">
             <a className="nav-link" href="/login">
               Login
             </a>
           </li>
-          {/* <li className="nav-item">
+          <li className="nav-item">
             <a className="nav-link" href="/register">
               Register
             </a>
-          </li> */}
+          </li>
         </ul>
+        <button id='logoutbtn' className="btn btn-outline-danger my-2 my-sm-0 " onClick={logoutHandler}>
+          Logout
+        </button>
         
       </div>
     </nav>

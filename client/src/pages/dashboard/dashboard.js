@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import CandidateCard from "../../components/CandidateCard";
+import UserCard from '../../components/usercard'
 import "./dashboard.css";
-import Navbar from "../../components/navbar_metcss";
+import Navbar from "../../components/navbar";
 import axios from "axios";
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -165,6 +166,7 @@ class dashboard extends Component {
   render() {
     if (this.state.logedin == true) {
       var cndetailes = this.state.candidatedata;
+      var usrdetails = this.state.userdata;
       return (
         <div className="dashboardmain">
           <Navbar />
@@ -192,34 +194,30 @@ class dashboard extends Component {
           </button>
 
           {!this.state.emailverified && (
-            <div className="row">
-              <div id="verifyemail" className="col-s12-m12-l12">
+            
+              <div class="alert alert-danger" role="alert">
                 please verify your email
                 <br />
                 <button
                   type="button"
-                  class="btn "
+                  class="btn btn-outline-danger "
                   id="verifyemailbtn"
                   onClick={this.verifyemail}
                 >
                   verify email
                 </button>
               </div>
-            </div>
+           
           )}
 
           <div class="row">
             <div class="col-s4-m4-l4" id="cardcontainer1">
-              {cndetailes.reverse().map((can, iid) => {
+              {usrdetails.reverse().map((can) => {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
-                  <CandidateCard
-                    name={can.name}
-                    email={can.email}
-                    jobspec={can.jobspec}
-                    _id={can._id}
-                    date={can.date}
-                    status={can.status}
+                  <UserCard
+                    name={can.firstName+ ' '+can.lastName}
+                    pendingcan={can.candidatesAssinged}
                   />
                 );
               })}

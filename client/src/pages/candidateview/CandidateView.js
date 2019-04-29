@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./candidateview.css";
 import jsonwebtoken from 'jsonwebtoken'
-import Navbar from "../../components/navbarloogedin";
+import Navbar from "../../components/navbar";
+import {Alert} from 'reactstrap'
 // import { Document } from 'react-pdf/dist/entry.webpack';
 
 class CandidateView extends Component {
@@ -13,10 +14,7 @@ class CandidateView extends Component {
     file: null
   };
 
-  chngehndlcv = e => {
-    this.setState({ file: e.target.files[0] });
-    console.log(e.target.files);
-  };
+
 
   componentDidMount() {
     const id = this.props.match.params.id;
@@ -116,9 +114,9 @@ class CandidateView extends Component {
         <div className="canview">
           <div className="canview2">
             {this.state.status_change === 1 && (
-              <div class="alert alert-primary" role="alert">
+              <Alert color="primary" role="alert">
                 status change succsessfuly
-              </div>
+              </Alert>
             )}
             <ul className="list-group list-group-flush ">
               <li className="list-group-item"> date reciver : {d}</li>
@@ -171,10 +169,7 @@ class CandidateView extends Component {
 
           <br />
           <br />
-          <form onSubmit={this.addcv}>
-            <input type="file" name="cv" onChange={this.chngehndlcv} />
-            <input type="submit" value="submit" />
-          </form>
+
 
           {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>

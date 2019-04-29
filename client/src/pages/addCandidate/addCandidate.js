@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import Navbar from '../../components/navbarloogedin'
+import Navbar from '../../components/navbar';
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+
 
 
 class Addcandidate extends Component {
@@ -40,6 +41,30 @@ class Addcandidate extends Component {
       }
     }
   }
+
+  chngehndlcv = e => {
+    this.setState({ file: e.target.files[0] });
+    console.log(e.target.files);
+
+    const formdata = new FormData();
+    formdata.append("avatar", this.state.file);
+    //
+
+    var config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    axios
+      .post("/usr/avatar/"+this.props.match.params.id, formdata, config)
+      .then(result => {
+        console.log("awoooo" + result);
+      })
+      .catch(err => {});
+
+
+  };
 
   btn1handler = e => {
     this.setState({ addedsucsess: 0 });
@@ -82,7 +107,7 @@ class Addcandidate extends Component {
               <div className="col-sm" />
               <div className="col-sm">
                 {this.state.addedsucsess == 2 && (
-                  <div class="alert alert-success" role="alert">
+                  < div class="alert alert-success" role="alert" >
                     candidate added successfully
                   </div>
                 )}
@@ -94,8 +119,7 @@ class Addcandidate extends Component {
                 {this.state.addedsucsess == 1 && (
                   <div class="alert alert-danger" role="alert">
                     error occured connecting to the server
-                  </div>
-                )}
+                  </div> )}
 
                 <form onSubmit={this.btn1handler}>
                   <br />
@@ -136,6 +160,11 @@ class Addcandidate extends Component {
                       id="job"
                     />
                   </div>
+                  
+                  
+            <input required type="file" name="cv" onChange={this.chngehndlcv} />
+           
+                  
                   <input
                     type="submit"
                     className="btn btn-primary"
@@ -153,10 +182,10 @@ class Addcandidate extends Component {
     } else {
       return (
         <div>
-          <h1>
+          <h3>
             Session expired at {this.state.expat.toString()}please login to
             continue
-          </h1>
+          </h3>
         </div>
       );
     }
