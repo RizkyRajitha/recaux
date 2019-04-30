@@ -6,7 +6,7 @@ import "./dashboard.css";
 import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
-import Select from 'react-select';
+import Select from "react-select";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -37,13 +37,13 @@ class dashboard extends Component {
     greet: "",
     usertype: "",
     selectedOption: null,
-    options:[],
+    selectoptionsnamelist: [],
     emailverified: false,
     candidatedata: [],
     userdata: [],
     numofshort: 0,
     shorlisted: [],
-    shortedcanarrnamelist:[]
+    shortedcanarrnamelist: []
   };
 
   openModal = () => {
@@ -125,6 +125,8 @@ class dashboard extends Component {
     var canarr = this.state.candidatedata;
     var shortedcanarr = this.state.shorlisted;
     var shortedcanarrnamelist = [];
+    var userlist = [];
+    var userdetails = this.state.userdata;
 
     console.log("can arr" + JSON.stringify(canarr));
     console.log("shotlisted ids" + shortedcanarr);
@@ -134,19 +136,25 @@ class dashboard extends Component {
         shortedcanarrnamelist.push(element.name);
       }
     });
-    this.setState({shortedcanarrnamelist:shortedcanarrnamelist})
+    this.setState({ shortedcanarrnamelist: shortedcanarrnamelist });
 
     console.log(shortedcanarrnamelist);
 
-var opt = []
-shortedcanarrnamelist.forEach(ele=>{
-  
-  opt.push({value:ele,lable:ele})
+    var opt = [];
+    userdetails.forEach(ele => {
+      var displayname = `${ele.firstName} ${ele.lastName}`;
 
-})
+      opt.push({ value: ele._id, label: displayname });
+    });
 
-console.log(opt)
+    this.setState({ selectoptionsnamelist: opt });
 
+    console.log(opt);
+  };
+
+  handleChangemodalselect = selectedOption => {
+    this.setState({ selectedOption });
+    console.log(`Option selected:`, selectedOption);
   };
 
   shortlisting = (id, bxstate) => {
@@ -183,6 +191,15 @@ console.log(opt)
           this.state.shorlisted
       );
     }, 1000);
+  };
+
+  shorlisthandler = () => {
+    console.log(
+      "on the way + " +
+        JSON.stringify(this.state.selectedOption) +
+        " candidates -  " +
+        this.state.shorlisted
+    );
   };
 
   getuserdata = () => {
@@ -273,7 +290,7 @@ console.log(opt)
     if (this.state.logedin === true) {
       var cndetailes = this.state.candidatedata;
       var usrdetails = this.state.userdata;
-      const { selectedOption ,options} = this.state;
+      const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">
           <Navbar />
@@ -317,31 +334,28 @@ console.log(opt)
             style={customStyles}
             contentLabel="Example Modal"
           >
-          
             <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
 
-            <form onSubmit={this.addpost}>
-              <div class="input-field col s12" >
-              
+            <div class="input-field col s12">
               <p>{this.state.shortedcanarrnamelist}</p>
 
               <Select
-        value={selectedOption}
-        onChange={this.handleChange}
-        options={options}
-      />
+                multi={true}
+                value={selectedOption}
+                onChange={this.handleChangemodalselect}
+                options={selectoptionsnamelist}
+              />
+            </div>
 
-              </div>
-
-              <div className="submit">
-                <input
-                  type="submit"
-                  className="btn  waves-light light-blue darken-3"
-                  value="Post"
-                  id="submit"
-                />
-              </div>
-            </form>
+            <div className="submit">
+              <input
+                type="submit"
+                className="btn"
+                onClick={this.shorlisthandler}
+                value="confirm shortlisting"
+                id="submit"
+              />
+            </div>
           </Modal>
 
           {!this.state.emailverified && (
