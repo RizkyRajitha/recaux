@@ -6,6 +6,7 @@ import "./dashboard.css";
 import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
+import Select from 'react-select';
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -35,6 +36,8 @@ class dashboard extends Component {
     lastName: "",
     greet: "",
     usertype: "",
+    selectedOption: null,
+    options:[],
     emailverified: false,
     candidatedata: [],
     userdata: [],
@@ -134,6 +137,16 @@ class dashboard extends Component {
     this.setState({shortedcanarrnamelist:shortedcanarrnamelist})
 
     console.log(shortedcanarrnamelist);
+
+var opt = []
+shortedcanarrnamelist.forEach(ele=>{
+  
+  opt.push({value:ele,lable:ele})
+
+})
+
+console.log(opt)
+
   };
 
   shortlisting = (id, bxstate) => {
@@ -257,9 +270,10 @@ class dashboard extends Component {
   }
 
   render() {
-    if (this.state.logedin == true) {
+    if (this.state.logedin === true) {
       var cndetailes = this.state.candidatedata;
       var usrdetails = this.state.userdata;
+      const { selectedOption ,options} = this.state;
       return (
         <div className="dashboardmain">
           <Navbar />
@@ -303,12 +317,19 @@ class dashboard extends Component {
             style={customStyles}
             contentLabel="Example Modal"
           >
+          
             <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
 
             <form onSubmit={this.addpost}>
               <div class="input-field col s12" >
               
               <p>{this.state.shortedcanarrnamelist}</p>
+
+              <Select
+        value={selectedOption}
+        onChange={this.handleChange}
+        options={options}
+      />
 
               </div>
 
