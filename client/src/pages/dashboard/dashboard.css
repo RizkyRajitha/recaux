@@ -1,14 +1,19 @@
 #userprofile{
     position: absolute;
-    top: 20%;
+    top: 10%;
     left:90%;
 }
 
 #addcan {
     position: absolute;
-    top: 20%;
+    top: 10%;
     left:75%;
    
+}
+#shortlist{
+    position: absolute;
+    top: 10%;
+    left:65%;
 }
 
 .dashboardmain{

@@ -1,14 +1,30 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import CandidateCard from "../../components/CandidateCard";
-import UserCard from '../../components/usercard'
+import UserCard from "../../components/usercard";
 import "./dashboard.css";
 import Navbar from "../../components/navbar";
 import axios from "axios";
+import Modal from "react-modal";
+
 const jsonwebtoken = require("jsonwebtoken");
 
 //import { CandidateCard } from "./CandidateCard";
 // const request = require("request");
+
+const customStyles = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+Modal.setAppElement("#root");
 
 class dashboard extends Component {
   state = {
@@ -21,7 +37,28 @@ class dashboard extends Component {
     usertype: "",
     emailverified: false,
     candidatedata: [],
-    userdata: []
+    userdata: [],
+    numofshort: 0,
+    shorlisted: [],
+    shortedcanarrnamelist:[]
+  };
+
+  openModal = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
+  changeHandlercontent = e => {
+    this.setState({ content: e.target.value });
+  };
+
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
   };
 
   verifyemail = () => {
@@ -77,6 +114,62 @@ class dashboard extends Component {
       .catch(err => {
         console.log(err);
       });
+  };
+
+  shortlistmodal = () => {
+    this.openModal();
+
+    var canarr = this.state.candidatedata;
+    var shortedcanarr = this.state.shorlisted;
+    var shortedcanarrnamelist = [];
+
+    console.log("can arr" + JSON.stringify(canarr));
+    console.log("shotlisted ids" + shortedcanarr);
+
+    canarr.forEach(element => {
+      if (shortedcanarr.indexOf(element._id) !== -1) {
+        shortedcanarrnamelist.push(element.name);
+      }
+    });
+    this.setState({shortedcanarrnamelist:shortedcanarrnamelist})
+
+    console.log(shortedcanarrnamelist);
+  };
+
+  shortlisting = (id, bxstate) => {
+    if (bxstate) {
+      this.setState({ numofshort: this.state.numofshort + 1 });
+      this.setState({
+        shorlisted: [...this.state.shorlisted, id]
+      });
+    } else {
+      this.setState({ numofshort: this.state.numofshort - 1 });
+      var arr = this.state.shorlisted;
+
+      var key = arr.indexOf(id);
+
+      console.log(key);
+
+      if (key !== -1) {
+        arr.splice(key, 1);
+        this.setState({ shorlisted: arr });
+      }
+
+      //
+    }
+
+    setTimeout(() => {
+      console.log(
+        "clicked from card id -  " +
+          id +
+          "bx state - " +
+          bxstate +
+          " num of resumes - " +
+          this.state.numofshort +
+          " resumeids - " +
+          this.state.shorlisted
+      );
+    }, 1000);
   };
 
   getuserdata = () => {
@@ -177,7 +270,7 @@ class dashboard extends Component {
           <br />
           <button
             onClick={this.usrprofile}
-            className="btn btn-info"
+            className="btn btn-outline-primary"
             id="userprofile"
           >
             edit profile
@@ -187,36 +280,71 @@ class dashboard extends Component {
 
           <button
             onClick={this.addcandidate}
-            className="btn btn-info"
+            className="btn btn-outline-primary"
             id="addcan"
           >
             Add new candidate
           </button>
 
-          {!this.state.emailverified && (
-            
-              <div class="alert alert-danger" role="alert">
-                please verify your email
-                <br />
-                <button
-                  type="button"
-                  class="btn btn-outline-danger "
-                  id="verifyemailbtn"
-                  onClick={this.verifyemail}
-                >
-                  verify email
-                </button>
+          <button
+            onClick={this.addcandidate}
+            className="btn btn-outline-primary"
+            id="shortlist"
+            disabled={this.state.numofshort === 0}
+            onClick={this.shortlistmodal}
+          >
+            Shortlist
+          </button>
+
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+
+            <form onSubmit={this.addpost}>
+              <div class="input-field col s12" >
+              
+              <p>{this.state.shortedcanarrnamelist}</p>
+
               </div>
-           
+
+              <div className="submit">
+                <input
+                  type="submit"
+                  className="btn  waves-light light-blue darken-3"
+                  value="Post"
+                  id="submit"
+                />
+              </div>
+            </form>
+          </Modal>
+
+          {!this.state.emailverified && (
+            <div class="alert alert-danger" role="alert">
+              please verify your email
+              <br />
+              <button
+                type="button"
+                class="btn btn-outline-danger "
+                id="verifyemailbtn"
+                onClick={this.verifyemail}
+              >
+                verify email
+              </button>
+            </div>
           )}
 
           <div class="row">
             <div class="col-s4-m4-l4" id="cardcontainer1">
-              {usrdetails.reverse().map((can) => {
+              {usrdetails.reverse().map(can => {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
                   <UserCard
-                    name={can.firstName+ ' '+can.lastName}
+                    name={can.firstName + " " + can.lastName}
                     pendingcan={can.candidatesAssinged}
                   />
                 );
@@ -228,6 +356,7 @@ class dashboard extends Component {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
                   <CandidateCard
+                    triggershrt={this.shortlisting}
                     name={can.name}
                     email={can.email}
                     jobspec={can.jobspec}

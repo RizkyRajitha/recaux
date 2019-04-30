@@ -3,10 +3,31 @@ import { withRouter } from "react-router-dom";
 import "./candidatecard.css";
 
 class CandidateCard extends Component {
+
+constructor(props){
+  super(props)
+  console.log(props)
+}
+
+state = {
+  chbox:true
+}
+
+
   cnadidateview = () => {
     console.log(this.props);
     this.props.history.push("/getcandidate/" + this.props._id);
   };
+
+  sendid=()=>{
+    this.setState({chbox:!this.state.chbox})
+
+    console.log(this.state)
+    
+    this.props.triggershrt(this.props._id , this.state.chbox )
+  }
+
+
 
   render() {
     if (this.props.date) {
@@ -24,9 +45,12 @@ class CandidateCard extends Component {
       <div>
         <div id='cancard' class="card center bg-light mb-3 w-75">
 
-      <input id='checkbox' type='checkbox'>
+        <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1" onClick={this.sendid} />
+    <label class="form-check-label" for="exampleCheck1">Add to Shortlisting</label>
+  </div>
 
-      </input>
+      
 
         <h1 className="badge">
               <span class="badge badge-pill badge-danger">{this.props.status}</span>
@@ -42,7 +66,7 @@ class CandidateCard extends Component {
 
 
               <ul className="list-group" >
-                <li  className="list-group-item active" >job spechification :{this.props.jobspec}</li>
+                <li  className="list-group-item " >job spechification :{this.props.jobspec}</li>
                 <li  className="list-group-item" >email :{this.props.email} </li>
               </ul>
             </p>
