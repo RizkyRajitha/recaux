@@ -45,11 +45,15 @@ state = {
       <div>
         <div id='cancard' class="card center bg-light mb-3 w-75">
 
-        <div class="form-check">
+        {/* <div class="form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1" onClick={this.sendid} />
     <label class="form-check-label" for="exampleCheck1">Add to Shortlisting</label>
-  </div>
+  </div> */}
 
+<label class="containershbox">Add to Shortlist
+  <input type="checkbox" onChange={this.sendid} />
+  <span class="checkmark"></span>
+</label>
       
 
         <h1 className="badge">

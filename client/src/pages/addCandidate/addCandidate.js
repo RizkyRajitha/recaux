@@ -162,7 +162,7 @@ class Addcandidate extends Component {
                   </div>
                   
                   
-            <input required type="file" name="cv" onChange={this.chngehndlcv} />
+            <input type="file" name="cv" onChange={this.chngehndlcv} />
            
                   
                   <input
