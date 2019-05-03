@@ -520,10 +520,29 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                   }
                 }
               ).then(candoc => {
+                User.updateOne(
+                  { _id: datain.allocateduser },
+                  {
+                    $push: {
+                      shortlist: {
+                        candidateId: datain.candidateallocated,
+                        allocatedbyUserId: user.id,
+                        allocatedDate: new Date()
+                      }
+                    }
+                  }
+                )
+                  .then(docc => {
+                    console.log("candoc - " + JSON.stringify(candoc) + "user doc -" + JSON.stringify(docc));
 
-                
-
-                res.json(candoc);
+                    res.json(candoc);
+                  })
+                  .catch(err => {
+                    res.json(err);
+                  });
+                //ser.update(
+                //     { _id: allocatedUserId },
+                //     { $push: { assinngedCandidates: { $each: shortList} } }
               });
             })
             .catch(err => {});

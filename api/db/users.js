@@ -35,7 +35,7 @@ var userSchema = new Schema({
     type:String,
     default:0
   },
-  assinngedCandidates:[]
+  shortlist:[]
 });
 
 userSchema.pre("save", function(next) {
