@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon server.js",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -21,9 +21,11 @@
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.9",
     "morgan": "^1.9.1",
+    "multer": "^1.4.1",
     "nodemailer": "^5.1.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "swagger-ui-express": "^4.0.2"
   }
 }

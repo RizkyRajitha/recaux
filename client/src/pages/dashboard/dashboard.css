@@ -1,0 +1,50 @@
+#userprofile{
+    position: absolute;
+    top: 10%;
+    left:90%;
+}
+
+#addcan {
+    position: absolute;
+    top: 10%;
+    left:75%;
+   
+}
+#shortlist{
+    position: absolute;
+    top: 10%;
+    left:65%;
+}
+
+.dashboardmain{
+    
+    height: 600px;
+    width: 100%;
+}
+
+.card{
+    text-align: center
+   
+}
+#cardcontainer1{
+   
+    position: absolute;
+    top: 44%;
+    left:1%;
+    width: 39%;
+    
+    text-align: center;
+    
+}
+#cardcontainer2{
+   
+    position: absolute;
+    top: 44%;
+    left:41%;
+    width: 57%;
+    
+    text-align: center;
+    
+}
+
+

@@ -1,4 +1,23 @@
-.container {
-  padding-left: 100px;
-  padding-right: 100px;
+.canview {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+.canview2 {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+#status{
+  margin: auto;
+  width: 25%;
+}
+.list{
+  margin: 0; padding: 0;
+  text-align: left;
+
+}
+.canview,.canview2{
+  text-align: center
 }

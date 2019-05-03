@@ -3,9 +3,10 @@ const path = require("path");
 const eh = require("errorhandler");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const es = require("express-session");
 const bp = require("body-parser");
 const passport = require("passport");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./config/swagger.json");
 
 //const keys = require("./config/keys");
 const port = process.env.PORT || 3001;
@@ -20,18 +21,16 @@ app.use(require("morgan")("dev"));
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 
-const uu = require("./routes/userroute");
+app.use("/static", express.static(path.join(__dirname, "../assets")));
 
 app.use("/usr", require("./routes/routes"));
+ 
+var options = {
+  explorer : true
+};
+ 
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
-app.use(express.static("client/build"));
-
-// app.get("/user", (req,res)=>{
-
-//   console.log(req.params.id)
-//   res.send("oookk")
-
-// });
 
 app.use(eh());
 

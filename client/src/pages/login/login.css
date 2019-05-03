@@ -1,0 +1,54 @@
+.maindiv {
+  position: fixed;
+  align-self: center;
+  height: 100%;
+  width: 100%;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.form-wrapper {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  border-radius: 5px;
+   box-shadow: 1px ; 
+  background-color: #ffffff;
+}
+
+#uname {
+  color: rgb(0, 0, 0);
+  width: 100%;
+}
+#pass {
+  color: rgb(0, 0, 0);
+  width: 100%;
+}
+#submit {
+  text-align: right;
+}
+#toast-container {
+  /* top: auto !important; */
+  top: 10% !important;
+  right: 50% !important;
+  text-align: center !important;
+ 
+  /* transform: translateX(50%) translateY(50%); */
+  /* right: auto !important;
+  bottom: 10%;
+  left:7%;   */
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #666666;
+  opacity: 1; /* Firefox */
+}

@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { withRouter } from "react-router-dom";
-import './nav.css'
 
 const Navbar = props => {
   const logoutHandler = e => {
     console.log("loggeeeeeeee");
     localStorage.removeItem("jwt");
+    localStorage.removeItem("userId");
 
     props.history.push("/login");
   };
@@ -40,14 +40,19 @@ const Navbar = props => {
           </li>
           <li className="nav-item">
             <a className="nav-link" href="/register">
-              Register
+              register
             </a>
           </li>
+
+          {/* <li className="nav-item">
+            <a className="nav-link" href="/register">
+              Register
+            </a>
+          </li> */}
         </ul>
-        <button id='logoutbtn' className="btn btn-outline-danger my-2 my-sm-0 " onClick={logoutHandler}>
+        <button className="btn btn-outline-danger  " onClick={logoutHandler}>
           Logout
         </button>
-        
       </div>
     </nav>
   );

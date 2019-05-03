@@ -1,12 +1,33 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import '../App.css'
+import "./candidatecard.css";
 
 class CandidateCard extends Component {
+
+constructor(props){
+  super(props)
+  console.log(props)
+}
+
+state = {
+  chbox:true
+}
+
+
   cnadidateview = () => {
     console.log(this.props);
     this.props.history.push("/getcandidate/" + this.props._id);
   };
+
+  sendid=()=>{
+    this.setState({chbox:!this.state.chbox})
+
+    console.log(this.state)
+    
+    this.props.triggershrt(this.props._id , this.state.chbox )
+  }
+
+
 
   render() {
     if (this.props.date) {
@@ -22,16 +43,51 @@ class CandidateCard extends Component {
 
     return (
       <div>
-        <div class="card  bg-light mb-3 w-75">
+        <div id='cancard' class="card center bg-light mb-3 w-75">
+
+        {/* <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1" onClick={this.sendid} />
+    <label class="form-check-label" for="exampleCheck1">Add to Shortlisting</label>
+  </div> */}
+
+{/**
+ * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
+assignToshortlisterbyName: "Bharana perera"
+date: "2019-04-07T19:38:55.028Z"
+email: "mark@facebook.com"
+jobspec: "CCO"
+name: "Mark Zuckerburg"
+shortlister: "5caa51ad56a61d6a2492ec98"
+shortlisterName: "Dewindi Anushika"
+status: "onhold"
+ */}
+
+
+
+<label class="containershbox">Add to Shortlist
+  <input type="checkbox" onChange={this.sendid} disabled={!(this.props.shortlisterId===undefined)} />
+  <span class="checkmark"></span>
+</label>
+      
+      {this.props.shortlisterName && <label> Allocated to shortlist to -   {this.props.shortlisterName} </label>}
+      {this.props.assignToshortlisterbyName && <label> Assigned by -   {this.props.assignToshortlisterbyName} </label>}
+
+        <h1 className="badge">
+              <span class="badge badge-pill badge-danger">{this.props.status}</span>
+            </h1>
           <div class="card-body">
+            
             <h4 class="card-title">{this.props.name}</h4>
-            <div >
-            <h2 className='divecancard'> {d} </h2><br></br>
+            <div>
+              <h3 className="divecancard" > {d} </h3>
+              <br />
             </div>
             <p class="card-text">
-              <ul>
-                <li>job spechification :{this.props.jobspec}</li>
-                <li>email :{this.props.email} </li>
+
+
+              <ul className="list-group" >
+                <li  className="list-group-item " >job spechification :{this.props.jobspec}</li>
+                <li  className="list-group-item" >email :{this.props.email} </li>
               </ul>
             </p>
             <input
