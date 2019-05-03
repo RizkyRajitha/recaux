@@ -3,17 +3,98 @@ import axios from "axios";
 import "./candidateview.css";
 import jsonwebtoken from 'jsonwebtoken'
 import Navbar from "../../components/navbar";
-import {Alert} from 'reactstrap'
+
+import Modal from "react-modal";
+import Select from "react-select";
+
 // import { Document } from 'react-pdf/dist/entry.webpack';
+
+
+const customStyles = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+Modal.setAppElement("#root");
+
 
 class CandidateView extends Component {
   state = {
-    data: [],
+    data: "",
+    userarr:[],
     status: "",
     status_change: 0,
-    file: null
+    file: null,
+    selectedOption: null,
+    selectoptionsnamelist: [],
   };
 
+  openModal = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
+  changeHandlercontent = e => {
+    this.setState({ content: e.target.value });
+  };
+
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
+  shortlistmodal = () => {
+    this.openModal();
+  }
+
+  handleChangemodalselect = selectedOption => {
+    this.setState({ selectedOption });
+    console.log(`Option selected:`, selectedOption);
+  };
+
+  shorlisthandler = () => {
+    console.log(
+      "on the way + " +
+        JSON.stringify(this.state.selectedOption) +
+        " candidates -  " +
+        this.state.shorlisted
+    );
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    var payload = {
+      allocateduser: this.state.selectedOption.value,
+      candidateallocated: this.state.data._id
+    };
+
+    console.log(payload);
+
+    axios
+      .post("/usr/shortlistOne/"+this.state.id, payload, config)
+      .then(res => {
+        console.log(res);
+        this.closeModal()
+        
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
 
   componentDidMount() {
@@ -92,7 +173,8 @@ class CandidateView extends Component {
     axios
       .get("/usr/getcandidate/" + id)
       .then(res => {
-        this.setState({ data: res.data });
+        this.setState({ data: res.data.candidateData });
+        this.setState({ userarr: res.data.userData });
         console.log(res);
         console.log(this.state);
       })
@@ -108,16 +190,73 @@ class CandidateView extends Component {
       var d = dd.toJSON().slice(0, 10);
       console.log();
     }
+
+    const { selectedOption, selectoptionsnamelist } = this.state;
+
     return (
       <div>
         <Navbar />
         <div className="canview">
           <div className="canview2">
             {this.state.status_change === 1 && (
-              <Alert color="primary" role="alert">
+              <div color="primary" >
                 status change succsessfuly
-              </Alert>
+              </div>
             )}
+
+<Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+
+            <div class="input-field col s12">
+              <p>{this.state.shortedcanarrnamelist}</p>
+
+              <Select
+                
+                value={selectedOption}
+                onChange={this.handleChangemodalselect}
+                options={this.state.userarr}
+              />
+            </div>
+
+            <div className="submit">
+              <input
+                type="submit"
+                className="btn"
+                onClick={this.shorlisthandler}
+                value="confirm shortlisting"
+                id="submit"
+              />
+            </div>
+          </Modal>
+
+
+
+{
+  /**
+  assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
+assignToshortlisterbyName: "Bharana perera"
+date: "2019-05-03T14:55:20.889Z"
+email: "mark@facebook.com"
+jobspec: "CCO"
+name: "Mark Zuckerburg"
+shortlister: "5caa511c56a61d6a2492ec96"
+shortlisterName: "Bharana perera"
+status: "New"
+  */
+}
+
+ {this.state.data.shortlisterName && <label> Allocated to shortlist to -   {this.state.data.shortlisterName} </label>}
+      {this.state.data.assignToshortlisterbyName && <label> Assigned by -   {this.state.data.assignToshortlisterbyName} </label>}
+
+
+
+
             <ul className="list-group list-group-flush ">
               <li className="list-group-item"> date reciver : {d}</li>
               <li className="list-group-item">
@@ -138,6 +277,12 @@ class CandidateView extends Component {
               </li>
             </ul>
           </div>
+
+
+          <button onClick={this.shortlistmodal} className="btn btn-primary">
+            alocate to shortlist
+          </button>
+
 
           <div class="form-group">
             <label for="exampleFormControlSelect2">

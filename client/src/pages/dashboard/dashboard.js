@@ -43,7 +43,8 @@ class dashboard extends Component {
     userdata: [],
     numofshort: 0,
     shorlisted: [],
-    shortedcanarrnamelist: []
+    shortedcanarrnamelist: [],
+    shrtlistSuccess: false
   };
 
   openModal = () => {
@@ -200,6 +201,30 @@ class dashboard extends Component {
         " candidates -  " +
         this.state.shorlisted
     );
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    var payload = {
+      allocateduser: this.state.selectedOption.value,
+      candidatesallocated: this.state.shorlisted
+    };
+
+    console.log(payload);
+
+    axios
+      .post("/usr/shortlistMany/"+this.state.id, payload, config)
+      .then(res => {
+        console.log(res);
+        this.closeModal()
+        window.location.reload(false)
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   getuserdata = () => {
@@ -340,7 +365,7 @@ class dashboard extends Component {
               <p>{this.state.shortedcanarrnamelist}</p>
 
               <Select
-                multi={true}
+                required
                 value={selectedOption}
                 onChange={this.handleChangemodalselect}
                 options={selectoptionsnamelist}
@@ -389,6 +414,19 @@ class dashboard extends Component {
             <div class="col-s8 " id="cardcontainer2">
               {cndetailes.map((can, iid) => {
                 //console.log(can.name+can.email+can.jobspec)
+/**
+ * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
+assignToshortlisterbyName: "Bharana perera"
+date: "2019-04-07T19:38:55.028Z"
+email: "mark@facebook.com"
+jobspec: "CCO"
+name: "Mark Zuckerburg"
+shortlister: "5caa51ad56a61d6a2492ec98"
+shortlisterName: "Dewindi Anushika"
+status: "onhold"
+ */
+
+                {console.log(can.shortlister+' - dis ')}
                 return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
@@ -398,6 +436,11 @@ class dashboard extends Component {
                     _id={can._id}
                     date={can.date}
                     status={can.status}
+                    shortlisterId = {can.shortlister}
+                    shortlisterName={can.shortlisterName}
+                    assignToshortlisterbyId={can.assignToshortlisterbyId}
+                    assignToshortlisterbyName = {can.assignToshortlisterbyName}
+                    
                   />
                 );
               })}

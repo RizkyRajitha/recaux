@@ -50,11 +50,27 @@ state = {
     <label class="form-check-label" for="exampleCheck1">Add to Shortlisting</label>
   </div> */}
 
+{/**
+ * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
+assignToshortlisterbyName: "Bharana perera"
+date: "2019-04-07T19:38:55.028Z"
+email: "mark@facebook.com"
+jobspec: "CCO"
+name: "Mark Zuckerburg"
+shortlister: "5caa51ad56a61d6a2492ec98"
+shortlisterName: "Dewindi Anushika"
+status: "onhold"
+ */}
+
+
+
 <label class="containershbox">Add to Shortlist
-  <input type="checkbox" onChange={this.sendid} />
+  <input type="checkbox" onChange={this.sendid} disabled={!(this.props.shortlisterId===undefined)} />
   <span class="checkmark"></span>
 </label>
       
+      {this.props.shortlisterName && <label> Allocated to shortlist to -   {this.props.shortlisterName} </label>}
+      {this.props.assignToshortlisterbyName && <label> Assigned by -   {this.props.assignToshortlisterbyName} </label>}
 
         <h1 className="badge">
               <span class="badge badge-pill badge-danger">{this.props.status}</span>
