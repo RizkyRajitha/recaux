@@ -36,9 +36,13 @@ exports.shortlistData = (req, res, next) => {
 
                     for(var i = 0;i<pendingCandidatearr.length;i++){
 
-                        var temp_payload = { data:userdoc.shortlist[i],candidateName:candocs[i].name}
+                        var objDoc = userdoc.shortlist[i].toObject()
 
-                        payload.push(temp_payload)
+                        objDoc.candidateName = candocs[i].name
+                        // var temp_payload = { data:userdoc.shortlist[i]}
+
+                        payload.push(objDoc)
+                        console.log('temp payload - '+JSON.stringify(objDoc))
                     }
 
                     console.log('paylood - '+payload)

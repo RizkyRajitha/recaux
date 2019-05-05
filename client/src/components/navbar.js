@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import './nav.css'
+import "./nav.css";
 
 const Navbar = props => {
   const logoutHandler = e => {
@@ -43,11 +43,43 @@ const Navbar = props => {
               Register
             </a>
           </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/shortlist">
+              Shortlist
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Dropdown
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">
+                Action
+              </a>
+              <a class="dropdown-item" href="#">
+                Another action
+              </a>
+              <div class="dropdown-divider" />
+              <a class="dropdown-item" href="#">
+                Something else here
+              </a>
+            </div>
+          </li>
         </ul>
-        <button id='logoutbtn' className="btn btn-outline-danger my-2 my-sm-0 " onClick={logoutHandler}>
+        <button
+          id="logoutbtn"
+          className="btn btn-outline-danger my-2 my-sm-0 "
+          onClick={logoutHandler}
+        >
           Logout
         </button>
-        
       </div>
     </nav>
   );
