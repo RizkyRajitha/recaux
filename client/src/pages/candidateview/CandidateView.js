@@ -34,6 +34,7 @@ class CandidateView extends Component {
     file: null,
     selectedOption: null,
     selectoptionsnamelist: [],
+    shorlistSuccess:false
   };
 
   openModal = () => {
@@ -82,12 +83,17 @@ class CandidateView extends Component {
       candidateallocated: this.state.data._id
     };
 
-    console.log(payload);
+    console.log('sent payload'+payload);
 
     axios
       .post("/usr/shortlistOne/"+this.state.id, payload, config)
       .then(res => {
-        console.log(res);
+        console.log(JSON.stringify(res.data));
+        //this.setState({shorlistSuccess:true})
+        if(res.data.msg=="allocated_success"){
+          this.setState({shorlistSuccess:true})
+          window.location.reload(false);
+        }
         this.closeModal()
         
       })
@@ -204,6 +210,12 @@ class CandidateView extends Component {
               </div>
             )}
 
+ {this.state.shorlistSuccess&& (
+               <div color="primary" >
+                 Allocated for shorlisting succsessfuly
+               </div>
+             )}
+ 
 <Modal
             isOpen={this.state.modalIsOpen}
             onAfterOpen={this.afterOpenModal}

@@ -42,7 +42,7 @@ class dashboard extends Component {
     candidatedata: [],
     userdata: [],
     numofshort: 0,
-    shorlisted: [],
+    shorlist: [],
     shortedcanarrnamelist: [],
     shrtlistSuccess: false
   };
@@ -216,11 +216,11 @@ class dashboard extends Component {
     console.log(payload);
 
     axios
-      .post("/usr/shortlistMany/"+this.state.id, payload, config)
+      .post("/usr/shortlistMany/" + this.state.id, payload, config)
       .then(res => {
         console.log(res);
-        this.closeModal()
-        window.location.reload(false)
+        this.closeModal();
+        window.location.reload(false);
       })
       .catch(err => {
         console.log(err);
@@ -288,7 +288,9 @@ class dashboard extends Component {
             id: result.data.id,
             firstName: result.data.firstName,
             lastName: result.data.lastName,
-            usertype: result.data.usertype
+            usertype: result.data.usertype,
+            shorlist:result.data.shortList
+
           });
 
           this.setState({ logedin: true });
@@ -319,6 +321,7 @@ class dashboard extends Component {
       return (
         <div className="dashboardmain">
           <Navbar />
+          <p className="usrtype">Logged in as : {this.state.usertype}</p>
           <h1 className="greet">
             {this.state.greet} {this.state.firstName}
           </h1>
@@ -414,7 +417,7 @@ class dashboard extends Component {
             <div class="col-s8 " id="cardcontainer2">
               {cndetailes.map((can, iid) => {
                 //console.log(can.name+can.email+can.jobspec)
-/**
+                /**
  * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
 assignToshortlisterbyName: "Bharana perera"
 date: "2019-04-07T19:38:55.028Z"
@@ -426,7 +429,9 @@ shortlisterName: "Dewindi Anushika"
 status: "onhold"
  */
 
-                {console.log(can.shortlister+' - dis ')}
+                {
+                  console.log(can.shortlister + " - dis ");
+                }
                 return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
@@ -436,11 +441,10 @@ status: "onhold"
                     _id={can._id}
                     date={can.date}
                     status={can.status}
-                    shortlisterId = {can.shortlister}
+                    shortlisterId={can.shortlister}
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}
-                    assignToshortlisterbyName = {can.assignToshortlisterbyName}
-                    
+                    assignToshortlisterbyName={can.assignToshortlisterbyName}
                   />
                 );
               })}

@@ -22,9 +22,18 @@ app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 
 app.use("/static", express.static(path.join(__dirname, "../assets")));
+//app.use(express.static('../client/public'));
+
+app.use("/static", express.static(path.join(__dirname, "../assets")));
 
 app.use("/usr", require("./routes/routes"));
  
+//app.use(express.static("client/build"));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../",'client', "public", "index.html"));
+// });
+
+
 var options = {
   explorer : true
 };

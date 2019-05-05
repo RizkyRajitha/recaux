@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const User = require("../db/users");
 const Candidate = require("../db/candidates");
@@ -11,6 +12,7 @@ const Evaluation = require("../db/evaluation");
 
 const profileimgupload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
+const deptheadRoutes = require('./depthead.routes')
 //const _ = require('')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
@@ -25,14 +27,23 @@ router.post("/reg", (req, res, next) => {
     { session: false },
     (err, user, info) => {
       console.log("-----in reg ------");
-      console.log(info);
+      console.log('imfor - '+JSON.stringify(info));
+
+      if(info.name=="TokenExpiredError"){
+        console.log('session expired')
+        res.status(403).send('session_exp')
+      }
 
       if (user) {
         console.log(`************${req.headers.authorization}****************`);
 
+  console.log("savin.....");
+  var salt = bcrypt.genSaltSync(saltRounds);
+  var hash = bcrypt.hashSync(req.body.password, salt);
+
         const newuser = new User({
           email: req.body.email,
-          hash: req.body.password,
+          hash: hash,
           firstName: req.body.firstname,
           lastName: req.body.lastname,
           usertype: req.body.usertype
@@ -50,7 +61,7 @@ router.post("/reg", (req, res, next) => {
                 .then(result => {
                   console.log("succsess");
                   //var token = result.generateJWT();
-                  return res.status(200).send({});
+                  return res.status(200).send();
                 })
                 .catch(err => {
                   console.log(" reg err -  " + err);
@@ -66,7 +77,9 @@ router.post("/reg", (req, res, next) => {
               res.status(403).json("no_previladges");
             }
           })
-          .catch(err => {});
+          .catch(err => {
+            console.log('errororr - '+err)
+          });
       }
     }
   )(req, res, next);
@@ -117,7 +130,8 @@ router.get("/dashboard", (req, res, next) => {
               emailverified: result.emailverified,
               firstName: result.firstName,
               lastName: result.lastName,
-              usertype: result.usertype
+              usertype: result.usertype,
+              shortList:result.shortlist
             };
             console.log(senddata);
             res.status(200).json(senddata);
@@ -485,6 +499,7 @@ router.post("/avatar/:id", profileimgupload.profileimgup);
 router.post("/cv/:id", profileimgupload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
+router.get('/getshortlistdata/:id',deptheadRoutes.shortlistData)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -498,7 +513,7 @@ router.post("/shortlistOne/:id", (req, res, next) => {
       console.log("data - " + JSON.stringify(req.body));
 
       var datain = req.body;
-
+      console.log('shortlist one')
       //  User.updateOne({_id:datain.allocateduser},{$push:datain.candidateallocated}).then(userdoc=>{
 
       //   Candidate.updateOne({_id:datain.candidateallocated},{$set:{:datain.candidateallocated}}).then(candoc=>{
@@ -527,15 +542,18 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                       shortlist: {
                         candidateId: datain.candidateallocated,
                         allocatedbyUserId: user.id,
-                        allocatedDate: new Date()
+                        allocatedDate: new Date(),
+                        allocatedUserName:allocaterdoc.firstName + " " + allocaterdoc.lastName
                       }
                     }
                   }
                 )
                   .then(docc => {
                     console.log("candoc - " + JSON.stringify(candoc) + "user doc -" + JSON.stringify(docc));
-
-                    res.json(candoc);
+                    if(candoc.ok===1 && docc.ok===1){
+                      res.json({msg:'allocated_success'});
+                    }
+                    
                   })
                   .catch(err => {
                     res.json(err);
@@ -601,8 +619,22 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                   )
                     .then(doc => {
                       //payloadarr.senddata.push(doc)
-                      console.log("doc push");
-                      resolve(doc);
+                      console.log("doc push - "+JSON.stringify(userDoc));
+                      
+                      shortList.forEach(element => {
+                        userDoc.shortlist.push({candidateId:element,allocatedbyUserId:iid,allocatedUserName:allocaterUserDoc.firstName+" "+allocaterUserDoc.lastName,allocatedDate:new Date})
+                      });
+
+                      userDoc.save().then(finaluserdoc=>{
+
+                        console.log('allocate many - '+JSON.stringify({updoc:doc,finaldoc:finaluserdoc}))
+
+                        resolve({updoc:doc,finaldoc:finaluserdoc});
+                      }).catch(err=>{
+                        console.log(err)
+                      })
+
+                      
                     })
                     .catch(err => {
                       payloadarr.error.push(err);

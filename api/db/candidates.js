@@ -15,7 +15,7 @@ var candidateSchema = new Schema({
     type: String
   },
   date: {
-    type: Date
+    type: String
   },
   status: {
     type: String,
@@ -32,7 +32,10 @@ var candidateSchema = new Schema({
   assignToshortlisterbyId: { type: String },
   assignToshortlisterbyName: { type: String },
   shortlister: { type: String },
-  shortlisterName:{type:String}
+  shortlisterName:{type:String},
+  shortlistedDate: { type: String },
+  shortlistStatus: { type: Boolean }
+
 });
 
 const Candidate = mongoose.model("Candidate", candidateSchema);
