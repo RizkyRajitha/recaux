@@ -19,7 +19,7 @@ app.use(passport.initialize());
 app.use(cors());
 app.use(require("morgan")("dev"));
 app.use(bp.urlencoded({ extended: false }));
-app.use(bp.json());
+app.use(bp.json());   
 
 app.use("/static", express.static(path.join(__dirname, "../assets")));
 //app.use(express.static('../client/public'));

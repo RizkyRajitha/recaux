@@ -7,6 +7,7 @@
     "axios": "^0.18.0",
     "formik": "^1.5.4",
     "jsonwebtoken": "^8.4.0",
+    "moment": "^2.24.0",
     "pdfjs-dist": "^2.0.943",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",

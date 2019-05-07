@@ -1,9 +1,9 @@
-.badge {
-  
-  font-size: 20px;
+.cancardbadgeDiv {
+  text-align:  right;
+  font-size: 30px;
+  margin-right: 20px;
 }
 #cancard {
-  background-color: #5f5454;
 }
 
 .divecancard {
@@ -21,7 +21,7 @@
 .containershbox {
   display: block;
   position: relative;
-  padding-left: 35px;
+  padding-left: 1px;
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
@@ -29,9 +29,9 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  left: 310px;
-  top:8px;
-  
+  left: 990px;
+  top: 8px;
+  width: 200px;
 }
 
 /* Hide the browser's default checkbox */
@@ -47,7 +47,7 @@
 .checkmark {
   position: absolute;
   top: -1px;
-  left: 560px;
+  left: 184px;
   height: 25px;
   width: 25px;
   background-color: #eee;
@@ -60,7 +60,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .containershbox input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -86,4 +86,16 @@
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+#candidateCardDate {
+  margin-top: 40px;
+}
+
+#listItemsCanCard {
+  font-size: 18px;
+}
+
+.cancardTable {
+  text-align: left;
 }

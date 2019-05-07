@@ -315,7 +315,7 @@ class dashboard extends Component {
 
   render() {
     if (this.state.logedin === true) {
-      var cndetailes = this.state.candidatedata;
+      var cndetailes = this.state.candidatedata.reverse();
       var usrdetails = this.state.userdata;
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
@@ -415,7 +415,7 @@ class dashboard extends Component {
             </div>
 
             <div class="col-s8 " id="cardcontainer2">
-              {cndetailes.map((can, iid) => {
+              { cndetailes.map((can, iid) => {
                 //console.log(can.name+can.email+can.jobspec)
                 /**
  * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
