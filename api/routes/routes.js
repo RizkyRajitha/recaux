@@ -590,7 +590,7 @@ router.post("/shortlistMany/:id", (req, res, next) => {
       var shortList = req.body.candidatesallocated;
       var payloadarr = { senddata: [], error: [] };
 
-      payloadarr.noFoCandidate = shortList.length;
+      //payloadarr.noFoCandidate = shortList.length;
       payloadarr.noOfSucsessalocations = 0;
       payloadarr.noOfFailedalocations = 0;
 

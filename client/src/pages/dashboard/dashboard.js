@@ -43,6 +43,7 @@ class dashboard extends Component {
     userdata: [],
     numofshort: 0,
     shorlist: [],
+    shortlistbythisuser: [],
     shortedcanarrnamelist: [],
     shrtlistSuccess: false
   };
@@ -124,7 +125,7 @@ class dashboard extends Component {
     this.openModal();
 
     var canarr = this.state.candidatedata;
-    var shortedcanarr = this.state.shorlisted;
+    var shortedcanarr = this.state.shortlistbythisuser;
     var shortedcanarrnamelist = [];
     var userlist = [];
     var userdetails = this.state.userdata;
@@ -161,35 +162,41 @@ class dashboard extends Component {
   shortlisting = (id, bxstate) => {
     if (bxstate) {
       this.setState({ numofshort: this.state.numofshort + 1 });
+
       this.setState({
-        shorlisted: [...this.state.shorlisted, id]
+        shortlistbythisuser: [...this.state.shortlistbythisuser, id]
       });
+
+      // var temp_arr = this.state.shortlistbythisuser;
+      // console.log("shrtl is - " + this.state.shortlistbythisuser);
+
+      // temp_arr.push(id);
+
+      // this.setState({
+      //   shortlistbythisuser: temp_arr
+      // });
+
+      console.log("temp arr - " + this.state.shortlistbythisuser);
     } else {
       this.setState({ numofshort: this.state.numofshort - 1 });
-      var arr = this.state.shorlisted;
-
+      var arr = this.state.shortlistbythisuser;
       var key = arr.indexOf(id);
-
       console.log(key);
-
       if (key !== -1) {
         arr.splice(key, 1);
-        this.setState({ shorlisted: arr });
+        this.setState({ shortlistbythisuser: arr });
       }
-
-      //
     }
-
     setTimeout(() => {
       console.log(
         "clicked from card id -  " +
           id +
-          "bx state - " +
+          " bx state - " +
           bxstate +
           " num of resumes - " +
           this.state.numofshort +
           " resumeids - " +
-          this.state.shorlisted
+          JSON.stringify(this.state.shortlistbythisuser)
       );
     }, 1000);
   };
@@ -199,7 +206,7 @@ class dashboard extends Component {
       "on the way + " +
         JSON.stringify(this.state.selectedOption) +
         " candidates -  " +
-        this.state.shorlisted
+        this.state.shortlistbythisuser
     );
 
     var jwt = localStorage.getItem("jwt");
@@ -210,10 +217,10 @@ class dashboard extends Component {
 
     var payload = {
       allocateduser: this.state.selectedOption.value,
-      candidatesallocated: this.state.shorlisted
+      candidatesallocated: this.state.shortlistbythisuser
     };
 
-    console.log(payload);
+    console.log('payload'+JSON.stringify(payload));
 
     axios
       .post("/usr/shortlistMany/" + this.state.id, payload, config)
@@ -289,8 +296,7 @@ class dashboard extends Component {
             firstName: result.data.firstName,
             lastName: result.data.lastName,
             usertype: result.data.usertype,
-            shorlist:result.data.shortList
-
+            shorlist: result.data.shortList
           });
 
           this.setState({ logedin: true });
@@ -315,7 +321,7 @@ class dashboard extends Component {
 
   render() {
     if (this.state.logedin === true) {
-      var cndetailes = this.state.candidatedata.reverse();
+      var cndetailes = this.state.candidatedata;
       var usrdetails = this.state.userdata;
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
@@ -415,7 +421,7 @@ class dashboard extends Component {
             </div>
 
             <div class="col-s8 " id="cardcontainer2">
-              { cndetailes.map((can, iid) => {
+              {cndetailes.map((can, iid) => {
                 //console.log(can.name+can.email+can.jobspec)
                 /**
  * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"

@@ -4,6 +4,7 @@
   margin-right: 20px;
 }
 #cancard {
+  font-size: 16px;
 }
 
 .divecancard {
@@ -98,4 +99,11 @@
 
 .cancardTable {
   text-align: left;
+}
+
+.cancarddivtime{
+width: 200px;
+margin-top:-20px;
+margin-left:-10px;
+
 }

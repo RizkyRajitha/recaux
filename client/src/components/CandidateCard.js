@@ -10,8 +10,8 @@ class CandidateCard extends Component {
   }
 
   state = {
-    chbox: true,
-    timeAgo: ""
+    chbox: true
+   
   };
 
   cnadidateview = () => {
@@ -22,30 +22,30 @@ class CandidateCard extends Component {
   sendid = () => {
     this.setState({ chbox: !this.state.chbox });
 
-    console.log(this.state);
+    console.log(this.state,this.props._id);
 
-    this.props.triggershrt(this.props._id, this.state.chbox);
+this.props.triggershrt(this.props._id, this.state.chbox);
   };
 
   render() {
     if (this.props.date) {
-      console.log(this.props.date.slice(4, 24));
-      // const dote = new Date(this.props.time)
-      // console.log(dote.toTimeString)
+      //console.log(this.props.date.slice(4, 24));
+     // const dote = new Date(this.props.time)
+     // console.log(dote.toTimeString)
       //Tue Apr 23 2019 12:21:53 GMT+0530 (+0530)
       var s = this.props.date.slice(4, 24); //"2019-04-24 18:00:00";  // from action.timeStamp
 
       //var actionTime = moment(s , "YYYY-MM-DD HH:mm:ssZ");
       var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
-      var timeAgo = actionTime.fromNow();
+       var timeAgo = actionTime.fromNow();
 
-      console.log(timeAgo);
+      // console.log(timeAgo);
       //this.setState({timeAgo:timeAgo})
 
-      console.log("dataaa" + this.props.date);
-      var dd = new Date(this.props.date);
-      var d = dd.toJSON().slice(0, 10);
-      console.log("dates - " + this.props.date);
+      // console.log("dataaa" + this.props.date);
+      // var dd = new Date(this.props.date);
+      // var d = dd.toJSON().slice(0, 10);
+      
     }
 
     //   .toJSON()
@@ -72,7 +72,8 @@ shortlisterName: "Dewindi Anushika"
 status: "onhold"
  */}
 
-          <label class="containershbox">
+       <div>
+       <label class="containershbox">
             Add to Shortlist
             <input
               type="checkbox"
@@ -81,26 +82,25 @@ status: "onhold"
             />
             <span class="checkmark" />
           </label>
+       </div>
 
-          {this.props.shortlisterName && <label> </label>}
+       <div className='cancarddivtime' >
+       <h5>{timeAgo}</h5>
+     {/* <h6>{d}</h6> */}
+
+
+       </div>
+
+        
 
           <div className="cancardbadgeDiv">
-          <span class="badge badge-pill badge-danger">
+            <span class="badge badge-pill badge-danger">
               {this.props.status}
             </span>
           </div>
           <div class="card-body">
             <h4 class="card-title">{this.props.name}</h4>
-            <div>
-              <h3 className="divecancard"> {timeAgo} </h3>
-              <br />
-              <h5 id="candidateCardDate" className="divecancard">
-                {" "}
-                {d}{" "}
-              </h5>
-              <br />
-            </div>
-
+            
             <table class="table table-borderless">
               <tbody className="cancardTable">
                 <tr>
@@ -111,14 +111,26 @@ status: "onhold"
                   <th scope="row">email</th>
                   <td>{this.props.email}</td>
                 </tr>{" "}
-                <tr>
-                  <th scope="row">Assigned by</th>
-                  <td>{this.props.assignToshortlisterbyName}</td>
-                </tr>{" "}
-                <tr>
-                  <th scope="row">Allocated to shortlist to</th>
-                  <td>{this.props.shortlisterName}</td>
-                </tr>
+                {this.props.assignToshortlisterbyName ? (<tr>
+                    <th scope="row">Assigned by</th>
+                    <td>{this.props.assignToshortlisterbyName}</td>
+                  </tr>
+                ) : (
+                  <tr>
+                  <th scope="row">Not allocated </th>
+                  <td></td>
+                  </tr>
+                )}
+                {this.props.shortlisterName ? (<tr>
+                   <th scope="row">Allocated to shortlist to</th>
+                    <td>{this.props.shortlisterName}</td>
+                  </tr>
+                ) : (
+                  <tr>
+                   <th scope="row">Not allocated </th>
+                  <td></td>
+                  </tr>
+                )}
                 <tr>
                   <th scope="row" />
                   <td />
