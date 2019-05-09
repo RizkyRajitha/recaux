@@ -63,7 +63,7 @@ class Shortlist extends Component {
                   <ShortlistCard
                     status={can.shortlistStatus}
                     candidateName={can.candidateName}
-                    
+                    candidateJobspec={can.candidateJobspec}
                     candidateId={can.candidateId}
                     allocatedUserName ={can.allocatedUserName}
                     allocatedDate = {can.allocatedDate}

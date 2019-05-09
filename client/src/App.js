@@ -23,6 +23,9 @@ import Userprofile from "./pages/userprofile/user";
 import Changepass from "./pages/changepass/changepass";
 import Avatar from "./pages/avatar";
 import Shortlist from './pages/shortlist/shortlist'
+import Drawer from './components/drawer'
+
+
 //import TemporaryDrawer from "./sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
@@ -49,6 +52,7 @@ class App extends Component {
           <Route path="/changepass/:id" component={Changepass} />
           <Route path="/avatar/:id" component={Avatar} />
           <Route path="/shortlist" component={Shortlist} />
+          <Route path="/drawer" component={Drawer} />
         </div>
       </BrowserRouter>
     );

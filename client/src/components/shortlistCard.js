@@ -89,6 +89,8 @@ status: "onhold"
               <ul className="list-group" >
                 <li  className="list-group-item " >job spechification :{this.props.status}</li>
                 <li  className="list-group-item" >email :{this.props.allocatedDate} </li>
+                <li  className="list-group-item" >job spec :{this.props.candidateJobspec} </li>
+                
               </ul>
             </p>
             <input

@@ -7,6 +7,7 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
+import Drawer from '../../components/drawer'
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -326,7 +327,8 @@ class dashboard extends Component {
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">
-          <Navbar />
+         
+          <Navbar/>
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
           <h1 className="greet">
             {this.state.greet} {this.state.firstName}

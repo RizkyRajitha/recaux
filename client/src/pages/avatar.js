@@ -3,35 +3,45 @@ const axios = require("axios");
 
 class Avatar extends Component {
   state = {
-    file: null
+    file: null,
+    url: null,
+    id: ""
   };
 
   chngehndl = e => {
     this.setState({ file: e.target.files[0] });
     console.log(e.target.files);
+    this.setState({ id: this.props.match.params.id });
   };
 
   submitHndle = e => {
     e.preventDefault();
     console.log("hahah");
-    console.log(this.props.match.params.id)
+    console.log(this.props.match.params.id);
 
     const formdata = new FormData();
     formdata.append("avatar", this.state.file);
     //
 
+    var jwt = localStorage.getItem("jwt");
+
     var config = {
       headers: {
-        "content-type": "multipart/form-data"
+        "content-type": "multipart/form-data",
+        authorization: jwt
       }
     };
 
     axios
-      .post("/usr/avatar/"+this.props.match.params.id, formdata, config)
+      .post("/usr/avatar/" + this.state.id, formdata, config)
       .then(result => {
-        console.log("awoooo" + result);
+        console.log(result);
+        this.setState({ url: result.data.url });
+        //document.querySelector('.images').setAttribute('src',this.state.url)
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log('error - '+err)
+      });
   };
 
   render() {
@@ -41,8 +51,9 @@ class Avatar extends Component {
           <input type="file" name="avatar" onChange={this.chngehndl} />
           <input type="submit" value="submit" />
         </form>
-        <img src={`http://localhost:3001/static/avatar/${this.props.match.params.id}.jpg`} />
-      </div> 
+        {console.log("alo - " + this.state.url)}
+        {this.state.url && <img className="images" src={this.state.url} />}
+      </div>
     );
   }
 }
