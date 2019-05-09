@@ -2,7 +2,23 @@ import React, { Component } from "react";
 import Navbar from "../../components/navbarloogedin";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
+import Modal from "react-modal";
 import "./user.css";
+
+const customStyles = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+}
+
+Modal.setAppElement("#root")
 
 class Userprofile extends Component {
   state = {
@@ -14,8 +30,18 @@ class Userprofile extends Component {
     addedsucsess: 0,
     expat: new Date(),
     nullfielderr: false,
-    userdata: {}
+    userdata: {},
+    file: null,
+    url: null,
+    id: ""
   };
+
+  chngehndlimg = e => {
+    this.setState({ file: e.target.files[0] });
+    console.log(e.target.files);
+    this.setState({ id: this.props.match.params.id });
+  };
+
   chngehandlfname = e => {
     this.state.userdata.firstName = e.target.value;
     this.forceUpdate();
@@ -99,9 +125,62 @@ class Userprofile extends Component {
       });
   };
 
+  submitHndleimg = e => {
+    e.preventDefault();
+    console.log("hahah");
+    console.log(this.props.match.params.id);
+
+    const formdata = new FormData();
+    formdata.append("avatar", this.state.file);
+    //
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: {
+        "content-type": "multipart/form-data",
+        authorization: jwt
+      }
+    };
+
+    axios
+      .post("/usr/avatar/" + this.state.id, formdata, config)
+      .then(result => {
+        console.log(result);
+        this.setState({ url: result.data.url });
+        //document.querySelector('.images').setAttribute('src',this.state.url)
+      })
+      .catch(err => {
+        console.log('error - '+err)
+      });
+  };
+
   chngpss = e => {
     this.props.history.push("/changepass/" + this.props.match.params.id);
   };
+
+  openModal = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
+  changeHandlercontent = e => {
+    this.setState({ content: e.target.value });
+  };
+
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
+
+  imagehndle = e =>{
+this.openModal()
+  }
 
   render() {
     return (
@@ -117,7 +196,46 @@ class Userprofile extends Component {
                 </div>
               )}
 
-              <img src='' />
+ 
+<input type='button' className="btn btn-primary" onClick={this.imagehndle} value = 'add image'/>
+                
+{this.state.userdata.avatarUrl && <img className="images" src={this.state.userdata.avatarUrl} />}
+         
+
+
+              <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+
+            <div class="input-field col s12">
+              <p>{this.state.shortedcanarrnamelist}</p>
+
+            aloha
+
+            <form onSubmit={this.submitHndleimg}>
+          <input type="file" name="avatar" onChange={this.chngehndlimg} />
+          <input type="submit" value="submit" />
+        </form>
+
+            {this.state.url && <img className="images" src={this.state.url} />}
+            </div>
+
+            <div className="submit">
+              <input
+                type="submit"
+                className="btn"
+                onClick={this.shorlisthandler}
+                value="confirm shortlisting"
+                id="submit"
+              />
+            </div>
+          </Modal>
+
 
               <form onSubmit={this.btn1handler}>
                 <br />

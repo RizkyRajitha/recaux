@@ -165,7 +165,8 @@ router.get("/user/:id", (req, res, next) => {
             email: result.email,
             emailverified: result.emailverified,
             firstName: result.firstName,
-            lastName: result.lastName
+            lastName: result.lastName,
+            avatarUrl:result.avatarUrl
           };
 
           console.log("found" + result);

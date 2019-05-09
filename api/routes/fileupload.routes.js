@@ -2,6 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const passport = require("passport");
+const User = require('../db/users')
 
 cloudinary.config({
   cloud_name: "dijjqfsto",
@@ -72,6 +73,13 @@ exports.profileimgup = (req, ress, next) => {
                 );
                 console.log("* " + image.public_id);
                 console.log("* " + image.url);
+
+                User.updateOne({_id:user.id},{$set:{avatarUrl:image.url}}).then(doc=>{
+                  ress.status(200).json(image);
+                }).catch(err=>{
+                  
+                })
+
                 ress.status(200).json(image);
 
                 // waitForAllUploads("pizza",err,image);

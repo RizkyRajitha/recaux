@@ -34,6 +34,7 @@ var userSchema = new Schema({
     type: String,
     default: 0
   },
+  avatarUrl:{type:String,default:null},
   shortlist: [
     {
       candidateId: { type: String },
