@@ -389,39 +389,45 @@ router.get("/getcandidate/:id", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  // var ada = new Date();
-  // console.log(ada);
-  // const newuser = new User({
-  //   email: "admin@auxenta.com",
-  //   hash: "admin"
-  // });
+  var ada = new Date();
+  console.log(ada);
 
-  // newuser
-  //   .save()
-  //   .then(result => {
-  //     res.send(result);
-  //   })
-  //   .catch(err => {
-  //     res.json(err);
-  //   });
+  //res.send('hello')
 
-  can = ["aa", "bb"];
+  var salt = bcrypt.genSaltSync(saltRounds);
+  var hash = bcrypt.hashSync('admin', salt);
 
-  User.findOneAndUpdate(
-    { _id: ObjectID("5ca98a6200d8ab4264d7dffc") },
-    {
-      $set: {
-        assinngedCandidates: can
-      }
-    }
-  )
+  const newuser = new User({
+    email: "admin@auxenta.com",
+    hash: hash
+  });
+
+  newuser
+    .save()
     .then(result => {
-      console.log(result);
       res.send(result);
     })
     .catch(err => {
-      console.log(err);
+      res.json(err);
     });
+
+  // can = ["aa", "bb"];
+
+  // User.findOneAndUpdate(
+  //   { _id: ObjectID("5ca98a6200d8ab4264d7dffc") },
+  //   {
+  //     $set: {
+  //       assinngedCandidates: can
+  //     }
+  //   }
+  // )
+  //   .then(result => {
+  //     console.log(result);
+  //     res.send(result);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
 });
 
 router.post("/addcandidate", (req, res) => {
