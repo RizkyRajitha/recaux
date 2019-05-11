@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@progress/kendo-angular-dropdowns": "^1.6.1",
+    "@trendmicro/react-sidenav": "^0.4.5",
     "axios": "^0.18.0",
     "formik": "^1.5.4",
     "jsonwebtoken": "^8.4.0",
@@ -35,5 +36,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.13.0"
+  }
 }

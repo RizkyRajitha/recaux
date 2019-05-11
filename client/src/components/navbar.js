@@ -12,9 +12,6 @@ const Navbar = props => {
 
   return (
     <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
-      <a className="navbar-brand" href="/">
-        Rect@Aux
-      </a>
       <button
         className="navbar-toggler"
         type="button"
@@ -27,10 +24,10 @@ const Navbar = props => {
         <span className="navbar-toggler-icon" />
       </button>
 
-      <div className="collapse navbar-collapse" id="navbarSupportedContent" >
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
         <ul className="navbar-nav">
           <li className="nav-item">
-            <a className="nav-link" href="/dashboard">
+            <a id='navdashbordlink' className="nav-link" href="/dashboard">
               Dashboard
             </a>
           </li>

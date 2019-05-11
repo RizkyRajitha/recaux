@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import TemporaryDrawer from "../components/sidenav";
 const axios = require("axios");
+
 
 class Avatar extends Component {
   state = {
@@ -47,6 +49,7 @@ class Avatar extends Component {
   render() {
     return (
       <div>
+        <TemporaryDrawer/>
         <form onSubmit={this.submitHndle}>
           <input type="file" name="avatar" onChange={this.chngehndl} />
           <input type="submit" value="submit" />

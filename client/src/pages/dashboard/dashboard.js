@@ -7,7 +7,7 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
-import Drawer from '../../components/drawer'
+import Drawer from '../../components/sidenav'
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -329,6 +329,7 @@ class dashboard extends Component {
         <div className="dashboardmain">
          
           <Navbar/>
+          <Drawer/>
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
           <h1 className="greet">
             {this.state.greet} {this.state.firstName}
