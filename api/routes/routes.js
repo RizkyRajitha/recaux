@@ -13,6 +13,7 @@ const Evaluation = require("../db/evaluation");
 const profileimgupload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require('./depthead.routes')
+const commonRoutes = require('./common.routes')
 //const _ = require('')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
@@ -164,7 +165,8 @@ router.get("/user/:id", (req, res, next) => {
             email: result.email,
             emailverified: result.emailverified,
             firstName: result.firstName,
-            lastName: result.lastName
+            lastName: result.lastName,
+            avatarUrl:result.avatarUrl
           };
 
           console.log("found" + result);
@@ -505,7 +507,8 @@ router.post("/avatar/:id", profileimgupload.profileimgup);
 router.post("/cv/:id", profileimgupload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
-router.get('/getshortlistdata/:id',deptheadRoutes.shortlistData)
+router.get('/getshortlistdata/:id',deptheadRoutes.shortlistData)//get the data of allocated candidates to  shortlister (dept head)
+//router.post('/avatarupload/:id',commonRoutes.imgupload)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
