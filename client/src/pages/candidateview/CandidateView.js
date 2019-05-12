@@ -52,7 +52,10 @@ class CandidateView extends Component {
     selectedOption: null,
     selectoptionsnamelist: [],
     shorlistSuccess: false,
-    numPages: null
+    numPages: null,
+    cvFile: null,
+    cvUrl: null,
+    cvNotFOundErr: false
   };
   /****************************************** */
   openModal = () => {
@@ -98,6 +101,45 @@ class CandidateView extends Component {
 
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
+  };
+
+  chngehndlcv = e => {
+    this.setState({ cvFile: e.target.files[0] });
+    console.log(e.target.files);
+    this.setState({ id: this.props.match.params.id });
+  };
+
+  cvUploadHandler = () => {
+    if (this.state.cvFile === null) {
+      this.setState({ cvNotFOundErr: true });
+    } else {
+      this.setState({ cvNotFOundErr: false });
+
+      console.log(this.state.data);
+      console.log(this.state.data.cvUrl);
+
+      console.log("hahah");
+      console.log(this.props.match.params.id);
+
+      const formdata = new FormData();
+      formdata.append("cv", this.state.cvFile);
+      //
+      var jwt = localStorage.getItem("jwt");
+
+      var config = {
+        headers: {
+          "content-type": "multipart/form-data",
+          authorization: jwt
+        }
+      };
+
+      axios
+        .post("/usr/cv/" + this.props.match.params.id, formdata, config)
+        .then(result => {
+          console.log("awoooo" + result);
+        })
+        .catch(err => {});
+    }
   };
 
   /***************************************** */
@@ -190,29 +232,6 @@ class CandidateView extends Component {
       });
   };
 
-  addcv = e => {
-    e.preventDefault();
-    console.log("can cv clik");
-    console.log(this.props.match.params.id);
-
-    const formdata = new FormData();
-    formdata.append("cv", this.state.file);
-    //
-
-    var config = {
-      headers: {
-        "content-type": "multipart/form-data"
-      }
-    };
-
-    axios
-      .post("/usr/cv/" + this.props.match.params.id, formdata, config)
-      .then(result => {
-        console.log("awoooo" + result);
-      })
-      .catch(err => {});
-  };
-
   wtf = () => {
     const id = this.props.match.params.id;
     axios
@@ -292,8 +311,35 @@ class CandidateView extends Component {
                 {this.state.data.name + "'s" + " Resume"}
               </h2>
 
+              {this.state.cvNotFOundErr && (
+                <div class="alert alert-danger" role="alert">
+                  Please select a file
+                </div>
+              )}
+
+              {console.log(
+                "url - " +
+                  this.state.data.cvUrl +
+                  " 0 " +
+                  (this.state.data.cvUrl === null)
+              )}
+
+              {
+                <div>
+                  <button onClick={this.cvUploadHandler}>
+                    {this.state.data.cvUrl === null
+                      ? "Upload resume"
+                      : "Change resume"}
+                  </button>
+                  <input type="file" name="cv" onChange={this.chngehndlcv} />
+                </div>
+              }
+
               <div className="pdf" style={{ width: 1500 }}>
-                <Document file={exp} onLoadSuccess={this.onDocumentLoadSuccess}>
+                <Document
+                  file={this.state.data.cvUrl}
+                  onLoadSuccess={this.onDocumentLoadSuccess}
+                >
                   {/* <Page pageIndex={0} width={1500} /> */}
 
                   {Array.from(new Array(this.state.numPages), (el, index) => (

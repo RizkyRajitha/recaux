@@ -22,10 +22,9 @@ import Evaluation from "./pages/evaluation/evaluation";
 import Userprofile from "./pages/userprofile/user";
 import Changepass from "./pages/changepass/changepass";
 import Avatar from "./pages/avatar";
-import Shortlist from './pages/shortlist/shortlist'
-import Drawer from './components/drawer'
-import Pdftest from './pages/pdftset'
-
+import Shortlist from "./pages/shortlist/shortlist";
+import Drawer from "./components/drawer";
+import Pdftest from "./pages/pdftset";
 
 import TemporaryDrawer from "./components/sidenav";
 
@@ -36,8 +35,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-         
-          {/* <TemporaryDrawer /> */}
+          
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />

@@ -54,21 +54,18 @@ class TemporaryDrawer extends Component {
         <SideNav.Toggle />
         <SideNav.Nav>
           {
-            setTimeout(()=>{
-
-              return (this.state.toggled && (
+            this.state.toggled && 
+               (
                 <NavItem  eventKey="user">
                   <NavIcon>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg" />
                   </NavIcon>
                   
                 </NavItem>
-              ))
-
-            },2000)
-            
-            
+              )
             }
+                       
+            
 
           <NavItem className={this.state.toggled && 'avatar'} eventKey="home">
             <NavIcon>

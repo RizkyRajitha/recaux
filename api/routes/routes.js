@@ -10,7 +10,7 @@ const emailhandler = require("../config/emailhandler");
 const path = require("path");
 const Evaluation = require("../db/evaluation");
 
-const profileimgupload = require("./fileupload.routes");
+const fileUpload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require('./depthead.routes')
 const commonRoutes = require('./common.routes')
@@ -503,8 +503,8 @@ router.post("/evaluation/:id", (req, res) => {
     });
 });
 
-router.post("/avatar/:id", profileimgupload.profileimgup);
-router.post("/cv/:id", profileimgupload.cvupload);
+router.post("/avatar/:id", fileUpload.profileimgup);
+router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
 router.get('/getshortlistdata/:id',deptheadRoutes.shortlistData)//get the data of allocated candidates to  shortlister (dept head)

@@ -8,7 +8,7 @@ import "./user.css";
 const customStyles = {
   content: {
     width: "50%",
-    height: "40%",
+    height: "45%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -16,9 +16,9 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)"
   }
-}
+};
 
-Modal.setAppElement("#root")
+Modal.setAppElement("#root");
 
 class Userprofile extends Component {
   state = {
@@ -33,7 +33,9 @@ class Userprofile extends Component {
     userdata: {},
     file: null,
     url: null,
-    id: ""
+    id: "",
+    errfiletoolarge: false,
+    unsupportedFormat: false
   };
 
   chngehndlimg = e => {
@@ -62,15 +64,13 @@ class Userprofile extends Component {
 
   componentDidMount() {
     const jwt = localStorage.getItem("jwt");
-    console.log('jwt token -- - -- >>>'+jwt);
+    console.log("jwt token -- - -- >>>" + jwt);
 
     try {
       console.log("in register");
       var pay = jsonwebtoken.verify(jwt, "authdemo");
-      console.log('payload - '+pay);
-      console.log('************************************' )
-
-      
+      console.log("payload - " + pay);
+      console.log("************************************");
     } catch (error) {
       console.log("not logged in redirecting...............");
 
@@ -87,6 +87,13 @@ class Userprofile extends Component {
         console.log(res);
         console.log("---------");
         console.log(this.state.userdata);
+
+        var preurl = this.state.userdata.avatarUrl.slice(0,48)
+        var posturl = this.state.userdata.avatarUrl.slice(49,this.state.userdata.avatarUrl.length)
+        var config = "/w_400/"
+        
+        var baseUrl = preurl+config+posturl;
+        this.setState({baseUrl:baseUrl})
       })
       .catch(err => {
         console.log(err);
@@ -146,13 +153,33 @@ class Userprofile extends Component {
     axios
       .post("/usr/avatar/" + this.state.id, formdata, config)
       .then(result => {
+        console.log("resaaaal - ");
         console.log(result);
         this.setState({ url: result.data.url });
+
+        var preurl = result.data.url.slice(0,48)
+        var posturl = result.data.url.slice(49,result.data.url.length)
+        var config = "/w_400/"
+        
+        var baseUrl = preurl+config+posturl;
+        this.setState({baseUrl:baseUrl})
+
+
         //document.querySelector('.images').setAttribute('src',this.state.url)
       })
-      .catch(err => {
-        console.log('error - '+err)
-      });
+      .catch(
+        function(error) {
+          console.log(error.response.data);
+
+          if ("file_too_large" === error.response.data) {
+            this.setState({ errfiletoolarge: true });
+          }
+
+          if ("unsupported_file_format" === error.response.data) {
+            this.setState({ unsupportedFormat: true });
+          }
+        }.bind(this)
+      );
   };
 
   chngpss = e => {
@@ -161,10 +188,6 @@ class Userprofile extends Component {
 
   openModal = () => {
     this.setState({ modalIsOpen: true });
-  };
-
-  changeHandlercontent = e => {
-    this.setState({ content: e.target.value });
   };
 
   afterOpenModal = () => {
@@ -177,12 +200,14 @@ class Userprofile extends Component {
     this.setState({ modalIsOpen: false });
   };
 
-
-  imagehndle = e =>{
-this.openModal()
-  }
+  imagehndle = e => {
+    this.openModal();
+  };
 
   render() {
+
+//var baseUrl =   this.state.url
+
     return (
       <div>
         <Navbar />
@@ -196,53 +221,61 @@ this.openModal()
                 </div>
               )}
 
- 
-<input type='button' className="btn btn-primary" onClick={this.imagehndle} value = 'add image'/>
-                
-{this.state.userdata.avatarUrl && <img className="images" src={this.state.userdata.avatarUrl} />}
-         
+              <input
+                type="button"
+                className="btn btn-primary"
+                onClick={this.imagehndle}
+                value="add image"
+              />
 
+              {this.state.userdata.avatarUrl && {} && (
+                <img className="images" src={this.state.baseUrl} className="rounded-circle" />
+              )}
 
               <Modal
-            isOpen={this.state.modalIsOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
-          >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+                isOpen={this.state.modalIsOpen}
+                onAfterOpen={this.afterOpenModal}
+                onRequestClose={this.closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+              >
+                <h2 ref={subtitle => (this.subtitle = subtitle)}>
+                  Change Profile Image
+                </h2>
 
-            <div class="input-field col s12">
-              <p>{this.state.shortedcanarrnamelist}</p>
-
-            aloha
-
-            <form onSubmit={this.submitHndleimg}>
-          <input type="file" name="avatar" onChange={this.chngehndlimg} />
-          <input type="submit" value="submit" />
-        </form>
-
-            {this.state.url && <img className="images" src={this.state.url} />}
-            </div>
-
-            <div className="submit">
-              <input
-                type="submit"
-                className="btn"
-                onClick={this.shorlisthandler}
-                value="confirm shortlisting"
-                id="submit"
-              />
-            </div>
-          </Modal>
-
+                <div class="input-field col s12">
+                  <p>{this.state.shortedcanarrnamelist}</p>
+                  aloha
+                  {this.state.errfiletoolarge && (
+                    <div class="alert alert-danger" role="alert">
+                      File too large, select another file
+                    </div>
+                  )}
+                  {this.state.unsupportedFormat && (
+                    <div class="alert alert-danger" role="alert">
+                      Unsupported File, select another file
+                    </div>
+                  )}
+                  <form onSubmit={this.submitHndleimg}>
+                    <input
+                      type="file"
+                      name="avatar"
+                      onChange={this.chngehndlimg}
+                    />
+                    <input type="submit" value="submit" />
+                  </form>
+                  {this.state.url && (
+                    <img className="images" src={this.state.baseUrl} className="rounded-circle" />
+                  )}
+                </div>
+              </Modal>
 
               <form onSubmit={this.btn1handler}>
                 <br />
                 <br />
                 <br />
                 <div className="form-group">
-                <lable>First Name</lable>
+                  <lable>First Name</lable>
                   <input
                     required
                     type="text"
@@ -256,7 +289,7 @@ this.openModal()
                 </div>
 
                 <div className="form-group">
-                <label>Last Name</label>
+                  <label>Last Name</label>
                   <input
                     required
                     type="text"
@@ -270,7 +303,7 @@ this.openModal()
                 </div>
 
                 <div className="form-group">
-                <label>Email</label>
+                  <label>Email</label>
                   <input
                     required
                     type="email"
@@ -289,7 +322,7 @@ this.openModal()
                   value="save edited details"
                 />
               </form>
-                <br/>
+              <br />
               <button className="btn btn-primary" onClick={this.chngpss}>
                 change password
               </button>
