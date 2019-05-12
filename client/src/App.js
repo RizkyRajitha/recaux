@@ -24,6 +24,7 @@ import Changepass from "./pages/changepass/changepass";
 import Avatar from "./pages/avatar";
 import Shortlist from './pages/shortlist/shortlist'
 import Drawer from './components/drawer'
+import Pdftest from './pages/pdftset'
 
 
 import TemporaryDrawer from "./components/sidenav";
@@ -53,6 +54,7 @@ class App extends Component {
           <Route path="/avatar/:id" component={Avatar} />
           <Route path="/shortlist" component={Shortlist} />
           <Route path="/drawer" component={Drawer} />
+          <Route path="/pdftest" component={Pdftest} />
         </div>
       </BrowserRouter>
     );
