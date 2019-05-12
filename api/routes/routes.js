@@ -400,7 +400,7 @@ router.get("/test", (req, res) => {
   var hash = bcrypt.hashSync('admin', salt);
 
   const newuser = new User({
-    email: "admin@auxenta.com",
+    email: "admin@auxenta.com", 
     hash: hash
   });
 

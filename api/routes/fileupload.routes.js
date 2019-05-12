@@ -53,7 +53,7 @@ exports.profileimgup = (req, ress, next) => {
             console.log(path.extname(req.file.originalname));
             var imgexte = path.extname(req.file.originalname);
             cloudinary.uploader.upload(
-              "/home/dealwithit/Desktop/sepro/recaux/assets/avatar/" +
+              "/home/dealwithit/Documents/dev/recaux/assets/avatar/" +
                 req.params.id +
                 imgexte,
               {
