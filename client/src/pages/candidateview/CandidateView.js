@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./candidateview.css";
-import jsonwebtoken from 'jsonwebtoken'
+import jsonwebtoken from "jsonwebtoken";
 import Navbar from "../../components/navbar";
-
+import exp from "../pdf.pdf";
 import Modal from "react-modal";
 import Select from "react-select";
+import { Document, Page, pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
+  pdfjs.version
+}/pdf.worker.js`;
 
 // import { Document } from 'react-pdf/dist/entry.webpack';
-
 
 const customStyles = {
   content: {
@@ -22,21 +26,35 @@ const customStyles = {
     transform: "translate(-50%, -50%)"
   }
 };
-Modal.setAppElement("#root");
 
+const customStyles2 = {
+  content: {
+    width: "80%",
+    height: "80%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
+Modal.setAppElement("#root");
 
 class CandidateView extends Component {
   state = {
     data: "",
-    userarr:[],
+    userarr: [],
     status: "",
     status_change: 0,
     file: null,
     selectedOption: null,
     selectoptionsnamelist: [],
-    shorlistSuccess:false
+    shorlistSuccess: false,
+    numPages: null
   };
-
+  /****************************************** */
   openModal = () => {
     this.setState({ modalIsOpen: true });
   };
@@ -57,7 +75,32 @@ class CandidateView extends Component {
 
   shortlistmodal = () => {
     this.openModal();
-  }
+  };
+
+  /***************************************** */
+  openModal2 = () => {
+    this.setState({ modalIsOpen2: true });
+  };
+
+  afterOpenModal2 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal2 = () => {
+    this.setState({ modalIsOpen2: false });
+  };
+
+  addcvmodal = () => {
+    this.openModal2();
+  };
+
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({ numPages });
+  };
+
+  /***************************************** */
 
   handleChangemodalselect = selectedOption => {
     this.setState({ selectedOption });
@@ -83,40 +126,36 @@ class CandidateView extends Component {
       candidateallocated: this.state.data._id
     };
 
-    console.log('sent payload'+payload);
+    console.log("sent payload" + payload);
 
     axios
-      .post("/usr/shortlistOne/"+this.state.id, payload, config)
+      .post("/usr/shortlistOne/" + this.state.id, payload, config)
       .then(res => {
         console.log(JSON.stringify(res.data));
         //this.setState({shorlistSuccess:true})
-        if(res.data.msg=="allocated_success"){
-          this.setState({shorlistSuccess:true})
+        if (res.data.msg == "allocated_success") {
+          this.setState({ shorlistSuccess: true });
           window.location.reload(false);
         }
-        this.closeModal()
-        
+        this.closeModal();
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-
   componentDidMount() {
     const id = this.props.match.params.id;
     console.log(id);
 
     const jwt = localStorage.getItem("jwt");
-    console.log('jwt token -- - -- >>>'+jwt);
+    console.log("jwt token -- - -- >>>" + jwt);
 
     try {
       console.log("in register");
       var pay = jsonwebtoken.verify(jwt, "authdemo");
-      console.log('payload - '+pay);
-      console.log('************************************' )
-
-      
+      console.log("payload - " + pay);
+      console.log("************************************");
     } catch (error) {
       console.log("not logged in redirecting...............");
 
@@ -205,52 +244,80 @@ class CandidateView extends Component {
         <div className="canview">
           <div className="canview2">
             {this.state.status_change === 1 && (
-              <div color="primary" >
-                status change succsessfuly
-              </div>
+              <div color="primary">status change succsessfuly</div>
             )}
 
- {this.state.shorlistSuccess&& (
-               <div color="primary" >
-                 Allocated for shorlisting succsessfuly
-               </div>
-             )}
- 
-<Modal
-            isOpen={this.state.modalIsOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
-          >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+            {this.state.shorlistSuccess && (
+              <div color="primary">Allocated for shorlisting succsessfuly</div>
+            )}
 
-            <div class="input-field col s12">
-              <p>{this.state.shortedcanarrnamelist}</p>
+            <Modal
+              isOpen={this.state.modalIsOpen}
+              onAfterOpen={this.afterOpenModal}
+              onRequestClose={this.closeModal}
+              style={customStyles}
+              contentLabel="Example Modal"
+            >
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
 
-              <Select
-                
-                value={selectedOption}
-                onChange={this.handleChangemodalselect}
-                options={this.state.userarr}
-              />
-            </div>
+              <div class="input-field col s12">
+                <p>{this.state.shortedcanarrnamelist}</p>
 
-            <div className="submit">
-              <input
-                type="submit"
-                className="btn"
-                onClick={this.shorlisthandler}
-                value="confirm shortlisting"
-                id="submit"
-              />
-            </div>
-          </Modal>
+                <Select
+                  value={selectedOption}
+                  onChange={this.handleChangemodalselect}
+                  options={this.state.userarr}
+                />
+              </div>
 
+              <div className="submit">
+                <input
+                  type="submit"
+                  className="btn"
+                  onClick={this.shorlisthandler}
+                  value="confirm shortlisting"
+                  id="submit"
+                />
+              </div>
+            </Modal>
 
+            <Modal
+              isOpen={this.state.modalIsOpen2}
+              onAfterOpen={this.afterOpenModal2}
+              onRequestClose={this.closeModal2}
+              style={customStyles2}
+              contentLabel="Example Modal 2"
+            >
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>
+                {this.state.data.name + "'s" + " Resume"}
+              </h2>
 
-{
-  /**
+              <div className="pdf" style={{ width: 1500 }}>
+                <Document file={exp} onLoadSuccess={this.onDocumentLoadSuccess}>
+                  {/* <Page pageIndex={0} width={1500} /> */}
+
+                  {Array.from(new Array(this.state.numPages), (el, index) => (
+                    <Page
+                      width={1500}
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                    />
+                  ))}
+                </Document>
+              </div>
+
+              <div className="submit">
+                <input
+                  type="submit"
+                  className="btn"
+                  onClick={this.shorlisthandler}
+                  value="confirm shortlisting"
+                  id="submit"
+                />
+              </div>
+            </Modal>
+
+            {/**
   assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
 assignToshortlisterbyName: "Bharana perera"
 date: "2019-05-03T14:55:20.889Z"
@@ -260,14 +327,22 @@ name: "Mark Zuckerburg"
 shortlister: "5caa511c56a61d6a2492ec96"
 shortlisterName: "Bharana perera"
 status: "New"
-  */
-}
+  */}
 
- {this.state.data.shortlisterName && <label> Allocated to shortlist to -   {this.state.data.shortlisterName} </label>}
-      {this.state.data.assignToshortlisterbyName && <label> Assigned by -   {this.state.data.assignToshortlisterbyName} </label>}
-
-
-
+            {this.state.data.shortlisterName && (
+              <label>
+                {" "}
+                Allocated to shortlist to - {
+                  this.state.data.shortlisterName
+                }{" "}
+              </label>
+            )}
+            {this.state.data.assignToshortlisterbyName && (
+              <label>
+                {" "}
+                Assigned by - {this.state.data.assignToshortlisterbyName}{" "}
+              </label>
+            )}
 
             <ul className="list-group list-group-flush ">
               <li className="list-group-item"> date reciver : {d}</li>
@@ -290,11 +365,13 @@ status: "New"
             </ul>
           </div>
 
-
           <button onClick={this.shortlistmodal} className="btn btn-primary">
             alocate to shortlist
           </button>
 
+          <button onClick={this.addcvmodal} className="btn btn-primary">
+            add cv
+          </button>
 
           <div class="form-group">
             <label for="exampleFormControlSelect2">
@@ -326,7 +403,6 @@ status: "New"
 
           <br />
           <br />
-
 
           {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>

@@ -476,5 +476,8 @@
 .sidenavmain {
   position: fixed;
 }
+.avatar{
+  margin-top: 300px;
+}
 
 /*# sourceMappingURL=react-sidenav.css.map*/
