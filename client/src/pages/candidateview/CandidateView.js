@@ -29,7 +29,7 @@ const customStyles = {
 
 const customStyles2 = {
   content: {
-    width: "80%",
+    width: "90%",
     height: "80%",
     top: "50%",
     left: "50%",
@@ -58,14 +58,11 @@ class CandidateView extends Component {
     cvNotFOundErr: false,
     errfiletoolarge: false,
     unsupportedFormat: false,
+    isLoading: false
   };
   /****************************************** */
   openModal = () => {
     this.setState({ modalIsOpen: true });
-  };
-
-  changeHandlercontent = e => {
-    this.setState({ content: e.target.value });
   };
 
   afterOpenModal = () => {
@@ -109,12 +106,8 @@ class CandidateView extends Component {
     this.setState({ cvFile: e.target.files[0] });
     console.log(e.target.files);
     this.setState({ id: this.props.match.params.id });
-  };
+    this.setState({ isLoading: true });
 
-  cvUploadHandler = () => {
-    if (this.state.cvFile === null) {
-      this.setState({ cvNotFOundErr: true });
-    } else {
       this.setState({ cvNotFOundErr: false });
 
       console.log(this.state.data);
@@ -124,7 +117,7 @@ class CandidateView extends Component {
       console.log(this.props.match.params.id);
 
       const formdata = new FormData();
-      formdata.append("cv", this.state.cvFile);
+      formdata.append("cv", e.target.files[0]);
       //
       var jwt = localStorage.getItem("jwt");
 
@@ -138,22 +131,71 @@ class CandidateView extends Component {
       axios
         .post("/usr/cv/" + this.props.match.params.id, formdata, config)
         .then(result => {
-          console.log("awoooo" + result);
-          this.setState({cvUrl:result.data.ul})
+          console.log("awoooo" + JSON.stringify(result));
+          this.setState({ cvUrl: result.data.url });
+          this.setState({ isLoading: false });
         })
         .catch(
           function(error) {
             console.log(error.response.data);
-  
+            this.setState({ isLoading: false });
             if ("file_too_large" === error.response.data) {
               this.setState({ errfiletoolarge: true });
             }
-  
+
             if ("unsupported_file_format" === error.response.data) {
               this.setState({ unsupportedFormat: true });
             }
           }.bind(this)
         );
+  };
+
+  cvUploadHandler = () => {
+    if (this.state.cvFile === null) {
+      this.setState({ cvNotFOundErr: true });
+    } else {
+      // this.setState({ isLoading: true });
+
+      // this.setState({ cvNotFOundErr: false });
+
+      // console.log(this.state.data);
+      // console.log(this.state.data.cvUrl);
+
+      // console.log("hahah");
+      // console.log(this.props.match.params.id);
+
+      // const formdata = new FormData();
+      // formdata.append("cv", this.state.cvFile);
+      // //
+      // var jwt = localStorage.getItem("jwt");
+
+      // var config = {
+      //   headers: {
+      //     "content-type": "multipart/form-data",
+      //     authorization: jwt
+      //   }
+      // };
+
+      // axios
+      //   .post("/usr/cv/" + this.props.match.params.id, formdata, config)
+      //   .then(result => {
+      //     console.log("awoooo" + JSON.stringify(result));
+      //     this.setState({ cvUrl: result.data.url });
+      //     this.setState({ isLoading: false });
+      //   })
+      //   .catch(
+      //     function(error) {
+      //       console.log(error.response.data);
+      //       this.setState({ isLoading: false });
+      //       if ("file_too_large" === error.response.data) {
+      //         this.setState({ errfiletoolarge: true });
+      //       }
+
+      //       if ("unsupported_file_format" === error.response.data) {
+      //         this.setState({ unsupportedFormat: true });
+      //       }
+      //     }.bind(this)
+      //   );
     }
   };
 
@@ -165,6 +207,7 @@ class CandidateView extends Component {
   };
 
   shorlisthandler = () => {
+    this.setState({ isLoading: true });
     console.log(
       "on the way + " +
         JSON.stringify(this.state.selectedOption) +
@@ -190,6 +233,7 @@ class CandidateView extends Component {
       .then(res => {
         console.log(JSON.stringify(res.data));
         //this.setState({shorlistSuccess:true})
+        this.setState({ isLoading: false });
         if (res.data.msg == "allocated_success") {
           this.setState({ shorlistSuccess: true });
           window.location.reload(false);
@@ -198,6 +242,7 @@ class CandidateView extends Component {
       })
       .catch(err => {
         console.log(err);
+        this.setState({ isLoading: false });
       });
   };
 
@@ -254,6 +299,7 @@ class CandidateView extends Component {
       .then(res => {
         this.setState({ data: res.data.candidateData });
         this.setState({ userarr: res.data.userData });
+        this.setState({ cvUrl: res.data.candidateData.cvUrl });
         console.log(res);
         console.log(this.state);
       })
@@ -326,22 +372,24 @@ class CandidateView extends Component {
                 {this.state.data.name + "'s" + " Resume"}
               </h2>
 
+              <div class="loader-candidateview" hidden={!this.state.isLoading}  />
+
               {this.state.cvNotFOundErr && (
                 <div class="alert alert-danger" role="alert">
                   Please select a file
                 </div>
               )}
 
-{this.state.errfiletoolarge && (
-                  <div class="alert alert-danger" role="alert">
-                    File too large, select another file
-                  </div>
-                )}
-                {this.state.unsupportedFormat && (
-                  <div class="alert alert-danger" role="alert">
-                    Unsupported File, select another file
-                  </div>
-                )}
+              {this.state.errfiletoolarge && (
+                <div class="alert alert-danger" role="alert">
+                  File too large, select another file
+                </div>
+              )}
+              {this.state.unsupportedFormat && (
+                <div class="alert alert-danger" role="alert">
+                  Unsupported File, select another file
+                </div>
+              )}
 
               {console.log(
                 "url - " +
@@ -352,18 +400,19 @@ class CandidateView extends Component {
 
               {
                 <div>
-                  <button onClick={this.cvUploadHandler}>
+                  <label className="uploadtaglable" >
                     {this.state.data.cvUrl === null
-                      ? "Upload resume"
-                      : "Change resume"}
-                  </button>
+                      ? "Upload resume    "
+                      : "Change resume    "}
+                  </label>
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
                 </div>
               }
 
               <div className="pdf" style={{ width: 1500 }}>
                 <Document
-                  file={this.state.data.cvUrl}
+                loading= {<div class="loader-candidateview" />}
+                  file={this.state.cvUrl}
                   onLoadSuccess={this.onDocumentLoadSuccess}
                 >
                   {/* <Page pageIndex={0} width={1500} /> */}
@@ -378,15 +427,7 @@ class CandidateView extends Component {
                 </Document>
               </div>
 
-              <div className="submit">
-                <input
-                  type="submit"
-                  className="btn"
-                  onClick={this.shorlisthandler}
-                  value="confirm shortlisting"
-                  id="submit"
-                />
-              </div>
+        
             </Modal>
 
             {/**

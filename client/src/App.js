@@ -53,6 +53,8 @@ class App extends Component {
           <Route path="/shortlist" component={Shortlist} />
           <Route path="/drawer" component={Drawer} />
           <Route path="/pdftest" component={Pdftest} />
+          <Route path="/spinner" component={Home} />
+          
         </div>
       </BrowserRouter>
     );

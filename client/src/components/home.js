@@ -1,11 +1,24 @@
 import React from "react";
 
+import "./spinner.css";
 
 const home = () => {
   return (
-    <div class="container">
-      <h1>Recuitment @ Auxenta</h1>
-      
+    <div>
+      <div class="lds-spinner">
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+      </div>
     </div>
   );
 };

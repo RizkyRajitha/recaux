@@ -37,7 +37,8 @@ class Userprofile extends Component {
     id: "",
     errfiletoolarge: false,
     unsupportedFormat: false,
-    userowner:false
+    userowner:false,
+    isLoading:false
   };
 
   chngehndlimg = e => {
@@ -145,6 +146,7 @@ class Userprofile extends Component {
 
   submitHndleimg = e => {
     e.preventDefault();
+    this.setState({isLoading:true})
     console.log("hahah");
     console.log(this.props.match.params.id);
 
@@ -174,13 +176,13 @@ class Userprofile extends Component {
 
         var baseUrl = preurl + config + posturl;
         this.setState({ baseUrl: baseUrl });
-
+        this.setState({isLoading:false})
         //document.querySelector('.images').setAttribute('src',this.state.url)
       })
       .catch(
         function(error) {
           console.log(error.response.data);
-
+          this.setState({isLoading:false})
           if ("file_too_large" === error.response.data) {
             this.setState({ errfiletoolarge: true });
           }
@@ -222,6 +224,8 @@ class Userprofile extends Component {
         <Navbar />
         <Drawer avatarUrl={this.state.baseUrl} />
         <div className="container">
+
+        
           {this.state.userdata.avatarUrl && (
             <img
               id="avatarimage"
@@ -234,7 +238,7 @@ class Userprofile extends Component {
             {this.state.success && (
               <div class="alert alert-success" role="alert">
                 updated successfully
-              </div>
+              </div> 
             )}
 
             <table id="userdetailstable" class="table table-borderless">
@@ -277,6 +281,8 @@ class Userprofile extends Component {
               <h2 ref={subtitle => (this.subtitle = subtitle)}>
                 Change Profile Image
               </h2>
+
+              <div class="loader-userprofile" hidden={!this.state.isLoading} ></div>
 
               <div class="input-field col s12">
                 <p>{this.state.shortedcanarrnamelist}</p>

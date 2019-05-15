@@ -47,7 +47,8 @@ class dashboard extends Component {
     shorlist: [],
     shortlistbythisuser: [],
     shortedcanarrnamelist: [],
-    shrtlistSuccess: false
+    shrtlistSuccess: false,
+    isLoading:false
   };
 
   openModal = () => {
@@ -204,6 +205,9 @@ class dashboard extends Component {
   };
 
   shorlisthandler = () => {
+
+    this.setState({isLoading:true})
+
     console.log(
       "on the way + " +
         JSON.stringify(this.state.selectedOption) +
@@ -229,14 +233,17 @@ class dashboard extends Component {
       .then(res => {
         console.log(res);
         this.closeModal();
+        this.setState({isLoading:false})
         window.location.reload(false);
       })
       .catch(err => {
+        this.setState({isLoading:false})
         console.log(err);
       });
   };
 
   getuserdata = () => {
+    this.setState({isLoading:true})
     console.log("in user data");
     console.log("usr type" + this.state.usertype);
     console.log(this.state);
@@ -254,9 +261,11 @@ class dashboard extends Component {
           console.log("user data - - - " + data.data);
           this.setState({ userdata: data.data });
           console.log(this.state);
+          this.setState({isLoading:false})
         })
         .catch(err => {
           console.log(err);
+          this.setState({isLoading:false})
         });
     }
   };
@@ -266,7 +275,7 @@ class dashboard extends Component {
     console.log("mount");
     var jwt = localStorage.getItem("jwt");
 
-
+    this.setState({isLoading:true})
     var config = {
       headers: { authorization: jwt }
     };
@@ -290,7 +299,7 @@ class dashboard extends Component {
           });
 
           this.setState({ logedin: true });
-
+         
 
         var preurl = result.data.avatarUrl.slice(0,48)
         var posturl = result.data.avatarUrl.slice(49,result.data.avatarUrl.length)
@@ -302,7 +311,7 @@ class dashboard extends Component {
           //console.log(this.state);
           this.getcandidatedata();
           this.getuserdata();
-
+ this.setState({isLoading:false})
           localStorage.setItem("userId", result.data.id);
         } else {
           this.setState({ logedin: false });
@@ -311,6 +320,7 @@ class dashboard extends Component {
       .catch(err => {
         this.setState({ logedin: false });
         console.log("error" + err);
+        this.setState({isLoading:true})
       });
 
     setTimeout(() => {
