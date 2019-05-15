@@ -47,7 +47,22 @@ const avatarUpload = multer({ storage: storageAvatar,limits:{fileSize:2000000},
 
 
 }).single("avatar");
-const cvUpload = multer({ storage: storageCv }).single("cv");
+const cvUpload = multer({ storage: storageCv ,limits:{fileSize:10000000},
+  fileFilter:function(req,file,cb){
+
+    var fileTypesAllowed = /pdf/
+    var extAvatar = fileTypesAllowed.test(path.extname(file.originalname).toLowerCase());
+    var mimeType = fileTypesAllowed.test(file.mimetype)
+    
+    if(mimeType && extAvatar){
+      return cb(null,true);
+    } else {
+      cb({'msg':'unsupported_format'});
+    }
+  
+  }}
+  
+  ).single("cv");
 
 exports.profileimgup = (req, ress, next) => {
   var res = "";
@@ -141,7 +156,16 @@ exports.cvupload = (req, ress,next) => {
       } else {
         cvUpload(req, res, err => {
           if (err) {
-            console.log(err);
+           
+            console.log('multer errorr-  '+JSON.stringify(err));
+
+            if(err.code =="LIMIT_FILE_SIZE"){
+              ress.status(400).send("file_too_large")
+            }
+            if(err.msg =="unsupported_format"){
+              ress.status(400).send("unsupported_file_format")
+            }
+
           } else {
             console.log(path.extname(req.file.originalname));
             var cvexte = path.extname(req.file.originalname);

@@ -55,7 +55,9 @@ class CandidateView extends Component {
     numPages: null,
     cvFile: null,
     cvUrl: null,
-    cvNotFOundErr: false
+    cvNotFOundErr: false,
+    errfiletoolarge: false,
+    unsupportedFormat: false,
   };
   /****************************************** */
   openModal = () => {
@@ -137,8 +139,21 @@ class CandidateView extends Component {
         .post("/usr/cv/" + this.props.match.params.id, formdata, config)
         .then(result => {
           console.log("awoooo" + result);
+          this.setState({cvUrl:result.data.ul})
         })
-        .catch(err => {});
+        .catch(
+          function(error) {
+            console.log(error.response.data);
+  
+            if ("file_too_large" === error.response.data) {
+              this.setState({ errfiletoolarge: true });
+            }
+  
+            if ("unsupported_file_format" === error.response.data) {
+              this.setState({ unsupportedFormat: true });
+            }
+          }.bind(this)
+        );
     }
   };
 
@@ -316,6 +331,17 @@ class CandidateView extends Component {
                   Please select a file
                 </div>
               )}
+
+{this.state.errfiletoolarge && (
+                  <div class="alert alert-danger" role="alert">
+                    File too large, select another file
+                  </div>
+                )}
+                {this.state.unsupportedFormat && (
+                  <div class="alert alert-danger" role="alert">
+                    Unsupported File, select another file
+                  </div>
+                )}
 
               {console.log(
                 "url - " +
