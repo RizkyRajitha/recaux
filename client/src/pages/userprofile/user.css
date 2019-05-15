@@ -3,3 +3,17 @@
     height: 650px;
     width: 100%;
 }
+
+#usermainformdiv{
+margin-top: 200px;
+margin-left: 200px;
+}
+#avatarimage{
+    margin-right: 1000px;
+    margin-top: 100px;
+}
+#userdetailstable{
+    margin-left: 300px;
+    margin-top: -160px;
+    width: 500px;
+}

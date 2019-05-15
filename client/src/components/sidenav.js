@@ -31,6 +31,7 @@ class TemporaryDrawer extends Component {
           if (selected === "user") {
             var id = localStorage.getItem("userId");
             this.props.history.push("/user/" + id);
+            window.location.reload(false);
           }
           if (selected === "adduser") {
             this.props.history.push("/register");
@@ -53,21 +54,15 @@ class TemporaryDrawer extends Component {
       >
         <SideNav.Toggle />
         <SideNav.Nav>
-          {
-            this.state.toggled && 
-               (
-                <NavItem  eventKey="user">
-                  <NavIcon>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg" />
-                  </NavIcon>
-                  
-                </NavItem>
-              )
-            }
-                       
-            
+          {this.state.toggled && (
+            <NavItem eventKey="user">
+              <NavIcon className="sidenavAvatar" >
+                <img src={this.props.avatarUrl ?this.props.avatarUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"} />
+              </NavIcon>
+            </NavItem>
+          )}
 
-          <NavItem className={this.state.toggled && 'avatar'} eventKey="home">
+          <NavItem className={this.state.toggled && "avatar"} eventKey="home">
             <NavIcon>
               <i className="fa fa-fw fa-home" style={{ fontSize: "1.75em" }} />
             </NavIcon>
@@ -114,7 +109,7 @@ class TemporaryDrawer extends Component {
             </NavItem>
           </NavItem>
 
-          <NavItem className="logoutlinksidenav" eventKey="logout">
+          <NavItem className = {this.state.toggled ?"logoutlinksidenavopen" : "logoutlinksidenavclosed"} eventKey="logout">
             <NavIcon>
               <i class="fas fa-sign-out-alt" style={{ fontSize: "1.75em" }} />
             </NavIcon>

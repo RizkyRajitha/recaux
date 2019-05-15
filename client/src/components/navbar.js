@@ -46,7 +46,7 @@ const Navbar = props => {
               Shortlist
             </a>
           </li> */}
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" id="notification" >
             <a
               class="nav-link dropdown-toggle"
               id="navbarDropdown"

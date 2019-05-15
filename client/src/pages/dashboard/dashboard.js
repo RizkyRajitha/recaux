@@ -37,6 +37,7 @@ class dashboard extends Component {
     lastName: "",
     greet: "",
     usertype: "",
+    avatarUrl:false,
     selectedOption: null,
     selectoptionsnamelist: [],
     emailverified: false,
@@ -115,7 +116,7 @@ class dashboard extends Component {
       .get("/usr/getcandidate")
       .then(data => {
         console.log("candidate data - - - " + data.data);
-        this.setState({ candidatedata: data.data });
+        this.setState({ candidatedata: data.data.candidateData,selectoptionsnamelist:data.data.userData });
       })
       .catch(err => {
         console.log(err);
@@ -143,16 +144,16 @@ class dashboard extends Component {
 
     console.log(shortedcanarrnamelist);
 
-    var opt = [];
-    userdetails.forEach(ele => {
-      var displayname = `${ele.firstName} ${ele.lastName}`;
+    // var opt = [];
+    // userdetails.forEach(ele => {
+    //   var displayname = `${ele.firstName} ${ele.lastName}`;
 
-      opt.push({ value: ele._id, label: displayname });
-    });
+    //   opt.push({ value: ele._id, label: displayname });
+    // });
 
-    this.setState({ selectoptionsnamelist: opt });
+    //this.setState({ selectoptionsnamelist: opt });
 
-    console.log(opt);
+    //console.log(opt);
   };
 
   handleChangemodalselect = selectedOption => {
@@ -263,21 +264,8 @@ class dashboard extends Component {
   componentDidMount() {
     this.greet();
     console.log("mount");
-
     var jwt = localStorage.getItem("jwt");
-    var now = new Date();
-    console.log(now.getHours());
 
-    // try {
-    //   var dashboard = jsonwebtoken.verify(jwt)
-    //   if(dashboard){
-    //     this.setState({logedin:true})
-    //   }
-    // } catch (error) {
-    //   this.setState({logedin:true})
-    //   console.log(error)
-
-    // }
 
     var config = {
       headers: { authorization: jwt }
@@ -298,9 +286,19 @@ class dashboard extends Component {
             lastName: result.data.lastName,
             usertype: result.data.usertype,
             shorlist: result.data.shortList
+            
           });
 
           this.setState({ logedin: true });
+
+
+        var preurl = result.data.avatarUrl.slice(0,48)
+        var posturl = result.data.avatarUrl.slice(49,result.data.avatarUrl.length)
+        var config = "/w_150,h_155,c_thumb/"
+        
+        var baseUrl = preurl+config+posturl;
+        this.setState({avatarUrl:baseUrl})
+
           //console.log(this.state);
           this.getcandidatedata();
           this.getuserdata();
@@ -329,7 +327,7 @@ class dashboard extends Component {
         <div className="dashboardmain">
          
           <Navbar/>
-          <Drawer/>
+          <Drawer avatarUrl={this.state.avatarUrl}/>
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
           <h1 className="greet">
             {this.state.greet} {this.state.firstName}

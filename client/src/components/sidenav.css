@@ -470,14 +470,22 @@
   box-sizing: inherit;
 }
 
-.logoutlinksidenav {
-  margin-top: 600px;
+.logoutlinksidenavclosed {
+  margin-top: 570px;
 }
+.logoutlinksidenavopen {
+  margin-top: 220px;
+}
+
+
 .sidenavmain {
   position: fixed;
 }
 .avatar{
   margin-top: 300px;
+}
+.sidenavAvatar{
+  
 }
 
 /*# sourceMappingURL=react-sidenav.css.map*/

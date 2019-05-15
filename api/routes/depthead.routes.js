@@ -2,14 +2,7 @@ const passport = require("passport");
 const User = require("../db/users");
 const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
-const cloudinary = require("cloudinary").v2;
 var fs = require("fs");
-
-cloudinary.config({
-  cloud_name: "dijjqfsto",
-  api_key: "943785761215535",
-  api_secret: "MSfacY2b-OGHnjJLiLni9zfH1R0"
-});
 
 exports.shortlistData = (req, res, next) => {
   passport.authenticate(
@@ -100,3 +93,54 @@ exports.userlist = (req, res, next) => {
   )(req, res, next);
 };
 
+exports.updateStatus = (req, res) => {
+  console.log(req.params.id);
+  var id = req.params.id;
+  console.log(req.body.status);
+  Candidate.findByIdAndUpdate(
+    ObjectID(id),
+    { $set: { status: req.body.status } },
+    { new: true }
+  )
+    .then(doc => {
+      console.log("doc");
+      console.log(doc);
+      res.json(doc);
+    })
+    .catch(err => {
+      console.log(err);
+      res.json(err);
+    });
+}
+
+
+exports.evaluation = (req, res) => {
+  console.log("eval");
+
+  console.log(req.params.id);
+
+  console.log(req.body);
+
+  console.log("bodtyyy " + req.body.evaluatorId);
+  console.log("bodtyyy " + req.body.evaluationMarks);
+
+  const evalation = new Evaluation({
+    candidateId: req.body.candidateId,
+    evaluatorId: req.body.evaluatorId,
+    evaluationMarks: req.body.evaluationMarks,
+    acadamicBackground: req.body.acadamicBackground,
+    indusrtyExperiance: req.body.indusrtyExperiance,
+    currentPosition: req.body.currentPosition,
+    JobPeriod: req.body.JobPeriod
+  });
+
+  evalation
+    .save()
+    .then(doc => {
+      console.log(doc);
+      res.status(200).json(doc);
+    })
+    .catch(er => {
+      console.log(er);
+    });
+}
