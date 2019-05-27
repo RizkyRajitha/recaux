@@ -14,14 +14,13 @@ var userSchema = new Schema({
     required: true,
     dropDups: true
   },
-  firstName: { 
-    type: String 
+  firstName: {
+    type: String
   },
 
   lastName: {
-     type: String 
-    }
-     ,
+    type: String
+  },
   hash: {
     type: String
   },
@@ -31,19 +30,29 @@ var userSchema = new Schema({
   usertype: {
     type: String
   },
-  candidatesAssinged:{
-    type:String,
-    default:0
+  noOfcandidatesAssinged: {
+    type: String,
+    default: 0
   },
-  shortlist:[]
+  avatarUrl:{type:String,default:null},
+  shortlist: [
+    {
+      candidateId: { type: String },
+      allocatedbyUserId: { type: String },
+      allocatedDate: { type: String },
+      allocatedUserName:{type:String},
+      shortlistedDate: { type: String },
+      shortlistStatus: { type: Boolean ,default:false}
+    }
+  ]
 });
 
-userSchema.pre("save", function(next) {
-  console.log("savin.....");
-  this.salt = bcrypt.genSaltSync(saltRounds);
-  this.hash = bcrypt.hashSync(this.hash, this.salt);
-  next();
-});
+// userSchema.pre("save", function(next) {
+//   console.log("savin.....");
+//   this.salt = bcrypt.genSaltSync(saltRounds);
+//   this.hash = bcrypt.hashSync(this.hash, this.salt);
+//   next();
+// });
 
 // userSchema.pre("update", function(next) {
 //   console.log("updating.....");
@@ -99,7 +108,7 @@ userSchema.methods.generateJWT = function() {
       emailverified: this.emailverified
     },
     "authdemo",
-    { expiresIn: "10m" }
+    { expiresIn: "3600m" }
   );
 };
 
@@ -110,5 +119,3 @@ userSchema.methods.generateJWT = function() {
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
-
-

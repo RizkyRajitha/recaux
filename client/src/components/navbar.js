@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import './nav.css'
+import "./nav.css";
 
 const Navbar = props => {
   const logoutHandler = e => {
@@ -12,9 +12,6 @@ const Navbar = props => {
 
   return (
     <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
-      <a className="navbar-brand" href="/">
-        Rect@Aux
-      </a>
       <button
         className="navbar-toggler"
         type="button"
@@ -26,10 +23,11 @@ const Navbar = props => {
       >
         <span className="navbar-toggler-icon" />
       </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
+
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
         <ul className="navbar-nav">
-          <li className="nav-item">
-            <a className="nav-link" href="/dashboard">
+          {/* <li className="nav-item">
+            <a id='navdashbordlink' className="nav-link" href="/dashboard">
               Dashboard
             </a>
           </li>
@@ -43,11 +41,43 @@ const Navbar = props => {
               Register
             </a>
           </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/shortlist">
+              Shortlist
+            </a>
+          </li> */}
+          <li class="nav-item dropdown" id="notification" >
+            <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Dropdown
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">
+                Action
+              </a>
+              <a class="dropdown-item" href="#">
+                Another action
+              </a>
+              <div class="dropdown-divider" />
+              <a class="dropdown-item" href="#">
+                Something else here
+              </a>
+            </div>
+          </li>
         </ul>
-        <button id='logoutbtn' className="btn btn-outline-danger my-2 my-sm-0 " onClick={logoutHandler}>
+        <button
+          id="logoutbtn"
+          className="btn btn-outline-danger my-2 my-sm-0 "
+          onClick={logoutHandler}
+        >
           Logout
         </button>
-        
       </div>
     </nav>
   );

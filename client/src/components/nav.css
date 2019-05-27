@@ -3,5 +3,12 @@
 }
 #logoutbtn{
     align-self: right;
-    margin-left: 1650px;
+    margin-left: 20px;
+}
+
+#navdashbordlink{
+    margin-left: 50px;
+}
+#notification{
+    margin-left: 1650px
 }

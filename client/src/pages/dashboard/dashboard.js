@@ -7,6 +7,7 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
+import Drawer from "../../components/sidenav";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -36,15 +37,18 @@ class dashboard extends Component {
     lastName: "",
     greet: "",
     usertype: "",
+    avatarUrl: false,
     selectedOption: null,
     selectoptionsnamelist: [],
     emailverified: false,
     candidatedata: [],
     userdata: [],
     numofshort: 0,
-    shorlisted: [],
+    shorlist: [],
+    shortlistbythisuser: [],
     shortedcanarrnamelist: [],
-    shrtlistSuccess: false
+    shrtlistSuccess: false,
+    isLoading: false
   };
 
   openModal = () => {
@@ -113,7 +117,10 @@ class dashboard extends Component {
       .get("/usr/getcandidate")
       .then(data => {
         console.log("candidate data - - - " + data.data);
-        this.setState({ candidatedata: data.data });
+        this.setState({
+          candidatedata: data.data.candidateData,
+          selectoptionsnamelist: data.data.userData
+        });
       })
       .catch(err => {
         console.log(err);
@@ -124,7 +131,7 @@ class dashboard extends Component {
     this.openModal();
 
     var canarr = this.state.candidatedata;
-    var shortedcanarr = this.state.shorlisted;
+    var shortedcanarr = this.state.shortlistbythisuser;
     var shortedcanarrnamelist = [];
     var userlist = [];
     var userdetails = this.state.userdata;
@@ -141,16 +148,16 @@ class dashboard extends Component {
 
     console.log(shortedcanarrnamelist);
 
-    var opt = [];
-    userdetails.forEach(ele => {
-      var displayname = `${ele.firstName} ${ele.lastName}`;
+    // var opt = [];
+    // userdetails.forEach(ele => {
+    //   var displayname = `${ele.firstName} ${ele.lastName}`;
 
-      opt.push({ value: ele._id, label: displayname });
-    });
+    //   opt.push({ value: ele._id, label: displayname });
+    // });
 
-    this.setState({ selectoptionsnamelist: opt });
+    //this.setState({ selectoptionsnamelist: opt });
 
-    console.log(opt);
+    //console.log(opt);
   };
 
   handleChangemodalselect = selectedOption => {
@@ -161,45 +168,53 @@ class dashboard extends Component {
   shortlisting = (id, bxstate) => {
     if (bxstate) {
       this.setState({ numofshort: this.state.numofshort + 1 });
+
       this.setState({
-        shorlisted: [...this.state.shorlisted, id]
+        shortlistbythisuser: [...this.state.shortlistbythisuser, id]
       });
+
+      // var temp_arr = this.state.shortlistbythisuser;
+      // console.log("shrtl is - " + this.state.shortlistbythisuser);
+
+      // temp_arr.push(id);
+
+      // this.setState({
+      //   shortlistbythisuser: temp_arr
+      // });
+
+      console.log("temp arr - " + this.state.shortlistbythisuser);
     } else {
       this.setState({ numofshort: this.state.numofshort - 1 });
-      var arr = this.state.shorlisted;
-
+      var arr = this.state.shortlistbythisuser;
       var key = arr.indexOf(id);
-
       console.log(key);
-
       if (key !== -1) {
         arr.splice(key, 1);
-        this.setState({ shorlisted: arr });
+        this.setState({ shortlistbythisuser: arr });
       }
-
-      //
     }
-
     setTimeout(() => {
       console.log(
         "clicked from card id -  " +
           id +
-          "bx state - " +
+          " bx state - " +
           bxstate +
           " num of resumes - " +
           this.state.numofshort +
           " resumeids - " +
-          this.state.shorlisted
+          JSON.stringify(this.state.shortlistbythisuser)
       );
     }, 1000);
   };
 
   shorlisthandler = () => {
+    this.setState({ isLoading: true });
+
     console.log(
       "on the way + " +
         JSON.stringify(this.state.selectedOption) +
         " candidates -  " +
-        this.state.shorlisted
+        this.state.shortlistbythisuser
     );
 
     var jwt = localStorage.getItem("jwt");
@@ -210,24 +225,27 @@ class dashboard extends Component {
 
     var payload = {
       allocateduser: this.state.selectedOption.value,
-      candidatesallocated: this.state.shorlisted
+      candidatesallocated: this.state.shortlistbythisuser
     };
 
-    console.log(payload);
+    console.log("payload" + JSON.stringify(payload));
 
     axios
-      .post("/usr/shortlistMany/"+this.state.id, payload, config)
+      .post("/usr/shortlistMany/" + this.state.id, payload, config)
       .then(res => {
         console.log(res);
-        this.closeModal()
-        window.location.reload(false)
+        this.closeModal();
+        this.setState({ isLoading: false });
+        window.location.reload(false);
       })
       .catch(err => {
+        this.setState({ isLoading: false });
         console.log(err);
       });
   };
 
   getuserdata = () => {
+    this.setState({ isLoading: true });
     console.log("in user data");
     console.log("usr type" + this.state.usertype);
     console.log(this.state);
@@ -245,9 +263,11 @@ class dashboard extends Component {
           console.log("user data - - - " + data.data);
           this.setState({ userdata: data.data });
           console.log(this.state);
+          this.setState({ isLoading: false });
         })
         .catch(err => {
           console.log(err);
+          this.setState({ isLoading: false });
         });
     }
   };
@@ -255,29 +275,20 @@ class dashboard extends Component {
   componentDidMount() {
     this.greet();
     console.log("mount");
-
     var jwt = localStorage.getItem("jwt");
-    var now = new Date();
-    console.log(now.getHours());
 
-    // try {
-    //   var dashboard = jsonwebtoken.verify(jwt)
-    //   if(dashboard){
-    //     this.setState({logedin:true})
-    //   }
-    // } catch (error) {
-    //   this.setState({logedin:true})
-    //   console.log(error)
-
-    // }
-
+    this.setState({ isLoading: true });
     var config = {
       headers: { authorization: jwt }
     };
+
+
     axios
       .get("/usr/dashboard", config)
       .then(result => {
         console.log("sucsess" + result.data);
+
+        
         if (result.data) {
           console.log("menna apu data");
           console.log(result.data);
@@ -288,22 +299,42 @@ class dashboard extends Component {
             id: result.data.id,
             firstName: result.data.firstName,
             lastName: result.data.lastName,
-            usertype: result.data.usertype
+            usertype: result.data.usertype,
+            shorlist: result.data.shortList
           });
 
           this.setState({ logedin: true });
+
+          localStorage.setItem("usertype",result.data.usertype);
+
+          if (result.data.avatarUrl) {
+            var preurl = result.data.avatarUrl.slice(0, 48);
+            var posturl = result.data.avatarUrl.slice(
+              49,
+              result.data.avatarUrl.length
+            );
+            var config = "/w_150,h_155,c_thumb/";
+
+            var baseUrl = preurl + config + posturl;
+            this.setState({ avatarUrl: baseUrl });
+          }
+
           //console.log(this.state);
           this.getcandidatedata();
           this.getuserdata();
-
+          this.setState({ isLoading: false });
           localStorage.setItem("userId", result.data.id);
-        } else {
+        } 
+        
+        
+        else {
           this.setState({ logedin: false });
         }
       })
       .catch(err => {
         this.setState({ logedin: false });
         console.log("error" + err);
+        this.setState({ isLoading: true });
       });
 
     setTimeout(() => {
@@ -319,11 +350,10 @@ class dashboard extends Component {
       return (
         <div className="dashboardmain">
           <Navbar />
-          <h1 className="greet">
-            {this.state.greet} {this.state.firstName}
-          </h1>
-          <br />
-          <br />
+          <Drawer avatarUrl={this.state.avatarUrl} />
+          <p className="usrtype">Logged in as : {this.state.usertype}</p>
+          
+    
           <button
             onClick={this.usrprofile}
             className="btn btn-outline-primary"
@@ -414,7 +444,7 @@ class dashboard extends Component {
             <div class="col-s8 " id="cardcontainer2">
               {cndetailes.map((can, iid) => {
                 //console.log(can.name+can.email+can.jobspec)
-/**
+                /**
  * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
 assignToshortlisterbyName: "Bharana perera"
 date: "2019-04-07T19:38:55.028Z"
@@ -426,7 +456,9 @@ shortlisterName: "Dewindi Anushika"
 status: "onhold"
  */
 
-                {console.log(can.shortlister+' - dis ')}
+                {
+                  console.log(can.shortlister + " - dis ");
+                }
                 return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
@@ -436,11 +468,10 @@ status: "onhold"
                     _id={can._id}
                     date={can.date}
                     status={can.status}
-                    shortlisterId = {can.shortlister}
+                    shortlisterId={can.shortlister}
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}
-                    assignToshortlisterbyName = {can.assignToshortlisterbyName}
-                    
+                    assignToshortlisterbyName={can.assignToshortlisterbyName}
                   />
                 );
               })}

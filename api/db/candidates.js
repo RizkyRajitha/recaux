@@ -11,11 +11,11 @@ var candidateSchema = new Schema({
   name: {
     type: String
   },
-  jobspec: {
+  jobspec: { 
     type: String
   },
   date: {
-    type: Date
+    type: String
   },
   status: {
     type: String,
@@ -32,7 +32,11 @@ var candidateSchema = new Schema({
   assignToshortlisterbyId: { type: String },
   assignToshortlisterbyName: { type: String },
   shortlister: { type: String },
-  shortlisterName:{type:String}
+  shortlisterName:{type:String},
+  shortlistedDate: { type: String },
+  shortlistStatus: { type: Boolean },
+  cvUrl:{type:String , default:null}
+
 });
 
 const Candidate = mongoose.model("Candidate", candidateSchema);

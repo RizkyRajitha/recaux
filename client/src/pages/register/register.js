@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import "./register.css";
+import Navbar from "../../components/navbar";
 
 var strongRegex = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
@@ -30,19 +31,48 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
   });
 
   return (
-    <div className="maindiv">
-      <div className="wrapper">
-        <div className="form-wrapper">
-          <div>
-            <br />
+    <div>
+      <Navbar />
 
-            {errors.invalidcred && (
-              <div class="alert alert-danger" role="alert">
-                {errors.invalidcred}
-              </div>
-            )}
+      <div className="maindiv">
+        <div className="wrapper">
+          <div className="form-wrapper">
+            <div>
+              <h2> Add new user </h2>
 
-            {/* 
+              {errors.invalidcred && (
+                <div class="alert alert-danger" role="alert">
+                  {errors.invalidcred}
+                </div>
+              )}
+
+              {console.log("errors - " + JSON.stringify(errors))}
+
+              {errors.sucsess && (
+                <div class="alert alert-success" role="alert">
+                  User added successfully
+                </div>
+              )}
+
+              {errors.noPrev && (
+                <div class="alert alert-danger" role="alert">
+                  Error: Access denied. please contact Administrator
+                </div>
+              )}
+
+              {errors.duplicateemalifound && (
+                <div class="alert alert-danger" role="alert">
+                  Error: Duplicate email found. please contact Administrator
+                </div>
+              )}
+
+              {errors.session_exp && (
+                <div class="alert alert-danger" role="alert">
+                  Error: Session Expired. please Login
+                </div>
+              )}
+
+              {/* //session_exp
 <Form>
       {errors.invalidcred && <p>{errors.invalidcred} </p>}
         <div className="row">
@@ -61,117 +91,113 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
         <input type="submit" value="Go...." />
       </Form> */}
 
-            <Form>
+              <Form>
+                <br />
+                <br />
+                <br />
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.email1 && errors.email1 && <p>{errors.email1} </p>}
+                  <Field
+                    name="email1"
+                    type="text"
+                    placeholder="Email"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.firstName && errors.firstName && (
+                    <p>{errors.firstName} </p>
+                  )}
+                  <Field
+                    name="firstName"
+                    type="text"
+                    placeholder="First name"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.lastName && errors.lastName && (
+                    <p>{errors.lastName} </p>
+                  )}
+                  <Field
+                    name="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+                  {errors.password1 && console.log(errors.password1)}
+                  {touched.password1 && errors.password1 && (
+                    <p>{errors.password1} </p>
+                  )}
+                  <Field
+                    name="password1"
+                    type="text"
+                    placeholder="Enter Password"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.password2 && errors.password2 && (
+                    <p>{errors.password2} </p>
+                  )}
+                  <Field
+                    name="password2"
+                    type="text"
+                    placeholder="Re enter Passwird"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.usertype && errors.usertype && (
+                    <p>{errors.usertype} </p>
+                  )}
+                  <Field
+                    name="usertype"
+                    component="select"
+                    required
+                    placeholder="Re enter Passwird"
+                    class="form-control"
+                  >
+                    <option value="default">Select one</option>
+                    <option value="hr_staff">HR staff</option>
+                    <option value="depthead">Department head</option>{" "}
+                    <option value="admin">Admin</option>
+                  </Field>
+                </div>
+
+                <div className="submit">
+                  <input
+                    type="submit"
+                    className="btn btn-raised btn-primary"
+                    value="Add user"
+                    id="submit"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </Form>
               <br />
               <br />
-              <br />
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-
-                {touched.email1 && errors.email1 && <p>{errors.email1} </p>}
-                <Field
-                  name="email1"
-                  type="text"
-                  placeholder="Email"
-                  class="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-
-                {touched.firstName && errors.firstName && (
-                  <p>{errors.firstName} </p>
-                )}
-                <Field
-                  name="firstName"
-                  type="text"
-                  placeholder="First name"
-                  class="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-
-                {touched.lastName && errors.lastName && (
-                  <p>{errors.lastName} </p>
-                )}
-                <Field
-                  name="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  class="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-                {errors.password1 && console.log(errors.password1)}
-                {touched.password1 && errors.password1 && (
-                  <p>{errors.password1} </p>
-                )}
-                <Field
-                  name="password1"
-                  type="text"
-                  placeholder="Enter Password"
-                  class="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-
-                {touched.password2 && errors.password2 && (
-                  <p>{errors.password2} </p>
-                )}
-                <Field
-                  name="password2"
-                  type="text"
-                  placeholder="Re enter Passwird"
-                  class="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                {/* <label> enter email </label> */}
-
-                {touched.usertype && errors.usertype && (
-                  <p>{errors.usertype} </p>
-                )}
-                <Field
-                  name="usertype"
-                  component="select"
-                  placeholder="Re enter Passwird"
-                  class="form-control"
-                >
-                  <option selected>Select...</option>
-                  <option value="hr_staff">HR staff</option>
-                  <option value="depthead">Department head</option>{" "}
-                  <option value="admin">Admin</option>
-                </Field>
-              </div>
-
-              <div className="submit">
-                <input
-                  type="submit"
-                  className="btn btn-raised btn-primary"
-                  value="Add user"
-                  id="submit"
-                  disabled={isSubmitting}
-                />
-              </div>
-            </Form>
-            <br />
-            <br />
-
-            <div>
-              <Link to="/fogotpassword">
-                <a>Forgotten password</a>
-              </Link>
             </div>
+            <div />
           </div>
-          <div />
         </div>
       </div>
     </div>
@@ -193,7 +219,7 @@ const Login = withFormik({
       firstName: firstName || "",
       lastName: lastName || "",
       password2: password2 || "",
-      usertype: usertype || "hr_staff"
+      usertype: usertype || "default"
     };
   },
 
@@ -218,14 +244,17 @@ const Login = withFormik({
       usertype: values.usertype
     };
 
-    console.log("payload - " + payload);
+    console.log("payload - " + JSON.stringify(payload));
 
     axios
       .post("/usr/reg", payload, config)
       .then(response => {
         console.log("resonse came - -");
         console.log(response.data);
-        // this.setState({ registered: true });
+        setErrors({ sucsess: true });
+        setTimeout(() => {
+          props.history.push("/dashboard");
+        }, 10000);
         //localStorage.setItem("jwt", response.data);
       })
       .catch(err => {
@@ -233,18 +262,27 @@ const Login = withFormik({
         console.log(err.response.data == 11000);
 
         if (err.response.data == 11000) {
-          this.setState({ duplicateemalifound: true });
+          setErrors({ duplicateemalifound: true });
         }
 
         if (err.response.data == "no_previladges") {
           //this.setState({ noPrev: true });
-
+          setErrors({ noPrev: true });
           setTimeout(() => {
             props.history.push("/dashboard");
           }, 5000);
 
           //document.querySelectorAll('.form-group').value=''
         }
+
+        if (err.response.data == "session_exp") {
+          //this.setState({ noPrev: true });
+          setErrors({ session_exp: true });
+          setTimeout(() => {
+            props.history.push("/login");
+          }, 5000);
+        }
+
         //if(err)
       });
 
@@ -277,23 +315,27 @@ const Login = withFormik({
   },
   validationSchema: Yup.object().shape({
     email1: Yup.string()
-      .email()
-      .required("Required"),
+      .email("Email must be a valid email")
+      .required("Email is required"),
     password1: Yup.string()
-      .required()
-      .min(7)
-      .matches(strongRegex, "password is weak"),
+      .required("Password is required")
+      .min(3, "Must contain at least 8 characters"),
+    // .matches(strongRegex, "Password is weak"),
     password2: Yup.string()
-      .required()
+      .required("Please confirm the password")
       .oneOf([Yup.ref("password1"), null], "Passwords do not match"),
     lastName: Yup.string()
-      .required()
-      .min(2)
-      .max(40),
+      .required("Last name is required")
+      .min(2, "Must contain at least 2 characters")
+      .max(40, "Last name cannot exceed 40 characters"),
     firstName: Yup.string()
-      .required()
-      .min(2)
-      .max(40)
+      .required("First name is required")
+      .min(2, "Must contain at least 2 characters")
+      .max(40, "First name cannot exceed 40 characters"),
+    usertype: Yup.string().oneOf(
+      ["hr_staff", "depthead", "admin"],
+      "please select type"
+    )
   })
 })(Formic);
 
