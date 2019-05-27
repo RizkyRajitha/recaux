@@ -42,7 +42,7 @@ exports.shortlistData = (req, res, next) => {
                   objDoc.candidateJobspec = candocs[i].jobspec;
                   // var temp_payload = { data:userdoc.shortlist[i]}
 
-                  payload.push(objDoc);
+                    
                   console.log("temp payload - " + JSON.stringify(objDoc));
                 }
 
