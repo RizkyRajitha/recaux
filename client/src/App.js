@@ -22,8 +22,11 @@ import Evaluation from "./pages/evaluation/evaluation";
 import Userprofile from "./pages/userprofile/user";
 import Changepass from "./pages/changepass/changepass";
 import Avatar from "./pages/avatar";
-import Shortlist from './pages/shortlist/shortlist'
-//import TemporaryDrawer from "./sidenav";
+import Shortlist from "./pages/shortlist/shortlist";
+import Drawer from "./components/drawer";
+import Pdftest from "./pages/pdftset";
+
+import TemporaryDrawer from "./components/sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
 
@@ -32,8 +35,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-         
-          {/* <TemporaryDrawer /> */}
+          
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />
@@ -49,6 +51,10 @@ class App extends Component {
           <Route path="/changepass/:id" component={Changepass} />
           <Route path="/avatar/:id" component={Avatar} />
           <Route path="/shortlist" component={Shortlist} />
+          <Route path="/drawer" component={Drawer} />
+          <Route path="/pdftest" component={Pdftest} />
+          <Route path="/spinner" component={Home} />
+          
         </div>
       </BrowserRouter>
     );

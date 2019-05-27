@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@progress/kendo-angular-dropdowns": "^1.6.1",
+    "@trendmicro/react-sidenav": "^0.4.5",
     "axios": "^0.18.0",
     "formik": "^1.5.4",
     "jsonwebtoken": "^8.4.0",
@@ -25,15 +26,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "proxy": "http://localhost:3001",
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {}
+  ]
 }

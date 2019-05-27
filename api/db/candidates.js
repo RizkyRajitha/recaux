@@ -11,7 +11,7 @@ var candidateSchema = new Schema({
   name: {
     type: String
   },
-  jobspec: {
+  jobspec: { 
     type: String
   },
   date: {
@@ -34,7 +34,8 @@ var candidateSchema = new Schema({
   shortlister: { type: String },
   shortlisterName:{type:String},
   shortlistedDate: { type: String },
-  shortlistStatus: { type: Boolean }
+  shortlistStatus: { type: Boolean },
+  cvUrl:{type:String , default:null}
 
 });
 

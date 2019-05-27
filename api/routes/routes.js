@@ -9,10 +9,10 @@ require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 const path = require("path");
 const Evaluation = require("../db/evaluation");
-
-const profileimgupload = require("./fileupload.routes");
+const fileUpload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
-const deptheadRoutes = require('./depthead.routes')
+const deptheadRoutes = require("./depthead.routes");
+const commonRoutes = require("./common.routes");
 //const _ = require('')
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
@@ -27,19 +27,19 @@ router.post("/reg", (req, res, next) => {
     { session: false },
     (err, user, info) => {
       console.log("-----in reg ------");
-      console.log('imfor - '+JSON.stringify(info));
+      console.log("imfor - " + JSON.stringify(info));
 
-      if(info.name=="TokenExpiredError"){
-        console.log('session expired')
-        res.status(403).send('session_exp')
+      if (info.name == "TokenExpiredError") {
+        console.log("session expired");
+        res.status(403).send("session_exp");
       }
 
       if (user) {
         console.log(`************${req.headers.authorization}****************`);
 
-  console.log("savin.....");
-  var salt = bcrypt.genSaltSync(saltRounds);
-  var hash = bcrypt.hashSync(req.body.password, salt);
+        console.log("savin.....");
+        var salt = bcrypt.genSaltSync(saltRounds);
+        var hash = bcrypt.hashSync(req.body.password, salt);
 
         const newuser = new User({
           email: req.body.email,
@@ -78,7 +78,7 @@ router.post("/reg", (req, res, next) => {
             }
           })
           .catch(err => {
-            console.log('errororr - '+err)
+            console.log("errororr - " + err);
           });
       }
     }
@@ -110,396 +110,24 @@ router.post("/login1", function(req, res, next) {
   })(req, res, next);
 });
 
-router.get("/dashboard", (req, res, next) => {
-  passport.authenticate(
-    "jwtstrategy",
-    { session: false },
-    (err, user, info) => {
-      console.log("error - " + err);
-      console.log("user - " + user);
-      console.log("info -- " + info);
-
-      if (!user) {
-        res.status(401).send(info);
-      } else {
-        User.findById(ObjectID(user.id))
-          .then(result => {
-            const senddata = {
-              id: result._id,
-              email: result.email,
-              emailverified: result.emailverified,
-              firstName: result.firstName,
-              lastName: result.lastName,
-              usertype: result.usertype,
-              shortList:result.shortlist
-            };
-            console.log(senddata);
-            res.status(200).json(senddata);
-          })
-          .catch(err => {
-            res.status(403).json(err);
-          });
-      }
-    }
-  )(req, res, next);
-});
-
-router.get("/user/:id", (req, res, next) => {
-  passport.authenticate(
-    "jwtstrategy",
-    { session: false },
-    (err, user, info) => {
-      console.log("error - " + err);
-      console.log("user - " + user);
-      console.log("info -- " + info);
-
-      console.log("user authenticated.....");
-      var iid = req.params.id;
-      console.log(iid);
-
-      User.findById(ObjectID(iid))
-        .then(result => {
-          const senddata = {
-            id: result._id,
-            email: result.email,
-            emailverified: result.emailverified,
-            firstName: result.firstName,
-            lastName: result.lastName
-          };
-
-          console.log("found" + result);
-          res.json(senddata);
-        })
-        .catch(err => {
-          console.log("err - " + err);
-        });
-    }
-  )(req, res, next);
-});
-
-router.post("/edituser/:id", (req, res, next) => {
-  passport.authenticate(
-    "jwtstrategy",
-    { session: false },
-    (err, user, info) => {
-      console.log("error - " + err);
-      console.log("user - " + user);
-      console.log("info -- " + info);
-
-      console.log("user authenticated.....");
-      var iid = req.params.id;
-
-      console.log(iid);
-      console.log("***********************");
-      console.log(req.body);
-
-      User.findOneAndUpdate(
-        { _id: ObjectID(iid) },
-        {
-          $set: {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email
-          }
-        }
-      )
-        .then(result => {
-          console.log("edit - " + result);
-          res.json(result);
-        })
-        .catch(err => {
-          console.log(err);
-          res.json(err);
-        });
-    }
-  )(req, res, next);
-});
-
-router.post("/sendconfirmemail/:id", (req, res) => {
-  console.log(req.params.id);
-
-  User.findById(ObjectID(req.params.id))
-    .then(doc => {
-      console.log("tryna sent");
-      emailhandler.mailhandleremailconfirm(doc.email, doc._id);
-      res.status(200).send("email sent");
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
-
-router.post("/confirmemail/:id", (req, res) => {
-  console.log(req.params.id);
-
-  User.findOneAndUpdate(
-    { _id: ObjectID(req.params.id) },
-    { $set: { emailverified: true } }
-  )
-    .then(doc => {
-      console.log("verified + " + doc.emailverified);
-      res.send("email verified");
-    })
-    .catch(err => {
-      console.log("error confirming email");
-    });
-});
-
-router.post("/fogotpassword", (req, res) => {
-  var email = req.body.email;
-
-  User.find({ email: email })
-    .then(result => {
-      if (!result) {
-        console.log(result + "not found error");
-        res.send("no user found");
-      } else {
-        emailhandler.mailhandlerpasswordreset(email, result[0]._id);
-        console.log(result[0]._id);
-        res.json(result);
-      }
-    })
-    .catch(err => {
-      console.log("error - - - " + err);
-      res.send("no_user_found");
-    });
-});
-
-router.post("/changepass/:id", (req, res) => {
-  id = req.params.id;
-  newpassword = req.body.password;
-  console.log(id);
-  console.log("pppppppppppppppppppppppppp");
-  console.log(newpassword);
-  console.log("pppppppppppppppppppppppppp");
-
-  User.findById({ _id: ObjectID(id) })
-    .then(result => {
-      console.log("found " + result.email);
-
-      result.hash = newpassword;
-      result
-        .save()
-        .then(doc => {
-          console.log("password changed succesfully");
-          res.send("password changed succesfully");
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send(err);
-        });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send("error");
-    });
-});
-
-router.post("/resetpassword/:id", (req, res) => {
-  id = req.params.id;
-  newpassword = req.body.password;
-  console.log(id);
-  console.log(newpassword);
-  // res.send("hahahaha  " + id);
-  User.findById({ _id: ObjectID(id) })
-    .then(result => {
-      console.log("found " + result.email);
-
-      result.hash = newpassword;
-      result
-        .save()
-        .then(doc => {
-          console.log("password changed succesfully");
-          res.send("password changed succesfully");
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send(err);
-        });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send("error");
-    });
-});
-
-router.get("/getcandidate", (req, res) => {
-  console.log("hiiii");
-  // var iid = req.params.id;
-  //console.log(iid);
-
-  Candidate.find()
-    .then(result => {
-      res.status(200).json(result);
-      console.log("candidates found");
-    })
-    .catch(err => {
-      console.log("error - " + err);
-    });
-
-  // User.findById(ObjectID(iid))
-  //   .then(result => {
-  //     console.log("found" + result);
-  //     res.json(result);
-  //   })
-  //   .catch(err => {
-  //     console.log("err - " + err);
-  //   });
-});
-
-router.get("/getcandidate/:id", (req, res) => {
-  console.log("hiiii");
-  var iid = req.params.id;
-  console.log(iid);
-
-  console.log("req body - " + JSON.stringify(req.body));
-
-  Candidate.findById(ObjectID(iid))
-    .then(result => {
-      User.find({})
-        .then(doc => {
-          const userDataArr = doc.map(ele => {
-            return {
-              label: `${ele.firstName + " " + ele.lastName}`,
-              value: ele.id
-            };
-          });
-
-          console.log(userDataArr);
-
-          const payload = {
-            userData: userDataArr,
-            candidateData: result
-          };
-
-          res.status(200).json(payload);
-        })
-        .catch(err => {
-          res.status(500).json(err);
-        });
-
-      // res.status(200).json(result);
-      // console.log("candidates found"+userDataArr);
-    })
-    .catch(err => {
-      console.log("error - " + err);
-
-      res.status(500).json(err);
-    });
-});
-
-router.get("/test", (req, res) => {
-  // var ada = new Date();
-  // console.log(ada);
-  // const newuser = new User({
-  //   email: "admin@auxenta.com",
-  //   hash: "admin"
-  // });
-
-  // newuser
-  //   .save()
-  //   .then(result => {
-  //     res.send(result);
-  //   })
-  //   .catch(err => {
-  //     res.json(err);
-  //   });
-
-  can = ["aa", "bb"];
-
-  User.findOneAndUpdate(
-    { _id: ObjectID("5ca98a6200d8ab4264d7dffc") },
-    {
-      $set: {
-        assinngedCandidates: can
-      }
-    }
-  )
-    .then(result => {
-      console.log(result);
-      res.send(result);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-router.post("/addcandidate", (req, res) => {
-  console.log(req.body);
-
-  const newcandidate = new Candidate({
-    email: req.body.candidateemail,
-    name: req.body.candidatename,
-    jobspec: req.body.candidatejobspec,
-    date: new Date()
-  });
-
-  newcandidate
-    .save()
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(err => {
-      res.status(403).json(err);
-    });
-});
-
-router.post("/updatestatus/:id", (req, res) => {
-  console.log(req.params.id);
-  var id = req.params.id;
-  console.log(req.body.status);
-  Candidate.findByIdAndUpdate(
-    ObjectID(id),
-    { $set: { status: req.body.status } },
-    { new: true }
-  )
-    .then(doc => {
-      console.log("doc");
-      console.log(doc);
-      res.json(doc);
-    })
-    .catch(err => {
-      console.log(err);
-      res.json(err);
-    });
-});
-
-router.post("/evaluation/:id", (req, res) => {
-  console.log("eval");
-
-  console.log(req.params.id);
-
-  console.log(req.body);
-
-  console.log("bodtyyy " + req.body.evaluatorId);
-  console.log("bodtyyy " + req.body.evaluationMarks);
-
-  const evalation = new Evaluation({
-    candidateId: req.body.candidateId,
-    evaluatorId: req.body.evaluatorId,
-    evaluationMarks: req.body.evaluationMarks,
-    acadamicBackground: req.body.acadamicBackground,
-    indusrtyExperiance: req.body.indusrtyExperiance,
-    currentPosition: req.body.currentPosition,
-    JobPeriod: req.body.JobPeriod
-  });
-
-  evalation
-    .save()
-    .then(doc => {
-      console.log(doc);
-      res.status(200).json(doc);
-    })
-    .catch(er => {
-      console.log(er);
-    });
-});
-
-router.post("/avatar/:id", profileimgupload.profileimgup);
-router.post("/cv/:id", profileimgupload.cvupload);
+router.get("/dashboard", commonRoutes.dashboard); //send basic user details for the dashboard
+router.get("/user/:id", commonRoutes.userProfile); //send data to the user profile
+router.post("/edituser/:id", commonRoutes.editUserDetails); //edit user data routes
+router.post("/sendconfirmemail/:id", commonRoutes.sendConfirmEmail);
+router.post("/confirmemail/:id", commonRoutes.confirmEmail);
+router.post("/fogotpassword", commonRoutes.forgotPassword);
+router.post("/changepass/:id", commonRoutes.changePass);
+router.post("/resetpassword/:id", commonRoutes.resetpassword);
+router.get("/getcandidate", commonRoutes.getAllCandidates);
+router.get("/getcandidate/:id", commonRoutes.getOneCandidate);
+router.post("/addcandidate", commonRoutes.addCandidate);
+router.post("/updatestatus/:id", deptheadRoutes.updateStatus);
+router.post("/evaluation/:id", deptheadRoutes.evaluation);
+router.post("/avatar/:id", fileUpload.profileimgup);
+router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
-router.get('/getshortlistdata/:id',deptheadRoutes.shortlistData)
+router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -513,7 +141,7 @@ router.post("/shortlistOne/:id", (req, res, next) => {
       console.log("data - " + JSON.stringify(req.body));
 
       var datain = req.body;
-      console.log('shortlist one')
+      console.log("shortlist one");
       //  User.updateOne({_id:datain.allocateduser},{$push:datain.candidateallocated}).then(userdoc=>{
 
       //   Candidate.updateOne({_id:datain.candidateallocated},{$set:{:datain.candidateallocated}}).then(candoc=>{
@@ -543,17 +171,22 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                         candidateId: datain.candidateallocated,
                         allocatedbyUserId: user.id,
                         allocatedDate: new Date(),
-                        allocatedUserName:allocaterdoc.firstName + " " + allocaterdoc.lastName
+                        allocatedUserName:
+                          allocaterdoc.firstName + " " + allocaterdoc.lastName
                       }
                     }
                   }
                 )
                   .then(docc => {
-                    console.log("candoc - " + JSON.stringify(candoc) + "user doc -" + JSON.stringify(docc));
-                    if(candoc.ok===1 && docc.ok===1){
-                      res.json({msg:'allocated_success'});
+                    console.log(
+                      "candoc - " +
+                        JSON.stringify(candoc) +
+                        "user doc -" +
+                        JSON.stringify(docc)
+                    );
+                    if (candoc.ok === 1 && docc.ok === 1) {
+                      res.json({ msg: "allocated_success" });
                     }
-                    
                   })
                   .catch(err => {
                     res.json(err);
@@ -619,22 +252,36 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                   )
                     .then(doc => {
                       //payloadarr.senddata.push(doc)
-                      console.log("doc push - "+JSON.stringify(userDoc));
-                      
+                      console.log("doc push - " + JSON.stringify(userDoc));
+
                       shortList.forEach(element => {
-                        userDoc.shortlist.push({candidateId:element,allocatedbyUserId:iid,allocatedUserName:allocaterUserDoc.firstName+" "+allocaterUserDoc.lastName,allocatedDate:new Date})
+                        userDoc.shortlist.push({
+                          candidateId: element,
+                          allocatedbyUserId: iid,
+                          allocatedUserName:
+                            allocaterUserDoc.firstName +
+                            " " +
+                            allocaterUserDoc.lastName,
+                          allocatedDate: new Date()
+                        });
                       });
 
-                      userDoc.save().then(finaluserdoc=>{
+                      userDoc
+                        .save()
+                        .then(finaluserdoc => {
+                          console.log(
+                            "allocate many - " +
+                              JSON.stringify({
+                                updoc: doc,
+                                finaldoc: finaluserdoc
+                              })
+                          );
 
-                        console.log('allocate many - '+JSON.stringify({updoc:doc,finaldoc:finaluserdoc}))
-
-                        resolve({updoc:doc,finaldoc:finaluserdoc});
-                      }).catch(err=>{
-                        console.log(err)
-                      })
-
-                      
+                          resolve({ updoc: doc, finaldoc: finaluserdoc });
+                        })
+                        .catch(err => {
+                          console.log(err);
+                        });
                     })
                     .catch(err => {
                       payloadarr.error.push(err);
@@ -789,5 +436,29 @@ if (uniqecan) {
 //     res.status(200).send({ user });
 //   }
 // );
+
+router.get("/test", (req, res) => {
+  var ada = new Date();
+  console.log(ada);
+
+  //res.send('hello')
+
+  var salt = bcrypt.genSaltSync(saltRounds);
+  var hash = bcrypt.hashSync("admin", salt);
+
+  const newuser = new User({
+    email: "admin@auxenta.com",
+    hash: hash
+  });
+
+  newuser
+    .save()
+    .then(result => {
+      res.send(result);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 
 module.exports = router;
