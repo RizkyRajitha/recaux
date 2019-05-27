@@ -281,10 +281,14 @@ class dashboard extends Component {
     var config = {
       headers: { authorization: jwt }
     };
+
+
     axios
       .get("/usr/dashboard", config)
       .then(result => {
         console.log("sucsess" + result.data);
+
+        
         if (result.data) {
           console.log("menna apu data");
           console.log(result.data);
@@ -300,6 +304,8 @@ class dashboard extends Component {
           });
 
           this.setState({ logedin: true });
+
+          localStorage.setItem("usertype",result.data.usertype);
 
           if (result.data.avatarUrl) {
             var preurl = result.data.avatarUrl.slice(0, 48);
@@ -318,7 +324,10 @@ class dashboard extends Component {
           this.getuserdata();
           this.setState({ isLoading: false });
           localStorage.setItem("userId", result.data.id);
-        } else {
+        } 
+        
+        
+        else {
           this.setState({ logedin: false });
         }
       })
@@ -343,11 +352,8 @@ class dashboard extends Component {
           <Navbar />
           <Drawer avatarUrl={this.state.avatarUrl} />
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
-          <h1 className="greet">
-            {this.state.greet} {this.state.firstName}
-          </h1>
-          <br />
-          <br />
+          
+    
           <button
             onClick={this.usrprofile}
             className="btn btn-outline-primary"

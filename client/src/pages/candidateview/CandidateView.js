@@ -58,7 +58,8 @@ class CandidateView extends Component {
     cvNotFOundErr: false,
     errfiletoolarge: false,
     unsupportedFormat: false,
-    isLoading: false
+    isLoading: false,
+    usertype: ""
   };
   /****************************************** */
   openModal = () => {
@@ -108,46 +109,46 @@ class CandidateView extends Component {
     this.setState({ id: this.props.match.params.id });
     this.setState({ isLoading: true });
 
-      this.setState({ cvNotFOundErr: false });
+    this.setState({ cvNotFOundErr: false });
 
-      console.log(this.state.data);
-      console.log(this.state.data.cvUrl);
+    console.log(this.state.data);
+    console.log(this.state.data.cvUrl);
 
-      console.log("hahah");
-      console.log(this.props.match.params.id);
+    console.log("hahah");
+    console.log(this.props.match.params.id);
 
-      const formdata = new FormData();
-      formdata.append("cv", e.target.files[0]);
-      //
-      var jwt = localStorage.getItem("jwt");
+    const formdata = new FormData();
+    formdata.append("cv", e.target.files[0]);
+    //
+    var jwt = localStorage.getItem("jwt");
 
-      var config = {
-        headers: {
-          "content-type": "multipart/form-data",
-          authorization: jwt
-        }
-      };
+    var config = {
+      headers: {
+        "content-type": "multipart/form-data",
+        authorization: jwt
+      }
+    };
 
-      axios
-        .post("/usr/cv/" + this.props.match.params.id, formdata, config)
-        .then(result => {
-          console.log("awoooo" + JSON.stringify(result));
-          this.setState({ cvUrl: result.data.url });
+    axios
+      .post("/usr/cv/" + this.props.match.params.id, formdata, config)
+      .then(result => {
+        console.log("awoooo" + JSON.stringify(result));
+        this.setState({ cvUrl: result.data.url });
+        this.setState({ isLoading: false });
+      })
+      .catch(
+        function(error) {
+          console.log(error.response.data);
           this.setState({ isLoading: false });
-        })
-        .catch(
-          function(error) {
-            console.log(error.response.data);
-            this.setState({ isLoading: false });
-            if ("file_too_large" === error.response.data) {
-              this.setState({ errfiletoolarge: true });
-            }
+          if ("file_too_large" === error.response.data) {
+            this.setState({ errfiletoolarge: true });
+          }
 
-            if ("unsupported_file_format" === error.response.data) {
-              this.setState({ unsupportedFormat: true });
-            }
-          }.bind(this)
-        );
+          if ("unsupported_file_format" === error.response.data) {
+            this.setState({ unsupportedFormat: true });
+          }
+        }.bind(this)
+      );
   };
 
   cvUploadHandler = () => {
@@ -155,27 +156,21 @@ class CandidateView extends Component {
       this.setState({ cvNotFOundErr: true });
     } else {
       // this.setState({ isLoading: true });
-
       // this.setState({ cvNotFOundErr: false });
-
       // console.log(this.state.data);
       // console.log(this.state.data.cvUrl);
-
       // console.log("hahah");
       // console.log(this.props.match.params.id);
-
       // const formdata = new FormData();
       // formdata.append("cv", this.state.cvFile);
       // //
       // var jwt = localStorage.getItem("jwt");
-
       // var config = {
       //   headers: {
       //     "content-type": "multipart/form-data",
       //     authorization: jwt
       //   }
       // };
-
       // axios
       //   .post("/usr/cv/" + this.props.match.params.id, formdata, config)
       //   .then(result => {
@@ -190,7 +185,6 @@ class CandidateView extends Component {
       //       if ("file_too_large" === error.response.data) {
       //         this.setState({ errfiletoolarge: true });
       //       }
-
       //       if ("unsupported_file_format" === error.response.data) {
       //         this.setState({ unsupportedFormat: true });
       //       }
@@ -264,6 +258,10 @@ class CandidateView extends Component {
       //e.preventDefault();
       this.props.history.push("/Login");
     }
+
+    var usertype = localStorage.getItem("usertype");
+
+    this.setState({ usertype: usertype });
 
     this.wtf();
   }
@@ -372,7 +370,10 @@ class CandidateView extends Component {
                 {this.state.data.name + "'s" + " Resume"}
               </h2>
 
-              <div class="loader-candidateview" hidden={!this.state.isLoading}  />
+              <div
+                class="loader-candidateview"
+                hidden={!this.state.isLoading}
+              />
 
               {this.state.cvNotFOundErr && (
                 <div class="alert alert-danger" role="alert">
@@ -400,7 +401,7 @@ class CandidateView extends Component {
 
               {
                 <div>
-                  <label className="uploadtaglable" >
+                  <label className="uploadtaglable">
                     {this.state.data.cvUrl === null
                       ? "Upload resume    "
                       : "Change resume    "}
@@ -411,7 +412,7 @@ class CandidateView extends Component {
 
               <div className="pdf" style={{ width: 1500 }}>
                 <Document
-                loading= {<div class="loader-candidateview" />}
+                  loading={<div class="loader-candidateview" />}
                   file={this.state.cvUrl}
                   onLoadSuccess={this.onDocumentLoadSuccess}
                 >
@@ -426,8 +427,6 @@ class CandidateView extends Component {
                   ))}
                 </Document>
               </div>
-
-        
             </Modal>
 
             {/**
@@ -487,10 +486,24 @@ status: "New"
           </button>
 
           <div class="form-group">
-            <label for="exampleFormControlSelect2">
+            <label
+              for="exampleFormControlSelect2"
+              hidden={
+                this.state.usertype === "admin" ||
+                this.state.usertype === "depthead"
+                  ? false
+                  : true
+              }
+            >
               change candidate status
             </label>
             <select
+              hidden={
+                this.state.usertype === "admin" ||
+                this.state.usertype === "depthead"
+                  ? false
+                  : true
+              }
               class="form-control"
               id="status"
               onChange={this.chngehandlsel}
