@@ -7,7 +7,7 @@ import Navbar from "../../components/navbar";
 import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
-import Drawer from '../../components/sidenav'
+import Drawer from "../../components/sidenav";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -37,7 +37,7 @@ class dashboard extends Component {
     lastName: "",
     greet: "",
     usertype: "",
-    avatarUrl:false,
+    avatarUrl: false,
     selectedOption: null,
     selectoptionsnamelist: [],
     emailverified: false,
@@ -48,7 +48,7 @@ class dashboard extends Component {
     shortlistbythisuser: [],
     shortedcanarrnamelist: [],
     shrtlistSuccess: false,
-    isLoading:false
+    isLoading: false
   };
 
   openModal = () => {
@@ -117,7 +117,10 @@ class dashboard extends Component {
       .get("/usr/getcandidate")
       .then(data => {
         console.log("candidate data - - - " + data.data);
-        this.setState({ candidatedata: data.data.candidateData,selectoptionsnamelist:data.data.userData });
+        this.setState({
+          candidatedata: data.data.candidateData,
+          selectoptionsnamelist: data.data.userData
+        });
       })
       .catch(err => {
         console.log(err);
@@ -205,8 +208,7 @@ class dashboard extends Component {
   };
 
   shorlisthandler = () => {
-
-    this.setState({isLoading:true})
+    this.setState({ isLoading: true });
 
     console.log(
       "on the way + " +
@@ -226,24 +228,24 @@ class dashboard extends Component {
       candidatesallocated: this.state.shortlistbythisuser
     };
 
-    console.log('payload'+JSON.stringify(payload));
+    console.log("payload" + JSON.stringify(payload));
 
     axios
       .post("/usr/shortlistMany/" + this.state.id, payload, config)
       .then(res => {
         console.log(res);
         this.closeModal();
-        this.setState({isLoading:false})
+        this.setState({ isLoading: false });
         window.location.reload(false);
       })
       .catch(err => {
-        this.setState({isLoading:false})
+        this.setState({ isLoading: false });
         console.log(err);
       });
   };
 
   getuserdata = () => {
-    this.setState({isLoading:true})
+    this.setState({ isLoading: true });
     console.log("in user data");
     console.log("usr type" + this.state.usertype);
     console.log(this.state);
@@ -261,11 +263,11 @@ class dashboard extends Component {
           console.log("user data - - - " + data.data);
           this.setState({ userdata: data.data });
           console.log(this.state);
-          this.setState({isLoading:false})
+          this.setState({ isLoading: false });
         })
         .catch(err => {
           console.log(err);
-          this.setState({isLoading:false})
+          this.setState({ isLoading: false });
         });
     }
   };
@@ -275,7 +277,7 @@ class dashboard extends Component {
     console.log("mount");
     var jwt = localStorage.getItem("jwt");
 
-    this.setState({isLoading:true})
+    this.setState({ isLoading: true });
     var config = {
       headers: { authorization: jwt }
     };
@@ -295,23 +297,26 @@ class dashboard extends Component {
             lastName: result.data.lastName,
             usertype: result.data.usertype,
             shorlist: result.data.shortList
-            
           });
 
           this.setState({ logedin: true });
-         
 
-        var preurl = result.data.avatarUrl.slice(0,48)
-        var posturl = result.data.avatarUrl.slice(49,result.data.avatarUrl.length)
-        var config = "/w_150,h_155,c_thumb/"
-        
-        var baseUrl = preurl+config+posturl;
-        this.setState({avatarUrl:baseUrl})
+          if (result.data.avatarUrl) {
+            var preurl = result.data.avatarUrl.slice(0, 48);
+            var posturl = result.data.avatarUrl.slice(
+              49,
+              result.data.avatarUrl.length
+            );
+            var config = "/w_150,h_155,c_thumb/";
+
+            var baseUrl = preurl + config + posturl;
+            this.setState({ avatarUrl: baseUrl });
+          }
 
           //console.log(this.state);
           this.getcandidatedata();
           this.getuserdata();
- this.setState({isLoading:false})
+          this.setState({ isLoading: false });
           localStorage.setItem("userId", result.data.id);
         } else {
           this.setState({ logedin: false });
@@ -320,7 +325,7 @@ class dashboard extends Component {
       .catch(err => {
         this.setState({ logedin: false });
         console.log("error" + err);
-        this.setState({isLoading:true})
+        this.setState({ isLoading: true });
       });
 
     setTimeout(() => {
@@ -335,9 +340,8 @@ class dashboard extends Component {
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">
-         
-          <Navbar/>
-          <Drawer avatarUrl={this.state.avatarUrl}/>
+          <Navbar />
+          <Drawer avatarUrl={this.state.avatarUrl} />
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
           <h1 className="greet">
             {this.state.greet} {this.state.firstName}
