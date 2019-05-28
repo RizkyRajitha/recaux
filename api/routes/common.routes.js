@@ -21,7 +21,25 @@ exports.addCandidate = (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      res.status(403).json(err);
+      console.log(err)
+
+      if (err.code === 11000) {
+        console.log(" reg err duplicate email found ");
+
+        Candidate.findOne({email:req.body.candidateemail}).then(dupcandoc=>{
+          console.log("dup can id - "+dupcandoc)
+          console.log("dup can id - "+dupcandoc.id)
+
+          res.status(403).json({errcode:err.code ,dupcanid:dupcandoc.id });
+
+        })
+
+        
+      } else {
+        res.status(403).json(err);
+      }
+
+     
     });
 };
 
@@ -86,7 +104,7 @@ exports.getAllCandidates = (req, res) => {
 
           const payload = {
             userData: userDataArr,
-            candidateData: result
+            candidateData: result.reverse()
           };
 
           console.log("candidates found");
