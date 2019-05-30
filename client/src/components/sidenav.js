@@ -41,6 +41,10 @@ class TemporaryDrawer extends Component {
             this.props.history.push("/shortlist");
           }
 
+          if (selected === "search") {
+            this.props.history.push("/search");
+          }
+
           if (selected === "logout") {
             localStorage.removeItem("jwt");
             localStorage.removeItem("userId");
@@ -57,20 +61,25 @@ class TemporaryDrawer extends Component {
           {this.state.toggled && (
             // <NavItem eventKey="user">
             //   <NavIcon className="sidenavAvatar">
-                <img
-                  src={
-                    this.props.avatarUrl
-                      ? this.props.avatarUrl
-                      : "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"
-                  }
-                />
+
+            <div className="avatarsidenav">
+              <img
+                src={
+                  this.props.avatarUrl
+                    ? this.props.avatarUrl
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"
+                }
+              />
+            </div>
+
             //   </NavIcon>
             // </NavItem>
           )}
 
           {this.state.toggled && (
             <div className="sidenavuserdetails">
-              <ul className="sidenavuserdetails" >
+              {" "}
+              <ul className="sidenavuserdetails">
                 <li> username : {this.props.username}</li>
                 <li> type : {this.props.type}</li>
               </ul>
@@ -106,6 +115,13 @@ class TemporaryDrawer extends Component {
               />
             </NavIcon>
             <NavText>shortlist</NavText>
+          </NavItem>
+
+          <NavItem eventKey="search">
+            <NavIcon>
+              <i class="fas fa-search" style={{ fontSize: "1.75em" }} />
+            </NavIcon>
+            <NavText>Search</NavText>
           </NavItem>
 
           <NavItem eventKey="charts">

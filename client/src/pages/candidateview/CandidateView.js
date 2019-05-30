@@ -346,8 +346,8 @@ class CandidateView extends Component {
     if (this.state.data.date) {
       console.log("wjooop");
       console.log("date - - - -" + this.state.data.date);
-      //var dd = new Date(this.state.data.date);
-      var d = ""; //dd.toJSON().slice(0, 10);
+      var dd = new Date(this.state.data.date);
+      var d = dd.toJSON().slice(0, 10);
     }
 
     const { selectedOption, selectoptionsnamelist } = this.state;

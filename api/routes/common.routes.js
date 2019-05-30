@@ -49,10 +49,7 @@ exports.getOneCandidate = (req, res) => {
 
   Candidate.findById(ObjectID(iid))
     .then(result => {
-      User.find({$or : [ 
-        {"usertype" : "admin"},
-        {"usertype" : "depthead"}
-      ]})
+      User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
             return {
@@ -68,9 +65,9 @@ exports.getOneCandidate = (req, res) => {
             candidateData: result
           };
 
-          console.log("\n\n")
+          console.log("\n\n");
 
-          console.log(result)
+          console.log(result);
 
           res.status(200).json(payload);
         })
@@ -365,14 +362,34 @@ exports.searchByDate = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
+        console.log(req.body);
+        var datain = req.body;
+
+// if(datain.from===datain.to){
+//   console.log("same")
+//   datain.from = datain.from.slice(0,10)
+//   datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
+
+//   console.log("new data - "+JSON.stringify(datain))
+// }
+
+datain.from = datain.from.slice(0,10)
+datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
+
         Candidate.find({
           date: {
-            $gte: ISODate("2010-04-29T00:00:00.000Z"),
-            $lt: ISODate("2010-05-01T00:00:00.000Z")
+            $gte: new Date(datain.from).toISOString(),
+            $lt: new Date(datain.to).toISOString()
           }
-        }).then(doc=>{
-          console.log("docs - "+JSON.stringify(doc))
         })
+          .then(doc => {
+            res.status(200).json(doc);
+            console.log("docs - " + JSON.stringify(doc));
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+          });
       }
     }
   )(req, res, next);

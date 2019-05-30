@@ -1,49 +1,153 @@
 import React, { Component } from "react";
 import axios from "axios";
-
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import Datepicker from "../../components/datepicker";
+import Modal from "react-modal";
+import Searchcard from '../../components/searchcard'
 const jwt = require("jsonwebtoken");
 
+const customStyles = {
+  content: {
+    width: "50%",
+    height: "85%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
+Modal.setAppElement("#root");
 class Search extends Component {
   state = {
-    startDate: new Date(),
-    endDate: new Date()
-  };
-  handleChange = date => {
-    console.log("start - " + date);
-
-    this.setState({
-      startDate: date,
-    //   endDate:date
-    });
+    modalIsOpen: "",
+    date: null,
+    bothdatesselected: false,
+    searchbydateResults: null
   };
 
-  handleChangeEnd = date => {
-    console.log("end - " + date);
-
-    this.setState({
-      endDate: date
-    });
+  openModal = () => {
+    this.setState({ modalIsOpen: true });
   };
+
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
+  searchModal = () => {
+    this.openModal();
+  };
+
+  getdatefromdatepicke = dateobj => {
+    console.log("date from modal - " + JSON.stringify(dateobj));
+    this.setState({ date: dateobj });
+
+    if (dateobj.from && dateobj.to) {
+      this.setState({ bothdatesselected: true });
+    } else {
+      this.setState({ bothdatesselected: true });
+    }
+  };
+
+  resetdatepicker = () => {
+    console.log("date reset - ");
+    this.setState({ bothdatesselected: false, date: null });
+  };
+
+  submitesearch = () => {
+    if (this.state.date.from && this.state.date.to) {
+      const token = localStorage.getItem("jwt");
+
+      var config = {
+        headers: { authorization: token }
+      };
+
+      console.log("submit date - " + JSON.stringify(this.state.date));
+
+      var payload = this.state.date;
+
+      axios
+        .post("/usr/searchbydate", payload, config)
+        .then(data => {
+          console.log(data.data);
+          this.setState({ searchbydateResults: data.data });
+          this.closeModal()
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      console.log("select a date");
+      this.setState({ bothdatesselected: false, date: null });
+    }
+  };
+
+  componentDidMount() {
+    const token = localStorage.getItem("jwt");
+    //console.log("jwt token -- - -- >>>" + jwt);
+
+    try {
+      console.log("in register");
+      var pay = jwt.verify(token, "authdemo");
+      // console.log("payload - " + pay);
+      console.log("************************************");
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+      this.props.history.push("/Login");
+    }
+  }
 
   render() {
     return (
       <div>
-        <DatePicker
-          selected={this.state.startDate}
-          onChange={this.handleChange}
-        />
+        <button onClick={this.searchModal}>search by date</button>
 
-        <DatePicker
-          selected={this.state.startDate}
-          selectsEnd
-          startDate={this.state.startDate}
-          endDate={this.state.endDate}
-          onChange={this.handleChangeEnd}
-        />
+{this.state.searchbydateResults && (<div>
 
-        {/* <input type="date" onChange={this.dateHnadler} /> */}
+{this.state.searchbydateResults.map(can => {
+  //console.log(can.name+can.email+can.jobspec)
+  return (
+    <Searchcard
+      name={can.name}
+      _id={can._id}
+      
+    />
+  );
+})}
+
+
+</div>)}
+
+
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <h2 ref={subtitle => (this.subtitle = subtitle)}>search by date</h2>
+          <div>
+            <Datepicker
+              datechnage={this.getdatefromdatepicke}
+              datereset={this.resetdatepicker}
+            />
+
+            <button
+              disabled={!this.state.bothdatesselected}
+              onClick={this.submitesearch}
+            >
+              search{" "}
+            </button>
+          </div>
+        </Modal>
       </div>
     );
   }
