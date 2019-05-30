@@ -55,11 +55,26 @@ class TemporaryDrawer extends Component {
         <SideNav.Toggle />
         <SideNav.Nav>
           {this.state.toggled && (
-            <NavItem eventKey="user">
-              <NavIcon className="sidenavAvatar" >
-                <img src={this.props.avatarUrl ?this.props.avatarUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"} />
-              </NavIcon>
-            </NavItem>
+            // <NavItem eventKey="user">
+            //   <NavIcon className="sidenavAvatar">
+                <img
+                  src={
+                    this.props.avatarUrl
+                      ? this.props.avatarUrl
+                      : "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"
+                  }
+                />
+            //   </NavIcon>
+            // </NavItem>
+          )}
+
+          {this.state.toggled && (
+            <div className="sidenavuserdetails">
+              <ul className="sidenavuserdetails" >
+                <li> username : {this.props.username}</li>
+                <li> type : {this.props.type}</li>
+              </ul>
+            </div>
           )}
 
           <NavItem className={this.state.toggled && "avatar"} eventKey="home">
@@ -109,7 +124,14 @@ class TemporaryDrawer extends Component {
             </NavItem>
           </NavItem>
 
-          <NavItem className = {this.state.toggled ?"logoutlinksidenavopen" : "logoutlinksidenavclosed"} eventKey="logout">
+          <NavItem
+            className={
+              this.state.toggled
+                ? "logoutlinksidenavopen"
+                : "logoutlinksidenavclosed"
+            }
+            eventKey="logout"
+          >
             <NavIcon>
               <i class="fas fa-sign-out-alt" style={{ fontSize: "1.75em" }} />
             </NavIcon>

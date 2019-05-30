@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+var User = require("./users")
+
 var Schema = mongoose.Schema;
 
 var candidateSchema = new Schema({
@@ -35,8 +37,8 @@ var candidateSchema = new Schema({
   shortlisterName:{type:String},
   shortlistedDate: { type: String },
   shortlistStatus: { type: Boolean },
-  cvUrl:{type:String , default:null}
-
+  cvUrl:{type:String , default:null},
+  
 });
 
 const Candidate = mongoose.model("Candidate", candidateSchema);

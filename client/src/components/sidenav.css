@@ -474,7 +474,7 @@
   margin-top: 570px;
 }
 .logoutlinksidenavopen {
-  margin-top: 220px;
+  margin-top: -10rem;
 }
 
 
@@ -488,4 +488,13 @@
   
 }
 
+.sidenavuserdetails{
+  padding-top:  0rem;
+  padding-right: 1rem;
+  padding-left: -1rem;
+  
+  color: rgb(180, 180, 180);
+  list-style-type: none;
+  text-align: left;
+}
 /*# sourceMappingURL=react-sidenav.css.map*/

@@ -11,6 +11,7 @@
     "moment": "^2.24.0",
     "pdfjs-dist": "^2.0.943",
     "react": "^16.8.2",
+    "react-datepicker": "^2.5.0",
     "react-dom": "^16.8.2",
     "react-modal": "^3.8.1",
     "react-pdf": "^4.0.5",
