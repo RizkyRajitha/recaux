@@ -234,7 +234,16 @@ class CandidateView extends Component {
 
       axios
         .post("/usr/shortlistOneOveride", payloadOveride, config)
-        .then(results => {})
+        .then(results => {
+
+          this.setState({ isLoading: false });
+          if (results.data.msg == "allocated_success") {
+            this.setState({ shorlistSuccess: true });
+            window.location.reload(false);
+          }
+          this.closeModal();
+
+        })
         .catch(err => {console.log(err)});
     } else {
       axios
@@ -378,7 +387,7 @@ class CandidateView extends Component {
                 <p>
                   {" "}
                   this candidate is currently assiged to{" "}
-                  {this.state.data.assignToshortlisterbyName} do you want to
+                  {this.state.data.shortlisterName} do you want to
                   overide it{" "}
                 </p>
               )}

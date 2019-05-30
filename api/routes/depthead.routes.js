@@ -214,6 +214,9 @@ exports.shortlistOverideOne = (req, res, next) => {
                                 "can doc - " +
                                 JSON.stringify(doc3)
                             );
+
+                            res.json({ msg: "allocated_success" });
+
                           })
                           .catch(err => {
                             console.log(err);

@@ -365,16 +365,16 @@ exports.searchByDate = (req, res, next) => {
         console.log(req.body);
         var datain = req.body;
 
-// if(datain.from===datain.to){
-//   console.log("same")
-//   datain.from = datain.from.slice(0,10)
-//   datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
+        // if(datain.from===datain.to){
+        //   console.log("same")
+        //   datain.from = datain.from.slice(0,10)
+        //   datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
 
-//   console.log("new data - "+JSON.stringify(datain))
-// }
+        //   console.log("new data - "+JSON.stringify(datain))
+        // }
 
-datain.from = datain.from.slice(0,10)
-datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
+        datain.from = datain.from.slice(0, 10);
+        datain.to = datain.to.slice(0, 10) + "T23:59:59.000Z";
 
         Candidate.find({
           date: {
@@ -390,6 +390,57 @@ datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
             console.log(err);
             res.status(500).json(err);
           });
+      }
+    }
+  )(req, res, next);
+};
+
+
+
+exports.searchByName = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.find({ name: { $regex: datain.name, $options: "i" } })
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json(doc)
+          })
+          .catch(err => {});
+
+        //find({name:{'$regex' : 'string', '$options' : 'i'}})
+      }
+    }
+  )(req, res, next);
+};
+
+
+
+exports.anythingpassportexample = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
       }
     }
   )(req, res, next);

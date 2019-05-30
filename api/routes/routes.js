@@ -130,6 +130,7 @@ router.get("/userdata", adminRoutes.userlist);
 router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
 router.post("/searchbydate",commonRoutes.searchByDate)
 router.post('/shortlistOneOveride',deptheadRoutes.shortlistOverideOne)
+router.post('/searchbyname',commonRoutes.searchByName)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
