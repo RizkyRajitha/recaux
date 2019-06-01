@@ -31,12 +31,12 @@ this.props.triggershrt(this.props._id, this.state.chbox);
     if (this.props.date) {
       //console.log(this.props.date.slice(4, 24));
      // const dote = new Date(this.props.time)
-     // console.log(dote.toTimeString)
+      console.log(this.props.date)
       //Tue Apr 23 2019 12:21:53 GMT+0530 (+0530)
-      var s = this.props.date.slice(4, 24); //"2019-04-24 18:00:00";  // from action.timeStamp
+      var s = this.props.date//.slice(4, 24); //"2019-04-24 18:00:00";  // from action.timeStamp
 
-      //var actionTime = moment(s , "YYYY-MM-DD HH:mm:ssZ");
-      var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
+      var actionTime = moments(s , "YYYY-MM-DD HH:mm:ssZ");
+      //var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
        var timeAgo = actionTime.fromNow();
 
       // console.log(timeAgo);

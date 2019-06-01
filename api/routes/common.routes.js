@@ -12,7 +12,7 @@ exports.addCandidate = (req, res) => {
     email: req.body.candidateemail,
     name: req.body.candidatename,
     jobspec: req.body.candidatejobspec,
-    date: new Date()
+    date: new Date().toISOString()
   });
 
   newcandidate
@@ -21,7 +21,22 @@ exports.addCandidate = (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      res.status(403).json(err);
+      console.log(err);
+
+      if (err.code === 11000) {
+        console.log(" reg err duplicate email found ");
+
+        Candidate.findOne({ email: req.body.candidateemail }).then(
+          dupcandoc => {
+            console.log("dup can id - " + dupcandoc);
+            console.log("dup can id - " + dupcandoc.id);
+
+            res.status(403).json({ errcode: err.code, dupcanid: dupcandoc.id });
+          }
+        );
+      } else {
+        res.status(403).json(err);
+      }
     });
 };
 
@@ -34,7 +49,7 @@ exports.getOneCandidate = (req, res) => {
 
   Candidate.findById(ObjectID(iid))
     .then(result => {
-      User.find({})
+      User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
             return {
@@ -49,6 +64,10 @@ exports.getOneCandidate = (req, res) => {
             userData: userDataArr,
             candidateData: result
           };
+
+          console.log("\n\n");
+
+          console.log(result);
 
           res.status(200).json(payload);
         })
@@ -86,7 +105,7 @@ exports.getAllCandidates = (req, res) => {
 
           const payload = {
             userData: userDataArr,
-            candidateData: result
+            candidateData: result.reverse()
           };
 
           console.log("candidates found");
@@ -320,6 +339,108 @@ exports.dashboard = (req, res, next) => {
             console.log(err);
             res.status(403).json(err);
           });
+      }
+    }
+  )(req, res, next);
+};
+//items.find({
+//   created_at: {
+// $gte: ISODate("2010-04-29T00:00:00.000Z"),
+// $lt: ISODate("2010-05-01T00:00:00.000Z")
+// }
+// })
+
+exports.searchByDate = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        // if(datain.from===datain.to){
+        //   console.log("same")
+        //   datain.from = datain.from.slice(0,10)
+        //   datain.to = datain.to.slice(0,10)+"T23:59:59.000Z"
+
+        //   console.log("new data - "+JSON.stringify(datain))
+        // }
+
+        datain.from = datain.from.slice(0, 10);
+        datain.to = datain.to.slice(0, 10) + "T23:59:59.000Z";
+
+        Candidate.find({
+          date: {
+            $gte: new Date(datain.from).toISOString(),
+            $lt: new Date(datain.to).toISOString()
+          }
+        })
+          .then(doc => {
+            res.status(200).json(doc);
+            console.log("docs - " + JSON.stringify(doc));
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+
+
+exports.searchByName = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.find({ name: { $regex: datain.name, $options: "i" } })
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json(doc)
+          })
+          .catch(err => {});
+
+        //find({name:{'$regex' : 'string', '$options' : 'i'}})
+      }
+    }
+  )(req, res, next);
+};
+
+
+
+exports.anythingpassportexample = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
       }
     }
   )(req, res, next);

@@ -1,0 +1,30 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.main_header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 5rem;
+}
+
+.logo_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 10rem;
+}
+
+.logo {
+    width: 5rem;
+    height: 5rem;
+}
+
+.logo_name {
+    margin: 0;
+    padding: 1rem;
+}

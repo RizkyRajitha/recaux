@@ -47,6 +47,7 @@ const avatarUpload = multer({ storage: storageAvatar,limits:{fileSize:2000000},
 
 
 }).single("avatar");
+
 const cvUpload = multer({ storage: storageCv ,limits:{fileSize:10000000},
   fileFilter:function(req,file,cb){
 

@@ -128,6 +128,9 @@ router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
 router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
+router.post("/searchbydate",commonRoutes.searchByDate)
+router.post('/shortlistOneOveride',deptheadRoutes.shortlistOverideOne)
+router.post('/searchbyname',commonRoutes.searchByName)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -441,24 +444,50 @@ router.get("/test", (req, res) => {
   var ada = new Date();
   console.log(ada);
 
+  Candidate.find({
+    date: {
+      $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+      $lt:  new Date("2019-06-01T00:00:00.000Z").toISOString()
+    }
+  }).then(doc=>{
+    console.log("docs - "+JSON.stringify(doc))
+  })
+
+
+  // Candidate.aggregate()
+  //   .lookup({
+  //     from: "User",
+  //     localField: "assignToshortlisterbyId",
+  //     foreignField: "_id",
+  //     as: "User"
+  //   })
+    
+  //   .then(doc => {
+  //     console.log("ppp - " + JSON.stringify(doc));
+  //   });
+
+  // Candidate.findOne({ email: "dewindi@anushika.com1111111" }).then(doc => {
+  //   console.log("oo - " + JSON.stringify(doc.shortlisterID));
+  // });
+
   //res.send('hello')
 
-  var salt = bcrypt.genSaltSync(saltRounds);
-  var hash = bcrypt.hashSync("admin", salt);
+  // var salt = bcrypt.genSaltSync(saltRounds);
+  // var hash = bcrypt.hashSync("admin", salt);
 
-  const newuser = new User({
-    email: "admin@auxenta.com",
-    hash: hash
-  });
+  // const newuser = new User({
+  //   email: "admin@auxenta.com",
+  //   hash: hash
+  // });
 
-  newuser
-    .save()
-    .then(result => {
-      res.send(result);
-    })
-    .catch(err => {
-      res.json(err);
-    });
+  // newuser
+  //   .save()
+  //   .then(result => {
+  //     res.send(result);
+  //   })
+  //   .catch(err => {
+  //     res.json(err);
+  //   });
 });
 
 module.exports = router;

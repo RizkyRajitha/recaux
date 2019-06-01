@@ -471,10 +471,10 @@
 }
 
 .logoutlinksidenavclosed {
-  margin-top: 570px;
+  margin-top: 33rem;
 }
 .logoutlinksidenavopen {
-  margin-top: 220px;
+  margin-top: 11rem;
 }
 
 
@@ -482,10 +482,22 @@
   position: fixed;
 }
 .avatar{
-  margin-top: 300px;
+  /* margin-top: 300px; */
 }
-.sidenavAvatar{
+.avatarsidenav{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   
 }
 
+.sidenavuserdetails{
+  padding-top:  0rem;
+  padding-right: 1rem;
+  padding-left: 0.5rem;
+  
+  color: rgb(180, 180, 180);
+  list-style-type: none;
+  text-align: left;
+}
 /*# sourceMappingURL=react-sidenav.css.map*/
