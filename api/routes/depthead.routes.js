@@ -35,7 +35,7 @@ exports.shortlistData = (req, res, next) => {
               .then(candocs => {
                 console.log(candocs);
 
-                for (var i = 0; i < pendingCandidatearr.length; i++) {
+                for (var i = 0; i < candocs.length; i++) {
                   var objDoc = userdoc.shortlist[i].toObject();
 
                   objDoc.candidateName = candocs[i].name;
@@ -142,4 +142,102 @@ exports.evaluation = (req, res) => {
     .catch(er => {
       console.log(er);
     });
+};
+
+exports.shortlistOverideOne = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log("in shortlist overide one");
+
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(user.id))
+          .then(allocaterdoc => {
+            User.updateOne(
+              { _id: datain.newallocateduser },
+              {
+                $push: {
+                  shortlist: {
+                    candidateId: datain.candidateallocated,
+                    allocatedbyUserId: user.id,
+                    allocatedDate: new Date(),
+                    allocatedUserName:
+                      allocaterdoc.firstName + " " + allocaterdoc.lastName
+                  }
+                }
+              }
+            )
+              .then(doc1 => {
+                User.updateOne(
+                  { _id: datain.oldAllocateuser },
+                  {
+                    $pull: {
+                      shortlist: { candidateId: datain.candidateallocated }
+                    }
+                  }
+                )
+                  .then(doc2 => {
+                    User.findById(ObjectID(datain.newallocateduser))
+                      .then(newallocateduserdoc => {
+                        Candidate.updateOne(
+                          { _id: datain.candidateallocated },
+
+                          {
+                            $set: {
+                              assignToshortlisterbyName:
+                                allocaterdoc.firstName +
+                                " " +
+                                allocaterdoc.lastName,
+                              assignToshortlisterbyId: user.id,
+                              shortlister: datain.newallocateduser,
+                              shortlisterName:
+                                newallocateduserdoc.firstName +
+                                " " +
+                                newallocateduserdoc.lastName
+                            }
+                          }
+                        )
+                          .then(doc3 => {
+                            console.log(
+                              "overide - allocaterdoc - " +
+                                JSON.stringify(newallocateduserdoc) +
+                                " push -  " +
+                                JSON.stringify(doc1) +
+                                " pull -  " +
+                                JSON.stringify(doc2) +
+                                "can doc - " +
+                                JSON.stringify(doc3)
+                            );
+
+                            res.json({ msg: "allocated_success" });
+
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
 };

@@ -313,7 +313,7 @@ class dashboard extends Component {
               49,
               result.data.avatarUrl.length
             );
-            var config = "/w_150,h_155,c_thumb/";
+            var config = "/w_220,h_295,c_thumb/";
 
             var baseUrl = preurl + config + posturl;
             this.setState({ avatarUrl: baseUrl });
@@ -350,7 +350,7 @@ class dashboard extends Component {
       return (
         <div className="dashboardmain">
           <Navbar />
-          <Drawer avatarUrl={this.state.avatarUrl} />
+          <Drawer avatarUrl={this.state.avatarUrl} username={this.state.firstName+" "+this.state.lastName} type={this.state.usertype} />
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
           
     

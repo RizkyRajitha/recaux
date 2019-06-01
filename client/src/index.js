@@ -6,6 +6,8 @@ import * as serviceWorker from './serviceWorker';
 import './bootstrap-material-design-dist/css/bootstrap-material-design.css'
 //import './bootstrap-material-design-dist/js/bootstrap-material-design.js.map'
 
+//import LoginPage from './pages/login/Login-ref';
+
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

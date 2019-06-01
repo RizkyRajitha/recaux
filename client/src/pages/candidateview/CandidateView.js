@@ -222,35 +222,62 @@ class CandidateView extends Component {
 
     console.log("sent payload" + payload);
 
-    axios
-      .post("/usr/shortlistOne/" + this.state.id, payload, config)
-      .then(res => {
-        console.log(JSON.stringify(res.data));
-        //this.setState({shorlistSuccess:true})
-        this.setState({ isLoading: false });
-        if (res.data.msg == "allocated_success") {
-          this.setState({ shorlistSuccess: true });
-          window.location.reload(false);
-        }
-        this.closeModal();
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ isLoading: false });
-      });
+    if (this.state.data.assignToshortlisterbyName) {
+      console.log("overide");
+      var payloadOveride = {
+        newallocateduser: this.state.selectedOption.value,
+        candidateallocated: this.state.data._id,
+        oldAllocateuser: this.state.data.shortlister
+      };
+
+      console.log("send data - overide - " + JSON.stringify(payloadOveride));
+
+      axios
+        .post("/usr/shortlistOneOveride", payloadOveride, config)
+        .then(results => {
+
+          this.setState({ isLoading: false });
+          if (results.data.msg == "allocated_success") {
+            this.setState({ shorlistSuccess: true });
+            window.location.reload(false);
+          }
+          this.closeModal();
+
+        })
+        .catch(err => {console.log(err)});
+    } else {
+      axios
+        .post("/usr/shortlistOne/" + this.state.id, payload, config)
+        .then(res => {
+          console.log(JSON.stringify(res.data));
+          //this.setState({shorlistSuccess:true})
+          this.setState({ isLoading: false });
+          if (res.data.msg == "allocated_success") {
+            this.setState({ shorlistSuccess: true });
+            window.location.reload(false);
+          }
+          this.closeModal();
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ isLoading: false });
+        });
+    }
   };
 
   componentDidMount() {
+    console.log("comp did mount");
+
     const id = this.props.match.params.id;
     console.log(id);
 
     const jwt = localStorage.getItem("jwt");
-    console.log("jwt token -- - -- >>>" + jwt);
+    //console.log("jwt token -- - -- >>>" + jwt);
 
     try {
       console.log("in register");
       var pay = jsonwebtoken.verify(jwt, "authdemo");
-      console.log("payload - " + pay);
+      // console.log("payload - " + pay);
       console.log("************************************");
     } catch (error) {
       console.log("not logged in redirecting...............");
@@ -263,7 +290,24 @@ class CandidateView extends Component {
 
     this.setState({ usertype: usertype });
 
-    this.wtf();
+    axios
+      .get("/usr/getcandidate/" + id)
+      .then(res => {
+        console.log("date - - - -" + JSON.stringify(res.data));
+
+        this.setState({
+          data: res.data.candidateData,
+          userarr: res.data.userData,
+          cvUrl: res.data.candidateData.cvUrl
+        });
+
+        setTimeout(() => console.log(this.state), 1000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    //this.wtf();
   }
 
   evalHndler = () => {
@@ -291,27 +335,28 @@ class CandidateView extends Component {
   };
 
   wtf = () => {
-    const id = this.props.match.params.id;
-    axios
-      .get("/usr/getcandidate/" + id)
-      .then(res => {
-        this.setState({ data: res.data.candidateData });
-        this.setState({ userarr: res.data.userData });
-        this.setState({ cvUrl: res.data.candidateData.cvUrl });
-        console.log(res);
-        console.log(this.state);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // const id = this.props.match.params.id;
+    // axios
+    //   .get("/usr/getcandidate/" + id)
+    //   .then(res => {
+    //     this.setState({ data: res.data.candidateData });
+    //     this.setState({ userarr: res.data.userData });
+    //     this.setState({ cvUrl: res.data.candidateData.cvUrl });
+    //     console.log(res);
+    //     console.log(this.state);
+    //     console.log("date - - - -" + JSON.stringify(res.data));
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
   };
 
   render() {
     if (this.state.data.date) {
-      console.log("dataaa" + this.state.data.date);
+      console.log("wjooop");
+      console.log("date - - - -" + this.state.data.date);
       var dd = new Date(this.state.data.date);
       var d = dd.toJSON().slice(0, 10);
-      console.log();
     }
 
     const { selectedOption, selectoptionsnamelist } = this.state;
@@ -338,6 +383,14 @@ class CandidateView extends Component {
             >
               <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
 
+              {this.state.data.assignToshortlisterbyName && (
+                <p>
+                  {" "}
+                  this candidate is currently assiged to{" "}
+                  {this.state.data.shortlisterName} do you want to
+                  overide it{" "}
+                </p>
+              )}
               <div class="input-field col s12">
                 <p>{this.state.shortedcanarrnamelist}</p>
 

@@ -82,6 +82,7 @@ class Addcandidate extends Component {
     this.setState({ addedsucsess: 0 });
     e.preventDefault();
     var can = this.state;
+    console.log("state -  " +can );
 
     if (can.name && can.email && can.jobspec) {
       console.log("submited");
@@ -95,13 +96,14 @@ class Addcandidate extends Component {
         .post("/usr/addcandidate", params)
         .then(data => {
           console.log(data.data);
-          this.setState({ addedsucsess: 2, name: "", jobspec: "", email: "" });
+          this.setState({ addedsucsess: 2, name: "", jobspec: "", email: "", isLoading: false });
 
           var addeduserid = data.data._id;
           if (this.state.cvFile === null) {
             this.setState({ errchoseefilelater: true });
           }
           if (this.state.cvFile) {
+            this.setState({ isLoading: true });
             console.log("uploading cv inticiated");
             const formdata = new FormData();
             formdata.append("cv", this.state.cvFile);
@@ -145,6 +147,7 @@ class Addcandidate extends Component {
           if (err.response.data.errcode == 11000) {
             console.log(err.response.data);
             this.setState({
+              isLoading: false,
               duplicateemailerr: true,
               dupcanid: err.response.data.dupcanid
             });
@@ -198,7 +201,7 @@ class Addcandidate extends Component {
                       view
                     </button>
                   </div>
-                )}
+                )}  
 
                 {this.state.resumeupoadsuccsess && (
                   <div class="alert alert-success" role="alert">

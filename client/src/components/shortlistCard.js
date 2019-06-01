@@ -14,6 +14,7 @@ state = {
 }
 
 componentDidMount(){
+  console.log("in shortloist card")
     console.log('props - '+JSON.stringify(this.props))
 }
 

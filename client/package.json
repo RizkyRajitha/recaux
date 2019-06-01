@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@progress/kendo-angular-dropdowns": "^1.6.1",
     "@trendmicro/react-sidenav": "^0.4.5",
     "axios": "^0.18.0",
     "formik": "^1.5.4",
@@ -11,13 +10,14 @@
     "moment": "^2.24.0",
     "pdfjs-dist": "^2.0.943",
     "react": "^16.8.2",
+    "react-day-picker": "^7.3.0",
     "react-dom": "^16.8.2",
+    "react-helmet": "^5.2.1",
     "react-modal": "^3.8.1",
     "react-pdf": "^4.0.5",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
     "react-select": "^2.4.3",
-    "reactstrap": "^8.0.0",
     "yup": "^0.27.0"
   },
   "scripts": {

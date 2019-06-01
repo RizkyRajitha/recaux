@@ -25,6 +25,7 @@ import Avatar from "./pages/avatar";
 import Shortlist from "./pages/shortlist/shortlist";
 import Drawer from "./components/drawer";
 import Pdftest from "./pages/pdftset";
+import Search from "./pages/search/search"
 
 import TemporaryDrawer from "./components/sidenav";
 
@@ -54,7 +55,7 @@ class App extends Component {
           <Route path="/drawer" component={Drawer} />
           <Route path="/pdftest" component={Pdftest} />
           <Route path="/spinner" component={Home} />
-          
+          <Route path="/Search" component={Search} />
         </div>
       </BrowserRouter>
     );
