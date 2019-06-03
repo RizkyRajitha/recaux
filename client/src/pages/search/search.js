@@ -3,6 +3,9 @@ import axios from "axios";
 import Datepicker from "../../components/datepicker";
 import Modal from "react-modal";
 import Searchcard from "../../components/searchcard";
+import Drawer from "../../components/sidenav";
+import Navbar from "../../components/navbar";
+import "./search.css";
 const jwt = require("jsonwebtoken");
 
 const customStyles = {
@@ -16,9 +19,10 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)"
   }
-};
+}
 
-Modal.setAppElement("#root");
+Modal.setAppElement("#root")
+
 class Search extends Component {
   state = {
     modalIsOpen: "",
@@ -26,7 +30,14 @@ class Search extends Component {
     bothdatesselected: false,
     searchbydateResults: null,
     searchbyname_value: "",
-    searchbynameResults:null
+    searchbynameResults: null,
+    id: null,
+    firstName: "",
+    lastName: "",
+    greet: "",
+    usertype: "",
+    avatarUrl: false,
+    searchbydateclieked: false
   };
 
   openModal = () => {
@@ -45,6 +56,7 @@ class Search extends Component {
 
   searchModal = () => {
     this.openModal();
+    this.setState({ searchbydateclieked: true });
   };
 
   getdatefromdatepicke = dateobj => {
@@ -111,10 +123,9 @@ class Search extends Component {
       .post("/usr/searchbyname", payload, config)
       .then(res => {
         console.log(res.data);
-        this.setState({searchbynameResults:res.data})
+        this.setState({ searchbynameResults: res.data });
       })
       .catch(err => {});
-
   };
 
   submitesearchbyname = () => {
@@ -151,38 +162,75 @@ class Search extends Component {
       console.log("not logged in redirecting...............");
       this.props.history.push("/Login");
     }
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(
+          49,
+          res.data.avatarUrl.length
+        );
+        var config = "/w_220,h_295,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
+
+        this.setState({
+          id: datain._id,
+          firstName: datain.firstName,
+          lastName: datain.lastName,
+          usertype: datain.usertype
+        });
+      })
+      .catch(err => {});
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.searchModal}>search by date</button>
+        <Navbar />
+        <Drawer
+          avatarUrl={this.state.avatarUrl}
+          username={this.state.firstName + " " + this.state.lastName}
+          type={this.state.usertype}
+        />
+        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
 
-        {this.state.searchbydateResults && (
-          <div>
-            {this.state.searchbydateResults.map(can => {
-              //console.log(can.name+can.email+can.jobspec)
-              return <Searchcard name={can.name} _id={can._id} />;
-            })}
+        <div className="searchcontainer">   
+          <button className="searchbydate" onClick={this.searchModal}>
+            search by date
+          </button>
+          <div className="searcharea" hidden={this.state.searchbydateclieked}>
+            <input
+              type="text"
+              onChange={this.namehndlechange}
+              className="searchname"
+              name="search"
+              placeholder="Search.."
+            />
+            <button className="searchnamebtn">
+              <i class="fa fa-search" />
+            </button>
           </div>
-        )}
 
-
-
-
-        <input type="text" onChange={this.namehndlechange} />
-
-        <button onClick={this.submitesearchbyname}>search by name</button>
-
-        {this.state.searchbynameResults && (
-          <div>
-            {this.state.searchbynameResults.map(can => {
-              //console.log(can.name+can.email+can.jobspec)
-              return <Searchcard name={can.name} _id={can._id} />;
-            })}
-          </div>
-        )}
-
+          {this.state.searchbynameResults && (
+            <div>
+              {this.state.searchbynameResults.map(can => {
+                //console.log(can.name+can.email+can.jobspec)
+                return <Searchcard name={can.name} _id={can._id} />;
+              })}
+            </div>
+          )}
+        </div>
+        
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

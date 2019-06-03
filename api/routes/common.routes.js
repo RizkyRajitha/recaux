@@ -12,7 +12,8 @@ exports.addCandidate = (req, res) => {
     email: req.body.candidateemail,
     name: req.body.candidatename,
     jobspec: req.body.candidatejobspec,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    source:"manual"
   });
 
   newcandidate
@@ -92,7 +93,7 @@ exports.getAllCandidates = (req, res) => {
 
   Candidate.find()
     .then(result => {
-      User.find({})
+      User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
             return {
@@ -296,7 +297,8 @@ exports.userProfile = (req, res, next) => {
             emailverified: result.emailverified,
             firstName: result.firstName,
             lastName: result.lastName,
-            avatarUrl: result.avatarUrl
+            avatarUrl: result.avatarUrl,
+            usertype:result.usertype
           };
 
           console.log("found" + result);
@@ -425,6 +427,31 @@ exports.searchByName = (req, res, next) => {
   )(req, res, next);
 };
 
+exports.getbasicuserdetails = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        User.findById(ObjectID(user.id)).then(doc=>{
+          var payload = {id:doc._id,"firstName":doc.firstName , lastName:doc.lastName,usertype:doc.usertype,avatarUrl:doc.avatarUrl}
+          res.status(200).json(payload)
+        }).catch(err=>{
+          console.log(err)
+        })
+
+      }
+    }
+  )(req, res, next);
+};
 
 
 exports.anythingpassportexample = (req, res, next) => {

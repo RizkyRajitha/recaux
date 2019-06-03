@@ -282,13 +282,11 @@ class dashboard extends Component {
       headers: { authorization: jwt }
     };
 
-
     axios
       .get("/usr/dashboard", config)
       .then(result => {
         console.log("sucsess" + result.data);
 
-        
         if (result.data) {
           console.log("menna apu data");
           console.log(result.data);
@@ -305,7 +303,7 @@ class dashboard extends Component {
 
           this.setState({ logedin: true });
 
-          localStorage.setItem("usertype",result.data.usertype);
+          localStorage.setItem("usertype", result.data.usertype);
 
           if (result.data.avatarUrl) {
             var preurl = result.data.avatarUrl.slice(0, 48);
@@ -324,10 +322,7 @@ class dashboard extends Component {
           this.getuserdata();
           this.setState({ isLoading: false });
           localStorage.setItem("userId", result.data.id);
-        } 
-        
-        
-        else {
+        } else {
           this.setState({ logedin: false });
         }
       })
@@ -350,10 +345,13 @@ class dashboard extends Component {
       return (
         <div className="dashboardmain">
           <Navbar />
-          <Drawer avatarUrl={this.state.avatarUrl} username={this.state.firstName+" "+this.state.lastName} type={this.state.usertype} />
+          <Drawer
+            avatarUrl={this.state.avatarUrl}
+            username={this.state.firstName + " " + this.state.lastName}
+            type={this.state.usertype}
+          />
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
-          
-    
+
           <button
             onClick={this.usrprofile}
             className="btn btn-outline-primary"
@@ -368,6 +366,11 @@ class dashboard extends Component {
             onClick={this.addcandidate}
             className="btn btn-outline-primary"
             id="addcan"
+            disabled={
+              this.state.usertype === "hr_staff" || this.state.usertype === "admin"
+                ? false
+                : true
+            }
           >
             Add new candidate
           </button>
@@ -379,7 +382,7 @@ class dashboard extends Component {
             disabled={this.state.numofshort === 0}
             onClick={this.shortlistmodal}
           >
-            Shortlist
+            Shortlist Many
           </button>
 
           <Modal
@@ -413,7 +416,7 @@ class dashboard extends Component {
             </div>
           </Modal>
 
-          {!this.state.emailverified && (
+          {/* {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">
               please verify your email
               <br />
@@ -426,10 +429,10 @@ class dashboard extends Component {
                 verify email
               </button>
             </div>
-          )}
+          )} */}
 
           <div class="row">
-            <div class="col-s4-m4-l4" id="cardcontainer1">
+            <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
               {usrdetails.reverse().map(can => {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
@@ -441,25 +444,10 @@ class dashboard extends Component {
               })}
             </div>
 
-            <div class="col-s8 " id="cardcontainer2">
-              {cndetailes.map((can, iid) => {
-                //console.log(can.name+can.email+can.jobspec)
-                /**
- * assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
-assignToshortlisterbyName: "Bharana perera"
-date: "2019-04-07T19:38:55.028Z"
-email: "mark@facebook.com"
-jobspec: "CCO"
-name: "Mark Zuckerburg"
-shortlister: "5caa51ad56a61d6a2492ec98"
-shortlisterName: "Dewindi Anushika"
-status: "onhold"
- */
 
-                {
-                  console.log(can.shortlister + " - dis ");
-                }
-                return (
+            <div className={this.state.usertype==="admin"?"cardcontainer2_admin":"cardcontainer2_nonadmin"}   >
+              {cndetailes.map((can, iid) => {
+                                return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
                     name={can.name}

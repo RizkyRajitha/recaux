@@ -23,9 +23,7 @@ Modal.setAppElement("#root");
 
 class Userprofile extends Component {
   state = {
-    firstName: "",
     email: "",
-    lastName: "",
     login: false,
     success: false,
     addedsucsess: 0,
@@ -37,8 +35,8 @@ class Userprofile extends Component {
     id: "",
     errfiletoolarge: false,
     unsupportedFormat: false,
-    userowner:false,
-    isLoading:false
+    userowner: false,
+    isLoading: false
   };
 
   chngehndlimg = e => {
@@ -74,12 +72,10 @@ class Userprofile extends Component {
       var pay = jsonwebtoken.verify(jwt, "authdemo");
       console.log("payload - " + JSON.stringify(pay));
       console.log("************************************");
-      console.log('id - params - '+this.props.match.params.id)
-      if(!(this.props.match.params.id === pay.id)){
-        this.setState({userowner:true})
+      console.log("id - params - " + this.props.match.params.id);
+      if (!(this.props.match.params.id === pay.id)) {
+        this.setState({ userowner: true });
       }
-
-
     } catch (error) {
       console.log("not logged in redirecting...............");
 
@@ -102,7 +98,7 @@ class Userprofile extends Component {
           49,
           this.state.userdata.avatarUrl.length
         );
-        var config = "/w_150,h_150,c_thumb/";
+        var config = "/w_250,h_250,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ baseUrl: baseUrl });
@@ -146,7 +142,7 @@ class Userprofile extends Component {
 
   submitHndleimg = e => {
     e.preventDefault();
-    this.setState({isLoading:true})
+    this.setState({ isLoading: true });
     console.log("hahah");
     console.log(this.props.match.params.id);
 
@@ -172,17 +168,17 @@ class Userprofile extends Component {
 
         var preurl = result.data.url.slice(0, 48);
         var posturl = result.data.url.slice(49, result.data.url.length);
-        var config = "/w_150,h_150,c_thumb/";
+        var config = "/w_250,h_250,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ baseUrl: baseUrl });
-        this.setState({isLoading:false})
+        this.setState({ isLoading: false });
         //document.querySelector('.images').setAttribute('src',this.state.url)
       })
       .catch(
         function(error) {
           console.log(error.response.data);
-          this.setState({isLoading:false})
+          this.setState({ isLoading: false });
           if ("file_too_large" === error.response.data) {
             this.setState({ errfiletoolarge: true });
           }
@@ -222,10 +218,15 @@ class Userprofile extends Component {
     return (
       <div>
         <Navbar />
-        <Drawer avatarUrl={this.state.baseUrl} />
-        <div className="container">
+        <Drawer
+          avatarUrl={this.state.baseUrl}
+          username={
+            this.state.userdata.firstName + " " + this.state.userdata.lastName
+          }
+          type={this.state.userdata.usertype}
+        />
 
-        
+        <div className="container">
           {this.state.userdata.avatarUrl && (
             <img
               id="avatarimage"
@@ -234,13 +235,12 @@ class Userprofile extends Component {
             />
           )}
 
+          {this.state.success && (
+            <div class="alert alert-success" role="alert">
+              updated successfully
+            </div>
+          )}
           <div className="">
-            {this.state.success && (
-              <div class="alert alert-success" role="alert">
-                updated successfully
-              </div> 
-            )}
-
             <table id="userdetailstable" class="table table-borderless">
               <tbody className="cancardTable">
                 <tr>
@@ -282,11 +282,11 @@ class Userprofile extends Component {
                 Change Profile Image
               </h2>
 
-              <div class="loader-userprofile" hidden={!this.state.isLoading} ></div>
+              <div class="loader-userprofile" hidden={!this.state.isLoading} />
 
               <div class="input-field col s12">
                 <p>{this.state.shortedcanarrnamelist}</p>
-                aloha
+
                 {this.state.errfiletoolarge && (
                   <div class="alert alert-danger" role="alert">
                     File too large, select another file
@@ -309,6 +309,7 @@ class Userprofile extends Component {
                         placeholder="enter first name"
                         id="firstName"
                         value={this.state.userdata.firstName}
+                        disabled={true}
                       />
                     </div>
 
@@ -322,6 +323,7 @@ class Userprofile extends Component {
                         placeholder="enter last name"
                         id="lastName"
                         value={this.state.userdata.lastName}
+                        disabled={true}
                       />
                     </div>
                   </div>
@@ -364,16 +366,22 @@ class Userprofile extends Component {
             </div>
           </div>
 
-          <button className="btn btn-primary" disabled={this.state.userowner} onClick={this.chngpss}>
-            change password
-          </button>
-          <input
-          disabled={this.state.userowner}
-            type="button"
-            className="btn btn-primary"
-            onClick={this.imagehndle}
-            value="Edit profile"
-          />
+          <div className="userprofilebtnsdiv">
+            <button
+              className="btn btn-primary"
+              disabled={this.state.userowner}
+              onClick={this.chngpss}
+            >
+              change password
+            </button>
+            <input
+              disabled={this.state.userowner}
+              type="button"
+              className="btn btn-primary"
+              onClick={this.imagehndle}
+              value="Edit profile"
+            />
+          </div>
         </div>
       </div>
     );

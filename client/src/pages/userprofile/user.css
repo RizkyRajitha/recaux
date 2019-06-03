@@ -9,13 +9,18 @@ margin-top: 200px;
 margin-left: 200px;
 }
 #avatarimage{
-    margin-right: 1000px;
-    margin-top: 100px;
+    margin-right: 00px;
+    margin-top: 3rem;
 }
 #userdetailstable{
     margin-left: 300px;
-    margin-top: -160px;
+    margin-top: 60px;
     width: 500px;
+}
+
+.userprofilebtnsdiv{
+    margin-top: -10rem;
+    margin-right: 5rem;
 }
 
 .loader-userprofile {

@@ -43,11 +43,27 @@ exports.userlist = (req, res, next) => {
           if (result.usertype === "admin") {
             User.find()
               .then(doc => {
+                payloadarr = [];
                 doc.forEach(element => {
-                  element.hash = "";
+                  var pendingcan = 0;
+
+                  element.shortlist.forEach(element1 => {
+                    if (element1.shortlistStatus === false) {
+                      pendingcan = pendingcan + 1;
+                    }
+                  });
+
+                  temp = {
+                    firstName: element.firstName,
+                    lastName: element.lastName,
+                    usertype: element.usertype,
+                    candidatesAssinged: pendingcan
+                  }
+                  payloadarr.push(temp)
                 });
-                console.log(doc);
-                res.status(200).json(doc);
+
+                console.log(payloadarr);
+                res.status(200).json(payloadarr);
               })
               .catch(err => {
                 console.log("err" + err);

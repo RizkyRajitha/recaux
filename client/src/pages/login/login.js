@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
+import Navbar from "../../components/navbar";
 import "./login.css";
 
 const Formic = ({ errors, history, touched, isSubmitting }) => {
@@ -135,9 +136,19 @@ const Login = withFormik({
 
         if (body) {
           console.log("body - " + body);
-          localStorage.setItem("jwt", body);
+          localStorage.setItem("jwt", body.token);
+          localStorage.setItem("usertype", body.usertype);
+          localStorage.setItem("userId", body.userId);
+
           console.log(props);
-          props.history.push("/dashboard");
+
+          if(data.data.usertype==="depthead"){
+            props.history.push("/shortlist");
+          }else{
+            props.history.push("/dashboard");
+          }
+
+          
         } else {
           setErrors({ invalidcred: "invalid Creadentials" });
           setSubmitting(false)

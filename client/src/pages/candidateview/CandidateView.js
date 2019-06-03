@@ -6,6 +6,7 @@ import Navbar from "../../components/navbar";
 import exp from "../pdf.pdf";
 import Modal from "react-modal";
 import Select from "react-select";
+import Drawer from "../../components/sidenav";
 import { Document, Page, pdfjs } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
@@ -59,7 +60,12 @@ class CandidateView extends Component {
     errfiletoolarge: false,
     unsupportedFormat: false,
     isLoading: false,
-    usertype: ""
+    usertype: "",
+    id: null,
+    firstName: "",
+    lastName: "",
+
+    avatarUrl: false
   };
   /****************************************** */
   openModal = () => {
@@ -78,6 +84,26 @@ class CandidateView extends Component {
 
   shortlistmodal = () => {
     this.openModal();
+  };
+
+  /***************************************** */
+
+  openModal1 = () => {
+    this.setState({ modalIsOpen1: true });
+  };
+
+  afterOpenModal1 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal1 = () => {
+    this.setState({ modalIsOpen1: false });
+  };
+
+  changeStatusmodal = () => {
+    this.openModal1();
   };
 
   /***************************************** */
@@ -235,16 +261,16 @@ class CandidateView extends Component {
       axios
         .post("/usr/shortlistOneOveride", payloadOveride, config)
         .then(results => {
-
           this.setState({ isLoading: false });
           if (results.data.msg == "allocated_success") {
             this.setState({ shorlistSuccess: true });
             window.location.reload(false);
           }
           this.closeModal();
-
         })
-        .catch(err => {console.log(err)});
+        .catch(err => {
+          console.log(err);
+        });
     } else {
       axios
         .post("/usr/shortlistOne/" + this.state.id, payload, config)
@@ -286,9 +312,35 @@ class CandidateView extends Component {
       this.props.history.push("/Login");
     }
 
-    var usertype = localStorage.getItem("usertype");
+    // var usertype = localStorage.getItem("usertype");
 
-    this.setState({ usertype: usertype });
+    // this.setState({ usertype: usertype });
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_220,h_295,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
+
+        this.setState({
+          id: datain.id,
+          firstName: datain.firstName,
+          lastName: datain.lastName,
+          usertype: datain.usertype
+        });
+      })
+      .catch(err => {});
 
     axios
       .get("/usr/getcandidate/" + id)
@@ -312,20 +364,35 @@ class CandidateView extends Component {
 
   evalHndler = () => {
     const id = this.props.match.params.id;
-    this.props.history.push("/evaluation/" + id);
+
+    console.log(this.state.data.shortlister+"  "+this.state.id)
+
+    //this.props.history.push("/evaluation/" + id);
   };
 
   chngehandlsel = e => {
     this.setState({ status_change: 0 });
     // this.setState({ status: e.target.value });
-    console.log("status 1k malli" + e.target.value);
+    console.log("status 1k" + e.target.value);
     var id = this.props.match.params.id;
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
     var payload = { status: e.target.value };
+
     axios
-      .post("/usr/updatestatus/" + id, payload)
+      .post("/usr/updatestatus/" + id, payload, config)
       .then(res => {
-        console.log(res);
-        this.setState({ status_change: 1 });
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          this.setState({ status_change: 1 });
+          this.closeModal1();
+        }
+
         console.log("awoooooooooo");
       })
       .catch(err => {
@@ -364,14 +431,25 @@ class CandidateView extends Component {
     return (
       <div>
         <Navbar />
+        <Drawer
+          avatarUrl={this.state.avatarUrl}
+          username={this.state.firstName + " " + this.state.lastName}
+          type={this.state.usertype}
+        />
+        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
+
         <div className="canview">
           <div className="canview2">
             {this.state.status_change === 1 && (
-              <div color="primary">status change succsessfuly</div>
+              <div class="alert alert-success" role="alert">
+                status change succsessfuly
+              </div>
             )}
 
             {this.state.shorlistSuccess && (
-              <div color="primary">Allocated for shorlisting succsessfuly</div>
+              <div class="alert alert-success" role="alert">
+                Allocated for shorlisting succsessfuly
+              </div>
             )}
 
             <Modal
@@ -387,8 +465,7 @@ class CandidateView extends Component {
                 <p>
                   {" "}
                   this candidate is currently assiged to{" "}
-                  {this.state.data.shortlisterName} do you want to
-                  overide it{" "}
+                  {this.state.data.shortlisterName} do you want to overide it{" "}
                 </p>
               )}
               <div class="input-field col s12">
@@ -530,52 +607,85 @@ status: "New"
             </ul>
           </div>
 
-          <button onClick={this.shortlistmodal} className="btn btn-primary">
-            alocate to shortlist
+          <button
+            disabled={
+              
+              this.state.usertype === "depthead"
+                ? true
+                : false
+            }
+            onClick={this.shortlistmodal}
+            className="btn btn-primary"
+          >
+            allocate to shortlist
           </button>
 
           <button onClick={this.addcvmodal} className="btn btn-primary">
-            add cv
+            view cv
           </button>
 
-          <div class="form-group">
-            <label
-              for="exampleFormControlSelect2"
-              hidden={
-                this.state.usertype === "admin" ||
-                this.state.usertype === "depthead"
-                  ? false
-                  : true
-              }
-            >
-              change candidate status
-            </label>
-            <select
-              hidden={
-                this.state.usertype === "admin" ||
-                this.state.usertype === "depthead"
-                  ? false
-                  : true
-              }
-              class="form-control"
-              id="status"
-              onChange={this.chngehandlsel}
-            >
-              <option selected>Select...</option>
-              <option id="status" value="hr_interview">
-                HR interview
-              </option>
-              <option id="status" value="onhold">
-                onhold
-              </option>
-              <option id="status" value="accepted">
-                accepted
-              </option>
-              <option id="status" value="shortlisted">
-                shortlisted
-              </option>
-            </select>
-          </div>
+          <button disabled={
+             (this.state.data.shortlister!==this.state.id) ||  (this.state.usertype === "admin")
+            
+               ? false
+               : true
+                ? true
+                : false
+            }  onClick={this.changeStatusmodal} className="btn btn-primary">
+            shorlist
+          </button>
+
+          <Modal
+            isOpen={this.state.modalIsOpen1}
+            onAfterOpen={this.afterOpenModal1}
+            onRequestClose={this.closeModal1}
+            style={customStyles}
+            contentLabel="Example 1 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>shortlist</h2>
+
+            <div class="form-group">
+              <label
+                className="canviewshortlistform"
+                for="exampleFormControlSelect2"
+                hidden={
+                  this.state.usertype === "admin" ||
+                  this.state.usertype === "depthead"
+                    ? false
+                    : true
+                }
+              >
+                change candidate status
+              </label>
+
+              <select
+                disabled={
+                  (this.state.usertype === "admin" ||
+                  this.state.usertype === "depthead") 
+                    ? false
+                    : true
+                }
+                class="form-control"
+                id="status"
+                onChange={this.chngehandlsel}
+              >
+                <option selected>Select...</option>
+                <option id="status" value="hr_interview">
+                  HR interview
+                </option>
+                <option id="status" value="onhold">
+                  onhold
+                </option>
+                <option id="status" value="accepted">
+                  accepted
+                </option>
+                <option id="status" value="shortlisted">
+                  shortlisted
+                </option>
+              </select>
+            </div>
+          </Modal>
+
           <button onClick={this.evalHndler} className="btn btn-primary">
             evaluate
           </button>

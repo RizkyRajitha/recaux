@@ -1,7 +1,10 @@
-.cancardbadgeDiv {
-  text-align:  right;
+.dashboardcancardbadgeDiv {
+  text-align: center;
   font-size: 30px;
-  margin-right: 20px;
+  padding-top: 0%;
+  padding-bottom: 2%;
+  position: absolute;
+  margin-left: 45%;
 }
 #cancard {
   font-size: 16px;
@@ -13,7 +16,7 @@
   left: 5%;
 }
 
-#cardcontainer1{
+#cardcontainer1 {
   padding-left: 100px;
 }
 
@@ -25,18 +28,28 @@
 
 .containershbox {
   display: block;
-  position: relative;
+  position: absolute;
+  padding-top: 4%;
   padding-left: 1px;
   margin-bottom: 12px;
+  padding-right: 6%;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  left: 860px;
-  top: 8px;
+
   width: 200px;
+}
+
+.addtoshortlist_container {
+  margin-left: 83.1%;
+  padding-top: 3%;
+  padding-bottom: 2%;
+  padding-right: 1%;
+  position: absolute;
+  width: 15%;
 }
 
 /* Hide the browser's default checkbox */
@@ -51,7 +64,7 @@
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
-  top: -1px;
+  padding-top: 1%;
   left: 184px;
   height: 25px;
   width: 25px;
@@ -103,11 +116,16 @@
 
 .cancardTable {
   text-align: left;
+  margin-top: 0%;
 }
 
-.cancarddivtime{
-width: 200px;
-margin-top:-20px;
-margin-left:-10px;
+#cancardtables {
+  /* margin-top: 4%; */
+}
 
+.cancarddivtime {
+  width: 15%;
+  margin-top: 1%;
+  margin-left: 1%;
+  text-align: left;
 }

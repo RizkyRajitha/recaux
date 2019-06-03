@@ -22,6 +22,8 @@ var candidateSchema = new Schema({
   status: {
     type: String,
     default: "New"
+  },source: { 
+    type: String
   },
   evaluationData: {
     evaluatorId: String,
@@ -36,6 +38,7 @@ var candidateSchema = new Schema({
   shortlister: { type: String },
   shortlisterName:{type:String},
   shortlistedDate: { type: String },
+  allocatedDate: { type: String },
   shortlistStatus: { type: Boolean },
   cvUrl:{type:String , default:null},
   

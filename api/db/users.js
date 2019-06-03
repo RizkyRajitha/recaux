@@ -30,6 +30,9 @@ var userSchema = new Schema({
   usertype: {
     type: String
   },
+  source: {
+    type: String
+  },
   noOfcandidatesAssinged: {
     type: String,
     default: 0

@@ -102,9 +102,15 @@ router.post("/login1", function(req, res, next) {
         return next(err);
       } else {
         console.log("done");
+        console.log(user);
         var token = user.generateJWT();
+        var payload = {
+          token: token,
+          usertype: user.usertype,
+          userId: user._id
+        };
         // res.cookie("jwt", token, { httpOnly: true, secure: true });
-        return res.status(200).send(token);
+        return res.status(200).send(payload);
       }
     });
   })(req, res, next);
@@ -128,9 +134,10 @@ router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
 router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
-router.post("/searchbydate",commonRoutes.searchByDate)
-router.post('/shortlistOneOveride',deptheadRoutes.shortlistOverideOne)
-router.post('/searchbyname',commonRoutes.searchByName)
+router.post("/searchbydate", commonRoutes.searchByDate);
+router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
+router.post("/searchbyname", commonRoutes.searchByName);
+router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -162,7 +169,8 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                       allocaterdoc.firstName + " " + allocaterdoc.lastName,
                     assignToshortlisterbyId: user.id,
                     shortlister: datain.allocateduser,
-                    shortlisterName: userDoc.firstName + " " + userDoc.lastName
+                    shortlisterName: userDoc.firstName + " " + userDoc.lastName,
+                    allocatedDate: new Date().toISOString()
                   }
                 }
               ).then(candoc => {
@@ -249,7 +257,9 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                         assignToshortlisterbyId: iid,
                         shortlister: allocatedUserId,
                         shortlisterName:
-                          userDoc.firstName + " " + userDoc.lastName
+                          userDoc.firstName + " " + userDoc.lastName,
+
+                        allocatedDate: new Date().toISOString()
                       }
                     }
                   )
@@ -447,12 +457,11 @@ router.get("/test", (req, res) => {
   Candidate.find({
     date: {
       $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
-      $lt:  new Date("2019-06-01T00:00:00.000Z").toISOString()
+      $lt: new Date("2019-06-01T00:00:00.000Z").toISOString()
     }
-  }).then(doc=>{
-    console.log("docs - "+JSON.stringify(doc))
-  })
-
+  }).then(doc => {
+    console.log("docs - " + JSON.stringify(doc));
+  });
 
   // Candidate.aggregate()
   //   .lookup({
@@ -461,7 +470,7 @@ router.get("/test", (req, res) => {
   //     foreignField: "_id",
   //     as: "User"
   //   })
-    
+
   //   .then(doc => {
   //     console.log("ppp - " + JSON.stringify(doc));
   //   });
