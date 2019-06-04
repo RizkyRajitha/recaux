@@ -14,7 +14,7 @@ exports.shortlistData = (req, res, next) => {
       } else {
         console.log("in shortlist data");
 
-        var userid = req.params.id;
+        var userid = user.id;
         console.log("userid - " + userid);
 
         var payload = [];
@@ -38,11 +38,14 @@ exports.shortlistData = (req, res, next) => {
                 console.log(candocs);
 
                 for (var i = 0; i < candocs.length; i++) {
-                  var objDoc = userdoc.shortlist[i].toObject();
+                  // var objDoc = userdoc.shortlist[i].toObject();
 
-                  objDoc.candidateName = candocs[i].name;
-                  objDoc.candidateJobspec = candocs[i].jobspec;
-                  objDoc.candidateEmail = candocs[i].email;
+                  var objDoc = candocs[i].toObject()
+                  
+
+                  // objDoc.candidateName = candocs[i].name;
+                  // objDoc.candidateJobspec = candocs[i].jobspec;
+                  // objDoc.candidateEmail = candocs[i].email;
                   // var temp_payload = { data:userdoc.shortlist[i]}
 
                   payload.push(objDoc);
@@ -253,14 +256,8 @@ exports.shortlistOverideOne = (req, res, next) => {
             User.updateOne(
               { _id: datain.newallocateduser },
               {
-                $push: {
-                  shortlist: {
-                    candidateId: datain.candidateallocated,
-                    allocatedbyUserId: user.id,
-                    allocatedDate: new Date(),
-                    allocatedUserName:
-                      allocaterdoc.firstName + " " + allocaterdoc.lastName
-                  }
+                $pull: {
+                  shortlist: { candidateId: datain.candidateallocated }
                 }
               }
             )
@@ -268,8 +265,14 @@ exports.shortlistOverideOne = (req, res, next) => {
                 User.updateOne(
                   { _id: datain.oldAllocateuser },
                   {
-                    $pull: {
-                      shortlist: { candidateId: datain.candidateallocated }
+                    $push: {
+                      shortlist: {
+                        candidateId: datain.candidateallocated,
+                        allocatedbyUserId: user.id,
+                        allocatedDate: new Date(),
+                        allocatedUserName:
+                          allocaterdoc.firstName + " " + allocaterdoc.lastName
+                      }
                     }
                   }
                 )
@@ -280,7 +283,7 @@ exports.shortlistOverideOne = (req, res, next) => {
                           { _id: datain.candidateallocated },
 
                           {
-                            $set: {
+                            $set: {allocatedDate: new Date().toISOString(),
                               assignToshortlisterbyName:
                                 allocaterdoc.firstName +
                                 " " +

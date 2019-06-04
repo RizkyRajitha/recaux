@@ -74,6 +74,9 @@ try {
 mongoose.set("debug", true);
 
 var channel = pusher.subscribe("my-channel");
+
+// var channel2 = pusher.
+
 channel.bind("my-event", function(data) {
   console.log("new candidate recieved");
   console.log(JSON.stringify(data));

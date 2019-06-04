@@ -20,6 +20,7 @@ class ShortlistCard extends Component {
 
   cnadidateview = () => {
     console.log(this.props);
+    console.log("prop can id - "+this.props.candidateId)
     this.props.history.push("/getcandidate/" + this.props.candidateId);
   };
 
@@ -39,11 +40,11 @@ class ShortlistCard extends Component {
        const dote = new Date(this.props.time)
       console.log(this.props.date);
       //Tue Apr 23 2019 12:21:53 GMT+0530 (+0530)
-      var s =this.props.allocatedDate.slice(4, 24)
+      var s =this.props.allocatedDate//.slice(4, 24)
       //var s = this.props.date; //.slice(4, 24); //"2019-04-24 18:00:00";  // from action.timeStamp
 
-      //var actionTime = moments(s, "YYYY-MM-DD HH:mm:ssZ");
-      var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
+      var actionTime = moments(s, "YYYY-MM-DD HH:mm:ssZ");
+      //var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
       var timeAgo = actionTime.fromNow();
 
        console.log(" p p pp = "+timeAgo);

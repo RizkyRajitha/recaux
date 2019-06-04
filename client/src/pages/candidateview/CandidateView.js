@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";
 import { Document, Page, pdfjs } from "react-pdf";
+import moments from "moment";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
@@ -64,7 +65,9 @@ class CandidateView extends Component {
     id: null,
     firstName: "",
     lastName: "",
-
+    recivedago: "",
+    shortago: "",
+    alocatedago: "",
     avatarUrl: false
   };
   /****************************************** */
@@ -333,6 +336,10 @@ class CandidateView extends Component {
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });
 
+        // var resdate = this.state.data.date
+        //  var alodate = this.state.data.allocatedDate
+        //  var shrtdate = this.state.data.shortlistedDate
+
         this.setState({
           id: datain.id,
           firstName: datain.firstName,
@@ -345,12 +352,34 @@ class CandidateView extends Component {
     axios
       .get("/usr/getcandidate/" + id)
       .then(res => {
-        console.log("date - - - -" + JSON.stringify(res.data));
+        console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
+
+        var recivedago = res.data.candidateData.date
+          ? moments(
+              res.data.candidateData.date,
+              "YYYY-MM-DD HH:mm:ssZ"
+            ).fromNow()
+          : false;
+        var alocatedago = res.data.candidateData.allocatedDate
+          ? moments(
+              res.data.candidateData.allocatedDate,
+              "YYYY-MM-DD HH:mm:ssZ"
+            ).fromNow()
+          : false;
+        var shortago = res.data.candidateData.shortlistedDate
+          ? moments(
+              res.data.candidateData.shortlistedDate,
+              "YYYY-MM-DD HH:mm:ssZ"
+            ).fromNow()
+          : false;
 
         this.setState({
           data: res.data.candidateData,
           userarr: res.data.userData,
-          cvUrl: res.data.candidateData.cvUrl
+          cvUrl: res.data.candidateData.cvUrl,
+          recivedago: recivedago,
+          alocatedago: alocatedago,
+          shortago: shortago
         });
 
         setTimeout(() => console.log(this.state), 1000);
@@ -365,7 +394,9 @@ class CandidateView extends Component {
   evalHndler = () => {
     const id = this.props.match.params.id;
 
-    console.log(this.state.data.shortlister+"  "+this.state.id)
+    console.log(this.state.data.shortlister + "  " + this.state.id);
+
+    console.log("ddd - " + JSON.stringify(this.state));
 
     //this.props.history.push("/evaluation/" + id);
   };
@@ -419,12 +450,29 @@ class CandidateView extends Component {
   };
 
   render() {
-    if (this.state.data.date) {
-      console.log("wjooop");
-      console.log("date - - - -" + this.state.data.date);
-      var dd = new Date(this.state.data.date);
-      var d = dd.toJSON().slice(0, 10);
-    }
+    // if (this.state.recivedago) {
+    //   console.log("wjooop");
+    //   console.log("date - - - -" + this.state.recivedago);
+    //   // var dd = new Date(this.state.data.date);
+    //   // var d = dd.toJSON().slice(0, 10);
+
+    //   /**
+    //    * var s =this.props.allocatedDate//.slice(4, 24)
+    //   //var s = this.props.date; //.slice(4, 24); //"2019-04-24 18:00:00";  // from action.timeStamp
+
+    //   var actionTime = moments(s, "YYYY-MM-DD HH:mm:ssZ");
+    //   //var actionTime = moments(s, "MMM-DD-YYYY HH:mm:ssZ");
+    //   var timeAgo = actionTime.fromNow();
+
+    //    */
+    //    var resdate = this.state.data.date
+    //   // var alodate = this.state.data.allocatedDate
+    //   // var shrtdate = this.state.data.shortlistedDate
+    //   var recivedago =  moments(resdate, "YYYY-MM-DD HH:mm:ssZ");
+    //   // var alocatedago =  moments(alodate, "YYYY-MM-DD HH:mm:ssZ");
+    //   // var shortago =  moments(shrtdate, "YYYY-MM-DD HH:mm:ssZ");
+
+    // }
 
     const { selectedOption, selectoptionsnamelist } = this.state;
 
@@ -571,23 +619,37 @@ shortlisterName: "Bharana perera"
 status: "New"
   */}
 
-            {this.state.data.shortlisterName && (
-              <label>
-                {" "}
-                Allocated to shortlist to - {
-                  this.state.data.shortlisterName
-                }{" "}
-              </label>
-            )}
-            {this.state.data.assignToshortlisterbyName && (
-              <label>
-                {" "}
-                Assigned by - {this.state.data.assignToshortlisterbyName}{" "}
-              </label>
-            )}
-
             <ul className="list-group list-group-flush ">
-              <li className="list-group-item"> date reciver : {d}</li>
+              {this.state.data.shortlisterName && (
+                <li className="list-group-item">
+                  Allocated to shortlist to - {this.state.data.shortlisterName}
+                </li>
+              )}
+
+              {this.state.data.assignToshortlisterbyName && (
+                <li className="list-group-item">
+                  Assigned by - {this.state.data.assignToshortlisterbyName}
+                </li>
+              )}
+
+              {this.state.recivedago && (
+                <li className="list-group-item">
+                  {" "}
+                  recived - : {this.state.recivedago}
+                </li>
+              )}
+              {this.state.alocatedago && (
+                <li className="list-group-item">
+                  {" "}
+                  allocated - : {this.state.alocatedago}
+                </li>
+              )}
+              {this.state.shortago && (
+                <li className="list-group-item">
+                  {" "}
+                  shortlist - : {this.state.shortago}
+                </li>
+              )}
               <li className="list-group-item">
                 {" "}
                 name : {this.state.data.name}
@@ -608,12 +670,7 @@ status: "New"
           </div>
 
           <button
-            disabled={
-              
-              this.state.usertype === "depthead"
-                ? true
-                : false
-            }
+            disabled={this.state.usertype === "depthead" ? true : false}
             onClick={this.shortlistmodal}
             className="btn btn-primary"
           >
@@ -624,14 +681,16 @@ status: "New"
             view cv
           </button>
 
-          <button disabled={
-             (this.state.data.shortlister!==this.state.id) ||  (this.state.usertype === "admin")
-            
-               ? false
-               : true
+          <button
+            disabled={
+              this.state.data.shortlister !== this.state.id ||
+              this.state.usertype === "admin"
                 ? true
                 : false
-            }  onClick={this.changeStatusmodal} className="btn btn-primary">
+            }
+            onClick={this.changeStatusmodal}
+            className="btn btn-primary"
+          >
             shorlist
           </button>
 
@@ -660,8 +719,8 @@ status: "New"
 
               <select
                 disabled={
-                  (this.state.usertype === "admin" ||
-                  this.state.usertype === "depthead") 
+                  this.state.usertype === "admin" ||
+                  this.state.usertype === "depthead"
                     ? false
                     : true
                 }

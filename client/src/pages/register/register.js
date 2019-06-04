@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import "./register.css";
+import Drawer from "../../components/sidenav";
 import Navbar from "../../components/navbar";
 
 var strongRegex = new RegExp(
@@ -12,6 +13,11 @@ var strongRegex = new RegExp(
 );
 
 const Formic = ({ errors, history, touched, isSubmitting }) => {
+  const [avatarUrl, setavatarUrl] = useState(false);
+  const [id, setId] = useState(false);
+  const [firstName, setfirstName] = useState(false);
+  const [lastName, setlastName] = useState(false);
+  const [usertype, setusertype] = useState(false);
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     // Update the document title using the browser API
@@ -20,19 +26,56 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 
     var jwt = localStorage.getItem("jwt");
 
-    // try {
-    //   var decode = jsonwebtoken.verify(jwt, "authdemo");
+    try {
+      var decode = jsonwebtoken.verify(jwt, "authdemo");
 
-    //   console.log("decode jwt - " + JSON.stringify(decode));
-    //   history.push("/dashboard");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      console.log("decode jwt - " + JSON.stringify(decode));
+    } catch (error) {
+      console.log(error);
+      history.push("/dashboard");
+    }
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_220,h_295,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        // this.setState({ avatarUrl: baseUrl });
+        setavatarUrl(baseUrl);
+        setId(datain._id);
+        setfirstName(datain.firstName);
+        setlastName(datain.lastName);
+        setusertype(datain.usertype);
+
+        this.setState({
+          id: datain._id,
+          firstName: datain.firstName,
+          lastName: datain.lastName,
+          usertype: datain.usertype
+        });
+      })
+      .catch(err => {});
   });
 
   return (
     <div>
       <Navbar />
+
+      <Drawer
+        avatarUrl={avatarUrl}
+        username={firstName + " " + lastName}
+        type={usertype}
+      />
 
       <div className="maindiv">
         <div className="wrapper">

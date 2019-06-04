@@ -80,7 +80,7 @@ class Shortlist extends Component {
           this.setState({ candidateData: res.data });
         }
 
-        console.log("arr length - " + res.data.length);
+        console.log("arr length - " + JSON.stringify(res.data));
       })
       .catch(err => {});
 
@@ -110,15 +110,31 @@ class Shortlist extends Component {
             {candidateData &&
               candidateData.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
+
+                /**
+                 * allocatedDate: "2019-06-04T17:59:11.707Z"
+assignToshortlisterbyId: "5cebf5fdfbc6b841e4e2f931"
+assignToshortlisterbyName: "dileep sapumal"
+cvUrl: null
+date: "2019-06-04T17:58:21.670Z"
+email: "edward@snowden.com"
+jobspec: "cyber security "
+name: "Edward snowden "
+shortlister: "5cf003c50180b279708f26d6"
+shortlisterName: "angela jayathissa"
+source: "manual"
+status: "New"
+                 */
+
                 return (
                   <ShortlistCard
-                    status={can.shortlistStatus}
-                    candidateName={can.candidateName}
-                    candidateJobspec={can.candidateJobspec}
-                    candidateId={can.candidateId}
-                    allocatedUserName={can.allocatedUserName}
+                    status={can.status}
+                    candidateName={can.name}
+                    candidateJobspec={can.jobspec}
+                    candidateId={can._id}
+                    allocatedUserName={can.assignToshortlisterbyName}
                     allocatedDate={can.allocatedDate}
-                    email={can.candidateEmail}
+                    email={can.email}
                   />
                 );
               })}
