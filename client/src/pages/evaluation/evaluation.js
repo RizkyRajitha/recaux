@@ -69,8 +69,8 @@ class evaluation extends Component{
           );
       };
       
-     onSubmit=() => {
-         
+     onSubmit=(e) => {
+         e.preventDefault()
          console.log(this.state);
      }
 
@@ -538,7 +538,7 @@ class evaluation extends Component{
                             </FormGroup>
                              
                             <br/>
-                            <Button outline color="primary" >Submit</Button>{' '}
+                            <Button outline color="primary" onClick={this.onSubmit} >Submit</Button>{' '}
                     </Form>
     
                     </div>

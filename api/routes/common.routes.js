@@ -2,6 +2,7 @@ const User = require("../db/users");
 const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
 const passport = require("passport");
+const bcrypt = require("bcryptjs");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
@@ -13,7 +14,7 @@ exports.addCandidate = (req, res) => {
     name: req.body.candidatename,
     jobspec: req.body.candidatejobspec,
     date: new Date().toISOString(),
-    source:"manual"
+    source: "manual"
   });
 
   newcandidate
@@ -140,7 +141,10 @@ exports.resetpassword = (req, res) => {
     .then(result => {
       console.log("found " + result.email);
 
-      result.hash = newpassword;
+      var salt = bcrypt.genSaltSync(saltRounds);
+      var hash = bcrypt.hashSync(newpassword, salt);
+
+      result.hash = hash;
       result
         .save()
         .then(doc => {
@@ -298,7 +302,7 @@ exports.userProfile = (req, res, next) => {
             firstName: result.firstName,
             lastName: result.lastName,
             avatarUrl: result.avatarUrl,
-            usertype:result.usertype
+            usertype: result.usertype
           };
 
           console.log("found" + result);
@@ -397,8 +401,6 @@ exports.searchByDate = (req, res, next) => {
   )(req, res, next);
 };
 
-
-
 exports.searchByName = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
@@ -417,7 +419,7 @@ exports.searchByName = (req, res, next) => {
         Candidate.find({ name: { $regex: datain.name, $options: "i" } })
           .then(doc => {
             console.log(doc);
-            res.status(200).json(doc)
+            res.status(200).json(doc);
           })
           .catch(err => {});
 
@@ -441,18 +443,24 @@ exports.getbasicuserdetails = (req, res, next) => {
       } else {
         console.log(req.body);
         var datain = req.body;
-        User.findById(ObjectID(user.id)).then(doc=>{
-          var payload = {id:doc._id,"firstName":doc.firstName , lastName:doc.lastName,usertype:doc.usertype,avatarUrl:doc.avatarUrl}
-          res.status(200).json(payload)
-        }).catch(err=>{
-          console.log(err)
-        })
-
+        User.findById(ObjectID(user.id))
+          .then(doc => {
+            var payload = {
+              id: doc._id,
+              firstName: doc.firstName,
+              lastName: doc.lastName,
+              usertype: doc.usertype,
+              avatarUrl: doc.avatarUrl
+            };
+            res.status(200).json(payload);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);
 };
-
 
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(

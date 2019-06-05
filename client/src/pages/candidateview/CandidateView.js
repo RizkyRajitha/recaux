@@ -31,9 +31,9 @@ const customStyles = {
 
 const customStyles2 = {
   content: {
-    width: "90%",
+    width: "80%",
     height: "80%",
-    top: "50%",
+    top: "55%",
     left: "50%",
     right: "auto",
     bottom: "auto",
@@ -512,8 +512,9 @@ class CandidateView extends Component {
               {this.state.data.assignToshortlisterbyName && (
                 <p>
                   {" "}
-                  this candidate is currently assiged to{" "}
-                  {this.state.data.shortlisterName} do you want to overide it{" "}
+                  This candidate is currently assiged to{" "}
+                  {this.state.data.shortlisterName} do you want to re-allocate
+                  it.{" "}
                 </p>
               )}
               <div class="input-field col s12">
@@ -548,6 +549,9 @@ class CandidateView extends Component {
                 {this.state.data.name + "'s" + " Resume"}
               </h2>
 
+              {/* <button type="button" class="close" aria-label="Close" onClick={this.closeModal2}>
+                <span className="canviewmodal2closebtn" aria-hidden="true">&times;</span>
+              </button> */}
               <div
                 class="loader-candidateview"
                 hidden={!this.state.isLoading}
@@ -585,8 +589,12 @@ class CandidateView extends Component {
                       : "Change resume    "}
                   </label>
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
+
+
                 </div>
               }
+
+              
 
               <div className="pdf" style={{ width: 1500 }}>
                 <Document

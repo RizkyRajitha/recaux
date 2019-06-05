@@ -254,7 +254,7 @@ exports.shortlistOverideOne = (req, res, next) => {
         User.findById(ObjectID(user.id))
           .then(allocaterdoc => {
             User.updateOne(
-              { _id: datain.newallocateduser },
+              { _id: datain.oldAllocateuser },
               {
                 $pull: {
                   shortlist: { candidateId: datain.candidateallocated }
@@ -263,7 +263,7 @@ exports.shortlistOverideOne = (req, res, next) => {
             )
               .then(doc1 => {
                 User.updateOne(
-                  { _id: datain.oldAllocateuser },
+                  { _id: datain.newallocateduser },
                   {
                     $push: {
                       shortlist: {

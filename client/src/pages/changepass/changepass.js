@@ -26,6 +26,9 @@ class Changepass extends Component {
   };
 
   componentWillMount() {
+
+console.log('is -- - -- '+this.props.match.params.id)
+
     this.setState({ id: this.props.match.params.id });
     //var jwt = localStorage.getItem('jwt')
 
@@ -54,7 +57,7 @@ class Changepass extends Component {
         console.log(res.data);
         var datain = res.data;
         this.setState({
-          id: datain._id,
+          
           firstName: datain.firstName,
           lastName: datain.lastName,
           usertype: datain.usertype,
