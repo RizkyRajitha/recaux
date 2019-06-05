@@ -275,7 +275,7 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                             allocaterUserDoc.firstName +
                             " " +
                             allocaterUserDoc.lastName,
-                          allocatedDate: new Date()
+                          allocatedDate: new Date().toISOString()
                         });
                       });
 
