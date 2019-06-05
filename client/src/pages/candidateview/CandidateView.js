@@ -589,12 +589,8 @@ class CandidateView extends Component {
                       : "Change resume    "}
                   </label>
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
-
-
                 </div>
               }
-
-              
 
               <div className="pdf" style={{ width: 1500 }}>
                 <Document
@@ -674,6 +670,15 @@ status: "New"
                 {" "}
                 current candidate status : {this.state.data.status}
               </li>
+
+              {this.state.data.skills && (
+                <li className="list-group-item">
+                  skills :
+                  {this.state.data.skills.map(ele => {
+                    return " " + ele + " ";
+                  })}
+                </li>
+              )}
             </ul>
           </div>
 

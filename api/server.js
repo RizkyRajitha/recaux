@@ -80,13 +80,15 @@ var channel = pusher.subscribe("my-channel");
 channel.bind("my-event", function(data) {
   console.log("new candidate recieved");
   console.log(JSON.stringify(data));
+  console.log(data.skillset[2])
   ///home/dealwithit/machine_learning_venv
 
   const newcandidate = new Candidate({
     email: data.from_email,
     name: data.from_name,
     date: new Date().toISOString(),
-    source:"email"
+    source:"email",
+    skills:data.skillset
   });
 
   newcandidate.save().then(result => {

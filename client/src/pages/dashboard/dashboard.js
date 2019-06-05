@@ -408,7 +408,7 @@ class dashboard extends Component {
             <div className="submit">
               <input
                 type="submit"
-                className="btn"
+                className="btn btn-outline-danger"
                 onClick={this.shorlisthandler}
                 value="confirm shortlisting"
                 id="submit"
@@ -460,6 +460,7 @@ class dashboard extends Component {
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}
                     assignToshortlisterbyName={can.assignToshortlisterbyName}
+                    skills={can.skills}
                   />
                 );
               })}

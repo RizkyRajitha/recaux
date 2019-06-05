@@ -19,9 +19,9 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)"
   }
-}
+};
 
-Modal.setAppElement("#root")
+Modal.setAppElement("#root");
 
 class Search extends Component {
   state = {
@@ -78,6 +78,8 @@ class Search extends Component {
   submitesearchbydate = () => {
     if (this.state.date.from && this.state.date.to) {
       const token = localStorage.getItem("jwt");
+
+      this.setState({ searchbynameResults: [] });
 
       var config = {
         headers: { authorization: token }
@@ -174,10 +176,7 @@ class Search extends Component {
         var datain = res.data;
 
         var preurl = res.data.avatarUrl.slice(0, 48);
-        var posturl = res.data.avatarUrl.slice(
-          49,
-          res.data.avatarUrl.length
-        );
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
         var config = "/w_220,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
@@ -203,12 +202,15 @@ class Search extends Component {
           type={this.state.usertype}
         />
         <p className="usrtype"> Logged in as : {this.state.usertype}</p>
-
-        <div className="searchcontainer">   
-          <button className="searchbydate" onClick={this.searchModal}>
-            search by date
-          </button>
-          <div className="searcharea" hidden={this.state.searchbydateclieked}>
+        <button
+          id="searchbydatebtn"
+          className="btn btn-primary"
+          onClick={this.searchModal}
+        >
+          search by date
+        </button>
+        <div className="searchcontainer">
+          <div className="searcharea">
             <input
               type="text"
               onChange={this.namehndlechange}
@@ -229,8 +231,17 @@ class Search extends Component {
               })}
             </div>
           )}
+
+          {this.state.searchbydateResults && (
+            <div>
+              {this.state.searchbydateResults.map(can => {
+                //console.log(can.name+can.email+can.jobspec)
+                return <Searchcard name={can.name} _id={can._id} />;
+              })}
+            </div>
+          )}
         </div>
-        
+
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

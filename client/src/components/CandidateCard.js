@@ -40,7 +40,13 @@ class CandidateCard extends Component {
 
       // console.log(timeAgo);
       //this.setState({timeAgo:timeAgo})
-
+      console.log(
+        "skilsssssssssssssssss - " + JSON.stringify(this.props.skills)
+      );
+      console.log("skilsssssss3333333ss - " + this.props.skills[2]);
+      this.props.skills.map(ele => {
+        console.log("pp" + ele);
+      });
       // console.log("dataaa" + this.props.date);
       // var dd = new Date(this.props.date);
       // var d = dd.toJSON().slice(0, 10);
@@ -72,11 +78,11 @@ class CandidateCard extends Component {
 
           <div className="dashboardcancardbadgeDiv">
             <span className="badge badge-pill badge-danger">
-              {this.props.status==="onhold"?"Onhold":""}
-              {this.props.status==="accepted"?"Accepted":""}
-              {this.props.status==="shortlisted"?"Shortlisted":""}
-              {this.props.status==="hr_interview"?"HR interview":""}
-              {this.props.status==="New"?"New":""}
+              {this.props.status === "onhold" ? "Onhold" : ""}
+              {this.props.status === "accepted" ? "Accepted" : ""}
+              {this.props.status === "shortlisted" ? "Shortlisted" : ""}
+              {this.props.status === "hr_interview" ? "HR interview" : ""}
+              {this.props.status === "New" ? "New" : ""}
             </span>
           </div>
           <div class="card-body">
@@ -112,6 +118,12 @@ class CandidateCard extends Component {
                   <tr>
                     <th scope="row">Not allocated </th>
                     <td />
+                  </tr>
+                )}
+                {this.props.skills.length>0 && (
+                  <tr>
+                    <th scope="row">skills</th>
+                    <td>{this.props.skills.map(ele => {return ele+" "})}</td>
                   </tr>
                 )}
                 <tr>

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-var User = require("./users")
 
 var Schema = mongoose.Schema;
 
@@ -19,6 +18,7 @@ var candidateSchema = new Schema({
   date: {
     type: String
   },
+  skills:[],
   status: {
     type: String,
     default: "New"
