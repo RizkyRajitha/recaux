@@ -177,7 +177,7 @@ class Search extends Component {
 
         var preurl = res.data.avatarUrl.slice(0, 48);
         var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-        var config = "/w_220,h_295,c_thumb/";
+        var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });

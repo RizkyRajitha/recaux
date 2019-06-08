@@ -331,7 +331,7 @@ class CandidateView extends Component {
 
         var preurl = res.data.avatarUrl.slice(0, 48);
         var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-        var config = "/w_220,h_295,c_thumb/";
+        var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });
@@ -398,7 +398,7 @@ class CandidateView extends Component {
 
     console.log("ddd - " + JSON.stringify(this.state));
 
-    //this.props.history.push("/evaluation/" + id);
+    this.props.history.push("/evaluation/" + id);
   };
 
   chngehandlsel = e => {

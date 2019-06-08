@@ -311,7 +311,7 @@ class dashboard extends Component {
               49,
               result.data.avatarUrl.length
             );
-            var config = "/w_220,h_295,c_thumb/";
+            var config = "/w_290,h_295,c_thumb/";
 
             var baseUrl = preurl + config + posturl;
             this.setState({ avatarUrl: baseUrl });

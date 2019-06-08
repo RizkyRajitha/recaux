@@ -98,7 +98,7 @@ class Userprofile extends Component {
           49,
           this.state.userdata.avatarUrl.length
         );
-        var config = "/w_250,h_250,c_thumb/";
+        var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ baseUrl: baseUrl });

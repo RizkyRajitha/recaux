@@ -67,7 +67,7 @@ class TemporaryDrawer extends Component {
                 src={
                   this.props.avatarUrl
                     ? this.props.avatarUrl
-                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"
+                    : false//"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Emma_Watson_2013.jpg/220px-Emma_Watson_2013.jpg"
                 }
               />
             </div>
