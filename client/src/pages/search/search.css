@@ -42,8 +42,15 @@
   width: 71%;
 }
 
+#searchbydatebtn{
+  top: 19%;
+  padding-left: 0%;
+  left: 10%;
+  width: 20%;
+}
+
 .searchcontainer{
     width: 80%;
     margin-left: 20%;
-    margin-top: 5%;
+    margin-top: 0%;
 }

@@ -331,7 +331,7 @@ class CandidateView extends Component {
 
         var preurl = res.data.avatarUrl.slice(0, 48);
         var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-        var config = "/w_220,h_295,c_thumb/";
+        var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });
@@ -398,7 +398,7 @@ class CandidateView extends Component {
 
     console.log("ddd - " + JSON.stringify(this.state));
 
-    //this.props.history.push("/evaluation/" + id);
+    this.props.history.push("/evaluation/" + id);
   };
 
   chngehandlsel = e => {
@@ -478,12 +478,12 @@ class CandidateView extends Component {
 
     return (
       <div>
-        <Navbar />
+        {/* <Navbar />
         <Drawer
           avatarUrl={this.state.avatarUrl}
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
-        />
+        /> */}
         <p className="usrtype"> Logged in as : {this.state.usertype}</p>
 
         <div className="canview">
@@ -589,12 +589,8 @@ class CandidateView extends Component {
                       : "Change resume    "}
                   </label>
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
-
-
                 </div>
               }
-
-              
 
               <div className="pdf" style={{ width: 1500 }}>
                 <Document
@@ -674,6 +670,15 @@ status: "New"
                 {" "}
                 current candidate status : {this.state.data.status}
               </li>
+
+              {this.state.data.skills && (
+                <li className="list-group-item">
+                  skills :
+                  {this.state.data.skills.map(ele => {
+                    return " " + ele + " ";
+                  })}
+                </li>
+              )}
             </ul>
           </div>
 

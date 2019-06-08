@@ -311,7 +311,7 @@ class dashboard extends Component {
               49,
               result.data.avatarUrl.length
             );
-            var config = "/w_220,h_295,c_thumb/";
+            var config = "/w_290,h_295,c_thumb/";
 
             var baseUrl = preurl + config + posturl;
             this.setState({ avatarUrl: baseUrl });
@@ -344,12 +344,12 @@ class dashboard extends Component {
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">
-          <Navbar />
+          {/* <Navbar />
           <Drawer
             avatarUrl={this.state.avatarUrl}
             username={this.state.firstName + " " + this.state.lastName}
             type={this.state.usertype}
-          />
+          /> */}
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
 
           <button
@@ -408,7 +408,7 @@ class dashboard extends Component {
             <div className="submit">
               <input
                 type="submit"
-                className="btn"
+                className="btn btn-outline-danger"
                 onClick={this.shorlisthandler}
                 value="confirm shortlisting"
                 id="submit"
@@ -460,6 +460,7 @@ class dashboard extends Component {
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}
                     assignToshortlisterbyName={can.assignToshortlisterbyName}
+                    skills={can.skills}
                   />
                 );
               })}

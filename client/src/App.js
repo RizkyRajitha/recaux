@@ -11,7 +11,7 @@ import Login from "./pages/login/login";
 import Home from "./components/home";
 import Register from "./pages/register/register";
 import Dashboard from "./pages/dashboard/dashboard";
-import Navbar from "./components/navbar_metcss";
+//import Navbar from "./components/navbar_metcss";
 import fogotpassword from "./pages/fogotpassword/fogotpassword";
 import resetpassword from "./pages/resetpassword/resetpassword";
 import emailconfirm from "./pages/emailverify/emailverify";
@@ -25,19 +25,20 @@ import Avatar from "./pages/avatar";
 import Shortlist from "./pages/shortlist/shortlist";
 import Drawer from "./components/drawer";
 import Pdftest from "./pages/pdftset";
-import Search from "./pages/search/search"
-
+import Search from "./pages/search/search";
+import Navbar from "./components/navbar";
+//import profileProvider from "./providers/profileProvides";
 import TemporaryDrawer from "./components/sidenav";
-
+//import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route } from "react-router-dom";
-
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <div className="App">
-          
+          <TemporaryDrawer />
+          <Navbar/>
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />

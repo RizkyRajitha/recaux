@@ -2,3 +2,9 @@
     font-size: 2rem;
     text-align: center;
 }
+
+#shortlistcardcontainer1{
+width: 85%;
+margin-left: 11%;
+/* left: 10%; */
+}

@@ -53,7 +53,7 @@ class Shortlist extends Component {
               49,
               res.data.avatarUrl.length
             );
-            var config = "/w_220,h_295,c_thumb/";
+            var config = "/w_290,h_295,c_thumb/";
 
             var baseUrl = preurl + config + posturl;
             this.setState({ avatarUrl: baseUrl });
@@ -93,12 +93,12 @@ class Shortlist extends Component {
     var { candidateData } = this.state;
     return (
       <div>
-       <Navbar />
+       {/* <Navbar />
         <Drawer
           avatarUrl={this.state.avatarUrl}
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
-        />
+        /> */}
 
         {!this.state.candidateData && (
           <div className="shortlistnopendingcanididatesdiv">
@@ -106,7 +106,7 @@ class Shortlist extends Component {
           </div>
         )}
         <div class="row">
-          <div class="col-s4-m4-l4" id="cardcontainer1">
+          <div class="col-s4-m4-l4" id="shortlistcardcontainer1">
             {candidateData &&
               candidateData.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
