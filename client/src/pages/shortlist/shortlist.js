@@ -93,12 +93,12 @@ class Shortlist extends Component {
     var { candidateData } = this.state;
     return (
       <div>
-       <Navbar />
+       {/* <Navbar />
         <Drawer
           avatarUrl={this.state.avatarUrl}
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
-        />
+        /> */}
 
         {!this.state.candidateData && (
           <div className="shortlistnopendingcanididatesdiv">

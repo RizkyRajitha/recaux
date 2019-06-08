@@ -217,14 +217,14 @@ class Userprofile extends Component {
 
     return (
       <div>
-        <Navbar />
+        {/* <Navbar />
         <Drawer
           avatarUrl={this.state.baseUrl}
           username={
             this.state.userdata.firstName + " " + this.state.userdata.lastName
           }
           type={this.state.userdata.usertype}
-        />
+        /> */}
 
         <div className="container">
           {this.state.userdata.avatarUrl && (

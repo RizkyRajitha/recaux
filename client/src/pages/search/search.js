@@ -195,12 +195,12 @@ class Search extends Component {
   render() {
     return (
       <div>
-        <Navbar />
+        {/* <Navbar />
         <Drawer
           avatarUrl={this.state.avatarUrl}
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
-        />
+        /> */}
         <p className="usrtype"> Logged in as : {this.state.usertype}</p>
         <button
           id="searchbydatebtn"

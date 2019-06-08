@@ -1,4 +1,9 @@
 const express = require("express");
+
+const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+
 const path = require("path");
 const eh = require("errorhandler");
 const cors = require("cors");
@@ -8,9 +13,12 @@ const passport = require("passport");
 const User = require("./db/users");
 const Candidate = require("./db/candidates");
 const ObjectID = require("mongodb").ObjectID;
-const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./config/swagger.json");
+// const swaggerUi = require("swagger-ui-express");
+// const swaggerDocument = require("./config/swagger.json");
 const Pusher = require("pusher-js/node");
+
+//var Pusherv2 = require('pusher');
+
 const cloudinary = require("cloudinary").v2;
 
 //const keys = require("./config/keys");
@@ -20,7 +28,7 @@ mongoose.Promise = global.Promise;
 //"mongodb://127.0.0.1:27017/authdb" ||
 const mongodbAPI = "mongodb://127.0.0.1:27017/authdb"; //keys.mongouri;
 
-const app = express();
+//const app = express();
 app.use(passport.initialize());
 app.use(cors());
 app.use(require("morgan")("dev"));
@@ -46,6 +54,18 @@ var pusher = new Pusher("5270bfbdce0a09599eb2", {
   cluster: "ap2",
   forceTLS: true
 });
+
+// var pusherv2 = new Pusher({
+//   appId: '799912',
+//   key: 'b02c2f065b3f7b576d53',
+//   secret: 'dd121b2ae91e519de8e3',
+//   cluster: 'ap2',
+//   encrypted: true
+// });
+
+// pusherv2.trigger('my-channel', 'my-event', {
+//   "message": "hello world"
+// });
 
 //app.use(express.static("client/build"));
 // app.get("*", (req, res) => {
@@ -80,15 +100,15 @@ var channel = pusher.subscribe("my-channel");
 channel.bind("my-event", function(data) {
   console.log("new candidate recieved");
   console.log(JSON.stringify(data));
-  console.log(data.skillset[2])
+  console.log(data.skillset[2]);
   ///home/dealwithit/machine_learning_venv
 
   const newcandidate = new Candidate({
     email: data.from_email,
     name: data.from_name,
     date: new Date().toISOString(),
-    source:"email",
-    skills:data.skillset
+    source: "email",
+    skills: data.skillset
   });
 
   newcandidate.save().then(result => {
@@ -122,8 +142,11 @@ channel.bind("my-event", function(data) {
           )
             .then(doc => {
               console.log(cvuploaddata);
+              io.emit("new_candidate",result)
             })
             .catch(err => {});
+
+           
 
           //res.status(200).json(result);
         }
@@ -149,6 +172,13 @@ channel.bind("my-event", function(data) {
   });
 });
 
-app.listen(port, () => {
+io.on("connection", sock => {
+  console.log("user connected")
+  sock.on("disconnect", () => {
+    console.log("user disconnected")
+  })
+})
+
+http.listen(port, () => {
   console.log("listning on 3001");
 });

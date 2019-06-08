@@ -32,7 +32,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
       console.log("decode jwt - " + JSON.stringify(decode));
     } catch (error) {
       console.log(error);
-      history.push("/dashboard");
+      history.push("/login");
     }
 
     var config = {
@@ -69,13 +69,13 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar />
 
       <Drawer
         avatarUrl={avatarUrl}
         username={firstName + " " + lastName}
         type={usertype}
-      />
+      /> */}
 
       <div className="maindiv">
         <div className="wrapper">

@@ -169,7 +169,7 @@ class Addcandidate extends Component {
     if (this.state.login) {
       return (
         <div>
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="container">
             <div className="row">
               <div className="col-sm" />

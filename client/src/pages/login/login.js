@@ -80,7 +80,12 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                   <p>{errors.password} </p>
                 )}
 
-                <Field name="password" type="password" placeholder="Password" class="form-control" />
+                <Field
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  class="form-control"
+                />
               </div>
 
               <div className="submit">
@@ -117,7 +122,7 @@ const Login = withFormik({
     };
   },
 
-  handleSubmit(values, { props, setErrors,setSubmitting }) {
+  handleSubmit(values, { props, setErrors, setSubmitting }) {
     console.log(values);
     var params = new URLSearchParams();
     params.append("email", values.email1);
@@ -142,21 +147,21 @@ const Login = withFormik({
 
           console.log(props);
 
-          if(data.data.usertype==="depthead"){
+          if (data.data.usertype === "depthead") {
             props.history.push("/shortlist");
-          }else{
+            window.location.reload(false);
+          } else {
             props.history.push("/dashboard");
+            window.location.reload(false);
           }
-
-          
         } else {
           setErrors({ invalidcred: "invalid Creadentials" });
-          setSubmitting(false)
+          setSubmitting(false);
         }
       })
       .catch(err => {
         console.log(err);
-        setSubmitting(false)
+        setSubmitting(false);
       });
   },
   validationSchema: Yup.object().shape({
