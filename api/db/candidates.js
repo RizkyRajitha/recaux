@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 var Schema = mongoose.Schema;
 
 var candidateSchema = new Schema({
@@ -12,17 +11,22 @@ var candidateSchema = new Schema({
   name: {
     type: String
   },
-  jobspec: { 
+  jobspec: {
     type: String
   },
   date: {
     type: String
   },
-  skills:[],
+  skills: [],
   status: {
     type: String,
     default: "New"
-  },source: { 
+  },
+  statusHr: {
+    type: String
+  },
+
+  source: {
     type: String
   },
   evaluationData: {
@@ -36,12 +40,27 @@ var candidateSchema = new Schema({
   assignToshortlisterbyId: { type: String },
   assignToshortlisterbyName: { type: String },
   shortlister: { type: String },
-  shortlisterName:{type:String},
+  shortlisterName: { type: String },
   shortlistedDate: { type: String },
   allocatedDate: { type: String },
   shortlistStatus: { type: Boolean },
-  cvUrl:{type:String , default:null},
-  
+  cvUrl: [
+    {
+      url: { type: String, default: null },
+      recievedDate: { type: String, default: null }
+    }
+  ]
+
+  /**
+ * {
+      candidateId: { type: String },
+      allocatedbyUserId: { type: String },
+      allocatedDate: { type: String },
+      allocatedUserName:{type:String},
+      shortlistedDate: { type: String },
+      shortlistStatus: { type: Boolean ,default:false}
+    }
+ */
 });
 
 const Candidate = mongoose.model("Candidate", candidateSchema);
