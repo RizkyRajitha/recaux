@@ -42,6 +42,32 @@ const customStyles2 = {
   }
 };
 
+const customStyles3 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
+const customStyles4 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
 Modal.setAppElement("#root");
 
 class CandidateView extends Component {
@@ -68,7 +94,9 @@ class CandidateView extends Component {
     recivedago: "",
     shortago: "",
     alocatedago: "",
-    avatarUrl: false
+    avatarUrl: false,
+    newest_cv_url: null,
+    newest_cv_date: null
   };
   /****************************************** */
   openModal = () => {
@@ -122,11 +150,58 @@ class CandidateView extends Component {
 
   closeModal2 = () => {
     this.setState({ modalIsOpen2: false });
+    var newesturl = this.state.cvUrl[this.state.cvUrl.length - 1].url;
+    var newestdate = this.state.cvUrl[this.state.cvUrl.length - 1].recievedDate;
+
+    this.setState({
+      newest_cv_date: newestdate,
+      newest_cv_url: newesturl
+    });
   };
 
   addcvmodal = () => {
     this.openModal2();
   };
+
+  /****************************************** */
+  openModal3 = () => {
+    this.setState({ modalIsOpen3: true });
+  };
+
+  afterOpenModal3 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal3 = () => {
+    this.setState({ modalIsOpen3: false });
+  };
+
+  viewcvsmodal = () => {
+    this.openModal3();
+  };
+
+  /***************************************** */
+  openModal4 = () => {
+    this.setState({ modalIsOpen4: true });
+  };
+
+  afterOpenModal4 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal4 = () => {
+    this.setState({ modalIsOpen4: false });
+  };
+
+  editcandidatemodal = () => {
+    this.openModal4();
+  };
+
+  /***************************************** */
 
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
@@ -162,19 +237,22 @@ class CandidateView extends Component {
       .post("/usr/cv/" + this.props.match.params.id, formdata, config)
       .then(result => {
         console.log("awoooo" + JSON.stringify(result));
-        this.setState({ cvUrl: result.data.url });
+        this.setState({ cvUrl: result.data });
         this.setState({ isLoading: false });
+        this.closeModal2();
       })
       .catch(
         function(error) {
-          console.log(error.response.data);
-          this.setState({ isLoading: false });
-          if ("file_too_large" === error.response.data) {
-            this.setState({ errfiletoolarge: true });
-          }
+          console.log("error - - -" + error);
+          if (error.response.data) {
+            this.setState({ isLoading: false });
+            if ("file_too_large" === error.response.data) {
+              this.setState({ errfiletoolarge: true });
+            }
 
-          if ("unsupported_file_format" === error.response.data) {
-            this.setState({ unsupportedFormat: true });
+            if ("unsupported_file_format" === error.response.data) {
+              this.setState({ unsupportedFormat: true });
+            }
           }
         }.bind(this)
       );
@@ -224,9 +302,24 @@ class CandidateView extends Component {
 
   /***************************************** */
 
+  edidcandidatedetails = (e) => {
+    e.preventDefault()
+    console.log("hai");
+  };
+
   handleChangemodalselect = selectedOption => {
     this.setState({ selectedOption });
     console.log(`Option selected:`, selectedOption);
+  };
+
+  viewoldcv = cancvid => {
+    console.log("cv id - " + cancvid);
+    this.setState({
+      newest_cv_url: this.state.cvUrl[cancvid].url,
+      newest_cv_date: this.state.cvUrl[cancvid].recievedDate
+    });
+
+    this.openModal2();
   };
 
   shorlisthandler = () => {
@@ -323,31 +416,31 @@ class CandidateView extends Component {
       headers: { authorization: jwt }
     };
 
-    axios
-      .get("/usr/basicuserdetails", config)
-      .then(res => {
-        console.log(res.data);
-        var datain = res.data;
+    // axios
+    //   .get("/usr/basicuserdetails", config)
+    //   .then(res => {
+    //     console.log(res.data);
+    //     var datain = res.data;
 
-        var preurl = res.data.avatarUrl.slice(0, 48);
-        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-        var config = "/w_290,h_295,c_thumb/";
+    //     var preurl = res.data.avatarUrl.slice(0, 48);
+    //     var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+    //     var config = "/w_290,h_295,c_thumb/";
 
-        var baseUrl = preurl + config + posturl;
-        this.setState({ avatarUrl: baseUrl });
+    //     var baseUrl = preurl + config + posturl;
+    //     this.setState({ avatarUrl: baseUrl });
 
-        // var resdate = this.state.data.date
-        //  var alodate = this.state.data.allocatedDate
-        //  var shrtdate = this.state.data.shortlistedDate
+    //     // var resdate = this.state.data.date
+    //     //  var alodate = this.state.data.allocatedDate
+    //     //  var shrtdate = this.state.data.shortlistedDate
 
-        this.setState({
-          id: datain.id,
-          firstName: datain.firstName,
-          lastName: datain.lastName,
-          usertype: datain.usertype
-        });
-      })
-      .catch(err => {});
+    //     this.setState({
+    //       id: datain.id,
+    //       firstName: datain.firstName,
+    //       lastName: datain.lastName,
+    //       usertype: datain.usertype
+    //     });
+    //   })
+    //   .catch(err => {});
 
     axios
       .get("/usr/getcandidate/" + id)
@@ -373,13 +466,22 @@ class CandidateView extends Component {
             ).fromNow()
           : false;
 
+        var newesturl =
+          res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
+            .url;
+        var newestdate =
+          res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
+            .recievedDate;
+
         this.setState({
           data: res.data.candidateData,
           userarr: res.data.userData,
           cvUrl: res.data.candidateData.cvUrl,
           recivedago: recivedago,
           alocatedago: alocatedago,
-          shortago: shortago
+          shortago: shortago,
+          newest_cv_date: newestdate,
+          newest_cv_url: newesturl
         });
 
         setTimeout(() => console.log(this.state), 1000);
@@ -539,6 +641,109 @@ class CandidateView extends Component {
             </Modal>
 
             <Modal
+              isOpen={this.state.modalIsOpen3}
+              onAfterOpen={this.afterOpenModal3}
+              onRequestClose={this.closeModal3}
+              style={customStyles3}
+              contentLabel="Example Modal"
+            >
+              <h2 ref={subtitle => (this.subtitle = subtitle)}> cv list </h2>
+
+              <div>
+                <ul>
+                  {this.state.cvUrl &&
+                    this.state.cvUrl
+                      // .slice()
+                      // .reverse()
+                      .map((singlecv, iidd) => {
+                        return (
+                          <li>
+                            {iidd + 1}
+                            {". "}
+                            recived -{" "}
+                            {moments(
+                              singlecv.recievedDate,
+                              "YYYY-MM-DD HH:mm:ssZ"
+                            ).fromNow()}
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => this.viewoldcv(iidd)}
+                            >
+                              view
+                            </button>
+                          </li>
+                        );
+                      })}
+                </ul>
+              </div>
+            </Modal>
+
+            <Modal
+              isOpen={this.state.modalIsOpen4}
+              onAfterOpen={this.afterOpenModal4}
+              onRequestClose={this.closeModal4}
+              style={customStyles4}
+              contentLabel="Example Modal"
+            >
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>
+                {" "}
+                edit {this.state.data.name}{" "}
+              </h2>
+              <div>
+                <form onSubmit={this.edidcandidatedetails}>
+                  <div className="">
+                    <input
+                      required
+                      type="text"
+                      name="Candidate name"
+                      className="form-control"
+                      onChange={this.chngehandlfname}
+                      id="firstName"
+                      value={this.state.data.name}
+                      disabled={true}
+                    />
+
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      className="form-control"
+                      placeholder="enter candidate email"
+                      onChange={this.chngehandlemail}
+                      id="email"
+                      value={this.state.data.email}
+                      disabled={true}
+                    />
+
+                    <input
+                      required
+                      type="text"
+                      name="job specification "
+                      className="form-control"
+                      onChange={this.chngehandllname}
+                      placeholder="enter new job specification"
+                      id="jobspec"
+                      value={this.state.data.jobspec}
+                      // disabled={true}
+                    />
+
+
+                    
+                    add skills chips
+                    <input
+                  type="submit"
+                  className="btn btn-primary"
+                 // onClick={this.shorlisthandler}
+                  value="confirm"
+                  //id="submit"
+                />
+                  </div>
+
+                </form>
+              </div>
+            </Modal>
+
+            <Modal
               isOpen={this.state.modalIsOpen2}
               onAfterOpen={this.afterOpenModal2}
               onRequestClose={this.closeModal2}
@@ -586,16 +791,22 @@ class CandidateView extends Component {
                   <label className="uploadtaglable">
                     {this.state.data.cvUrl === null
                       ? "Upload resume    "
-                      : "Change resume    "}
+                      : "add new resume    "}
                   </label>
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
                 </div>
               }
-
+              <label>
+                Recieved -
+                {moments(
+                  this.state.newest_cv_date,
+                  "YYYY-MM-DD HH:mm:ssZ"
+                ).fromNow()}
+              </label>
               <div className="pdf" style={{ width: 1500 }}>
                 <Document
                   loading={<div class="loader-candidateview" />}
-                  file={this.state.cvUrl}
+                  file={this.state.newest_cv_url}
                   onLoadSuccess={this.onDocumentLoadSuccess}
                 >
                   {/* <Page pageIndex={0} width={1500} /> */}
@@ -761,7 +972,12 @@ status: "New"
           <button onClick={this.evalHndler} className="btn btn-primary">
             evaluate
           </button>
-
+          <button onClick={this.viewcvsmodal} className="btn btn-primary">
+            candidate history
+          </button>
+          <button onClick={this.editcandidatemodal} className="btn btn-primary">
+            edit candidate
+          </button>
           <br />
           <br />
 

@@ -68,7 +68,7 @@ const Navbar = props => {
         </li>
 
         <li className="navbar-items" id="navbartoplogout">
-          <a className="navbar-anchor" href="default.asp">
+          <a className="navbar-anchor" onClick={logoutHandler}>
             logout
           </a>
         </li>
