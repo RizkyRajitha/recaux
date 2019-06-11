@@ -119,7 +119,7 @@ router.post("/login1", function(req, res, next) {
 router.get("/dashboard", commonRoutes.dashboard); //send basic user details for the dashboard
 router.get("/user/:id", commonRoutes.userProfile); //send data to the user profile
 router.post("/edituser/:id", commonRoutes.editUserDetails); //edit user data routes
-router.post("/sendconfirmemail/:id", commonRoutes.sendConfirmEmail);
+router.get("/sendconfirmemail/:id", commonRoutes.sendConfirmEmail);
 router.post("/confirmemail/:id", commonRoutes.confirmEmail);
 router.post("/fogotpassword", commonRoutes.forgotPassword);
 router.post("/changepass/:id", commonRoutes.changePass);

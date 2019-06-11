@@ -72,7 +72,7 @@ class dashboard extends Component {
   verifyemail = () => {
     //this.props.history.push('/fogotpassword')
     axios
-      .post("/usr/sendconfirmemail/" + this.state.id)
+      .get("/usr/sendconfirmemail/" + this.state.id)
       .then(res => {
         console.log(res);
       })
@@ -416,7 +416,7 @@ class dashboard extends Component {
             </div>
           </Modal>
 
-          {/* {!this.state.emailverified && (
+          {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">
               please verify your email
               <br />
@@ -429,7 +429,7 @@ class dashboard extends Component {
                 verify email
               </button>
             </div>
-          )} */}
+          )}
 
           <div class="row">
             <div className="col-s4-m4-l4" id="dashboardcardcontainer1">

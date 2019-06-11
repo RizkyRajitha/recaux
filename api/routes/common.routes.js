@@ -201,7 +201,7 @@ exports.forgotPassword = (req, res) => {
         console.log(result + "not found error");
         res.send("no user found");
       } else {
-        emailhandler.mailhandlerpasswordreset(email, result[0]._id);
+        emailhandler.mailhandlerpasswordreset(result[0].firstName+" "+result[0].lastName,email, result[0]._id);
         console.log(result[0]._id);
         res.json(result);
       }
@@ -234,7 +234,7 @@ exports.sendConfirmEmail = (req, res) => {
   User.findById(ObjectID(req.params.id))
     .then(doc => {
       console.log("tryna sent");
-      emailhandler.mailhandleremailconfirm(doc.email, doc._id);
+      emailhandler.mailhandleremailconfirm( doc.firstName+" "+doc.lastName, doc.email, doc._id);
       res.status(200).send("email sent");
     })
     .catch(err => {
