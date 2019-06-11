@@ -174,7 +174,12 @@ exports.changePass = (req, res) => {
     .then(result => {
       console.log("found " + result.email);
 
-      result.hash = newpassword;
+
+      var salt = bcrypt.genSaltSync(saltRounds);
+      var hash = bcrypt.hashSync(newpassword, salt);
+
+      result.hash = hash;
+      //result.hash = newpassword;
       result
         .save()
         .then(doc => {
