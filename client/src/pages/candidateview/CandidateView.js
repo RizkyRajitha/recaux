@@ -3,7 +3,7 @@ import axios from "axios";
 import "./candidateview.css";
 import jsonwebtoken from "jsonwebtoken";
 import Navbar from "../../components/navbar";
-import exp from "../pdf.pdf";
+//import exp from "../pdf.pdf";
 import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";

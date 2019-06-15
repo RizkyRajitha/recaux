@@ -1,4 +1,4 @@
-import exp from "./pdf.pdf";
+//import exp from "./pdf.pdf";
 import React, { Component } from "react";
 //import worker from './pdf.worker'
 //import "./pdftest.css";
@@ -8,7 +8,7 @@ import { Document, Page ,pdfjs} from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 //2.1.266
 //cdnjs.cloudflare.com/ajax/libs/pdf.js/2.1.266/pdf.worker.js
-
+var exp = ""
 export default class Pdf extends Component {
   state = { numPages: null, pageNumber: 1 };
 

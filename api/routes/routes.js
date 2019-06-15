@@ -463,6 +463,8 @@ router.get("/test", (req, res) => {
     console.log("docs - " + JSON.stringify(doc));
   });
 
+res.status(200).json({hola:"hawa"})
+
   // Candidate.aggregate()
   //   .lookup({
   //     from: "User",
