@@ -6,6 +6,47 @@ const bcrypt = require("bcryptjs");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
+exports.configureNewUser = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var salt = bcrypt.genSaltSync(saltRounds);
+        var hash = bcrypt.hashSync(datain.password, salt);
+
+        User.findOneAndUpdate(
+          { _id: ObjectID(user.id) },
+          {
+            $set: {
+              firstName: datain.firstname,
+              lastName: datain.lastname,
+              hash: hash
+            }
+          }
+        )
+          .then(result => {
+            console.log("edit - " + result);
+            res.json(result);
+          })
+          .catch(err => {
+            console.log(err);
+            res.json(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
 exports.addCandidate = (req, res) => {
   console.log(req.body);
 
@@ -40,6 +81,40 @@ exports.addCandidate = (req, res) => {
         res.status(403).json(err);
       }
     });
+};
+
+exports.editCandidateDetails = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        var iid = req.params.id;
+
+        console.log(" id - " + iid);
+
+        Candidate.findOneAndUpdate(
+          { _id: ObjectID(iid) },
+          { $set: { jobspec: datain.newjobspec } }
+        )
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json({ msg: "edit_success" });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
 };
 
 exports.getOneCandidate = (req, res) => {
@@ -174,7 +249,6 @@ exports.changePass = (req, res) => {
     .then(result => {
       console.log("found " + result.email);
 
-
       var salt = bcrypt.genSaltSync(saltRounds);
       var hash = bcrypt.hashSync(newpassword, salt);
 
@@ -206,7 +280,11 @@ exports.forgotPassword = (req, res) => {
         console.log(result + "not found error");
         res.send("no user found");
       } else {
-        emailhandler.mailhandlerpasswordreset(result[0].firstName+" "+result[0].lastName,email, result[0]._id);
+        emailhandler.mailhandlerpasswordreset(
+          result[0].firstName + " " + result[0].lastName,
+          email,
+          result[0]._id
+        );
         console.log(result[0]._id);
         res.json(result);
       }
@@ -239,7 +317,11 @@ exports.sendConfirmEmail = (req, res) => {
   User.findById(ObjectID(req.params.id))
     .then(doc => {
       console.log("tryna sent");
-      emailhandler.mailhandleremailconfirm( doc.firstName+" "+doc.lastName, doc.email, doc._id);
+      emailhandler.mailhandleremailconfirm(
+        doc.firstName + " " + doc.lastName,
+        doc.email,
+        doc._id
+      );
       res.status(200).send("email sent");
     })
     .catch(err => {

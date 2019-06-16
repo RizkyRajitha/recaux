@@ -96,7 +96,9 @@ class CandidateView extends Component {
     alocatedago: "",
     avatarUrl: false,
     newest_cv_url: null,
-    newest_cv_date: null
+    newest_cv_date: null,
+    changedjobspec: null,
+    editcanSuccess:false
   };
   /****************************************** */
   openModal = () => {
@@ -302,9 +304,47 @@ class CandidateView extends Component {
 
   /***************************************** */
 
-  edidcandidatedetails = (e) => {
-    e.preventDefault()
-    console.log("hai");
+  onchangejobspec = e => {
+    console.log("hai" + e.target.value);
+    //this.setState({changedjobspec:e.target.value})
+    //this.setState({ ...this.state.data, jobspec: e.target.value });
+    this.state.data.jobspec = e.target.value;
+    this.forceUpdate();
+    console.log("hai"+this.state.data.jobspec);
+  };
+
+  edidcandidatedetails = e => {
+    e.preventDefault();
+    //console.log("hai"+e.target.value);
+    this.setState({ isLoading: true });
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    var payload = {
+      newjobspec: this.state.data.jobspec
+    };
+
+    console.log(this.state.data._id);
+
+    axios
+      .post("/usr/edituserdetails/" + this.state.data._id, payload, config)
+      .then(res => {
+        console.log(JSON.stringify(res.data));
+        //this.setState({shorlistSuccess:true})
+        this.setState({ isLoading: false });
+        if (res.data.msg == "edit_success") {
+          this.setState({ editcanSuccess: true });
+          //window.location.reload(false);
+        }
+        this.closeModal4();
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ isLoading: false });
+      });
   };
 
   handleChangemodalselect = selectedOption => {
@@ -586,7 +626,7 @@ class CandidateView extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
+        
 
         <div className="canview">
           <div className="canview2">
@@ -599,6 +639,12 @@ class CandidateView extends Component {
             {this.state.shorlistSuccess && (
               <div class="alert alert-success" role="alert">
                 Allocated for shorlisting succsessfuly
+              </div>
+            )}
+
+{this.state.editcanSuccess && (
+              <div class="alert alert-success" role="alert">
+                edited candidate succsessfuly
               </div>
             )}
 
@@ -702,7 +748,6 @@ class CandidateView extends Component {
                       value={this.state.data.name}
                       disabled={true}
                     />
-
                     <input
                       required
                       type="email"
@@ -714,31 +759,26 @@ class CandidateView extends Component {
                       value={this.state.data.email}
                       disabled={true}
                     />
-
                     <input
                       required
                       type="text"
                       name="job specification "
                       className="form-control"
-                      onChange={this.chngehandllname}
+                      onChange={this.onchangejobspec}
                       placeholder="enter new job specification"
                       id="jobspec"
                       value={this.state.data.jobspec}
                       // disabled={true}
                     />
-
-
-                    
                     add skills chips
                     <input
-                  type="submit"
-                  className="btn btn-primary"
-                 // onClick={this.shorlisthandler}
-                  value="confirm"
-                  //id="submit"
-                />
+                      type="submit"
+                      className="btn btn-primary"
+                      //onClick={this.edidcandidatedetails}
+                      value="confirm"
+                      //id="submit"
+                    />
                   </div>
-
                 </form>
               </div>
             </Modal>

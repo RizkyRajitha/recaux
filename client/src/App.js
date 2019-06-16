@@ -27,6 +27,7 @@ import Drawer from "./components/drawer";
 import Pdftest from "./pages/pdftset";
 import Search from "./pages/search/search";
 import Navbar from "./components/navbar";
+import NewUserConfig from './pages/newuserconfigure/newuserconfigure'
 //import profileProvider from "./providers/profileProvides";
 import TemporaryDrawer from "./components/sidenav";
 //import SidenavContext from "./components/sidenav-context";
@@ -58,6 +59,7 @@ class App extends Component {
           <Route path="/pdftest" component={Pdftest} />
           <Route path="/spinner" component={Home} />
           <Route path="/Search" component={Search} />
+          <Route path='/newuserconfig/:id' component={NewUserConfig} />
         </div>
       </BrowserRouter>
     );

@@ -1,6 +1,7 @@
 const passport = require("passport");
 const User = require("../db/users");
 const ObjectID = require("mongodb").ObjectID;
+const emailhandler = require("../config/emailhandler");
 
 exports.adminLogin = function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
@@ -58,8 +59,8 @@ exports.userlist = (req, res, next) => {
                     lastName: element.lastName,
                     usertype: element.usertype,
                     candidatesAssinged: pendingcan
-                  }
-                  payloadarr.push(temp)
+                  };
+                  payloadarr.push(temp);
                 });
 
                 console.log(payloadarr);
@@ -72,6 +73,61 @@ exports.userlist = (req, res, next) => {
             res.status(200).send("less previladge");
           }
         });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addNewUser = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(user.id))
+          .then(result => {
+            if (result.usertype === "admin" || result.usertype === "hr_staff") {
+              console.log("adminss - ");
+
+              const newuser = new User({
+                email: datain.email,
+                usertype: datain.usertype
+              });
+
+              newuser
+                .save()
+                .then(doc => {
+                  console.log("saved" + doc);
+
+                  emailhandler.mailhandlernewuseremail(datain.email,doc._id,datain.usertype)
+                  res.status(200).send();
+                })
+                .catch(err => {
+                  console.log(" reg err -  " + err);
+
+                  if (err.code === 11000) {
+                    console.log(" reg err duplicate email found ");
+                    res.status(403).json(err.code);
+                  } else {
+                    res.status(403).json(err);
+                  }
+                });
+            } else {
+              res.status(403).json("no_previladges");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);

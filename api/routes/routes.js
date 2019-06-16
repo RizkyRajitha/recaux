@@ -21,69 +21,69 @@ const commonRoutes = require("./common.routes");
 // 	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
 // });
 
-router.post("/reg", (req, res, next) => {
-  passport.authenticate(
-    "jwtstrategy",
-    { session: false },
-    (err, user, info) => {
-      console.log("-----in reg ------");
-      console.log("imfor - " + JSON.stringify(info));
+// router.post("/reg", (req, res, next) => {
+//   passport.authenticate(
+//     "jwtstrategy",
+//     { session: false },
+//     (err, user, info) => {
+//       console.log("-----in reg ------");
+//       console.log("imfor - " + JSON.stringify(info));
 
-      if (info.name == "TokenExpiredError") {
-        console.log("session expired");
-        res.status(403).send("session_exp");
-      }
+//       if (info.name == "TokenExpiredError") {
+//         console.log("session expired");
+//         res.status(403).send("session_exp");
+//       }
 
-      if (user) {
-        console.log(`************${req.headers.authorization}****************`);
+//       if (user) {
+//         console.log(`************${req.headers.authorization}****************`);
 
-        console.log("savin.....");
-        var salt = bcrypt.genSaltSync(saltRounds);
-        var hash = bcrypt.hashSync(req.body.password, salt);
+//         console.log("savin.....");
+        // var salt = bcrypt.genSaltSync(saltRounds);
+        // var hash = bcrypt.hashSync(req.body.password, salt);
 
-        const newuser = new User({
-          email: req.body.email,
-          hash: hash,
-          firstName: req.body.firstname,
-          lastName: req.body.lastname,
-          usertype: req.body.usertype
-        });
-        console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
-        //newuser.setpass(req.body.password);
-        console.log(">>>>><<<<<<" + user.usertype);
+//         const newuser = new User({
+//           email: req.body.email,
+//           hash: hash,
+//           firstName: req.body.firstname,
+//           lastName: req.body.lastname,
+//           usertype: req.body.usertype
+//         });
+//         console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
+//         //newuser.setpass(req.body.password);
+//         console.log(">>>>><<<<<<" + user.usertype);
 
-        User.findById(ObjectID(user.id))
-          .then(doc => {
-            console.log(doc.usertype);
-            if (doc.usertype === "admin") {
-              newuser
-                .save()
-                .then(result => {
-                  console.log("succsess");
-                  //var token = result.generateJWT();
-                  return res.status(200).send();
-                })
-                .catch(err => {
-                  console.log(" reg err -  " + err);
+//         User.findById(ObjectID(user.id))
+//           .then(doc => {
+//             console.log(doc.usertype);
+//             if (doc.usertype === "admin") {
+//               newuser
+//                 .save()
+//                 .then(result => {
+//                   console.log("succsess");
+//                   //var token = result.generateJWT();
+//                   return res.status(200).send();
+//                 })
+//                 .catch(err => {
+//                   console.log(" reg err -  " + err);
 
-                  if (err.code === 11000) {
-                    console.log(" reg err duplicate email found ");
-                    res.status(403).json(err.code);
-                  } else {
-                    res.status(403).json(err);
-                  }
-                });
-            } else {
-              res.status(403).json("no_previladges");
-            }
-          })
-          .catch(err => {
-            console.log("errororr - " + err);
-          });
-      }
-    }
-  )(req, res, next);
-});
+//                   if (err.code === 11000) {
+//                     console.log(" reg err duplicate email found ");
+//                     res.status(403).json(err.code);
+//                   } else {
+//                     res.status(403).json(err);
+//                   }
+//                 });
+//             } else {
+//               res.status(403).json("no_previladges");
+//             }
+//           })
+//           .catch(err => {
+//             console.log("errororr - " + err);
+//           });
+//       }
+//     }
+//   )(req, res, next);
+// });
 
 router.post("/login1", function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
@@ -138,6 +138,9 @@ router.post("/searchbydate", commonRoutes.searchByDate);
 router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
 router.post("/searchbyname", commonRoutes.searchByName);
 router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
+router.post('/edituserdetails/:id',commonRoutes.editCandidateDetails);
+router.post('/reg',adminRoutes.addNewUser)
+router.post('/configurenewuser',commonRoutes.configureNewUser)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
