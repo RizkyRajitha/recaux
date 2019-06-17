@@ -17,7 +17,7 @@ class UserCard extends Component {
             </span>
           </div>
           <div className="card-body">
-            <h4 id="usercardtitle" className="card-title">{this.props.name}</h4>
+            <h4 id="usercardtitle" className="card-title"> <a href={"/user/"+this.props.id} > {this.props.name} </a> </h4>
           </div>
         </div>
       </div>
