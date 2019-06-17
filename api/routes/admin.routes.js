@@ -152,8 +152,10 @@ exports.changeuserstate = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
+        console.log("*********************************")
         console.log(req.body);
-        var datain = req.body;
+        console.log("*********************************")
+               var datain = req.body;
 
         console.log(req.params.id);
         var iid = req.params.id;
@@ -165,7 +167,7 @@ exports.changeuserstate = (req, res, next) => {
 
               User.findOneAndUpdate(
                 { _id: iid },
-                { $set: { state: !datain.state } }
+                { $set: { state: datain.state } }
               )
                 .then(doc => {
                   console.log(doc);

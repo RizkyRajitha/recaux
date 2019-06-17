@@ -30,7 +30,7 @@ passport.use(
         }
         if (data.verifypass(password)   ) {
 
-          if(data.state){
+          if(!data.state){
             console.log("active user hari "+data.state);
             return done(null, data);
           }

@@ -125,7 +125,7 @@ class Userprofile extends Component {
       headers: { authorization: jwt }
     };
 
-    this.state.userdata.state = e.target.checked;
+    this.state.userdata.state = !e.target.checked;
     this.forceUpdate()
     //this.setState({ state:  });
 
@@ -294,12 +294,12 @@ class Userprofile extends Component {
                 </tr>
               </tbody>
             </table>
-            <label className="disableuserlable"> Disable this user</label>
+            <label className="disableuserlable"> { this.state.userdata.state?"Disable this User":"User Disabled"}</label>
             <label class="switch" hidden={!this.state.isauthorizeduser}>
               <input
                 type="checkbox"
                 name="state"
-                value="active"
+               
                 checked={!this.state.userdata.state}
                 disabled={!this.state.isauthorizeduser}
                 onChange={this.deactivateuser}
