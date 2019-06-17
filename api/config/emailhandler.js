@@ -3,7 +3,7 @@ var nodemailer = require("nodemailer");
 var jwt = require("jsonwebtoken");
 const path = require("path");
 const hbs = require("nodemailer-express-handlebars");
-const hbss = require("handlebars");
+//const hbss = require("handlebars");
 
 const passwordResetApi = "http://localhost:3000/resetpassword";
 const emailConfirmApi = "http://localhost:3000/confirmemail";
@@ -47,29 +47,14 @@ transporter.use(
 //console.log(config.jwtexp)
 
 exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
-  transporter.use(
-    "compile",
-    hbs({
-      viewEngine: {
-        extName: ".hbs",
-        partialsDir:
-          "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
-        layoutsDir:
-          "/home/dealwithit/Documents/dev/recaux/api/config/views/layouts/"
-      },
-      viewPath:
-        "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
-      extName: ".hbs"
-    })
-  );
 
   console.log("password reset");
   //console.log("path - " + path.join(__dirname, "emails", "mars"));
 
   console.log(ursname);
 
-  jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" }, (err, token) => {
-    var mailOptions = {
+  jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" }, function(err, token) {
+    const mailOptions = {
       from: "kithminiatdev@gmail.com",
       to: "rajithagunathilake@gmail.com",
       subject: "password reset",
@@ -78,7 +63,8 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       context: {
         title: "password reset",
         message: `${passwordResetApi}/${token}`,
-        name: ursname
+        name: ursname,
+        uniqeid:Math.random()*1000000
       }
       // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
     };
@@ -88,12 +74,15 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("send email - " + email);
+        console.log("mail senddd")
+        console.log("send email - ");
         console.log("Email sent: " + info.response);
       }
     });
   });
 };
+
+
 
 exports.mailhandleremailconfirm = (ursname, email, id) => {
 
@@ -116,7 +105,8 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
     context: {
       title: " confirm email ",
       message: `${emailConfirmApi}/${token}`,
-      name: ursname
+      name: ursname,
+      uniqeid:Math.round(Math.random()*10000000000000)
     }
   };
 
@@ -130,23 +120,10 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
   });
 };
 
-exports.mailhandlernewuseremail = (email, id, type) => {
-  transporter.use(
-    "compile",
-    hbs({
-      viewEngine: {
-        extName: ".hbs",
-        partialsDir:
-          "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
-        layoutsDir:
-          "/home/dealwithit/Documents/dev/recaux/api/config/views/layouts/"
-      },
-      viewPath:
-        "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
-      extName: ".hbs"
-    })
-  );
 
+
+exports.mailhandlernewuseremail = (email, id, type) => {
+ 
   jwt.sign(
     { id: id, email: email, usertype: type },
     "authdemo",
@@ -164,7 +141,8 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         template: "newuser",
         context: {
           title: " confirm email ",
-          msg: `${newuserconfig}/${data}`
+          msg: `${newuserconfig}/${data}`,
+          uniqeid:Math.random()*1000000
         }
       };
 
@@ -172,7 +150,7 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         if (error) {
           console.log(error);
         } else {
-          console.log("send email - " + email);
+          console.log("send email - ");
           console.log("Email sent: " + info.response);
         }
       });

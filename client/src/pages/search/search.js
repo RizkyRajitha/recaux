@@ -223,6 +223,25 @@ class Search extends Component {
             </button>
           </div>
 
+          <div>
+            <input
+              type="text"
+              // onChange={this.namehndlechange}
+              // className="searchname"
+              name="search"
+              placeholder="Search.."
+            />
+            <input type="radio" name="source" value="email" /> via email
+            <input type="radio" name="source" value="manual" /> via manual
+            <Datepicker
+              datechnage={this.getdatefromdatepicke}
+              datereset={this.resetdatepicker}
+            />
+
+jobspec add
+
+          </div>
+
           {this.state.searchbynameResults && (
             <div>
               {this.state.searchbynameResults.map(can => {
