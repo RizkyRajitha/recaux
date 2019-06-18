@@ -26,7 +26,7 @@ import Shortlist from "./pages/shortlist/shortlist";
 import Drawer from "./components/drawer";
 import Pdftest from "./pages/pdftset";
 import Search from "./pages/search/search"
-
+import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 import TemporaryDrawer from "./components/sidenav";
 
 import { BrowserRouter, Route } from "react-router-dom";
@@ -56,6 +56,7 @@ class App extends Component {
           <Route path="/pdftest" component={Pdftest} />
           <Route path="/spinner" component={Home} />
           <Route path="/Search" component={Search} />
+          <Route path="/analytics" component={analyticsdashboard}/>
         </div>
       </BrowserRouter>
     );
