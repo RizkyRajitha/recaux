@@ -32,6 +32,7 @@ import NewUserConfig from './pages/newuserconfigure/newuserconfigure'
 import TemporaryDrawer from "./components/sidenav";
 //import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route } from "react-router-dom";
+import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 
 class App extends Component {
   render() {
@@ -60,6 +61,7 @@ class App extends Component {
           <Route path="/spinner" component={Home} />
           <Route path="/Search" component={Search} />
           <Route path='/newuserconfig/:id' component={NewUserConfig} />
+          <Route path="/analytics" component={analyticsdashboard}/>
         </div>
       </BrowserRouter>
     );
