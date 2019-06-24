@@ -22,7 +22,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import IconButton from '@material-ui/core/IconButton';
-// import jsonwebtoken from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 //import Navbar from "../../components/navbar";
 //import "./login.css";
 
@@ -58,16 +58,16 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
     console.log("i am mounted .......");
     console.log(localStorage.getItem("userid"));
 
-    // var jwt = localStorage.getItem("jwt");
+    var jwt = localStorage.getItem("jwt");
 
-    // try {
-    //   var decode = jsonwebtoken.verify(jwt, "authdemo");
+    try {
+      var decode = jsonwebtoken.verify(jwt, "authdemo");
 
-    //   console.log("decode jwt - " + JSON.stringify(decode));
-    //   history.push("/dashboard");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      console.log("decode jwt - " + JSON.stringify(decode));
+      history.push("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
   });
 
 
