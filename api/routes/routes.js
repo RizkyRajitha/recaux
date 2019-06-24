@@ -477,6 +477,77 @@ router.get("/test", (req, res) => {
   });
 
 res.status(200).json({hola:"hawa"})
+}
+
+
+);
+
+router.get("/analytics", (req, res) => {
+  var ada = new Date();
+  console.log(ada);
+ var yesterday=new Date();
+ yesterday.setDate(yesterday.getDate() -1);
+
+ var yesterday1=new Date();
+ yesterday1.setDate(yesterday1.getDate() -2);
+
+ var yesterday2=new Date();
+ yesterday2.setDate(yesterday2.getDate() -3);
+ 
+
+
+ var payload = {
+   todayCandidates:0,
+   yesterdayCandidates:0,
+   yesterday1Candidates:0,
+   yesterday2Candidates:0
+ }
+
+ 
+
+ // ada.setDate(ada.getDate() -2); 
+  console.log("yesterday- "+ada.toISOString().slice(0,10))
+
+  Candidate.find({
+    date: {
+      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+      $gte: yesterday1.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+       $lt: yesterday.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+
+    }
+
+    
+  })
+  Candidate.find({
+    date: {
+      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+      $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+       $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+
+    }
+
+    
+  }).then(doc => {
+
+    payload.yesterdayCandidates=doc.length;
+    payload.yesterday1Candidates=doc.length;
+    
+res.status(200).json(payload)
+    console.log("docs - " + JSON.stringify(doc));
+  });
+
+}
+
+
+);
+
+module.exports = router;
 
   // Candidate.aggregate()
   //   .lookup({
@@ -512,6 +583,4 @@ res.status(200).json({hola:"hawa"})
   //   .catch(err => {
   //     res.json(err);
   //   });
-});
 
-module.exports = router;
