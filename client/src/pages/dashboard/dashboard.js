@@ -442,6 +442,7 @@ class dashboard extends Component {
                       name={can.firstName + " " + can.lastName}
                       pendingcan={can.candidatesAssinged}
                       id={can.id}
+                      state={can.state}
                     />
                   );
                 })}

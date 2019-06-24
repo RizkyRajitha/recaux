@@ -98,7 +98,7 @@ class CandidateView extends Component {
     newest_cv_url: null,
     newest_cv_date: null,
     changedjobspec: null,
-    editcanSuccess:false
+    editcanSuccess: false
   };
   /****************************************** */
   openModal = () => {
@@ -310,7 +310,7 @@ class CandidateView extends Component {
     //this.setState({ ...this.state.data, jobspec: e.target.value });
     this.state.data.jobspec = e.target.value;
     this.forceUpdate();
-    console.log("hai"+this.state.data.jobspec);
+    console.log("hai" + this.state.data.jobspec);
   };
 
   edidcandidatedetails = e => {
@@ -506,16 +506,24 @@ class CandidateView extends Component {
             ).fromNow()
           : false;
 
-        var newesturl =
-          res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
-            .url;
+        this.setState({
+          data: res.data.candidateData,
+          userarr: res.data.userData
+        });
+
+        var newesturl = "";
+        if (res.data.candidateData.cvUrl) {
+          newesturl =
+            res.data.candidateData.cvUrl[
+              res.data.candidateData.cvUrl.length - 1
+            ].url;
+        }
+
         var newestdate =
           res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
             .recievedDate;
 
         this.setState({
-          data: res.data.candidateData,
-          userarr: res.data.userData,
           cvUrl: res.data.candidateData.cvUrl,
           recivedago: recivedago,
           alocatedago: alocatedago,
@@ -626,7 +634,6 @@ class CandidateView extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-        
 
         <div className="canview">
           <div className="canview2">
@@ -642,7 +649,7 @@ class CandidateView extends Component {
               </div>
             )}
 
-{this.state.editcanSuccess && (
+            {this.state.editcanSuccess && (
               <div class="alert alert-success" role="alert">
                 edited candidate succsessfuly
               </div>

@@ -59,7 +59,8 @@ exports.userlist = (req, res, next) => {
                     lastName: element.lastName,
                     usertype: element.usertype,
                     candidatesAssinged: pendingcan,
-                    id: element._id
+                    id: element._id,
+                    state:element.state
                   };
                   payloadarr.push(temp);
                 });
@@ -112,7 +113,7 @@ exports.addNewUser = (req, res, next) => {
                   emailhandler.mailhandlernewuseremail(
                     datain.email,
                     doc._id,
-                    datain.usertype
+                    datain.usertype,
                   );
                   res.status(200).send();
                 })

@@ -11,10 +11,18 @@ class UserCard extends Component {
     return (
       <div>
         <div id="cancard" className="card center bg-light mb-3 w-75">
+
+        <div className="usercardbadgeDivforstate">
+        <span className="badge badge-pill badge-warning">
+              {this.props.state?"disabled":""}
+            </span>
+</div>
+
           <div className="usercardbadgeDiv">
             <span className="badge badge-pill badge-danger">
               {this.props.pendingcan}
             </span>
+
           </div>
           <div className="card-body">
             <h4 id="usercardtitle" className="card-title"> <a href={"/user/"+this.props.id} > {this.props.name} </a> </h4>

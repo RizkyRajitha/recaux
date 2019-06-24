@@ -22,7 +22,7 @@ var userSchema = new Schema({
     type: String
   },
   state: {
-    type: Boolean,default:true
+    type: Boolean,default:false
   },
   hash: {
     type: String
