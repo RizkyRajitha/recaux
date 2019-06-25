@@ -187,10 +187,13 @@ class TemporaryDrawer extends Component {
 
             <NavItem eventKey="analytics">
             <NavIcon>
-              <i
+            <i class="material-icons" style={{ fontSize: "2.75em" }}>
+            insert_chart
+            </i>
+              {/* <i
                 className="fa fa-fw fa-line-chart"
                 style={{ fontSize: "1.75em" }}
-              />
+              /> */}
             </NavIcon>
             <NavText>Analytics</NavText>
           </NavItem>
