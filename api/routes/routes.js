@@ -38,8 +38,8 @@ const commonRoutes = require("./common.routes");
 //         console.log(`************${req.headers.authorization}****************`);
 
 //         console.log("savin.....");
-        // var salt = bcrypt.genSaltSync(saltRounds);
-        // var hash = bcrypt.hashSync(req.body.password, salt);
+// var salt = bcrypt.genSaltSync(saltRounds);
+// var hash = bcrypt.hashSync(req.body.password, salt);
 
 //         const newuser = new User({
 //           email: req.body.email,
@@ -137,7 +137,7 @@ router.get("/getcandidate", commonRoutes.getAllCandidates);
 router.get("/getcandidate/:id", commonRoutes.getOneCandidate);
 router.post("/addcandidate", commonRoutes.addCandidate);
 router.post("/updatestatus/:id", deptheadRoutes.updateStatus);
-router.post("/evaluation/:id", deptheadRoutes.evaluation);
+router.post("/evaluationadd/:id", deptheadRoutes.evaluationAdd);
 router.post("/avatar/:id", fileUpload.profileimgup);
 router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
@@ -147,10 +147,13 @@ router.post("/searchbydate", commonRoutes.searchByDate);
 router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
 router.post("/searchbyname", commonRoutes.searchByName);
 router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
+
+
 router.post('/edituserdetails/:id',commonRoutes.editCandidateDetails);
 router.post('/reg',adminRoutes.addNewUser)
 router.post('/configurenewuser',commonRoutes.configureNewUser)
 router.post('/changeuserstate/:id',adminRoutes.changeuserstate)
+
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -463,6 +466,18 @@ if (uniqecan) {
 //   }
 // );
 
+// router.post("/add",(req,res){
+//   let evaluation=new Evaluation(req.body);
+//   evaluation.save()
+//   .then(evaluation =>{
+//     res.status(200).json({evaluation:"Evaluationb form added"});
+
+//   })
+//   .catch(err =>{
+//     res.status(400).send("adding new evaluation form failed");
+//   });
+// });
+
 router.get("/test", (req, res) => {
   var ada = new Date();
   console.log(ada);
@@ -475,6 +490,7 @@ router.get("/test", (req, res) => {
   }).then(doc => {
     console.log("docs - " + JSON.stringify(doc));
   });
+
 
 res.status(200).json({hola:"hawa"})
 }
@@ -666,6 +682,7 @@ router.get("/analytics", (req, res) => {
 
 
 module.exports = router;
+
 
   // Candidate.aggregate()
   //   .lookup({
