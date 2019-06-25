@@ -27,6 +27,14 @@
   margin-right: 20px;
 }
 
+.canviewshortlistform{
+  margin-left: 40%;
+}
+
+.canviewmodal2closebtn{
+  background-color: #246ad3;
+}
+
 .loader-candidateview {
   margin-left: 47%;
   border: 6px solid #f3f3f3; /* Light grey */

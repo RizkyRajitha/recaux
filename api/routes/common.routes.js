@@ -2,8 +2,50 @@ const User = require("../db/users");
 const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
 const passport = require("passport");
+const bcrypt = require("bcryptjs");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
+
+exports.configureNewUser = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var salt = bcrypt.genSaltSync(saltRounds);
+        var hash = bcrypt.hashSync(datain.password, salt);
+
+        User.findOneAndUpdate(
+          { _id: ObjectID(user.id) },
+          {
+            $set: {
+              firstName: datain.firstname,
+              lastName: datain.lastname,
+              hash: hash
+            }
+          }
+        )
+          .then(result => {
+            console.log("edit - " + result);
+            res.json(result);
+          })
+          .catch(err => {
+            console.log(err);
+            res.json(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
 
 exports.addCandidate = (req, res) => {
   console.log(req.body);
@@ -12,7 +54,8 @@ exports.addCandidate = (req, res) => {
     email: req.body.candidateemail,
     name: req.body.candidatename,
     jobspec: req.body.candidatejobspec,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    source: "manual"
   });
 
   newcandidate
@@ -38,6 +81,40 @@ exports.addCandidate = (req, res) => {
         res.status(403).json(err);
       }
     });
+};
+
+exports.editCandidateDetails = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        var iid = req.params.id;
+
+        console.log(" id - " + iid);
+
+        Candidate.findOneAndUpdate(
+          { _id: ObjectID(iid) },
+          { $set: { jobspec: datain.newjobspec } }
+        )
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json({ msg: "edit_success" });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
 };
 
 exports.getOneCandidate = (req, res) => {
@@ -92,7 +169,7 @@ exports.getAllCandidates = (req, res) => {
 
   Candidate.find()
     .then(result => {
-      User.find({})
+      User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
             return {
@@ -139,7 +216,10 @@ exports.resetpassword = (req, res) => {
     .then(result => {
       console.log("found " + result.email);
 
-      result.hash = newpassword;
+      var salt = bcrypt.genSaltSync(saltRounds);
+      var hash = bcrypt.hashSync(newpassword, salt);
+
+      result.hash = hash;
       result
         .save()
         .then(doc => {
@@ -169,7 +249,11 @@ exports.changePass = (req, res) => {
     .then(result => {
       console.log("found " + result.email);
 
-      result.hash = newpassword;
+      var salt = bcrypt.genSaltSync(saltRounds);
+      var hash = bcrypt.hashSync(newpassword, salt);
+
+      result.hash = hash;
+      //result.hash = newpassword;
       result
         .save()
         .then(doc => {
@@ -196,7 +280,11 @@ exports.forgotPassword = (req, res) => {
         console.log(result + "not found error");
         res.send("no user found");
       } else {
-        emailhandler.mailhandlerpasswordreset(email, result[0]._id);
+        emailhandler.mailhandlerpasswordreset(
+          result[0].firstName + " " + result[0].lastName,
+          email,
+          result[0]._id
+        );
         console.log(result[0]._id);
         res.json(result);
       }
@@ -229,7 +317,11 @@ exports.sendConfirmEmail = (req, res) => {
   User.findById(ObjectID(req.params.id))
     .then(doc => {
       console.log("tryna sent");
-      emailhandler.mailhandleremailconfirm(doc.email, doc._id);
+      emailhandler.mailhandleremailconfirm(
+        doc.firstName + " " + doc.lastName,
+        doc.email,
+        doc._id
+      );
       res.status(200).send("email sent");
     })
     .catch(err => {
@@ -296,7 +388,9 @@ exports.userProfile = (req, res, next) => {
             emailverified: result.emailverified,
             firstName: result.firstName,
             lastName: result.lastName,
-            avatarUrl: result.avatarUrl
+            avatarUrl: result.avatarUrl,
+            usertype: result.usertype,
+            state:!result.state
           };
 
           console.log("found" + result);
@@ -395,8 +489,6 @@ exports.searchByDate = (req, res, next) => {
   )(req, res, next);
 };
 
-
-
 exports.searchByName = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
@@ -415,7 +507,7 @@ exports.searchByName = (req, res, next) => {
         Candidate.find({ name: { $regex: datain.name, $options: "i" } })
           .then(doc => {
             console.log(doc);
-            res.status(200).json(doc)
+            res.status(200).json(doc);
           })
           .catch(err => {});
 
@@ -425,7 +517,38 @@ exports.searchByName = (req, res, next) => {
   )(req, res, next);
 };
 
+exports.getbasicuserdetails = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
 
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        User.findById(ObjectID(user.id))
+          .then(doc => {
+            var payload = {
+              id: doc._id,
+              firstName: doc.firstName,
+              lastName: doc.lastName,
+              usertype: doc.usertype,
+              avatarUrl: doc.avatarUrl
+            };
+            res.status(200).json(payload);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
 
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(

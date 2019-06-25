@@ -169,7 +169,7 @@ class Addcandidate extends Component {
     if (this.state.login) {
       return (
         <div>
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="container">
             <div className="row">
               <div className="col-sm" />
@@ -192,7 +192,7 @@ class Addcandidate extends Component {
 
                 {this.state.duplicateemailerr && (
                   <div class="alert alert-danger" role="alert">
-                    this candidate is already in our system,{" "}
+                    This candidate is already in the system 
                     <button
                       onClick={this.viewdupcanprofile}
                       className="btn btn-outline-danger"

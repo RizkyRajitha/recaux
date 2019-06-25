@@ -26,22 +26,37 @@
     text-align: center
    
 }
-#cardcontainer1{
+
+/**
+*/
+#dashboardcardcontainer1{
    
     position: absolute;
-    top: 44%;
-    left:1%;
+    top: 25%;
+    left:7%;
     width: 39%;
+    padding-right: 10%;
+    
+    text-align: left;
+    
+}
+.cardcontainer2_nonadmin{
+   
+    position: absolute;
+    top: 20%;
+    left:10%;
+    width: 87%;
     
     text-align: center;
     
 }
-#cardcontainer2{
+
+.cardcontainer2_admin{
    
     position: absolute;
-    top: 44%;
-    left:41%;
-    width: 57%;
+    top: 20%;
+    left:32%;
+    width: 67%;
     
     text-align: center;
     

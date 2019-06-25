@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+.searchname {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 30%;
+  background: #f1f1f1;
+  /* width: 130px; */
+  margin-left: 0rem;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+
+}
+
+.searchnamebtn {
+    float: left;
+    width: 4%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    cursor: pointer;
+  }
+  .searchnamebtn :hover {
+    background: #0b7dda;
+  }
+
+ .searcharea::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+/* When the input field gets focus, change its width to 100% */
+.searchname:focus {
+  width: 71%;
+}
+
+#searchbydatebtn{
+  top: 19%;
+  padding-left: 0%;
+  left: 10%;
+  width: 20%;
+}
+
+.searchcontainer{
+    width: 80%;
+    margin-left: 20%;
+    margin-top: 0%;
+}

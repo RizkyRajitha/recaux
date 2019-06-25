@@ -5,37 +5,42 @@ import * as Yup from "yup";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import "./register.css";
-import Drawer from "../../components/sidenav";
-import Navbar from "../../components/navbar";
+
 
 var strongRegex = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
 );
 
-const Formic = ({ errors, history, touched, isSubmitting }) => {
-  const [avatarUrl, setavatarUrl] = useState(false);
-  const [id, setId] = useState(false);
-  const [firstName, setfirstName] = useState(false);
-  const [lastName, setlastName] = useState(false);
+const Formic = ({ errors, history, touched, isSubmitting ,match ,setErrors}) => {
+  const [email, setemail] = useState(false);
   const [usertype, setusertype] = useState(false);
+
+
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     // Update the document title using the browser API
     console.log("i am mounted .......");
-    console.log(localStorage.getItem("userid"));
+    //console.log(localStorage.getItem("userid"));
 
-    var jwt = localStorage.getItem("jwt");
+    var jwt = match.params.id
 
+    localStorage.setItem("temp_token",jwt)
+
+
+    console.log('jwt - '+jwt)
+    
     try {
       var decode = jsonwebtoken.verify(jwt, "authdemo");
-
+        setemail(decode.email)
+        
+        setusertype(decode.usertype)
       console.log("decode jwt - " + JSON.stringify(decode));
     } catch (error) {
       console.log(error);
-      history.push("/login");
+      setErrors({ session_exp: true });
+      //history.push("/login");
     }
 
-   
   });
 
   return (
@@ -118,10 +123,67 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                     type="text"
                     placeholder="Email"
                     class="form-control"
+                    value={email}
+                    disabled={true}
                   />
                 </div>
 
-               
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.firstName && errors.firstName && (
+                    <p>{errors.firstName} </p>
+                  )}
+                  <Field
+                    name="firstName"
+                    type="text"
+                    placeholder="First name"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.lastName && errors.lastName && (
+                    <p>{errors.lastName} </p>
+                  )}
+                  <Field
+                    name="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+                  {errors.password1 && console.log(errors.password1)}
+                  {touched.password1 && errors.password1 && (
+                    <p>{errors.password1} </p>
+                  )}
+                  <Field
+                    name="password1"
+                    type="text"
+                    placeholder="Enter Password"
+                    class="form-control"
+                  />
+                </div>
+
+                <div className="form-group">
+                  {/* <label> enter email </label> */}
+
+                  {touched.password2 && errors.password2 && (
+                    <p>{errors.password2} </p>
+                  )}
+                  <Field
+                    name="password2"
+                    type="text"
+                    placeholder="Re enter Passwird"
+                    class="form-control"
+                  />
+                </div>
+
                 <div className="form-group">
                   {/* <label> enter email </label> */}
 
@@ -134,10 +196,12 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                     required
                     placeholder="Re enter Passwird"
                     class="form-control"
+                    value={usertype}
+                    disabled={true}
                   >
                     <option value="default">Select one</option>
                     <option value="hr_staff">HR staff</option>
-                    <option value="depthead">Department head</option>{" "}
+                    <option value="depthead">Department head</option>
                     <option value="admin">Admin</option>
                   </Field>
                 </div>
@@ -163,15 +227,21 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
   );
 };
 
-const Login = withFormik({
+const NewUserConfig = withFormik({
   mapPropsToValues({
     email1,
-   
+    password1,
+    password2,
+    firstName,
+    lastName,
     usertype
   }) {
     return {
       email1: email1 || "",
-     
+      password1: password1 || "",
+      firstName: firstName || "",
+      lastName: lastName || "",
+      password2: password2 || "",
       usertype: usertype || "default"
     };
   },
@@ -183,29 +253,35 @@ const Login = withFormik({
     params.append("password", values.password);
     setSubmitting(false);
 
-    var jwt = localStorage.getItem("jwt");
-
-    var config = {
-      headers: { authorization: jwt }
-    };
+    
 
     var payload = {
-      email: values.email1,
       
-      usertype: values.usertype
+      password: values.password1,
+      firstname: values.firstName,
+      lastname: values.lastName,
+      
     };
 
+var tokwn = localStorage.getItem("temp_token")
+
+
+var config = {
+    headers: { authorization: tokwn }
+  };
+
+    console.log("jwt = - - - - - - " + JSON.stringify(tokwn));
     console.log("payload - " + JSON.stringify(payload));
 
     axios
-      .post("/usr/reg", payload, config)
+      .post("/usr/configurenewuser", payload,config)
       .then(response => {
         console.log("resonse came - -");
         console.log(response.data);
         setErrors({ sucsess: true });
         setTimeout(() => {
-          props.history.push("/dashboard");
-        }, 10000);
+          props.history.push("/login");
+        }, 1000);
         //localStorage.setItem("jwt", response.data);
       })
       .catch(err => {
@@ -265,18 +341,27 @@ const Login = withFormik({
     //   });
   },
   validationSchema: Yup.object().shape({
-    email1: Yup.string()
-      .email("Email must be a valid email")
-      .required("Email is required"),
   
-    usertype: Yup.string().oneOf(
-      ["hr_staff", "depthead", "admin"],
-      "please select type"
-    )
+    password1: Yup.string()
+      .required("Password is required")
+      .min(3, "Must contain at least 8 characters"),
+    // .matches(strongRegex, "Password is weak"),
+    password2: Yup.string()
+      .required("Please confirm the password")
+      .oneOf([Yup.ref("password1"), null], "Passwords do not match"),
+    lastName: Yup.string()
+      .required("Last name is required")
+      .min(2, "Must contain at least 2 characters")
+      .max(40, "Last name cannot exceed 40 characters"),
+    firstName: Yup.string()
+      .required("First name is required")
+      .min(2, "Must contain at least 2 characters")
+      .max(40, "First name cannot exceed 40 characters")
+    
   })
 })(Formic);
 
-export default Login;
+export default NewUserConfig;
 
 //var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 //var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");

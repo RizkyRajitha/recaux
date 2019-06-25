@@ -21,6 +21,9 @@ var userSchema = new Schema({
   lastName: {
     type: String
   },
+  state: {
+    type: Boolean,default:false
+  },
   hash: {
     type: String
   },
@@ -30,19 +33,22 @@ var userSchema = new Schema({
   usertype: {
     type: String
   },
+  source: {
+    type: String
+  },
   noOfcandidatesAssinged: {
     type: String,
     default: 0
   },
-  avatarUrl:{type:String,default:null},
+  avatarUrl: { type: String, default: null },
   shortlist: [
     {
       candidateId: { type: String },
       allocatedbyUserId: { type: String },
       allocatedDate: { type: String },
-      allocatedUserName:{type:String},
+      allocatedUserName: { type: String },
       shortlistedDate: { type: String },
-      shortlistStatus: { type: Boolean ,default:false}
+      shortlistStatus: { type: Boolean, default: false }
     }
   ]
 });

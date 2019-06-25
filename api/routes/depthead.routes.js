@@ -9,12 +9,12 @@ exports.shortlistData = (req, res, next) => {
     "jwtstrategy",
     { session: false },
     (err, user, info) => {
-      if (!user) {
+      if (!user && user.usertype === "hr_staff") {
         res.status(401).send(info);
       } else {
         console.log("in shortlist data");
 
-        var userid = req.params.id;
+        var userid = user.id;
         console.log("userid - " + userid);
 
         var payload = [];
@@ -26,7 +26,9 @@ exports.shortlistData = (req, res, next) => {
             var pendingCandidatearr = [];
 
             userdoc.shortlist.forEach(element => {
-              pendingCandidatearr.push(element.candidateId);
+              if (element.shortlistStatus === false) {
+                pendingCandidatearr.push(element.candidateId);
+              }
             });
 
             console.log(pendingCandidatearr);
@@ -36,10 +38,14 @@ exports.shortlistData = (req, res, next) => {
                 console.log(candocs);
 
                 for (var i = 0; i < candocs.length; i++) {
-                  var objDoc = userdoc.shortlist[i].toObject();
+                  // var objDoc = userdoc.shortlist[i].toObject();
 
-                  objDoc.candidateName = candocs[i].name;
-                  objDoc.candidateJobspec = candocs[i].jobspec;
+                  var objDoc = candocs[i].toObject()
+                  
+
+                  // objDoc.candidateName = candocs[i].name;
+                  // objDoc.candidateJobspec = candocs[i].jobspec;
+                  // objDoc.candidateEmail = candocs[i].email;
                   // var temp_payload = { data:userdoc.shortlist[i]}
 
                   payload.push(objDoc);
@@ -47,7 +53,7 @@ exports.shortlistData = (req, res, next) => {
                 }
 
                 console.log("paylood - " + payload);
-                res.json(payload);
+                res.json(payload.reverse());
               })
               .catch(err => {
                 console.log(err);
@@ -71,46 +77,134 @@ exports.userlist = (req, res, next) => {
       } else {
         console.log("in user list data");
 
-        User.findById(ObjectID(user.id)).then(result => {
-          if (result.usertype === "admin") {
-            User.find()
-              .then(doc => {
-                doc.forEach(element => {
-                  element.hash = "";
+        User.findById(ObjectID(user.id))
+          .then(result => {
+            if (result.usertype === "admin") {
+              User.find()
+                .then(doc => {
+                  doc.forEach(element => {
+                    element.hash = "";
+                  });
+                  console.log(doc);
+                  res.status(200).json(doc);
+                })
+                .catch(err => {
+                  console.log("err" + err);
                 });
-                console.log(doc);
-                res.status(200).json(doc);
-              })
-              .catch(err => {
-                console.log("err" + err);
-              });
-          } else {
-            res.status(200).send("less previladge");
-          }
-        });
+            } else {
+              res.status(200).send("less previladge");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);
 };
 
-exports.updateStatus = (req, res) => {
-  console.log(req.params.id);
-  var id = req.params.id;
-  console.log(req.body.status);
-  Candidate.findByIdAndUpdate(
-    ObjectID(id),
-    { $set: { status: req.body.status } },
-    { new: true }
-  )
-    .then(doc => {
-      console.log("doc");
-      console.log(doc);
-      res.json(doc);
-    })
-    .catch(err => {
-      console.log(err);
-      res.json(err);
-    });
+exports.updateStatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(result => {
+            if (result.usertype === "admin" || result.usertype === "depthead") {
+              console.log(req.body);
+              var datain = req.body;
+
+              console.log(req.params.id);
+              var id = req.params.id;
+              console.log(req.body.status);
+
+              Candidate.findById(ObjectID(id))
+                .then(candoc => {
+                  console.log(candoc.shortlister);
+                  console.log("   " + result._id);
+                  console.log("  555 " + result._id.equals(candoc.shortlister));
+
+                  if (result._id.equals(candoc.shortlister)) {
+                    console.log("valid user elegible for shortlisting");
+
+                    Candidate.findByIdAndUpdate(
+                      ObjectID(id),
+                      {
+                        $set: {
+                          status: req.body.status,
+                          shortlistedDate: new Date().toISOString()
+                        }
+                      },
+                      { new: true }
+                    )
+                      .then(doc => {
+                        User.findOneAndUpdate(
+                          {
+                            _id: result._id,
+                            "shortlist.candidateId": id
+                          },
+                          {
+                            $set: {
+                              "shortlist.$.shortlistStatus": true,
+                              "shortlist.$.shortlistedDate": new Date().toISOString()
+                            }
+                          },
+                          { new: true }
+                        )
+                          .then(userdoc2 => {
+                            console.log(
+                              "updated dco - " + JSON.stringify(userdoc2)
+                            );
+
+                            console.log("doc");
+                            console.log(doc);
+                            res.status(200).json({ msg: "sucsess" });
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
+                      })
+                      .catch(err => {
+                        console.log(err);
+                        res.json(err);
+                      });
+                  } else {
+                    res.status(401).send("less previladge");
+                  }
+                })
+                .catch(err => {});
+
+              // Candidate.findByIdAndUpdate(
+              //   ObjectID(id),
+              //   { $set: { status: req.body.status,shortlistedDate:new Date().toISOString(), } },
+              //   { new: true }
+              // )
+              //   .then(doc => {
+              //     console.log("doc");
+              //     console.log(doc);
+              //     res.json(doc);
+              //   })
+              //   .catch(err => {
+              //     console.log(err);
+              //     res.json(err);
+              //   });
+            } else {
+              res.status(401).send("less previladge");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
 };
 
 exports.evaluation = (req, res) => {
@@ -160,25 +254,25 @@ exports.shortlistOverideOne = (req, res, next) => {
         User.findById(ObjectID(user.id))
           .then(allocaterdoc => {
             User.updateOne(
-              { _id: datain.newallocateduser },
+              { _id: datain.oldAllocateuser },
               {
-                $push: {
-                  shortlist: {
-                    candidateId: datain.candidateallocated,
-                    allocatedbyUserId: user.id,
-                    allocatedDate: new Date(),
-                    allocatedUserName:
-                      allocaterdoc.firstName + " " + allocaterdoc.lastName
-                  }
+                $pull: {
+                  shortlist: { candidateId: datain.candidateallocated }
                 }
               }
             )
               .then(doc1 => {
                 User.updateOne(
-                  { _id: datain.oldAllocateuser },
+                  { _id: datain.newallocateduser },
                   {
-                    $pull: {
-                      shortlist: { candidateId: datain.candidateallocated }
+                    $push: {
+                      shortlist: {
+                        candidateId: datain.candidateallocated,
+                        allocatedbyUserId: user.id,
+                        allocatedDate: new Date(),
+                        allocatedUserName:
+                          allocaterdoc.firstName + " " + allocaterdoc.lastName
+                      }
                     }
                   }
                 )
@@ -189,7 +283,7 @@ exports.shortlistOverideOne = (req, res, next) => {
                           { _id: datain.candidateallocated },
 
                           {
-                            $set: {
+                            $set: {allocatedDate: new Date().toISOString(),
                               assignToshortlisterbyName:
                                 allocaterdoc.firstName +
                                 " " +
@@ -216,7 +310,6 @@ exports.shortlistOverideOne = (req, res, next) => {
                             );
 
                             res.json({ msg: "allocated_success" });
-
                           })
                           .catch(err => {
                             console.log(err);

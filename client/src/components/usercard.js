@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./candidatecard.css";
+import "./usercard.css";
 
 class UserCard extends Component {
   // cnadidateview = () => {
@@ -10,14 +10,22 @@ class UserCard extends Component {
   render() {
     return (
       <div>
-        <div id="cancard" class="card center bg-light mb-3 w-75">
-          <h1 className="badge">
-            <span class="badge badge-pill badge-danger">
+        <div id="cancard" className="card center bg-light mb-3 w-75">
+
+        <div className="usercardbadgeDivforstate">
+        <span className="badge badge-pill badge-warning">
+              {this.props.state?"disabled":""}
+            </span>
+</div>
+
+          <div className="usercardbadgeDiv">
+            <span className="badge badge-pill badge-danger">
               {this.props.pendingcan}
             </span>
-          </h1>
-          <div class="card-body">
-            <h4 class="card-title">{this.props.name}</h4>
+
+          </div>
+          <div className="card-body">
+            <h4 id="usercardtitle" className="card-title"> <a href={"/user/"+this.props.id} > {this.props.name} </a> </h4>
           </div>
         </div>
       </div>

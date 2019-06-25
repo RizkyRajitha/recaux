@@ -1,7 +1,10 @@
 .App {
   text-align: center;
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
+   font-size: 1.3rem;
+  /*font-family: 'Montserrat', sans-serif; */
   color:#000000;
+  
 }
 

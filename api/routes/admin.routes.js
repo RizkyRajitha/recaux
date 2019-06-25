@@ -1,6 +1,7 @@
 const passport = require("passport");
 const User = require("../db/users");
 const ObjectID = require("mongodb").ObjectID;
+const emailhandler = require("../config/emailhandler");
 
 exports.adminLogin = function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
@@ -43,11 +44,29 @@ exports.userlist = (req, res, next) => {
           if (result.usertype === "admin") {
             User.find()
               .then(doc => {
+                payloadarr = [];
                 doc.forEach(element => {
-                  element.hash = "";
+                  var pendingcan = 0;
+
+                  element.shortlist.forEach(element1 => {
+                    if (element1.shortlistStatus === false) {
+                      pendingcan = pendingcan + 1;
+                    }
+                  });
+
+                  temp = {
+                    firstName: element.firstName,
+                    lastName: element.lastName,
+                    usertype: element.usertype,
+                    candidatesAssinged: pendingcan,
+                    id: element._id,
+                    state:element.state
+                  };
+                  payloadarr.push(temp);
                 });
-                console.log(doc);
-                res.status(200).json(doc);
+
+                console.log(payloadarr);
+                res.status(200).json(payloadarr);
               })
               .catch(err => {
                 console.log("err" + err);
@@ -56,6 +75,110 @@ exports.userlist = (req, res, next) => {
             res.status(200).send("less previladge");
           }
         });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addNewUser = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(user.id))
+          .then(result => {
+            if (result.usertype === "admin" || result.usertype === "hr_staff") {
+              console.log("adminss - ");
+
+              const newuser = new User({
+                email: datain.email,
+                usertype: datain.usertype
+              });
+
+              newuser
+                .save()
+                .then(doc => {
+                  console.log("saved" + doc);
+
+                  emailhandler.mailhandlernewuseremail(
+                    datain.email,
+                    doc._id,
+                    datain.usertype,
+                  );
+                  res.status(200).send();
+                })
+                .catch(err => {
+                  console.log(" reg err -  " + err);
+
+                  if (err.code === 11000) {
+                    console.log(" reg err duplicate email found ");
+                    res.status(403).json(err.code);
+                  } else {
+                    res.status(403).json(err);
+                  }
+                });
+            } else {
+              res.status(403).json("no_previladges");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+//changeuserstate
+
+exports.changeuserstate = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log("*********************************")
+        console.log(req.body);
+        console.log("*********************************")
+               var datain = req.body;
+
+        console.log(req.params.id);
+        var iid = req.params.id;
+
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log("not depthead");
+
+              User.findOneAndUpdate(
+                { _id: iid },
+                { $set: { state: datain.state } }
+              )
+                .then(doc => {
+                  console.log(doc);
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
+          })
+          .catch(err => {});
       }
     }
   )(req, res, next);

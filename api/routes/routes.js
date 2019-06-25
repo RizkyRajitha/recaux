@@ -21,90 +21,105 @@ const commonRoutes = require("./common.routes");
 // 	res.sendFile(path.join(__dirname, '/../../client/build/index.html'));
 // });
 
-router.post("/reg", (req, res, next) => {
-  passport.authenticate(
-    "jwtstrategy",
-    { session: false },
-    (err, user, info) => {
-      console.log("-----in reg ------");
-      console.log("imfor - " + JSON.stringify(info));
+// router.post("/reg", (req, res, next) => {
+//   passport.authenticate(
+//     "jwtstrategy",
+//     { session: false },
+//     (err, user, info) => {
+//       console.log("-----in reg ------");
+//       console.log("imfor - " + JSON.stringify(info));
 
-      if (info.name == "TokenExpiredError") {
-        console.log("session expired");
-        res.status(403).send("session_exp");
-      }
+//       if (info.name == "TokenExpiredError") {
+//         console.log("session expired");
+//         res.status(403).send("session_exp");
+//       }
 
-      if (user) {
-        console.log(`************${req.headers.authorization}****************`);
+//       if (user) {
+//         console.log(`************${req.headers.authorization}****************`);
 
-        console.log("savin.....");
-        var salt = bcrypt.genSaltSync(saltRounds);
-        var hash = bcrypt.hashSync(req.body.password, salt);
+//         console.log("savin.....");
+        // var salt = bcrypt.genSaltSync(saltRounds);
+        // var hash = bcrypt.hashSync(req.body.password, salt);
 
-        const newuser = new User({
-          email: req.body.email,
-          hash: hash,
-          firstName: req.body.firstname,
-          lastName: req.body.lastname,
-          usertype: req.body.usertype
-        });
-        console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
-        //newuser.setpass(req.body.password);
-        console.log(">>>>><<<<<<" + user.usertype);
+//         const newuser = new User({
+//           email: req.body.email,
+//           hash: hash,
+//           firstName: req.body.firstname,
+//           lastName: req.body.lastname,
+//           usertype: req.body.usertype
+//         });
+//         console.log(`email - ${req.body.email}  pass - ${req.body.password}`);
+//         //newuser.setpass(req.body.password);
+//         console.log(">>>>><<<<<<" + user.usertype);
 
-        User.findById(ObjectID(user.id))
-          .then(doc => {
-            console.log(doc.usertype);
-            if (doc.usertype === "admin") {
-              newuser
-                .save()
-                .then(result => {
-                  console.log("succsess");
-                  //var token = result.generateJWT();
-                  return res.status(200).send();
-                })
-                .catch(err => {
-                  console.log(" reg err -  " + err);
+//         User.findById(ObjectID(user.id))
+//           .then(doc => {
+//             console.log(doc.usertype);
+//             if (doc.usertype === "admin") {
+//               newuser
+//                 .save()
+//                 .then(result => {
+//                   console.log("succsess");
+//                   //var token = result.generateJWT();
+//                   return res.status(200).send();
+//                 })
+//                 .catch(err => {
+//                   console.log(" reg err -  " + err);
 
-                  if (err.code === 11000) {
-                    console.log(" reg err duplicate email found ");
-                    res.status(403).json(err.code);
-                  } else {
-                    res.status(403).json(err);
-                  }
-                });
-            } else {
-              res.status(403).json("no_previladges");
-            }
-          })
-          .catch(err => {
-            console.log("errororr - " + err);
-          });
-      }
-    }
-  )(req, res, next);
-});
+//                   if (err.code === 11000) {
+//                     console.log(" reg err duplicate email found ");
+//                     res.status(403).json(err.code);
+//                   } else {
+//                     res.status(403).json(err);
+//                   }
+//                 });
+//             } else {
+//               res.status(403).json("no_previladges");
+//             }
+//           })
+//           .catch(err => {
+//             console.log("errororr - " + err);
+//           });
+//       }
+//     }
+//   )(req, res, next);
+// });
 
 router.post("/login1", function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
-    console.log("ppppp");
+    console.log("ppppp/***************************************************");
+
+    console.log("error - " + err);
+    console.log("user - " + JSON.stringify(user));
+    console.log("info -- " + info);
+    console.log("ppppp/***************************************************");
+
     if (err) {
       console.log("error no user");
       return next(err);
     }
     if (!user) {
       console.log("error no1");
-      console.log(info.message);
-      return res.send(user);
+      console.log(info);
+      if(info.message){
+        return res.send(info.message);
+      }
+     
     }
     req.logIn(user, function(err) {
       if (err) {
         return next(err);
       } else {
         console.log("done");
+        console.log(user);
         var token = user.generateJWT();
+        var payload = {
+          token: token,
+          usertype: user.usertype,
+          userId: user._id
+        };
         // res.cookie("jwt", token, { httpOnly: true, secure: true });
-        return res.status(200).send(token);
+        return res.status(200).send(payload);
       }
     });
   })(req, res, next);
@@ -113,7 +128,7 @@ router.post("/login1", function(req, res, next) {
 router.get("/dashboard", commonRoutes.dashboard); //send basic user details for the dashboard
 router.get("/user/:id", commonRoutes.userProfile); //send data to the user profile
 router.post("/edituser/:id", commonRoutes.editUserDetails); //edit user data routes
-router.post("/sendconfirmemail/:id", commonRoutes.sendConfirmEmail);
+router.get("/sendconfirmemail/:id", commonRoutes.sendConfirmEmail);
 router.post("/confirmemail/:id", commonRoutes.confirmEmail);
 router.post("/fogotpassword", commonRoutes.forgotPassword);
 router.post("/changepass/:id", commonRoutes.changePass);
@@ -128,9 +143,14 @@ router.post("/cv/:id", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
 router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
-router.post("/searchbydate",commonRoutes.searchByDate)
-router.post('/shortlistOneOveride',deptheadRoutes.shortlistOverideOne)
-router.post('/searchbyname',commonRoutes.searchByName)
+router.post("/searchbydate", commonRoutes.searchByDate);
+router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
+router.post("/searchbyname", commonRoutes.searchByName);
+router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
+router.post('/edituserdetails/:id',commonRoutes.editCandidateDetails);
+router.post('/reg',adminRoutes.addNewUser)
+router.post('/configurenewuser',commonRoutes.configureNewUser)
+router.post('/changeuserstate/:id',adminRoutes.changeuserstate)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -162,7 +182,8 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                       allocaterdoc.firstName + " " + allocaterdoc.lastName,
                     assignToshortlisterbyId: user.id,
                     shortlister: datain.allocateduser,
-                    shortlisterName: userDoc.firstName + " " + userDoc.lastName
+                    shortlisterName: userDoc.firstName + " " + userDoc.lastName,
+                    allocatedDate: new Date().toISOString()
                   }
                 }
               ).then(candoc => {
@@ -249,7 +270,9 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                         assignToshortlisterbyId: iid,
                         shortlister: allocatedUserId,
                         shortlisterName:
-                          userDoc.firstName + " " + userDoc.lastName
+                          userDoc.firstName + " " + userDoc.lastName,
+
+                        allocatedDate: new Date().toISOString()
                       }
                     }
                   )
@@ -265,7 +288,7 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                             allocaterUserDoc.firstName +
                             " " +
                             allocaterUserDoc.lastName,
-                          allocatedDate: new Date()
+                          allocatedDate: new Date().toISOString()
                         });
                       });
 
@@ -447,12 +470,84 @@ router.get("/test", (req, res) => {
   Candidate.find({
     date: {
       $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
-      $lt:  new Date("2019-06-01T00:00:00.000Z").toISOString()
+      $lt: new Date("2019-06-01T00:00:00.000Z").toISOString()
     }
-  }).then(doc=>{
-    console.log("docs - "+JSON.stringify(doc))
-  })
+  }).then(doc => {
+    console.log("docs - " + JSON.stringify(doc));
+  });
 
+res.status(200).json({hola:"hawa"})
+}
+
+
+);
+
+router.get("/analytics", (req, res) => {
+  var ada = new Date();
+  console.log(ada);
+ var yesterday=new Date();
+ yesterday.setDate(yesterday.getDate() -1);
+
+ var yesterday1=new Date();
+ yesterday1.setDate(yesterday1.getDate() -2);
+
+ var yesterday2=new Date();
+ yesterday2.setDate(yesterday2.getDate() -3);
+ 
+
+
+ var payload = {
+   todayCandidates:0,
+   yesterdayCandidates:0,
+   yesterday1Candidates:0,
+   yesterday2Candidates:0
+ }
+
+ 
+
+ // ada.setDate(ada.getDate() -2); 
+  console.log("yesterday- "+ada.toISOString().slice(0,10))
+
+  Candidate.find({
+    date: {
+      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+      $gte: yesterday1.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+       $lt: yesterday.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+
+    }
+
+    
+  })
+  Candidate.find({
+    date: {
+      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+      $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+       $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+
+    }
+
+    
+  }).then(doc => {
+
+    payload.yesterdayCandidates=doc.length;
+    payload.yesterday1Candidates=doc.length;
+    
+res.status(200).json(payload)
+    console.log("docs - " + JSON.stringify(doc));
+  });
+
+}
+
+
+);
+
+module.exports = router;
 
   // Candidate.aggregate()
   //   .lookup({
@@ -461,7 +556,7 @@ router.get("/test", (req, res) => {
   //     foreignField: "_id",
   //     as: "User"
   //   })
-    
+
   //   .then(doc => {
   //     console.log("ppp - " + JSON.stringify(doc));
   //   });
@@ -488,6 +583,4 @@ router.get("/test", (req, res) => {
   //   .catch(err => {
   //     res.json(err);
   //   });
-});
 
-module.exports = router;
