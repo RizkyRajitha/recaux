@@ -390,7 +390,7 @@ exports.userProfile = (req, res, next) => {
             lastName: result.lastName,
             avatarUrl: result.avatarUrl,
             usertype: result.usertype,
-            state:!result.state
+            state: !result.state
           };
 
           console.log("found" + result);
@@ -550,6 +550,42 @@ exports.getbasicuserdetails = (req, res, next) => {
   )(req, res, next);
 };
 
+//updatesecondstatus
+
+exports.updatesecondstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log("inna " + req.params.id);
+
+        var iid = req.params.id;
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.findOneAndUpdate(
+          { _id: iid },
+          { $set: { statusHr: datain.status } }
+        )
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json({msg:"sucsess"})
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
@@ -562,10 +598,6 @@ exports.anythingpassportexample = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
-
-
-
-        
         console.log(req.body);
         var datain = req.body;
       }

@@ -219,7 +219,7 @@ const Login = withFormik({
           setErrors({ invalidemail: "invalid Email" });
           setSubmitting(false);
         } else if (body === "disabled_user") {
-          setErrors({ disabled_user: "User Disabled" });
+          setErrors({ disabled_user: "User Disabled , Please contact Admin" });
           setSubmitting(false);
         } else if (body === "invalid_password") {
           setErrors({ invalidcred: "invalid Creadentials" });

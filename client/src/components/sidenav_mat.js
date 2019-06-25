@@ -5,14 +5,17 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import PeopleIcon from "@material-ui/icons/People";
+import ImportExport from "@material-ui/icons/ImportExport";
+import Person from "@material-ui/icons/Person";
+import CallReceived from "@material-ui/icons/CallReceived"
+import PersonAdd from "@material-ui/icons/PersonAdd"
 import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
+import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
@@ -65,6 +68,7 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar
   },
   appBar: {
+    marginBottom: 100,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -73,6 +77,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBarShift: {
     marginLeft: drawerWidth,
+    marginBottom: 100,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -132,6 +137,9 @@ const useStyles = makeStyles(theme => ({
   },
   fixedHeight: {
     height: 240
+  },
+  logoutButton: {
+    marginLeft: 36
   }
 }));
 
@@ -186,7 +194,7 @@ function Dashboard(props) {
       //this.setState({ loggedin: false });
       //this.props.history.push("/login");
     }
-  },[]);
+  }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -195,7 +203,7 @@ function Dashboard(props) {
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
-          position="fixed"
+          position="relative"
           className={clsx(classes.appBar, open && classes.appBarShift)}
         >
           <Toolbar className={classes.toolbar}>
@@ -224,9 +232,22 @@ function Dashboard(props) {
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon onClick={() => console.log("cliked")} />
               </Badge>
+              <Button
+                className={classes.logoutButton}
+                color="inherit"
+                onClick={() => {
+                  localStorage.removeItem("jwt");
+                  localStorage.removeItem("userId");
+                  localStorage.removeItem("usertype");
+                  window.location.reload(false);
+                }}
+              >
+                Logout
+              </Button>
             </IconButton>
           </Toolbar>
         </AppBar>
+
         <Drawer
           variant="permanent"
           classes={{
@@ -261,7 +282,7 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <ShoppingCartIcon />
+                  <Person />
                 </ListItemIcon>
                 <ListItemText primary="User" />
               </ListItem>
@@ -272,21 +293,33 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <PeopleIcon />
+                  <PersonAdd />
                 </ListItemIcon>
                 <ListItemText primary="Add new User" />
               </ListItem>
-              <ListItem button>
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/analytics");
+                  window.location.reload(false)
+                }}
+                
+              >
                 <ListItemIcon>
                   <BarChartIcon />
                 </ListItemIcon>
-                <ListItemText primary="Reports" />
+                <ListItemText primary="Analytics" />
               </ListItem>
-              <ListItem button>
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/shortlist");
+                }}
+              >
                 <ListItemIcon>
-                  <LayersIcon />
+                  <ImportExport />
                 </ListItemIcon>
-                <ListItemText primary="Integrations" />
+                <ListItemText primary="Shortlist" />
               </ListItem>
               <ListItem
                 button
@@ -298,7 +331,7 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <LayersIcon />
+                  <CallReceived />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItem>

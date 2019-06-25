@@ -68,6 +68,19 @@ const customStyles4 = {
   }
 };
 
+const customStyles5 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
 Modal.setAppElement("#root");
 
 class CandidateView extends Component {
@@ -204,6 +217,26 @@ class CandidateView extends Component {
   };
 
   /***************************************** */
+
+    openModal5 = () => {
+      this.setState({ modalIsOpen5: true });
+    };
+  
+    afterOpenModal5 = () => {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = "#f00";
+      this.subtitle.style.textAlign = "center";
+    };
+  
+    closeModal5 = () => {
+      this.setState({ modalIsOpen5: false });
+    };
+  
+    changestatusforhr = () => {
+      this.openModal5();
+    };
+  
+    /***************************************** */
 
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
@@ -456,31 +489,31 @@ class CandidateView extends Component {
       headers: { authorization: jwt }
     };
 
-    // axios
-    //   .get("/usr/basicuserdetails", config)
-    //   .then(res => {
-    //     console.log(res.data);
-    //     var datain = res.data;
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
 
-    //     var preurl = res.data.avatarUrl.slice(0, 48);
-    //     var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-    //     var config = "/w_290,h_295,c_thumb/";
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_290,h_295,c_thumb/";
 
-    //     var baseUrl = preurl + config + posturl;
-    //     this.setState({ avatarUrl: baseUrl });
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
 
-    //     // var resdate = this.state.data.date
-    //     //  var alodate = this.state.data.allocatedDate
-    //     //  var shrtdate = this.state.data.shortlistedDate
+        // var resdate = this.state.data.date
+        //  var alodate = this.state.data.allocatedDate
+        //  var shrtdate = this.state.data.shortlistedDate
 
-    //     this.setState({
-    //       id: datain.id,
-    //       firstName: datain.firstName,
-    //       lastName: datain.lastName,
-    //       usertype: datain.usertype
-    //     });
-    //   })
-    //   .catch(err => {});
+        this.setState({
+          id: datain.id,
+          firstName: datain.firstName,
+          lastName: datain.lastName,
+          usertype: datain.usertype
+        });
+      })
+      .catch(err => {});
 
     axios
       .get("/usr/getcandidate/" + id)
@@ -581,6 +614,42 @@ class CandidateView extends Component {
         this.setState({ status_change: 0 });
       });
   };
+
+
+
+  chngehandlsecondarystate = e => {
+    this.setState({ status_change: 0 });
+    // this.setState({ status: e.target.value });
+    console.log("status 1k" + e.target.value);
+    var id = this.props.match.params.id;
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var payload = { status: e.target.value };
+
+    axios
+      .post("/usr/updatesecondstatus/" + id, payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          this.setState({ status_change: 1 });
+          this.closeModal5();
+        }
+
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
+  };
+
+
+
 
   wtf = () => {
     // const id = this.props.match.params.id;
@@ -1015,6 +1084,65 @@ status: "New"
               </select>
             </div>
           </Modal>
+
+
+          <Modal
+            isOpen={this.state.modalIsOpen5}
+            onAfterOpen={this.afterOpenModal5}
+            onRequestClose={this.closeModal5}
+            style={customStyles}
+            contentLabel="Example 5 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>status</h2>
+
+            <div class="form-group">
+              <label
+                className="canviewshortlistform"
+                for="exampleFormControlSelect2"
+                hidden={
+                  this.state.usertype === "admin" ||
+                  this.state.usertype === "depthead"
+                    ? false
+                    : true
+                }
+              >
+                change candidate secondary status
+              </label>
+
+              <select
+                
+                class="form-control"
+                id="status"
+                onChange={this.chngehandlsecondarystate}//chngehandlsecondarystate
+              >
+                <option selected>Select...</option>
+                <option id="status" value="cancel">
+                  Canceled
+                </option>
+                <option id="status" value="noshow">
+                  No show
+                </option>
+                {/* <option id="status" value="accepted">
+                  accepted
+                </option>
+                <option id="status" value="shortlisted">
+                  shortlisted
+                </option> */}
+              </select>
+            </div>
+          </Modal>
+
+          <button
+            disabled={
+              this.state.usertype === "depthead"
+                ? true
+                : false
+            }
+            onClick={this.changestatusforhr}
+            className="btn btn-primary"
+          >
+            change secondary status
+          </button>
 
           <button onClick={this.evalHndler} className="btn btn-primary">
             evaluate
