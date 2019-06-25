@@ -184,6 +184,9 @@ class TemporaryDrawer extends Component {
             </NavItem>
 
             <NavItem eventKey="analytics">
+
+    
+
               <NavIcon>
                 <i
                   className="fa fa-fw fa-line-chart"
@@ -192,6 +195,7 @@ class TemporaryDrawer extends Component {
               </NavIcon>
               <NavText>Analytics</NavText>
             </NavItem>
+
 
             <NavItem
               className={

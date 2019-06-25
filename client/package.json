@@ -17,6 +17,7 @@
     "react-dom": "^16.8.2",
     "react-helmet": "^5.2.1",
     "react-modal": "^3.8.1",
+    "react-moment": "^0.9.2",
     "react-pdf": "^4.0.5",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",

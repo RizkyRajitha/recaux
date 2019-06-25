@@ -68,6 +68,7 @@ const renderCustomizedLabel = ({
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
   return (
+      
     <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
       {`${(percent * 100).toFixed(0)}%`}
     </text>
@@ -86,12 +87,49 @@ constructor(props){
   super(props);
   
       var today= new Date(),
-      date1=today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+      date7=today.getDate()+'/'+ (today.getMonth() + 1);
       
-      var today= new Date("December 30, 2017 11:20:25"),
-      date2=today.setDate(today.getDate()-2);
-    //   var dt = new Date("December 30, 2017 11:20:25");
-    //   dt.setDate( dt.getDate() - 10 );
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -6); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date1 = dd + '/'+ mm ;
+
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -5); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date2 = dd + '/'+ mm;
+
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -4); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date3 = dd + '/'+ mm ;
+
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -3); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date4 = dd + '/'+ mm ;
+
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -2); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date5 = dd + '/'+ mm ;
+
+    var someDate = new Date();
+    someDate.setDate(someDate.getDate() -1); //Formatting to dd/mm/yyyy :
+    var dd = someDate.getDate();
+    var mm = someDate.getMonth() + 1;
+    var y = someDate.getFullYear();
+    var date6 = dd + '/'+ mm ;
 
 
   this.state={ 
@@ -102,34 +140,34 @@ constructor(props){
       ],
       
     data2 : [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 300 },
-    { name: 'Group D', value: 200 },
+    { name: 'QA Engineer', value: 6 },
+    { name: 'Software Engineer', value: 3 },
+    { name: 'Business Analysist', value: 3 },
+    { name: 'Project Manager', value: 2 },
   ],
 
 
    data3 : [
     {
-      name: date1,  NumberOfCVs: 2400, amt: 2400,
+      name: date1,  NumberOfCVs: 10, 
     },
     {
-      name: date2, NumberOfCVs: 1398, amt: 2210,
+      name: date2, NumberOfCVs: 10, 
     },
     {
-      name: 'Page C',  NumberOfCVs: 9800, amt: 2290,
+      name: date3,  NumberOfCVs: 10, 
     },
     {
-      name: 'Page D',  NumberOfCVs: 3908, amt: 2000,
+      name: date4,  NumberOfCVs: 10,
     },
     {
-      name: 'Page E',  NumberOfCVs: 4800, amt: 2181,
+      name: date5,  NumberOfCVs: 10, //daybeforeyesterday
     },
     {
-      name: 'Page F',  NumberOfCVs: 3800, amt: 2500,
+      name: date6,  NumberOfCVs: 10, //yesterday
     },
     {
-      name: 'Page G', uv: 3490, NumberOfCVs: 4300, amt: 2100,
+      name: date7, NumberOfCVs: 10, //today
     },
   ]
 
@@ -139,13 +177,15 @@ constructor(props){
 componentDidMount() {
     axios.get('http://localhost:3001/usr/analytics')
         .then(response => {
-
-
             console.log("response -"+JSON.stringify(response.data))
-            this.state.data3.NumberOfCVs=response.data.yesterdayCandidates
-        
-
-            //this.setState({ data3: response.data3 });
+            this.state.data3[0].NumberOfCVs=response.data.yesterdayCandidates
+            this.state.data3[1].NumberOfCVs=response.data.yesterday1Candidates
+            this.state.data3[2].NumberOfCVs=response.data.yesterday2Candidates
+            this.state.data3[3].NumberOfCVs=response.data.yesterday3Candidates
+            this.state.data3[4].NumberOfCVs=response.data.yesterday4Candidates
+            this.state.data3[5].NumberOfCVs=response.data.yesterday5Candidates
+            this.state.data3[6].NumberOfCVs=response.data.todayCandidates
+            this.forceUpdate()
         })
         .catch(function (error){
             console.log(error);
@@ -227,12 +267,9 @@ componentDidMount() {
         <Button size="small">Learn More</Button>
       </CardActions>
     </Card>
-    
-     
+
     </div>
 
-    
-    
          <br/><br/><br/>
          <div className="container2">
 
@@ -249,9 +286,7 @@ componentDidMount() {
     Last 7 days
   </button>
   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      {/* {for(int i=10;i>0;i--){
-         <a className="dropdown-item" href="#">Action</a> 
-      }} */}
+
     <a className="dropdown-item" href="#">Action</a>
     <a className="dropdown-item" href="#">Another action</a>
     <a className="dropdown-item" href="#">Something else here</a>
@@ -303,6 +338,7 @@ componentDidMount() {
             this.state.data1.map((entry, index) => <Cell key={'cell-${index}'} fill={COLORS[index % COLORS.length]} />)
           }
         </Pie>
+        <Tooltip/>
       </PieChart></div> 
     </CardContent>
 </Card>
@@ -310,7 +346,7 @@ componentDidMount() {
 <Card style={pie} className={pie}>
     <CardContent>
     <Typography variant ="h5" component="h2" >
-        Candidate Status
+        Classification Based On Job Specification
         </Typography>
         <div className="pie">
         <PieChart width={400} height={500}>
@@ -328,6 +364,7 @@ componentDidMount() {
             this.state.data2.map((entry, index) => <Cell key={'cell-${index}'} fill={COLORS[index % COLORS.length]} />)
           }
         </Pie>
+        <Tooltip/>
       </PieChart></div>
     </CardContent>
 </Card>
