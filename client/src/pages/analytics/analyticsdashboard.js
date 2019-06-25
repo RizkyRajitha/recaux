@@ -179,7 +179,12 @@ componentDidMount() {
         .then(response => {
             console.log("response -"+JSON.stringify(response.data))
             this.state.data3[0].NumberOfCVs=response.data.yesterdayCandidates
-            this.state.data3[0].NumberOfCVs=response.data.yesterday1Candidates
+            this.state.data3[1].NumberOfCVs=response.data.yesterday1Candidates
+            this.state.data3[2].NumberOfCVs=response.data.yesterday2Candidates
+            this.state.data3[3].NumberOfCVs=response.data.yesterday3Candidates
+            this.state.data3[4].NumberOfCVs=response.data.yesterday4Candidates
+            this.state.data3[5].NumberOfCVs=response.data.yesterday5Candidates
+            this.state.data3[6].NumberOfCVs=response.data.todayCandidates
             this.forceUpdate()
         })
         .catch(function (error){

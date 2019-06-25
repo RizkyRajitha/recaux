@@ -494,6 +494,9 @@ router.get("/analytics", (req, res) => {
  var yesterday5=new Date();
  yesterday5.setDate(yesterday5.getDate() -6);
 
+ var yesterday6=new Date();
+ yesterday6.setDate(yesterday6.getDate() -7);
+
 
 
  var payload = {
@@ -529,8 +532,8 @@ router.get("/analytics", (req, res) => {
           Candidate.find({
             date: {
             
-              $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",
-               $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+              $gte: yesterday3.toISOString().slice(0,10)+ "T00:00:00.000Z",
+               $lt: yesterday2.toISOString().slice(0,10)+ "T23:59:59.000Z"
         
         
             }
@@ -542,13 +545,9 @@ router.get("/analytics", (req, res) => {
             payload.yesterday1Candidates=doc.length;
             Candidate.find({
               date: {
-                //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
-                $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
-                // $gte: new Date(new Date().setDate(new Date().getDate()-6))
-                // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+              
+                $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",
                  $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
-          
-          
               }
           
               
@@ -568,23 +567,72 @@ router.get("/analytics", (req, res) => {
                 payload.yesterday2Candidates=doc.length;
                 Candidate.find({
                   date: {
-                    //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
-                    $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
-                    // $gte: new Date(new Date().setDate(new Date().getDate()-6))
-                    // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
-                     $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
-              
-              
+                     
+                    $gte: yesterday4.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                     $lt: yesterday3.toISOString().slice(0,10)+ "T23:59:59.000Z"
                   }
-              
-                  
+          
                 }).then(doc => {
               
-                  payload.yesterdayCandidates=doc.length;
-                  payload.yesterday1Candidates=doc.length;
+                  payload.yesterday3Candidates=doc.length;
+                  Candidate.find({
+                    date: {
+                       
+                      $gte: yesterday5.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                       $lt: yesterday4.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                    }
+                
+                    
+                  }).then(doc => {
+                
+                    payload.yesterday4Candidates=doc.length;
+                    Candidate.find({
+                      date: {
+                        //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                        $gte: yesterday6.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                        // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                        // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                         $lt: yesterday5.toISOString().slice(0,10)+ "T23:59:59.000Z"
                   
-              res.status(200).json(payload)
-                  console.log("docs - " + JSON.stringify(doc));
+                  
+                      }
+                  
+                      
+                    }).then(doc => {
+                  
+                      payload.yesterday5Candidates=doc.length;
+                      Candidate.find({
+                        date: {
+                          //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                          $gte: ada.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                          // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                          // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                           //$lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                    
+                    
+                        }
+                    
+                        
+                      }).then(doc => {
+                    
+                        payload.todayCandidates=doc.length;
+                        
+                        
+                    res.status(200).json(payload)
+                        console.log("docs - " + JSON.stringify(doc));
+                      });
+                      
+                  // res.status(200).json(payload)
+                  //     console.log("docs - " + JSON.stringify(doc));
+                    });
+                    
+                // res.status(200).json(payload)
+                //     console.log("docs - " + JSON.stringify(doc));
+                  });
+            
+                  
+              // res.status(200).json(payload)
+              //     console.log("docs - " + JSON.stringify(doc));
                 });
                 
             // res.status(200).json(payload)
@@ -600,8 +648,8 @@ router.get("/analytics", (req, res) => {
           });
           //payload.yesterday1Candidates=doc.length;
     
-res.status(200).json(payload)
-    console.log("docs - " + JSON.stringify(doc));
+// res.status(200).json(payload)
+    //console.log("docs - " + JSON.stringify(doc));
   });
   })
 })
