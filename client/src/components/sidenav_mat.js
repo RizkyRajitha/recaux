@@ -186,7 +186,7 @@ function Dashboard(props) {
       //this.setState({ loggedin: false });
       //this.props.history.push("/login");
     }
-  });
+  },[]);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -195,7 +195,7 @@ function Dashboard(props) {
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
-          position="absolute"
+          position="fixed"
           className={clsx(classes.appBar, open && classes.appBarShift)}
         >
           <Toolbar className={classes.toolbar}>

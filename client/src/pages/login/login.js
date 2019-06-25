@@ -60,15 +60,21 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 
     var jwt = localStorage.getItem("jwt");
 
+    
+
     try {
       var decode = jsonwebtoken.verify(jwt, "authdemo");
 
       console.log("decode jwt - " + JSON.stringify(decode));
       history.push("/dashboard");
     } catch (error) {
+      console.log("is this error >>>>>>>>>>>>>>>")
       console.log(error);
     }
-  });
+
+
+
+  },[]);
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -228,10 +234,10 @@ const Login = withFormik({
 
           if (data.data.usertype === "depthead") {
             props.history.push("/shortlist");
-            // window.location.reload(false);
+             window.location.reload(false);
           } else {
             props.history.push("/dashboard");
-            // window.location.reload(false);
+             window.location.reload(false);
           }
         }
 
