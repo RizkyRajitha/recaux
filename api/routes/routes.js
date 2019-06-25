@@ -87,15 +87,24 @@ const commonRoutes = require("./common.routes");
 
 router.post("/login1", function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
-    console.log("ppppp");
+    console.log("ppppp/***************************************************");
+
+    console.log("error - " + err);
+    console.log("user - " + JSON.stringify(user));
+    console.log("info -- " + info);
+    console.log("ppppp/***************************************************");
+
     if (err) {
       console.log("error no user");
       return next(err);
     }
     if (!user) {
       console.log("error no1");
-      console.log(info.message);
-      return res.send(user);
+      console.log(info);
+      if(info.message){
+        return res.send(info.message);
+      }
+     
     }
     req.logIn(user, function(err) {
       if (err) {
@@ -141,6 +150,7 @@ router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
 router.post('/edituserdetails/:id',commonRoutes.editCandidateDetails);
 router.post('/reg',adminRoutes.addNewUser)
 router.post('/configurenewuser',commonRoutes.configureNewUser)
+router.post('/changeuserstate/:id',adminRoutes.changeuserstate)
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(

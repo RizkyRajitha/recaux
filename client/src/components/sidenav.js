@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -136,8 +135,7 @@ class TemporaryDrawer extends Component {
               <div className="sidenavuserdetails">
                 <ul className="sidenavuserdetails">
                   <li>
-                    username :
-                    {this.state.firstName + " " + this.state.lastName}
+                    username :{this.state.firstName + " " + this.state.lastName}
                   </li>
                   <li> type : {this.state.usertype}</li>
                 </ul>
@@ -186,17 +184,18 @@ class TemporaryDrawer extends Component {
             </NavItem>
 
             <NavItem eventKey="analytics">
-            <NavIcon>
-            <i class="material-icons" style={{ fontSize: "2.75em" }}>
-            insert_chart
-            </i>
-              {/* <i
-                className="fa fa-fw fa-line-chart"
-                style={{ fontSize: "1.75em" }}
-              /> */}
-            </NavIcon>
-            <NavText>Analytics</NavText>
-          </NavItem>
+
+    
+
+              <NavIcon>
+                <i
+                  className="fa fa-fw fa-line-chart"
+                  style={{ fontSize: "1.75em" }}
+                />
+              </NavIcon>
+              <NavText>Analytics</NavText>
+            </NavItem>
+
 
             <NavItem
               className={

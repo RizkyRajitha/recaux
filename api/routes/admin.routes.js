@@ -58,7 +58,9 @@ exports.userlist = (req, res, next) => {
                     firstName: element.firstName,
                     lastName: element.lastName,
                     usertype: element.usertype,
-                    candidatesAssinged: pendingcan
+                    candidatesAssinged: pendingcan,
+                    id: element._id,
+                    state:element.state
                   };
                   payloadarr.push(temp);
                 });
@@ -108,7 +110,11 @@ exports.addNewUser = (req, res, next) => {
                 .then(doc => {
                   console.log("saved" + doc);
 
-                  emailhandler.mailhandlernewuseremail(datain.email,doc._id,datain.usertype)
+                  emailhandler.mailhandlernewuseremail(
+                    datain.email,
+                    doc._id,
+                    datain.usertype,
+                  );
                   res.status(200).send();
                 })
                 .catch(err => {
@@ -128,6 +134,51 @@ exports.addNewUser = (req, res, next) => {
           .catch(err => {
             console.log(err);
           });
+      }
+    }
+  )(req, res, next);
+};
+
+//changeuserstate
+
+exports.changeuserstate = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log("*********************************")
+        console.log(req.body);
+        console.log("*********************************")
+               var datain = req.body;
+
+        console.log(req.params.id);
+        var iid = req.params.id;
+
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log("not depthead");
+
+              User.findOneAndUpdate(
+                { _id: iid },
+                { $set: { state: datain.state } }
+              )
+                .then(doc => {
+                  console.log(doc);
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
+          })
+          .catch(err => {});
       }
     }
   )(req, res, next);

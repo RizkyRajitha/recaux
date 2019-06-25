@@ -389,7 +389,8 @@ exports.userProfile = (req, res, next) => {
             firstName: result.firstName,
             lastName: result.lastName,
             avatarUrl: result.avatarUrl,
-            usertype: result.usertype
+            usertype: result.usertype,
+            state:!result.state
           };
 
           console.log("found" + result);

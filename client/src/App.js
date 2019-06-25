@@ -29,7 +29,7 @@ import Search from "./pages/search/search";
 import Navbar from "./components/navbar";
 import NewUserConfig from './pages/newuserconfigure/newuserconfigure'
 //import profileProvider from "./providers/profileProvides";
-import TemporaryDrawer from "./components/sidenav";
+import TemporaryDrawer from "./components/sidenav_mat";
 //import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route } from "react-router-dom";
 import analyticsdashboard from "./pages/analytics/analyticsdashboard";
@@ -40,7 +40,7 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <TemporaryDrawer />
-          <Navbar/>
+          {/* <Navbar/> */}
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />

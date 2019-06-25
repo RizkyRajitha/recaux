@@ -17,11 +17,11 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { TextField } from "formik-material-ui";
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from "@material-ui/core/IconButton";
 import jsonwebtoken from "jsonwebtoken";
 //import Navbar from "../../components/navbar";
 //import "./login.css";
@@ -70,17 +70,14 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
     }
   });
 
-
-
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
-  
+
   const [values, setValues] = React.useState({
-    
-    showPassword: false,
+    showPassword: false
   });
-  
+
   const classes = useStyles();
 
   return (
@@ -88,6 +85,16 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
       {errors.invalidcred && (
         <div class="alert alert-danger" role="alert">
           {errors.invalidcred}
+        </div>
+      )}
+      {errors.invalidemail && (
+        <div class="alert alert-danger" role="alert">
+          {errors.invalidemail}
+        </div>
+      )}
+      {errors.disabled_user && (
+        <div class="alert alert-danger" role="alert">
+          {errors.disabled_user}
         </div>
       )}
       <CssBaseline />
@@ -126,7 +133,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
             type="password"
             //id="password"
             autoComplete="current-password"
-            type={values.showPassword ? 'text' : 'password'}
+            type={values.showPassword ? "text" : "password"}
             name="password"
             //type="password"
             //placeholder="Password"
@@ -143,7 +150,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                     {values.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              ),
+              )
             }}
           />
           {/* <FormControlLabel
@@ -165,9 +172,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                 Forgot password?
               </Link>
             </Grid>
-            <Grid item>
-             
-            </Grid>
+            <Grid item />
           </Grid>
         </Form>
       </div>
@@ -202,7 +207,18 @@ const Login = withFormik({
         console.log(data);
         var body = data.data;
 
-        if (body) {
+        //invalid_email
+
+        if (body === "invalid_email") {
+          setErrors({ invalidemail: "invalid Email" });
+          setSubmitting(false);
+        } else if (body === "disabled_user") {
+          setErrors({ disabled_user: "User Disabled" });
+          setSubmitting(false);
+        } else if (body === "invalid_password") {
+          setErrors({ invalidcred: "invalid Creadentials" });
+          setSubmitting(false);
+        } else if (body) {
           console.log("body - " + body);
           localStorage.setItem("jwt", body.token);
           localStorage.setItem("usertype", body.usertype);
@@ -212,15 +228,32 @@ const Login = withFormik({
 
           if (data.data.usertype === "depthead") {
             props.history.push("/shortlist");
-           // window.location.reload(false);
+            // window.location.reload(false);
           } else {
             props.history.push("/dashboard");
-           // window.location.reload(false);
+            // window.location.reload(false);
           }
-        } else {
-          setErrors({ invalidcred: "invalid Creadentials" });
-          setSubmitting(false);
         }
+
+        // if (body) {
+        // console.log("body - " + body);
+        // localStorage.setItem("jwt", body.token);
+        // localStorage.setItem("usertype", body.usertype);
+        // localStorage.setItem("userId", body.userId);
+
+        // console.log(props);
+
+        // if (data.data.usertype === "depthead") {
+        //   props.history.push("/shortlist");
+        //  // window.location.reload(false);
+        // } else {
+        //   props.history.push("/dashboard");
+        //  // window.location.reload(false);
+        // }
+        // } else {
+        // setErrors({ invalidcred: "invalid Creadentials" });
+        // setSubmitting(false);
+        // }
       })
       .catch(err => {
         console.log(err);
@@ -231,64 +264,11 @@ const Login = withFormik({
     email1: Yup.string()
       .email("Email must be a valid email")
       .required("Required"),
-    password: Yup.string()
-      .required()
-      
+    password: Yup.string().required()
   })
 })(Formic);
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { withFormik, Form, Field } from "formik";
@@ -331,7 +311,7 @@ export default Login;
 //               </div>
 //             )}
 
-//             {/* 
+//             {/*
 // <Form>
 //       {errors.invalidcred && <p>{errors.invalidcred} </p>}
 //         <div className="row">
@@ -467,9 +447,9 @@ export default Login;
 // export default Login;
 
 // /**
-//  * 
-//  * 
-//  * 
+//  *
+//  *
+//  *
 //  import React from "react";
 // import { withFormik, Form, Field } from "formik";
 // import * as Yup from "yup";
@@ -520,7 +500,5 @@ export default Login;
 // })(Formic);
 
 // export default Formicktest;
-
-
 
 //  */

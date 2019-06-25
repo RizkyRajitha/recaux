@@ -367,7 +367,8 @@ class dashboard extends Component {
             className="btn btn-outline-primary"
             id="addcan"
             disabled={
-              this.state.usertype === "hr_staff" || this.state.usertype === "admin"
+              this.state.usertype === "hr_staff" ||
+              this.state.usertype === "admin"
                 ? false
                 : true
             }
@@ -416,7 +417,7 @@ class dashboard extends Component {
             </div>
           </Modal>
 
-          {!this.state.emailverified && (
+          {/* {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">
               please verify your email
               <br />
@@ -429,25 +430,34 @@ class dashboard extends Component {
                 verify email
               </button>
             </div>
-          )}
+          )} */}
 
           <div class="row">
-            <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-              {usrdetails.reverse().map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return (
-                  <UserCard
-                    name={can.firstName + " " + can.lastName}
-                    pendingcan={can.candidatesAssinged}
-                  />
-                );
-              })}
-            </div>
+            {this.state.usertype === "admin" && (
+              <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
+                {usrdetails.reverse().map(can => {
+                  //console.log(can.name+can.email+can.jobspec)
+                  return (
+                    <UserCard
+                      name={can.firstName + " " + can.lastName}
+                      pendingcan={can.candidatesAssinged}
+                      id={can.id}
+                      state={can.state}
+                    />
+                  );
+                })}
+              </div>
+            )}
 
-
-            <div className={this.state.usertype==="admin"?"cardcontainer2_admin":"cardcontainer2_nonadmin"}   >
+            <div
+              className={
+                this.state.usertype === "admin"
+                  ? "cardcontainer2_admin"
+                  : "cardcontainer2_nonadmin"
+              }
+            >
               {cndetailes.map((can, iid) => {
-                                return (
+                return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
                     name={can.name}
