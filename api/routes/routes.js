@@ -485,6 +485,7 @@ res.status(200).json({hola:"hawa"})
 router.get("/analytics", (req, res) => {
   var ada = new Date();
   console.log(ada);
+
  var yesterday=new Date();
  yesterday.setDate(yesterday.getDate() -1);
 
@@ -493,59 +494,176 @@ router.get("/analytics", (req, res) => {
 
  var yesterday2=new Date();
  yesterday2.setDate(yesterday2.getDate() -3);
- 
+
+ var yesterday3=new Date();
+ yesterday3.setDate(yesterday3.getDate() -4);
+
+ var yesterday4=new Date();
+ yesterday4.setDate(yesterday4.getDate() -5);
+
+ var yesterday5=new Date();
+ yesterday5.setDate(yesterday5.getDate() -6);
+
+ var yesterday6=new Date();
+ yesterday6.setDate(yesterday6.getDate() -7);
+
 
 
  var payload = {
    todayCandidates:0,
    yesterdayCandidates:0,
    yesterday1Candidates:0,
-   yesterday2Candidates:0
+   yesterday2Candidates:0,
+   yesterday3Candidates:0,
+   yesterday4Candidates:0,
+   yesterday5Candidates:0
  }
 
- 
-
  // ada.setDate(ada.getDate() -2); 
-  console.log("yesterday- "+ada.toISOString().slice(0,10))
+  console.log("yesterday - "+yesterday.toISOString().slice(0,10))
 
   Candidate.find({
     date: {
-      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
-      $gte: yesterday1.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
-      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
-      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
-       $lt: yesterday.toISOString().slice(0,10)+ "T23:59:59.000Z"
-
-
+      $gte: yesterday1.toISOString().slice(0,10)+ "T00:00:00.000Z",
+      $lt: yesterday.toISOString().slice(0,10)+ "T23:59:59.000Z"
     }
-
-    
   })
-  Candidate.find({
-    date: {
-      //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
-      $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
-      // $gte: new Date(new Date().setDate(new Date().getDate()-6))
-      // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
-       $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
 
-
-    }
-
-    
-  }).then(doc => {
-
+  .then(doc => {
     payload.yesterdayCandidates=doc.length;
-    payload.yesterday1Candidates=doc.length;
+    Candidate.find({
+          date: {
+            $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",
+            $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+          }
+        }).then(doc => {
+      
+          payload.yesterday1Candidates=doc.length;
+          Candidate.find({
+            date: {
+            
+              $gte: yesterday3.toISOString().slice(0,10)+ "T00:00:00.000Z",
+               $lt: yesterday2.toISOString().slice(0,10)+ "T23:59:59.000Z"
+        
+        
+            }
+        
+            
+          }).then(doc => {
+        
+            //payload.yesterdayCandidates=doc.length;
+            payload.yesterday1Candidates=doc.length;
+            Candidate.find({
+              date: {
+              
+                $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                 $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+              }
+          
+              
+            }).then(doc => {
+          
+              payload.yesterday2Candidates=doc.length;
+              Candidate.find({
+                date: {
+                  $gte: yesterday3.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                   $lt: yesterday2.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+                }
+            
+                
+              }).then(doc => {
+            
+                payload.yesterday2Candidates=doc.length;
+                Candidate.find({
+                  date: {
+                     
+                    $gte: yesterday4.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                     $lt: yesterday3.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                  }
+          
+                }).then(doc => {
+              
+                  payload.yesterday3Candidates=doc.length;
+                  Candidate.find({
+                    date: {
+                       
+                      $gte: yesterday5.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                       $lt: yesterday4.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                    }
+                
+                    
+                  }).then(doc => {
+                
+                    payload.yesterday4Candidates=doc.length;
+                    Candidate.find({
+                      date: {
+                        //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                        $gte: yesterday6.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                        // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                        // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                         $lt: yesterday5.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                  
+                  
+                      }
+                  
+                      
+                    }).then(doc => {
+                  
+                      payload.yesterday5Candidates=doc.length;
+                      Candidate.find({
+                        date: {
+                          //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                          $gte: ada.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                          // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                          // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                           //$lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+                    
+                    
+                        }
+                    
+                        
+                      }).then(doc => {
+                    
+                        payload.todayCandidates=doc.length;
+                        
+                        
+                    res.status(200).json(payload)
+                        console.log("docs - " + JSON.stringify(doc));
+                      });
+                      
+                  // res.status(200).json(payload)
+                  //     console.log("docs - " + JSON.stringify(doc));
+                    });
+                    
+                // res.status(200).json(payload)
+                //     console.log("docs - " + JSON.stringify(doc));
+                  });
+            
+                  
+              // res.status(200).json(payload)
+              //     console.log("docs - " + JSON.stringify(doc));
+                });
+                
+            // res.status(200).json(payload)
+            //     console.log("docs - " + JSON.stringify(doc));
+              });
+              
+          // res.status(200).json(payload)
+          //     console.log("docs - " + JSON.stringify(doc));
+            });
+
+        // res.status(200).json(payload)
+        //     console.log("docs - " + JSON.stringify(doc));
+          });
+          //payload.yesterday1Candidates=doc.length;
     
-res.status(200).json(payload)
-    console.log("docs - " + JSON.stringify(doc));
+// res.status(200).json(payload)
+    //console.log("docs - " + JSON.stringify(doc));
   });
+  })
+})
 
-}
-
-
-);
 
 module.exports = router;
 
