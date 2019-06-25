@@ -33,9 +33,10 @@ import Search from "./pages/search/search";
 import Navbar from "./components/navbar";
 import NewUserConfig from "./pages/newuserconfigure/newuserconfigure";
 //import profileProvider from "./providers/profileProvides";
-import TemporaryDrawer from "./components/sidenav";
+import TemporaryDrawer from "./components/sidenav_mat";
 //import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route } from "react-router-dom";
+import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 
 class App extends Component {
   render() {
@@ -43,7 +44,8 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <TemporaryDrawer />
-          <Navbar />
+
+
           <Route exact path="/" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/register" component={Register} />
@@ -63,7 +65,10 @@ class App extends Component {
           <Route path="/pdftest" component={Pdftest} />
           <Route path="/spinner" component={Home} />
           <Route path="/Search" component={Search} />
-          <Route path="/newuserconfig/:id" component={NewUserConfig} />
+
+          <Route path='/newuserconfig/:id' component={NewUserConfig} />
+          <Route path="/analytics" component={analyticsdashboard}/>
+
         </div>
       </BrowserRouter>
     );

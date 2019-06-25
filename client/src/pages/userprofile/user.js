@@ -36,7 +36,8 @@ class Userprofile extends Component {
     errfiletoolarge: false,
     unsupportedFormat: false,
     userowner: false,
-    isLoading: false
+    isLoading: false,
+    isauthorizeduser: false
   };
 
   chngehndlimg = e => {
@@ -66,6 +67,11 @@ class Userprofile extends Component {
   componentDidMount() {
     const jwt = localStorage.getItem("jwt");
     console.log("jwt token -- - -- >>>" + jwt);
+
+    var usertype = localStorage.getItem("usertype");
+    if (usertype === "admin" || usertype === "hr_staff") {
+      this.setState({ isauthorizeduser: true });
+    }
 
     try {
       console.log("in register");
@@ -107,6 +113,33 @@ class Userprofile extends Component {
         console.log(err);
       });
   }
+
+  deactivateuser = e => {
+    console.log("ebuwa " + this.state.userdata.id);
+    console.log(this.state)
+    console.log(e.target.checked);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    this.state.userdata.state = !e.target.checked;
+    this.forceUpdate()
+    //this.setState({ state:  });
+
+    var dto = { state: e.target.checked };
+
+    axios
+      .post("/usr/changeuserstate/" + this.state.userdata.id, dto, config)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   btn1handler = e => {
     e.preventDefault();
@@ -261,6 +294,18 @@ class Userprofile extends Component {
                 </tr>
               </tbody>
             </table>
+            <label className="disableuserlable"> { this.state.userdata.state?"Disable this User":"User Disabled"}</label>
+            <label class="switch" hidden={!this.state.isauthorizeduser}>
+              <input
+                type="checkbox"
+                name="state"
+               
+                checked={!this.state.userdata.state}
+                disabled={!this.state.isauthorizeduser}
+                onChange={this.deactivateuser}
+              />
+              <span class="slider round" />
+            </label>
 
             {/* 
               {this.state.userdata.avatarUrl && (

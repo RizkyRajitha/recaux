@@ -22,17 +22,28 @@ passport.use(
       .findOne({ email: email })
       .then(data => {
         if (!data) {
-          return done(null, false, { message: "no user found invalid email" });
+          return done(null, false, { message: "invalid_email" });
         }
         if (data) {
           console.log("user have " + data.email);
           console.log(password);
         }
-        if (data.verifypass(password)) {
-          console.log("wede hari");
-          return done(null, data);
+        if (data.verifypass(password)   ) {
+
+          if(!data.state){
+            console.log("active user hari "+data.state);
+            return done(null, data);
+          }
+          else{
+            return done(null, false, { message: "disabled_user" });
+
+          }
+
+        
+        
+        
         } else {
-          return done(null, false, { message: "invalid password" });
+          return done(null, false, { message: "invalid_password" });
         }
       })
       .catch(err => done(err));
@@ -65,7 +76,7 @@ passport.use(
     },
     (payload, done) => {
       console.log('in jwt passport')
-     // console.log(payload);
+      console.log(payload);
 
       if(payload===undefined){
         return done(true,"errro",'not a valid user');
@@ -74,6 +85,11 @@ passport.use(
       if (Date.now > payload.expiresIn) {
         return done('errro',"expired",'expired');
       }
+
+
+
+
+
       return done(null, payload,'valid user');
     }
   )

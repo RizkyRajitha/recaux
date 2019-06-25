@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -95,6 +94,10 @@ class TemporaryDrawer extends Component {
               this.props.history.push("/search");
             }
 
+            if (selected === "analytics") {
+              this.props.history.push("/analytics");
+            }
+
             if (selected === "logout") {
               localStorage.removeItem("jwt");
               localStorage.removeItem("userId");
@@ -132,8 +135,7 @@ class TemporaryDrawer extends Component {
               <div className="sidenavuserdetails">
                 <ul className="sidenavuserdetails">
                   <li>
-                    username :
-                    {this.state.firstName + " " + this.state.lastName}
+                    username :{this.state.firstName + " " + this.state.lastName}
                   </li>
                   <li> type : {this.state.usertype}</li>
                 </ul>
@@ -181,21 +183,19 @@ class TemporaryDrawer extends Component {
               <NavText>Search</NavText>
             </NavItem>
 
-            <NavItem eventKey="charts">
+            <NavItem eventKey="analytics">
+
+    
+
               <NavIcon>
                 <i
                   className="fa fa-fw fa-line-chart"
                   style={{ fontSize: "1.75em" }}
                 />
               </NavIcon>
-              <NavText>Charts</NavText>
-              <NavItem eventKey="charts/linechart">
-                <NavText>Line Chart</NavText>
-              </NavItem>
-              <NavItem eventKey="charts/barchart">
-                <NavText>Bar Chart</NavText>
-              </NavItem>
+              <NavText>Analytics</NavText>
             </NavItem>
+
 
             <NavItem
               className={

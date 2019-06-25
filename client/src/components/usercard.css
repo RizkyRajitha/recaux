@@ -10,3 +10,13 @@
     margin-right: 10%;
     text-align: left;
 }
+
+.usercardbadgeDivforstate{
+
+    font-size: 1rem;
+    inline-size: 10%;
+    padding-top: 5%;
+    position: absolute;
+    margin-left: 55%;
+
+}
