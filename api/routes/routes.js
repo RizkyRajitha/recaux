@@ -540,7 +540,61 @@ router.get("/analytics", (req, res) => {
         
             //payload.yesterdayCandidates=doc.length;
             payload.yesterday1Candidates=doc.length;
+            Candidate.find({
+              date: {
+                //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                 $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+          
+          
+              }
+          
+              
+            }).then(doc => {
+          
+              payload.yesterday2Candidates=doc.length;
+              Candidate.find({
+                date: {
+                  $gte: yesterday3.toISOString().slice(0,10)+ "T00:00:00.000Z",
+                   $lt: yesterday2.toISOString().slice(0,10)+ "T23:59:59.000Z"
+
+                }
             
+                
+              }).then(doc => {
+            
+                payload.yesterday2Candidates=doc.length;
+                Candidate.find({
+                  date: {
+                    //$eq: yesterday.toISOString().slice(0,10),//new Date().toISOString().slice(0,10), 
+                    $gte: yesterday2.toISOString().slice(0,10)+ "T00:00:00.000Z",//new Date().toISOString().slice(0,10)
+                    // $gte: new Date(new Date().setDate(new Date().getDate()-6))
+                    // $gte: new Date("2019-05-20T00:00:00.000Z").toISOString(),
+                     $lt: yesterday1.toISOString().slice(0,10)+ "T23:59:59.000Z"
+              
+              
+                  }
+              
+                  
+                }).then(doc => {
+              
+                  payload.yesterdayCandidates=doc.length;
+                  payload.yesterday1Candidates=doc.length;
+                  
+              res.status(200).json(payload)
+                  console.log("docs - " + JSON.stringify(doc));
+                });
+                
+            // res.status(200).json(payload)
+            //     console.log("docs - " + JSON.stringify(doc));
+              });
+              
+          // res.status(200).json(payload)
+          //     console.log("docs - " + JSON.stringify(doc));
+            });
+
         // res.status(200).json(payload)
         //     console.log("docs - " + JSON.stringify(doc));
           });
