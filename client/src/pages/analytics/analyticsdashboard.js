@@ -202,7 +202,7 @@ componentDidMount() {
       <div className="main">
       <div className="container1">
 
-      <Card style={card} className={card}>
+      {/* <Card style={card} className={card}>
       <CardContent>
         <Typography variant ="h5" component="h2" >
           Total Candidates
@@ -233,9 +233,9 @@ componentDidMount() {
       <CardActions>
         <Button size="small">Learn More</Button>
       </CardActions>
-    </Card>
+    </Card> */}
 
-    <Card style={card} className={card}>
+    {/* <Card style={card} className={card}>
       <CardContent>
         <Typography variant ="h5" component="h2" >
           Total Candidates
@@ -266,7 +266,7 @@ componentDidMount() {
       <CardActions>
         <Button size="small">Learn More</Button>
       </CardActions>
-    </Card>
+    </Card> */}
 
     </div>
 

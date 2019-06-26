@@ -7,8 +7,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ImportExport from "@material-ui/icons/ImportExport";
 import Person from "@material-ui/icons/Person";
-import CallReceived from "@material-ui/icons/CallReceived"
-import PersonAdd from "@material-ui/icons/PersonAdd"
+import CallReceived from "@material-ui/icons/CallReceived";
+import PersonAdd from "@material-ui/icons/PersonAdd";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -30,6 +30,7 @@ import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
 //import { mainListItems, secondaryListItems } from "./listitems";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -301,9 +302,8 @@ function Dashboard(props) {
                 button
                 onClick={() => {
                   props.history.push("/analytics");
-                  window.location.reload(false)
+                  window.location.reload(false);
                 }}
-                
               >
                 <ListItemIcon>
                   <BarChartIcon />
@@ -321,6 +321,19 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Shortlist" />
               </ListItem>
+
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/search");
+                }}
+              >
+                <ListItemIcon>
+                  <YoutubeSearchedFor />
+                </ListItemIcon>
+                <ListItemText primary="Search" />
+              </ListItem>
+
               <ListItem
                 button
                 onClick={() => {
@@ -338,7 +351,7 @@ function Dashboard(props) {
             </div>
           </List>
           <Divider />
-          <List>
+          {/* <List>
             <div>
               <ListSubheader inset>Saved reports</ListSubheader>
               <ListItem button>
@@ -360,7 +373,7 @@ function Dashboard(props) {
                 <ListItemText primary="Year-end sale" />
               </ListItem>
             </div>
-          </List>
+          </List> */}
         </Drawer>
       </div>
     );

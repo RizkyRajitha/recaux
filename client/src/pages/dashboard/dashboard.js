@@ -435,7 +435,7 @@ class dashboard extends Component {
           <div class="row">
             {this.state.usertype === "admin" && (
               <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-                {usrdetails.reverse().map(can => {
+                {usrdetails.map(can => {
                   //console.log(can.name+can.email+can.jobspec)
                   return (
                     <UserCard

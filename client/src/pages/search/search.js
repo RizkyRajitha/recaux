@@ -223,7 +223,7 @@ class Search extends Component {
             </button>
           </div>
 
-          <div>
+          {/* <div>
             <input
               type="text"
               // onChange={this.namehndlechange}
@@ -237,10 +237,8 @@ class Search extends Component {
               datechnage={this.getdatefromdatepicke}
               datereset={this.resetdatepicker}
             />
-
-jobspec add
-
-          </div>
+            jobspec add
+          </div> */}
 
           {this.state.searchbynameResults && (
             <div>

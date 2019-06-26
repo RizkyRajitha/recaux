@@ -7,6 +7,23 @@ import Navbar from "../../components/navbar";
 import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Container from "@material-ui/core/Container/Container";
+import Avatar from "@material-ui/core/Avatar";
+import ImageIcon from "@material-ui/icons/Image";
+import WorkIcon from "@material-ui/icons/Work";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import Drafts from "@material-ui/icons/Drafts";
+import NextWeek from "@material-ui/icons/NextWeek";
+import SubdirectoryArrowRight from "@material-ui/icons/SubdirectoryArrowRight";
+import BeachAccessIcon from "@material-ui/icons/BeachAccess";
+import Gavel from "@material-ui/icons/Gavel";
+import WatchLater from "@material-ui/icons/WatchLater";
+import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
 import moments from "moment";
 
@@ -218,25 +235,25 @@ class CandidateView extends Component {
 
   /***************************************** */
 
-    openModal5 = () => {
-      this.setState({ modalIsOpen5: true });
-    };
-  
-    afterOpenModal5 = () => {
-      // references are now sync'd and can be accessed.
-      this.subtitle.style.color = "#f00";
-      this.subtitle.style.textAlign = "center";
-    };
-  
-    closeModal5 = () => {
-      this.setState({ modalIsOpen5: false });
-    };
-  
-    changestatusforhr = () => {
-      this.openModal5();
-    };
-  
-    /***************************************** */
+  openModal5 = () => {
+    this.setState({ modalIsOpen5: true });
+  };
+
+  afterOpenModal5 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal5 = () => {
+    this.setState({ modalIsOpen5: false });
+  };
+
+  changestatusforhr = () => {
+    this.openModal5();
+  };
+
+  /***************************************** */
 
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
@@ -615,8 +632,6 @@ class CandidateView extends Component {
       });
   };
 
-
-
   chngehandlsecondarystate = e => {
     this.setState({ status_change: 0 });
     // this.setState({ status: e.target.value });
@@ -647,9 +662,6 @@ class CandidateView extends Component {
         this.setState({ status_change: 0 });
       });
   };
-
-
-
 
   wtf = () => {
     // const id = this.props.match.params.id;
@@ -950,8 +962,136 @@ shortlisterName: "Bharana perera"
 status: "New"
   */}
 
+            <Container maxWidth="sm">
+              <List
+                style={{
+                  width: "100%",
+                  maxWidth: 360,
+                  marginTop: -100
+                }}
+              >
+                {this.state.recivedago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <SubdirectoryArrowRight />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Received"
+                      secondary={this.state.recivedago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.data.shortlisterName && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <WorkIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Assigned to"
+                      secondary={this.state.data.shortlisterName}
+                    />
+                  </ListItem>
+                )}{" "}
+                <Divider variant="inset" component="li" />
+                {this.state.data.assignToshortlisterbyName && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <BeachAccessIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Assigned by"
+                      secondary={this.state.data.assignToshortlisterbyName}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.alocatedago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <WatchLater />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="allocated"
+                      secondary={this.state.alocatedago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.shortago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <BeachAccessIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="shortlist"
+                      secondary={this.state.shortago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <AccountCircle />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Name"
+                    secondary={this.state.data.name}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Drafts />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Email"
+                    secondary={this.state.data.email}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <NextWeek />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Job specification"
+                    secondary={this.state.data.jobspec}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Gavel />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Current status"
+                    secondary={this.state.data.status}
+                  />
+                </ListItem>
+              </List>
+            </Container>
+
             <ul className="list-group list-group-flush ">
-              {this.state.data.shortlisterName && (
+              {/* {this.state.data.shortlisterName && (
                 <li className="list-group-item">
                   Allocated to shortlist to - {this.state.data.shortlisterName}
                 </li>
@@ -996,7 +1136,7 @@ status: "New"
               <li className="list-group-item">
                 {" "}
                 current candidate status : {this.state.data.status}
-              </li>
+              </li> */}
 
               {this.state.data.skills && (
                 <li className="list-group-item">
@@ -1085,7 +1225,6 @@ status: "New"
             </div>
           </Modal>
 
-
           <Modal
             isOpen={this.state.modalIsOpen5}
             onAfterOpen={this.afterOpenModal5}
@@ -1110,10 +1249,9 @@ status: "New"
               </label>
 
               <select
-                
                 class="form-control"
                 id="status"
-                onChange={this.chngehandlsecondarystate}//chngehandlsecondarystate
+                onChange={this.chngehandlsecondarystate} //chngehandlsecondarystate
               >
                 <option selected>Select...</option>
                 <option id="status" value="cancel">
@@ -1133,11 +1271,7 @@ status: "New"
           </Modal>
 
           <button
-            disabled={
-              this.state.usertype === "depthead"
-                ? true
-                : false
-            }
+            disabled={this.state.usertype === "depthead" ? true : false}
             onClick={this.changestatusforhr}
             className="btn btn-primary"
           >

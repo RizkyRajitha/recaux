@@ -4,7 +4,21 @@ import Drawer from "../../components/sidenav";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import Modal from "react-modal";
+import { makeStyles } from "@material-ui/core/styles";
+import Avatar from "@material-ui/core/Avatar";
+import Grid from "@material-ui/core/Grid";
 import "./user.css";
+
+const useStyles = makeStyles({
+  avatar: {
+    margin: 10
+  },
+  bigAvatar: {
+    margin: 10,
+    width: 60,
+    height: 60
+  }
+});
 
 const customStyles = {
   content: {
@@ -116,7 +130,7 @@ class Userprofile extends Component {
 
   deactivateuser = e => {
     console.log("ebuwa " + this.state.userdata.id);
-    console.log(this.state)
+    console.log(this.state);
     console.log(e.target.checked);
 
     var jwt = localStorage.getItem("jwt");
@@ -126,7 +140,7 @@ class Userprofile extends Component {
     };
 
     this.state.userdata.state = !e.target.checked;
-    this.forceUpdate()
+    this.forceUpdate();
     //this.setState({ state:  });
 
     var dto = { state: e.target.checked };
@@ -247,6 +261,18 @@ class Userprofile extends Component {
 
   render() {
     //var baseUrl =   this.state.url
+    // const useStyles = makeStyles({
+    //   avatar: {
+    //     margin: 10,
+    //   },
+    //   bigAvatar: {
+    //     margin: 10,
+    //     width: 60,
+    //     height: 60,
+    //   },
+    // });
+
+    // const classes = useStyles();
 
     return (
       <div>
@@ -260,13 +286,21 @@ class Userprofile extends Component {
         /> */}
 
         <div className="container">
-          {this.state.userdata.avatarUrl && (
+          {/* {this.state.userdata.avatarUrl && (
             <img
               id="avatarimage"
               src={this.state.baseUrl}
               className="rounded-circle"
             />
-          )}
+          )} */}
+
+          <Grid container justify="center" alignItems="center">
+            <Avatar
+              alt="Remy Sharp"
+              src={this.state.baseUrl}
+              style={{ margin: 10, width: 200, height: 200 }}
+            />
+          </Grid>
 
           {this.state.success && (
             <div class="alert alert-success" role="alert">
@@ -294,12 +328,19 @@ class Userprofile extends Component {
                 </tr>
               </tbody>
             </table>
-            <label className="disableuserlable"> { this.state.userdata.state?"Disable this User":"User Disabled"}</label>
+            <label
+              hidden={!this.state.isauthorizeduser}
+              className="disableuserlable"
+            >
+              {" "}
+              {this.state.userdata.state
+                ? "Disable this User"
+                : "User Disabled"}
+            </label>
             <label class="switch" hidden={!this.state.isauthorizeduser}>
               <input
                 type="checkbox"
                 name="state"
-               
                 checked={!this.state.userdata.state}
                 disabled={!this.state.isauthorizeduser}
                 onChange={this.deactivateuser}
