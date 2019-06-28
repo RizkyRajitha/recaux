@@ -3,6 +3,8 @@ const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const path = require("path");
+const fs = require("fs");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
@@ -576,7 +578,111 @@ exports.updatesecondstatus = (req, res, next) => {
         )
           .then(doc => {
             console.log(doc);
-            res.status(200).json({msg:"sucsess"})
+            res.status(200).json({ msg: "sucsess" });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.getskilllist = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        // console.log(req.body);
+        // var datain = req.body;
+
+        var pt = path.join(__dirname, "../", "config", "skills.json");
+        console.log(pt);
+
+        try {
+          var ori = fs.readFileSync(pt, "utf8");
+
+          jsonobj = JSON.parse(ori);
+          //jsonobj.rolo = "aaaaa";
+          //var obj = { yolo: 55 };
+
+          //fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+          res.status(200).json(jsonobj);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        console.log("id - " + req.params.id);
+        var iid = req.params.id;
+
+        Candidate.updateOne(
+          { _id: iid },
+          {
+            $addToSet: {
+              skills: datain
+            }
+          }
+        )
+          .then(doc => {
+            console.log(doc);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.removeskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        console.log("id - " + req.params.id);
+        var iid = req.params.id;
+
+        Candidate.updateOne(
+          { _id: iid },
+          { $pull: { skills: { label: datain.label } } }
+        )
+          .then(doc => {
+            console.log(doc);
           })
           .catch(err => {
             console.log(err);

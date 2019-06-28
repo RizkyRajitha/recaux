@@ -1,0 +1,9 @@
+{
+  "skills": [
+    { "value": 2, "label": "Polymer" },
+    { "value": 3, "label": "React" },
+    { "value": 4, "label": "Vue.js" },
+    { "value": 5, "label": "node.js" },
+    { "value": 6, "label": "angular" }
+  ]
+}

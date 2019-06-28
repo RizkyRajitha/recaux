@@ -13,7 +13,8 @@ const fileUpload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
-//const _ = require('')
+const fs = require("fs");
+//const skillJson = require("../config/skills.json");
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
 
@@ -152,6 +153,30 @@ router.post("/edituserdetails/:id", commonRoutes.editCandidateDetails);
 router.post("/reg", adminRoutes.addNewUser);
 router.post("/configurenewuser", commonRoutes.configureNewUser);
 router.post("/changeuserstate/:id", adminRoutes.changeuserstate);
+router.get("/skilllist", commonRoutes.getskilllist);
+router.post("/addskill/:id", commonRoutes.addskill);
+router.post("/removeskill/:id", commonRoutes.removeskill);
+
+router.get("/test", (req, res) => {
+  var pt = path.join(__dirname, "../", "config", "skills.json");
+  console.log(pt);
+
+  try {
+    var ori = fs.readFileSync(pt, "utf8");
+
+    jsonobj = JSON.parse(ori);
+    console.log(jsonobj.skills.length);
+    var skilllength = jsonobj.skills.length;
+    jsonobj.skills.push({ value: skilllength, lable: "jeehaaaaa" });
+    //var obj = { yolo: 55 };
+
+    fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+    res.send(JSON.stringify(jsonobj));
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(

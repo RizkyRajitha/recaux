@@ -25,6 +25,8 @@ import Gavel from "@material-ui/icons/Gavel";
 import WatchLater from "@material-ui/icons/WatchLater";
 import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
+import ChipsArraywdelete from "./components/skillschipsWithDelete";
+import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
 import moments from "moment";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
@@ -663,21 +665,15 @@ class CandidateView extends Component {
       });
   };
 
-  wtf = () => {
-    // const id = this.props.match.params.id;
-    // axios
-    //   .get("/usr/getcandidate/" + id)
-    //   .then(res => {
-    //     this.setState({ data: res.data.candidateData });
-    //     this.setState({ userarr: res.data.userData });
-    //     this.setState({ cvUrl: res.data.candidateData.cvUrl });
-    //     console.log(res);
-    //     console.log(this.state);
-    //     console.log("date - - - -" + JSON.stringify(res.data));
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+  valtokey = () => {
+    var arr = this.state.data.skills;
+
+    var keyrr = [];
+
+    arr.forEach(element => {
+      keyrr.push({ key: element.value, label: element.label });
+    });
+    return keyrr;
   };
 
   render() {
@@ -858,7 +854,12 @@ class CandidateView extends Component {
                       value={this.state.data.jobspec}
                       // disabled={true}
                     />
-                    add skills chips
+
+                    <ChipsArraywdelete
+                      id={this.state.data._id}
+                      currentskills={this.valtokey}
+                    />
+
                     <input
                       type="submit"
                       className="btn btn-primary"
@@ -1138,14 +1139,7 @@ status: "New"
                 current candidate status : {this.state.data.status}
               </li> */}
 
-              {this.state.data.skills && (
-                <li className="list-group-item">
-                  skills :
-                  {this.state.data.skills.map(ele => {
-                    return " " + ele + " ";
-                  })}
-                </li>
-              )}
+              <ChipsArraywodelete currentskills={this.state.data.skills} />
             </ul>
           </div>
 

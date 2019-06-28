@@ -322,6 +322,12 @@ class Userprofile extends Component {
                   <th scope="row">Email</th>
                   <td>{this.state.userdata.email}</td>
                 </tr>
+
+                <tr>
+                  <th scope="row">User Type</th>
+                  <td>{this.state.userdata.usertype}</td>
+                </tr>
+
                 <tr>
                   <th scope="row" />
                   <td />

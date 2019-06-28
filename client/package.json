@@ -10,6 +10,7 @@
     "formik": "^1.5.4",
     "formik-material-ui": "0.0.18",
     "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "pdfjs-dist": "^2.0.943",
     "react": "^16.8.2",
