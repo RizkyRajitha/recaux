@@ -31,6 +31,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
+import Settings from "@material-ui/icons/Settings";
 //import { mainListItems, secondaryListItems } from "./listitems";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -148,6 +149,9 @@ function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [logedin, setlogedin] = React.useState(false);
+
+  const usertype = localStorage.getItem("usertype");
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -240,6 +244,7 @@ function Dashboard(props) {
                   localStorage.removeItem("jwt");
                   localStorage.removeItem("userId");
                   localStorage.removeItem("usertype");
+                  props.history.push("/login");
                   window.location.reload(false);
                 }}
               >
@@ -334,12 +339,29 @@ function Dashboard(props) {
                 <ListItemText primary="Search" />
               </ListItem>
 
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/settings");
+                  }}
+                >
+                  <ListItemIcon>
+                    <Settings />
+                  </ListItemIcon>
+                  <ListItemText primary="Settings" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+
               <ListItem
                 button
                 onClick={() => {
                   localStorage.removeItem("jwt");
                   localStorage.removeItem("userId");
                   localStorage.removeItem("usertype");
+                  props.history.push("/login");
                   window.location.reload(false);
                 }}
               >

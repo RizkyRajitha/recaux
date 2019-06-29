@@ -692,6 +692,116 @@ exports.removeskill = (req, res, next) => {
   )(req, res, next);
 };
 
+exports.addnewskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              var pt = path.join(__dirname, "../", "config", "skills.json");
+              console.log(pt);
+
+              try {
+                var ori = fs.readFileSync(pt, "utf8");
+
+                jsonobj = JSON.parse(ori);
+                console.log(jsonobj.skills.length);
+                var skilllength = jsonobj.skills.length;
+                jsonobj.skills.push({
+                  value: skilllength,
+                  label: datain.skill
+                });
+                //var obj = { yolo: 55 };
+
+                fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+                res.status(200).json(jsonobj);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.deletenewskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              var pt = path.join(__dirname, "../", "config", "skills.json");
+              console.log(pt);
+              console.log("yoloylylylylylyylylyylylylyl");
+              try {
+                var ori = fs.readFileSync(pt, "utf8");
+
+                jsonobj = JSON.parse(ori);
+                //console.log(ori);
+
+                for (let index = 0; index < jsonobj.skills.length; index++) {
+                  const element = jsonobj.skills[index];
+                  console.log(element.label);
+                  if (element.label === datain.label) {
+                    console.log("found " + index);
+                    jsonobj.skills.splice(index, 1);
+                    break;
+                  }
+                }
+
+                // console.log(jsonobj.skills.length);
+                // var skilllength = jsonobj.skills.length;
+                // jsonobj.skills.push({
+                //   value: skilllength,
+                //   label: datain.skill
+                // });
+                //var obj = { yolo: 55 };
+
+                fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+                res.status(200).json(jsonobj);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",

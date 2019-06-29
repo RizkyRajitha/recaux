@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./candidatecard.css";
 import moments from "moment";
+import Chip from "@material-ui/core/Chip";
 
 class CandidateCard extends Component {
   constructor(props) {
@@ -40,13 +41,13 @@ class CandidateCard extends Component {
 
       // console.log(timeAgo);
       //this.setState({timeAgo:timeAgo})
-      console.log(
-        "skilsssssssssssssssss - " + JSON.stringify(this.props.skills)
-      );
-      console.log("skilsssssss3333333ss - " + this.props.skills[2]);
-      this.props.skills.map(ele => {
-        console.log("pp" + ele);
-      });
+      // console.log(
+      //   "skilsssssssssssssssss - " + JSON.stringify(this.props.skills)
+      // );
+      // console.log("skilsssssss3333333ss - " + this.props.skills[2]);
+      // this.props.skills.map(ele => {
+      //   console.log("pp" + ele);
+      // });
       // console.log("dataaa" + this.props.date);
       // var dd = new Date(this.props.date);
       // var d = dd.toJSON().slice(0, 10);
@@ -120,10 +121,14 @@ class CandidateCard extends Component {
                     <td />
                   </tr>
                 )}
-                {this.props.skills.length>0 && (
+                {this.props.skills.length > 0 && (
                   <tr>
                     <th scope="row">skills</th>
-                    <td>{this.props.skills.map(ele => {return ele+" "})}</td>
+                    <td>
+                      {this.props.skills.map(ele => {
+                        return <Chip key={ele.key} label={ele.label} style={{margin:10}} />;
+                      })}
+                    </td>
                   </tr>
                 )}
                 <tr>

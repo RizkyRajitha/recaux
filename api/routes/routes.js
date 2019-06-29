@@ -156,6 +156,8 @@ router.post("/changeuserstate/:id", adminRoutes.changeuserstate);
 router.get("/skilllist", commonRoutes.getskilllist);
 router.post("/addskill/:id", commonRoutes.addskill);
 router.post("/removeskill/:id", commonRoutes.removeskill);
+router.post("/addnewskill", commonRoutes.addnewskill);
+router.post("/deletenewskill", commonRoutes.deletenewskill);
 
 router.get("/test", (req, res) => {
   var pt = path.join(__dirname, "../", "config", "skills.json");
