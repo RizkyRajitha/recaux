@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
-import ChipsArray from "./components/skillschipsWithDelete";
+import ChipsArray from "./components/skillschipsettings";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -72,8 +72,8 @@ class Settings extends Component {
       <div>
         <h1>Settings</h1>
 
-        <input type="text" onChange={this.hndleskillchange} />
-        <button onClick={this.addskill}>add</button>
+        {/* <input type="text" onChange={this.hndleskillchange} />
+        <button onClick={this.addskill}>add</button> */}
 
         {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
       </div>

@@ -5,8 +5,13 @@ import Paper from "@material-ui/core/Paper";
 import Select from "react-select";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
 import Divider from "@material-ui/core/Divider";
-import _ from "lodash";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Container from "@material-ui/core/Container/Container";
+import CircularProgress from "@material-ui/core/CircularProgress";
+//import _ from "lodash";
 import axios from "axios";
+import "./settingsskills.css";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,13 +22,19 @@ const useStyles = makeStyles(theme => ({
   },
   chip: {
     margin: theme.spacing(0.5)
+  },
+  progress: {
+    margin: theme.spacing(1)
   }
 }));
 
 export default function ChipsArray(props) {
   // const [selectedOption, setselectedOption] = useState({});
   // const [selectoptionsnamelist, setselectoptionsnamelist] = useState([]);
-  const classes = useStyles();
+  const [newSkill, setnewSkill] = useState(""); //errorskill
+  const [errorskill, seterrorskill] = useState(false);
+  const [onload, setonload] = useState(false);
+  const classes = useStyles(); //onload
   const [chipData, setChipData] = useState(props.currentskills);
 
   // useEffect(() => {
@@ -87,23 +98,95 @@ export default function ChipsArray(props) {
         authorization: jwt
       }
     };
-
+    setonload(true);
     axios
       .post("/usr/deletenewskill", chipToDelete, config)
       .then(res => {
         console.log(res.data);
+        setonload(false);
         //setselectoptionsnamelist(res.data.skills);
       })
       .catch(err => {});
   };
 
+  const hndleskillchange = e => {
+    // console.log(e.target.value);
+    setnewSkill(e.target.value);
+  };
+
+  const handleKeyPress = e => {
+    if (e.charCode == 13) {
+      addskill();
+    }
+  };
+
+  const addskill = () => {
+    var jar = chipData
+      .map(function(e) {
+        return e.label;
+      })
+      .indexOf(newSkill);
+    if (jar < 0) {
+      seterrorskill(false);
+      setChipData(chips => [
+        ...chipData,
+        { key: chipData.length, label: newSkill }
+      ]);
+
+      var jwt = localStorage.getItem("jwt");
+
+      var config = {
+        headers: {
+          authorization: jwt
+        }
+      };
+
+      //console.log(this.state);
+      setonload(true);
+      axios
+        .post("/usr/addnewskill", { skill: newSkill }, config)
+        .then(res => {
+          console.log(res.data);
+          setonload(false);
+          document.getElementsByClassName("settingsaddskill").value = "";
+
+          //this.setState({ skillset: res.data.skills });
+          //this.forceUpdate();
+          //setselectoptionsnamelist(res.data.skills);
+        })
+        .catch(err => {});
+    } else {
+      seterrorskill(true);
+    }
+  };
+
   return (
-    <div>
-      {/* <Select
-        value={selectedOption}
-        onChange={handleChangemodalselect}
-        options={selectoptionsnamelist}
-      /> */}
+    <Container>
+      <TextField
+        id="outlined-dense"
+        label="New skill"
+        //className={clsx(classes.textField, classes.dense)}
+        margin="dense"
+        variant="outlined"
+        type="text"
+        onChange={hndleskillchange}
+        onKeyPress={handleKeyPress}
+        className="settingsaddskill"
+      />
+
+      <Button
+        id={!onload?"settingsaddskillbtn":"settingsaddskillbtnonload"}
+        variant="contained"
+        color="primary"
+        onClick={addskill}
+      >
+        add
+      </Button>
+      <CircularProgress
+        id="settingsloadingspinner"
+        hidden={!onload}
+        className={classes.progress}
+      />
       <Divider variant="inset" component="li" />
       <Paper className={classes.root}>
         {chipData.map(data => {
@@ -117,6 +200,6 @@ export default function ChipsArray(props) {
           );
         })}
       </Paper>
-    </div>
+    </Container>
   );
 }
