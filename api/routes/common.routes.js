@@ -802,6 +802,42 @@ exports.deletenewskill = (req, res, next) => {
   )(req, res, next);
 };
 
+exports.searchmany = (req, res, next) => {
+  // passport.authenticate(
+  //   "jwtstrategy",
+  //   { session: false },
+  //   (err, user, info) => {
+  //     console.log("error - " + err);
+  //     console.log("user - " + JSON.stringify(user));
+  //     console.log("info -- " + info);
+
+  //     if (!user) {
+  //       res.status(401).send(info);
+  //     } else {
+  console.log(req.body);
+  var datain = req.body;
+
+  var isname = false;
+  var isjobspec = false;
+  var isDate = false;
+  var isStatus = false;
+  var isSource = false;
+  /**
+allocated date recieved date shortlisted date added by
+*/
+
+  Candidate.find({
+    name: "kithmni",
+    jobspec: ""
+  }).then(doc => {
+    console.log(doc);
+    res.json(doc);
+  });
+  //     }
+  //   }
+  // )(req, res, next);
+};
+
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",

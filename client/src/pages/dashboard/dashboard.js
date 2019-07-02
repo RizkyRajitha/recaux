@@ -443,6 +443,7 @@ class dashboard extends Component {
                       pendingcan={can.candidatesAssinged}
                       id={can.id}
                       state={can.state}
+                      avatar={can.avatarUrl}
                     />
                   );
                 })}

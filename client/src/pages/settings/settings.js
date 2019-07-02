@@ -75,6 +75,9 @@ class Settings extends Component {
         {/* <input type="text" onChange={this.hndleskillchange} />
         <button onClick={this.addskill}>add</button> */}
 
+
+
+
         {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
       </div>
     );

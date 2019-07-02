@@ -20,7 +20,8 @@ import { TextField } from "formik-material-ui";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import jsonwebtoken from "jsonwebtoken";
 //import Navbar from "../../components/navbar";
@@ -48,6 +49,13 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  root: {
+    flexGrow: 1
+  },appbar: {
+    flexGrow: 1,
+    alignItems: 'center',
+
   }
 }));
 
@@ -60,21 +68,16 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 
     var jwt = localStorage.getItem("jwt");
 
-    
-
     try {
       var decode = jsonwebtoken.verify(jwt, "authdemo");
 
       console.log("decode jwt - " + JSON.stringify(decode));
       history.push("/dashboard");
     } catch (error) {
-      console.log("is this error >>>>>>>>>>>>>>>")
+      console.log("is this error >>>>>>>>>>>>>>>");
       console.log(error);
     }
-
-
-
-  },[]);
+  }, []);
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -87,103 +90,112 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
-      {errors.invalidcred && (
-        <div class="alert alert-danger" role="alert">
-          {errors.invalidcred}
-        </div>
-      )}
-      {errors.invalidemail && (
-        <div class="alert alert-danger" role="alert">
-          {errors.invalidemail}
-        </div>
-      )}
-      {errors.disabled_user && (
-        <div class="alert alert-danger" role="alert">
-          {errors.disabled_user}
-        </div>
-      )}
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Form className={classes.form}>
-          {/* <form className={classes.form} noValidate> */}
-          <Field
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            //id="email"
-            label="Email Address"
-            //name="email"
-            autoComplete="email"
-            autoFocus
-            name="email1"
-            id="papa"
-            type="text"
-            //placeholder="Email"
-            //class="form-control"
-            component={TextField}
-          />
+    <div>
+      <AppBar position="static" >
+        <Toolbar>
+          <Typography variant="h6" color="inherit" noWrap align="center" className={classes.appbar} >
+            Recruitement @ Auxenta
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container component="main" maxWidth="xs">
+        {errors.invalidcred && (
+          <div class="alert alert-danger" role="alert">
+            {errors.invalidcred}
+          </div>
+        )}
+        {errors.invalidemail && (
+          <div class="alert alert-danger" role="alert">
+            {errors.invalidemail}
+          </div>
+        )}
+        {errors.disabled_user && (
+          <div class="alert alert-danger" role="alert">
+            {errors.disabled_user}
+          </div>
+        )}
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Form className={classes.form}>
+            {/* <form className={classes.form} noValidate> */}
+            <Field
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              //id="email"
+              label="Email Address"
+              //name="email"
+              autoComplete="email"
+              autoFocus
+              name="email1"
+              id="papa"
+              type="text"
+              //placeholder="Email"
+              //class="form-control"
+              component={TextField}
+            />
 
-          <Field
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            //id="password"
-            autoComplete="current-password"
-            type={values.showPassword ? "text" : "password"}
-            name="password"
-            //type="password"
-            //placeholder="Password"
-            //class="form-control"
-            component={TextField}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    edge="end"
-                    aria-label="Toggle password visibility"
-                    onClick={handleClickShowPassword}
-                  >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-          {/* <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          /> */}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/fogotpassword" variant="body2">
-                Forgot password?
-              </Link>
+            <Field
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              //id="password"
+              autoComplete="current-password"
+              type={values.showPassword ? "text" : "password"}
+              name="password"
+              //type="password"
+              //placeholder="Password"
+              //class="form-control"
+              component={TextField}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      aria-label="Toggle password visibility"
+                      onClick={handleClickShowPassword}
+                    >
+                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            {/* <FormControlLabel
+           control={<Checkbox value="remember" color="primary" />}
+           label="Remember me"
+         /> */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="/fogotpassword" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item />
             </Grid>
-            <Grid item />
-          </Grid>
-        </Form>
-      </div>
-      <Box mt={5} />
-    </Container>
+          </Form>
+        </div>
+        <Box mt={5} />
+      </Container>
+    </div>
   );
 };
 
@@ -234,10 +246,10 @@ const Login = withFormik({
 
           if (data.data.usertype === "depthead") {
             props.history.push("/shortlist");
-             window.location.reload(false);
+            window.location.reload(false);
           } else {
             props.history.push("/dashboard");
-             window.location.reload(false);
+            window.location.reload(false);
           }
         }
 

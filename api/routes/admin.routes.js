@@ -60,7 +60,8 @@ exports.userlist = (req, res, next) => {
                     usertype: element.usertype,
                     candidatesAssinged: pendingcan,
                     id: element._id,
-                    state:element.state
+                    state:element.state,
+                    avatarUrl:element.avatarUrl
                   };
                   payloadarr.push(temp);
                 });
