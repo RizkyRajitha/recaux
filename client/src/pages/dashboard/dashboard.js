@@ -340,7 +340,7 @@ class dashboard extends Component {
   render() {
     if (this.state.logedin === true) {
       var cndetailes = this.state.candidatedata;
-      var usrdetails = this.state.userdata;
+      var usrdetails = this.state.userdata.slice(0, 5);
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">

@@ -27,6 +27,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
 import Settings from "@material-ui/icons/Settings";
+import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
@@ -317,7 +318,6 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Shortlist" />
               </ListItem>
-
               <ListItem
                 button
                 onClick={() => {
@@ -329,7 +329,6 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Search" />
               </ListItem>
-
               {usertype === "admin" || usertype === "hr_staff" ? (
                 <ListItem
                   button
@@ -345,7 +344,21 @@ function Dashboard(props) {
               ) : (
                 ""
               )}
-
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/userlist");
+                  }}
+                >
+                  <ListItemIcon>
+                    <SupervisedUserCircle />
+                  </ListItemIcon>
+                  <ListItemText primary="Userlist" />
+                </ListItem>
+              ) : (
+                ""
+              )}
               <ListItem
                 button
                 onClick={() => {
@@ -361,8 +374,10 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItem>
+              
             </div>
           </List>
+
           <Divider />
           {/* <List>
             <div>

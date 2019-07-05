@@ -39,6 +39,7 @@ import TemporaryDrawer from "./components/sidenav_mat";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 import Notfound from "./components/notFound";
+import Userlist from "./pages/userlist/userlist";
 
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
@@ -73,6 +74,11 @@ class App extends Component {
             <Route path="/analytics" component={analyticsdashboard} />
             {usertype === "admin" ? (
               <Route path="/settings" component={Settings} />
+            ) : (
+              ""
+            )}
+            {usertype === "admin" ? (
+              <Route path="/userlist" component={Userlist} />
             ) : (
               ""
             )}
