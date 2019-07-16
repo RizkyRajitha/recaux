@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import Searchcard from "../../components/searchcard";
 import Drawer from "../../components/sidenav";
 import Navbar from "../../components/navbar";
-import "./search.css";
+import "./analyticsdashboard2.css";
 const jwt = require("jsonwebtoken");
 
 const customStyles = {
@@ -23,7 +23,7 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-class Search extends Component {
+class analyticsdashboard2 extends Component {
   state = {
     modalIsOpen: "",
     date: null,
@@ -107,47 +107,47 @@ class Search extends Component {
 
   //searchbyname_value
 
-  namehndlechange = e => {
-    console.log("tr - " + e.target.value);
-    this.setState({ searchbyname_value: e.target.value });
+  // namehndlechange = e => {
+  //   console.log("tr - " + e.target.value);
+  //   this.setState({ searchbyname_value: e.target.value });
 
-    var jwt = localStorage.getItem("jwt");
+  //   var jwt = localStorage.getItem("jwt");
 
-    var config = {
-      headers: { authorization: jwt }
-    };
+  //   var config = {
+  //     headers: { authorization: jwt }
+  //   };
 
-    console.log("name sub - " + this.state.searchbyname_value);
+  //   console.log("name sub - " + this.state.searchbyname_value);
 
-    var payload = { name: e.target.value };
+  //   var payload = { name: e.target.value };
 
-    axios
-      .post("/usr/searchbyname", payload, config)
-      .then(res => {
-        console.log(res.data);
-        this.setState({ searchbynameResults: res.data });
-      })
-      .catch(err => {});
-  };
+  //   axios
+  //     .post("/usr/searchbyname", payload, config)
+  //     .then(res => {
+  //       console.log(res.data);
+  //       this.setState({ searchbynameResults: res.data });
+  //     })
+  //     .catch(err => {});
+  // };
 
-  submitesearchbyname = () => {
-    var jwt = localStorage.getItem("jwt");
+  // submitesearchbyname = () => {
+  //   var jwt = localStorage.getItem("jwt");
 
-    var config = {
-      headers: { authorization: jwt }
-    };
+  //   var config = {
+  //     headers: { authorization: jwt }
+  //   };
 
-    console.log("name sub - " + this.state.searchbyname_value);
+  //   console.log("name sub - " + this.state.searchbyname_value);
 
-    var payload = { name: this.state.searchbyname_value };
+  //   var payload = { name: this.state.searchbyname_value };
 
-    axios
-      .post("/usr/searchbyname", payload, config)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {});
-  };
+  //   axios
+  //     .post("/usr/searchbyname", payload, config)
+  //     .then(res => {
+  //       console.log(res.data);
+  //     })
+  //     .catch(err => {});
+  // };
 
   //searchbyname
 
@@ -201,7 +201,7 @@ class Search extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
+        {/* <p className="usrtype"> Logged in as : {this.state.usertype}</p> */}
         <button
           id="searchbydatebtn"
           className="btn btn-primary"
@@ -210,7 +210,7 @@ class Search extends Component {
           search by date
         </button>
         <div className="searchcontainer">
-          <div className="searcharea">
+          {/* <div className="searcharea">
             <input
               type="text"
               onChange={this.namehndlechange}
@@ -221,7 +221,7 @@ class Search extends Component {
             <button className="searchnamebtn">
               <i class="fa fa-search" />
             </button>
-          </div>
+          </div> */}
 
           {/* <div>
             <input
@@ -240,14 +240,14 @@ class Search extends Component {
             jobspec add
           </div> */}
 
-          {this.state.searchbynameResults && (
+          {/* {this.state.searchbynameResults && (
             <div>
               {this.state.searchbynameResults.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
                 return <Searchcard name={can.name} _id={can._id} />;
               })}
             </div>
-          )}
+          )} */}
 
           {this.state.searchbydateResults && (
             <div>
@@ -286,4 +286,4 @@ class Search extends Component {
   }
 }
 
-export default Search;
+export default analyticsdashboard2;
