@@ -818,6 +818,7 @@ exports.searchmany = (req, res, next) => {
   var datain = req.body;
 
   var isname = false;
+  var isemail = false;
   var isjobspec = false;
   var isDate = false;
   var isStatus = false;
@@ -826,15 +827,41 @@ exports.searchmany = (req, res, next) => {
 allocated date recieved date shortlisted date added by
 */
 
-  Candidate.find({
-    name: "kithmni",
-    jobspec: ""
-  }).then(doc => {
+  req.body.name ? (isname = true) : "";
+  req.body.email ? (isemail = true) : "";
+  req.body.jobspec ? (isjobspec = true) : "";
+  req.body.source ? (isSource = true) : "";
+
+  var searchQuery = {};
+
+  if (isname) {
+    console.log("nama tyei");
+    var regexname = { $regex: req.body.name, $options: "i" };
+
+    searchQuery.name = regexname;
+  }
+
+  if (isemail) {
+    console.log("email tyei");
+
+    var regexemail = { $regex: req.body.email, $options: "i" };
+
+    searchQuery.email = regexemail;
+  }
+
+  if (isSource) {
+    console.log("email tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    searchQuery.source = req.body.source;
+  }
+
+  Candidate.find(searchQuery).then(doc => {
     console.log(doc);
     res.json(doc);
   });
-  //     }
-  //   }
+
   // )(req, res, next);
 };
 

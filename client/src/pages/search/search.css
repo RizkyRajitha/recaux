@@ -51,6 +51,10 @@
 
 .searchcontainer{
     width: 80%;
-    margin-left: 20%;
+    margin-left: 0%;
     margin-top: 0%;
+}
+
+.searchParamsdiv{
+margin-left: 10%;
 }

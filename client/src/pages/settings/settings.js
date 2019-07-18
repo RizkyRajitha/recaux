@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
 import ChipsArray from "./components/skillschipsettings";
+import ChipsArray2 from "./components/jobspecchipsettings";
 
 const jsonwebtoken = require("jsonwebtoken");
 

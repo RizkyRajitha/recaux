@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./candidatecard.css";
 import moments from "moment";
+import Button from '@material-ui/core/Button'
 import Chip from "@material-ui/core/Chip";
 
 class CandidateCard extends Component {
@@ -138,12 +139,12 @@ class CandidateCard extends Component {
               </tbody>
             </table>
 
-            <input
+            <Button variant="contained" color="primary"
               type="button"
               value="view"
-              className="btn btn-primary"
+              style={{width:'10%'}}
               onClick={this.cnadidateview}
-            />
+            >View</Button>
           </div>
         </div>
       </div>
