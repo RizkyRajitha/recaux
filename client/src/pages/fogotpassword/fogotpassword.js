@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 
 class fogotpassword extends Component {
   state = {
@@ -40,6 +43,15 @@ class fogotpassword extends Component {
       return (
         <div>
           {" "}
+          <div>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                  Recruitement @ Auxenta
+                </Typography>
+              </Toolbar>
+            </AppBar>
+          </div>
           <br />
           <h1> please check your email and try again </h1>
         </div>
@@ -47,7 +59,13 @@ class fogotpassword extends Component {
     } else if (this.state.succsee) {
       return (
         <div role="">
-         
+           <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                  Recruitement @ Auxenta
+                </Typography>
+              </Toolbar>
+            </AppBar>
           <br />
           <h1> reset link set to your email </h1>
         </div>
@@ -55,8 +73,17 @@ class fogotpassword extends Component {
     } else {
       return (
         <div>
+          <div>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                  Recruitement @ Auxenta
+                </Typography>
+              </Toolbar>
+            </AppBar>
+          </div>
           <h1>we all forget and that's cool </h1>
-   
+
           <h1> just enter your registered email</h1>
           <div className="container">
             <div className="row">

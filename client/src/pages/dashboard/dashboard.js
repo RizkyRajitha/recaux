@@ -8,6 +8,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";
+import Button from "@material-ui/core/Button";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -340,7 +341,7 @@ class dashboard extends Component {
   render() {
     if (this.state.logedin === true) {
       var cndetailes = this.state.candidatedata;
-      var usrdetails = this.state.userdata;
+      var usrdetails = this.state.userdata.slice(0, 5);
       const { selectedOption, selectoptionsnamelist } = this.state;
       return (
         <div className="dashboardmain">
@@ -352,19 +353,20 @@ class dashboard extends Component {
           /> */}
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
 
-          <button
+          <Button variant="contained" color="primary"
             onClick={this.usrprofile}
-            className="btn btn-outline-primary"
+            // className="btn btn-outline-primary"
             id="userprofile"
           >
             edit profile
-          </button>
+          </Button>
           <br />
           <br />
 
-          <button
+          <Button
             onClick={this.addcandidate}
-            className="btn btn-outline-primary"
+            variant="contained" color="primary"
+            // className="btn btn-outline-primary"
             id="addcan"
             disabled={
               this.state.usertype === "hr_staff" ||
@@ -374,17 +376,19 @@ class dashboard extends Component {
             }
           >
             Add new candidate
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="contained"
+            color="primary"
             onClick={this.addcandidate}
-            className="btn btn-outline-primary"
+            // className="btn btn-outline-primary"
             id="shortlist"
             disabled={this.state.numofshort === 0}
             onClick={this.shortlistmodal}
           >
             Shortlist Many
-          </button>
+          </Button>
 
           <Modal
             isOpen={this.state.modalIsOpen}
@@ -435,7 +439,7 @@ class dashboard extends Component {
           <div class="row">
             {this.state.usertype === "admin" && (
               <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-                {usrdetails.reverse().map(can => {
+                {usrdetails.map(can => {
                   //console.log(can.name+can.email+can.jobspec)
                   return (
                     <UserCard
@@ -443,6 +447,7 @@ class dashboard extends Component {
                       pendingcan={can.candidatesAssinged}
                       id={can.id}
                       state={can.state}
+                      avatar={can.avatarUrl}
                     />
                   );
                 })}

@@ -4,7 +4,7 @@ import "./spinner.css";
 
 const home = () => {
   return (
-    <div>
+    <div >
       <div class="lds-spinner">
         <div />
         <div />

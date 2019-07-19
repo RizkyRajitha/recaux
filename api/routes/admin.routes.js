@@ -60,7 +60,8 @@ exports.userlist = (req, res, next) => {
                     usertype: element.usertype,
                     candidatesAssinged: pendingcan,
                     id: element._id,
-                    state:element.state
+                    state:element.state,
+                    avatarUrl:element.avatarUrl
                   };
                   payloadarr.push(temp);
                 });
@@ -104,7 +105,7 @@ exports.addNewUser = (req, res, next) => {
                 email: datain.email,
                 usertype: datain.usertype
               });
-
+ 
               newuser
                 .save()
                 .then(doc => {
@@ -179,6 +180,27 @@ exports.changeuserstate = (req, res, next) => {
             }
           })
           .catch(err => {});
+      }
+    }
+  )(req, res, next);
+};
+
+
+
+exports.settingsadd = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
       }
     }
   )(req, res, next);

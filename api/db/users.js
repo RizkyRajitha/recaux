@@ -22,7 +22,8 @@ var userSchema = new Schema({
     type: String
   },
   state: {
-    type: Boolean,default:false
+    type: Boolean,
+    default: false
   },
   hash: {
     type: String
@@ -34,6 +35,9 @@ var userSchema = new Schema({
     type: String
   },
   source: {
+    type: String
+  },
+  joined: {
     type: String
   },
   noOfcandidatesAssinged: {

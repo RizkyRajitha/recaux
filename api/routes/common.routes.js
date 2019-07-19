@@ -3,6 +3,10 @@ const Candidate = require("../db/candidates");
 const ObjectID = require("mongodb").ObjectID;
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const path = require("path");
+const fs = require("fs");
+const Jobspec = require("../db/jobspec");
+const Interview = require("../db/interviews");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
@@ -135,18 +139,35 @@ exports.getOneCandidate = (req, res) => {
             };
           });
 
-          console.log(userDataArr);
+          Interview.findOne({ candidateId: iid })
+            .then(doc1 => {
+              console.log(doc1);
 
-          const payload = {
-            userData: userDataArr,
-            candidateData: result
-          };
+              var objRes = result.toObject();
 
-          console.log("\n\n");
+              if (doc1) {
+                objRes.interview = true;
+                objRes.interviewerName = doc1.interviwerName;
+                objRes.interviewerId = doc1.interviwerId;
+                objRes.scheduler = doc1.schedulerId;
+                objRes.schedulerName = doc1.schedulerName;
+                objRes.interviewtime = doc1.datetime;
+              } else {
+                objRes.interview = false;
+              }
 
-          console.log(result);
+              const payload = {
+                userData: userDataArr,
+                candidateData: objRes
+              };
 
-          res.status(200).json(payload);
+              console.log("\n\n");
+
+              //console.log(result);
+
+              res.status(200).json(payload);
+            })
+            .catch(err => console.log(err));
         })
         .catch(err => {
           res.status(500).json(err);
@@ -167,8 +188,22 @@ exports.getAllCandidates = (req, res) => {
   // var iid = req.params.id;
   //console.log(iid);
 
+  var newcandicates = {};
+  var shortlistedcandicates = {};
+  var scheduledcandicates = {};
+
   Candidate.find()
     .then(result => {
+      // result.forEach(element => {
+      //   if (element.primaryStatus === "New") {
+      //     newcandicates.push(element);
+      //   } else if (element.primaryStatus === "Shortlisted") {
+      //     shortlistedcandicates.push(element);
+      //   } else if (element.primaryStatus === "Sheduled") {
+      //     scheduledcandicates.push(element);
+      //   }
+      // });
+
       User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
@@ -390,7 +425,7 @@ exports.userProfile = (req, res, next) => {
             lastName: result.lastName,
             avatarUrl: result.avatarUrl,
             usertype: result.usertype,
-            state:!result.state
+            state: !result.state
           };
 
           console.log("found" + result);
@@ -545,6 +580,549 @@ exports.getbasicuserdetails = (req, res, next) => {
           .catch(err => {
             console.log(err);
           });
+      }
+    }
+  )(req, res, next);
+};
+
+//updatesecondstatus
+
+exports.updatesecondstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log("inna " + req.params.id);
+
+        var iid = req.params.id;
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.findOneAndUpdate(
+          { _id: iid },
+          { $set: { statusHr: datain.status } }
+        )
+          .then(doc => {
+            console.log(doc);
+            res.status(200).json({ msg: "sucsess" });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.getskilllist = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        // console.log(req.body);
+        // var datain = req.body;
+
+        var pt = path.join(__dirname, "../", "config", "skills.json");
+        console.log(pt);
+
+        try {
+          var ori = fs.readFileSync(pt, "utf8");
+
+          jsonobj = JSON.parse(ori);
+          //jsonobj.rolo = "aaaaa";
+          //var obj = { yolo: 55 };
+
+          //fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+          res.status(200).json(jsonobj);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        console.log("id - " + req.params.id);
+        var iid = req.params.id;
+
+        Candidate.updateOne(
+          { _id: iid },
+          {
+            $addToSet: {
+              skills: datain
+            }
+          }
+        )
+          .then(doc => {
+            console.log(doc);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.removeskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        console.log("id - " + req.params.id);
+        var iid = req.params.id;
+
+        Candidate.updateOne(
+          { _id: iid },
+          { $pull: { skills: { label: datain.label } } }
+        )
+          .then(doc => {
+            console.log(doc);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addnewskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              var pt = path.join(__dirname, "../", "config", "skills.json");
+              console.log(pt);
+
+              try {
+                var ori = fs.readFileSync(pt, "utf8");
+
+                jsonobj = JSON.parse(ori);
+                console.log(jsonobj.skills.length);
+                var skilllength = jsonobj.skills.length;
+                jsonobj.skills.push({
+                  value: skilllength,
+                  label: datain.skill
+                });
+                //var obj = { yolo: 55 };
+
+                fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+                res.status(200).json(jsonobj);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.deletenewskill = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              var pt = path.join(__dirname, "../", "config", "skills.json");
+              console.log(pt);
+              console.log("yoloylylylylylyylylyylylylyl");
+              try {
+                var ori = fs.readFileSync(pt, "utf8");
+
+                jsonobj = JSON.parse(ori);
+                //console.log(ori);
+
+                for (let index = 0; index < jsonobj.skills.length; index++) {
+                  const element = jsonobj.skills[index];
+                  console.log(element.label);
+                  if (element.label === datain.label) {
+                    console.log("found " + index);
+                    jsonobj.skills.splice(index, 1);
+                    break;
+                  }
+                }
+
+                // console.log(jsonobj.skills.length);
+                // var skilllength = jsonobj.skills.length;
+                // jsonobj.skills.push({
+                //   value: skilllength,
+                //   label: datain.skill
+                // });
+                //var obj = { yolo: 55 };
+
+                fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+                res.status(200).json(jsonobj);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.getjobspeclist = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        // console.log(req.body);
+        // var datain = req.body;
+
+        var payload = [];
+
+        Jobspec.find()
+          .then(doc => {
+            doc.forEach(item => {
+              try {
+                console.log(item.label);
+                payload.push({ value: item.value, label: item.label });
+              } catch (error) {
+                console.log(error);
+              }
+            });
+
+            res.json({ jobspeclist: payload });
+          })
+          .catch(err => {});
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addnewjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+              var payload = [];
+              Jobspec.find()
+                .then(doc => {
+                  doc.forEach(item => {
+                    console.log(item.label);
+                    payload.push({ value: item.value, label: item.label });
+                  });
+
+                  console.log(doc.length);
+
+                  const newjobspec = new Jobspec({
+                    label: datain.jobspec,
+                    value: doc.length
+                  });
+
+                  newjobspec
+                    .save()
+                    .then(doc1 => {
+                      console.log(doc1);
+                      payload.push({ value: doc1.value, label: doc1.label });
+                      res.status(200).json({ jobs: payload });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                })
+                .catch(err => console.log(err));
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.deletenewjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              Jobspec.findOneAndDelete({ label: datain.label }).then(docc => {
+                console.log(docc);
+                var payload = [];
+                Jobspec.find().then(doc => {
+                  doc.forEach(item => {
+                    console.log(item.label);
+                    payload.push({ value: item.value, label: item.label });
+                  });
+
+                  res.status(200).json({ jobs: payload });
+                });
+              });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.searchmany = (req, res, next) => {
+  // passport.authenticate(
+  //   "jwtstrategy",
+  //   { session: false },
+  //   (err, user, info) => {
+  //     console.log("error - " + err);
+  //     console.log("user - " + JSON.stringify(user));
+  //     console.log("info -- " + info);
+
+  //     if (!user) {
+  //       res.status(401).send(info);
+  //     } else {
+  console.log(req.body);
+  var datain = req.body;
+
+  var isname = false;
+  var isemail = false;
+  var isjobspec = false;
+  var isDate = false;
+  var isStatus = false;
+  var isSource = false;
+  /**
+allocated date recieved date shortlisted date added by
+*/
+
+  req.body.name ? (isname = true) : "";
+  req.body.email ? (isemail = true) : "";
+  req.body.jobspec ? (isjobspec = true) : "";
+  req.body.source ? (isSource = true) : "";
+
+  var searchQuery = {};
+
+  if (isname) {
+    console.log("nama tyei");
+    var regexname = { $regex: req.body.name, $options: "i" };
+
+    searchQuery.name = regexname;
+  }
+
+  if (isemail) {
+    console.log("email tyei");
+
+    var regexemail = { $regex: req.body.email, $options: "i" };
+
+    searchQuery.email = regexemail;
+  }
+
+  if (isSource) {
+    console.log("email tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    searchQuery.source = req.body.source;
+  }
+
+  Candidate.find(searchQuery).then(doc => {
+    console.log(doc);
+    res.json(doc);
+  });
+
+  // )(req, res, next);
+};
+//addinterview
+
+exports.addinterview = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(datain.scheduler))
+          .then(doc1 => {
+            User.findById(ObjectID(datain.interviewer))
+              .then(doc2 => {
+                Candidate.findById(ObjectID(datain.candidateid))
+                  .then(doc3 => {
+                    var newinterview = new Interview({
+                      schedulerId: datain.scheduler,
+                      schedulerName: doc1.firstName + " " + doc1.lastName,
+                      interviwerId: datain.interviewer,
+                      interviwerName: doc2.firstName + " " + doc2.lastName,
+                      candidateId: datain.candidateid,
+                      candidateName: doc3.name,
+                      datetime: datain.datetime
+                    });
+
+                    newinterview
+                      .save()
+                      .then(doc => {
+                        console.log(doc);
+                        res.status(200).json(doc);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.updateinterview = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(datain.scheduler))
+          .then(doc1 => {
+            User.findById(ObjectID(datain.interviewer))
+              .then(doc2 => {
+                Candidate.findById(ObjectID(datain.candidateid))
+                  .then(doc3 => {
+                    Interview.findOneAndUpdate(
+                      { candidateId: datain.candidateid },
+                      {
+                        $set: {
+                          schedulerId: datain.scheduler,
+                          schedulerName: doc1.firstName + " " + doc1.lastName,
+                          interviwerId: datain.interviewer,
+                          interviwerName: doc2.firstName + " " + doc2.lastName,
+
+                          datetime: datain.datetime
+                        }
+                      }
+                    )
+                      .then(doc => {
+                        console.log(doc);
+                        res.status(200).json(doc);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
       }
     }
   )(req, res, next);

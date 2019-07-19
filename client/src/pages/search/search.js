@@ -5,8 +5,46 @@ import Modal from "react-modal";
 import Searchcard from "../../components/searchcard";
 import Drawer from "../../components/sidenav";
 import Navbar from "../../components/navbar";
+import TextField from "@material-ui/core/TextField";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Button from "@material-ui/core/Button";
 import "./search.css";
 const jwt = require("jsonwebtoken");
+
+const useStyles = theme => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  root: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  textField: {
+    marginLeft: 10,
+    marginRight: 10,
+    width: 200
+  },
+  button: {
+    margin: 10
+  },
+  formControl: {
+    margin: 10,
+    minWidth: 120
+  },
+
+  dense: {
+    marginTop: 19
+  },
+  menu: {
+    width: 200
+  }
+});
 
 const customStyles = {
   content: {
@@ -37,7 +75,13 @@ class Search extends Component {
     greet: "",
     usertype: "",
     avatarUrl: false,
-    searchbydateclieked: false
+    searchbydateclieked: false,
+    searchName: "",
+    searchemail: "",
+    searchjobspec: "",
+    searchsource: "",
+    searchresults: [],
+    searchnoresults: false
   };
 
   openModal = () => {
@@ -192,7 +236,156 @@ class Search extends Component {
       .catch(err => {});
   }
 
+  searchformsubmit = e => {
+    e.preventDefault();
+    var payload = {
+      name: this.state.searchName,
+      email: this.state.searchemail,
+      jobspec: this.state.searchjobspec,
+      source: this.state.searchsource
+    };
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  searchformsubmitsource = e => {
+    e.preventDefault();
+    var payload = {
+      name: this.state.searchName,
+      email: this.state.searchemail,
+      jobspec: this.state.searchjobspec,
+      source: e.target.value
+    };
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  searchformsubmitname = e => {
+    e.preventDefault();
+    var payload = {
+      name: e.target.value,
+      email: this.state.searchemail,
+      jobspec: this.state.searchjobspec,
+      source: this.state.searchsource
+    };
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  searchformsubmitemail = e => {
+    e.preventDefault();
+    var payload = {
+      name: this.state.searchemail,
+      email: e.target.value,
+      jobspec: this.state.searchjobspec,
+      source: this.state.searchsource
+    };
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
+    const { classes } = this.props;
     return (
       <div>
         {/* <Navbar />
@@ -201,7 +394,7 @@ class Search extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
+
         <button
           id="searchbydatebtn"
           className="btn btn-primary"
@@ -209,21 +402,88 @@ class Search extends Component {
         >
           search by date
         </button>
-        <div className="searchcontainer">
-          <div className="searcharea">
-            <input
-              type="text"
-              onChange={this.namehndlechange}
-              className="searchname"
-              name="search"
-              placeholder="Search.."
-            />
-            <button className="searchnamebtn">
-              <i class="fa fa-search" />
-            </button>
-          </div>
 
-          <div>
+        <div className="searchParamsdiv">
+          <form
+            className={classes.root}
+            autoComplete="off"
+            onSubmit={this.searchformsubmit}
+          >
+            <TextField
+              id="standard-name"
+              label="Name"
+              className={classes.textField}
+              //value={"ciao"}
+              onChange={e => {
+                this.setState({ searchName: e.target.value });
+                this.searchformsubmitname(e);
+              }}
+              margin="normal"
+            />
+            <TextField
+              id="standard-uncontrolled"
+              label="email"
+              className={classes.textField}
+              onChange={e => {
+                this.setState({ searchemail: e.target.value });
+                this.searchformsubmitemail(e);
+              }}
+              margin="normal"
+            />
+
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="searchsource">source</InputLabel>
+              <Select
+                value={this.state.searchsource}
+                onChange={e => {
+                  console.log(e.target.value);
+                  this.setState({ searchsource: e.target.value });
+                  this.searchformsubmitsource(e);
+                }}
+                inputProps={{
+                  name: "source",
+                  id: "searchsource"
+                }}
+              >
+                <MenuItem value={"email"}>Via email</MenuItem>
+                <MenuItem value={"manual"}>Via refereal</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="age-simple">Job spec</InputLabel>
+              <Select
+                value={this.state.searchjobspec}
+                onChange={e => {
+                  //  console.log(e.target.value);
+                  this.setState({ searchjobspec: e.target.value });
+                }}
+                inputProps={{
+                  name: "age",
+                  id: "age-simple"
+                }}
+              >
+                <MenuItem value={"CEO"}>CEO</MenuItem>
+                <MenuItem value={"HR"}>Human resource</MenuItem>
+                <MenuItem value={"TECH_LEAD"}>leader</MenuItem>
+              </Select>
+            </FormControl>
+
+           
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              type="submit"
+              //onClick={}
+            >
+              <i class="fa fa-search" />
+            </Button>
+          </form>
+        </div>
+
+        <div className="searchcontainer">
+          {/* <div>
             <input
               type="text"
               // onChange={this.namehndlechange}
@@ -237,28 +497,20 @@ class Search extends Component {
               datechnage={this.getdatefromdatepicke}
               datereset={this.resetdatepicker}
             />
+            jobspec add
+          </div> */}
 
-jobspec add
-
-          </div>
-
-          {this.state.searchbynameResults && (
+          {this.state.searchresults && (
             <div>
-              {this.state.searchbynameResults.map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return <Searchcard name={can.name} _id={can._id} />;
-              })}
+              {this.state.searchresults &&
+                this.state.searchresults.map(can => {
+                  //console.log(can.name+can.email+can.jobspec)
+                  return <Searchcard name={can.name} _id={can._id} />;
+                })}
             </div>
           )}
 
-          {this.state.searchbydateResults && (
-            <div>
-              {this.state.searchbydateResults.map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return <Searchcard name={can.name} _id={can._id} />;
-              })}
-            </div>
-          )}
+          {this.state.searchnoresults && <p> no results found </p>}
         </div>
 
         <Modal
@@ -288,4 +540,8 @@ jobspec add
   }
 }
 
-export default Search;
+Search.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(useStyles)(Search);

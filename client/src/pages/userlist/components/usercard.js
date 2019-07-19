@@ -12,7 +12,7 @@ class UserCard extends Component {
   render() {
     return (
       <div>
-        <div id="cancard" className="card center bg-light mb-3 w-75">
+        <div className="card center bg-light mb-3 ">
           <div className="usercardbadgeDivforstate">
             <span className="badge badge-pill badge-warning">
               {this.props.state ? "disabled" : ""}

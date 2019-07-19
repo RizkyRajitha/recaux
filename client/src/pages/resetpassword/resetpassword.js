@@ -119,7 +119,7 @@ class resetpassword extends Component {
                     type="submit"
                     className="btn btn-primary"
                     value="reset password"
-                  />
+                  />   
                 </form>
                 {this.state.passchangeok === true && (
                   <div>

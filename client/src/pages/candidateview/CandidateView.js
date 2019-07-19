@@ -7,8 +7,35 @@ import Navbar from "../../components/navbar";
 import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Container from "@material-ui/core/Container/Container";
+import Avatar from "@material-ui/core/Avatar";
+import ImageIcon from "@material-ui/icons/Image";
+import WorkIcon from "@material-ui/icons/Work";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import Drafts from "@material-ui/icons/Drafts";
+import NextWeek from "@material-ui/icons/NextWeek";
+import SubdirectoryArrowRight from "@material-ui/icons/SubdirectoryArrowRight";
+import BeachAccessIcon from "@material-ui/icons/BeachAccess";
+import Gavel from "@material-ui/icons/Gavel";
+import WatchLater from "@material-ui/icons/WatchLater";
+import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
+import ChipsArraywdelete from "./components/skillschipsWithDelete";
+import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
 import moments from "moment";
+import {
+  DatePicker,
+  TimePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import { Button } from "@material-ui/core";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
@@ -68,6 +95,32 @@ const customStyles4 = {
   }
 };
 
+const customStyles5 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
+const customStyles6 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
 Modal.setAppElement("#root");
 
 class CandidateView extends Component {
@@ -98,7 +151,12 @@ class CandidateView extends Component {
     newest_cv_url: null,
     newest_cv_date: null,
     changedjobspec: null,
-    editcanSuccess: false
+    editcanSuccess: false,
+    selectoptionsnamelist: [],
+    selectedOption: "",
+    selectedJobspecOption: "",
+    selectedinterviwerOption: "",
+    selectedDate: ""
   };
   /****************************************** */
   openModal = () => {
@@ -201,6 +259,46 @@ class CandidateView extends Component {
 
   editcandidatemodal = () => {
     this.openModal4();
+  };
+
+  /***************************************** */
+
+  openModal5 = () => {
+    this.setState({ modalIsOpen5: true });
+  };
+
+  afterOpenModal5 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal5 = () => {
+    this.setState({ modalIsOpen5: false });
+  };
+
+  changestatusforhr = () => {
+    this.openModal5();
+  };
+
+  /***************************************** */
+
+  openModal6 = () => {
+    this.setState({ modalIsOpen6: true });
+  };
+
+  afterOpenModal6 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal6 = () => {
+    this.setState({ modalIsOpen6: false });
+  };
+
+  schedule = () => {
+    this.openModal6();
   };
 
   /***************************************** */
@@ -427,6 +525,46 @@ class CandidateView extends Component {
     }
   };
 
+  handleChangemodalselect = selectedOption => {
+    console.log("jobspec selected -  " + selectedOption);
+    this.setState({ isLoading: true });
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    var payload = {
+      newjobspec: selectedOption.label //this.state.data.jobspec
+    };
+
+    console.log(this.state.data._id);
+
+    axios
+      .post("/usr/edituserdetails/" + this.state.data._id, payload, config)
+      .then(res => {
+        console.log(JSON.stringify(res.data));
+        //this.setState({shorlistSuccess:true})
+        this.setState({ isLoading: false });
+        if (res.data.msg == "edit_success") {
+          this.setState({ editcanSuccess: true });
+          //window.location.reload(false);
+        }
+        this.closeModal4();
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ isLoading: false });
+      });
+  };
+
+  handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({ selectedinterviwerOption: selectedOption });
+    console.log(this.state.selectedinterviwerOption);
+  };
+
   componentDidMount() {
     console.log("comp did mount");
 
@@ -456,31 +594,31 @@ class CandidateView extends Component {
       headers: { authorization: jwt }
     };
 
-    // axios
-    //   .get("/usr/basicuserdetails", config)
-    //   .then(res => {
-    //     console.log(res.data);
-    //     var datain = res.data;
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
 
-    //     var preurl = res.data.avatarUrl.slice(0, 48);
-    //     var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-    //     var config = "/w_290,h_295,c_thumb/";
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_290,h_295,c_thumb/";
 
-    //     var baseUrl = preurl + config + posturl;
-    //     this.setState({ avatarUrl: baseUrl });
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
 
-    //     // var resdate = this.state.data.date
-    //     //  var alodate = this.state.data.allocatedDate
-    //     //  var shrtdate = this.state.data.shortlistedDate
+        // var resdate = this.state.data.date
+        //  var alodate = this.state.data.allocatedDate
+        //  var shrtdate = this.state.data.shortlistedDate
 
-    //     this.setState({
-    //       id: datain.id,
-    //       firstName: datain.firstName,
-    //       lastName: datain.lastName,
-    //       usertype: datain.usertype
-    //     });
-    //   })
-    //   .catch(err => {});
+        this.setState({
+          id: datain.id,
+          firstName: datain.firstName,
+          lastName: datain.lastName,
+          usertype: datain.usertype
+        });
+      })
+      .catch(err => {});
 
     axios
       .get("/usr/getcandidate/" + id)
@@ -532,6 +670,16 @@ class CandidateView extends Component {
           newest_cv_url: newesturl
         });
 
+        axios
+          .get("/usr/getjobspeclist", config)
+          .then(res => {
+            console.log("skillset - - ");
+            console.log(res.data.jobspeclist);
+
+            this.setState({ selectoptionsnamelist: res.data.jobspeclist });
+          })
+          .catch(err => {});
+
         setTimeout(() => console.log(this.state), 1000);
       })
       .catch(err => {
@@ -540,6 +688,11 @@ class CandidateView extends Component {
 
     //this.wtf();
   }
+
+  handleDateChange = e => {
+    console.log(e);
+    this.setState({ selectedDate: e });
+  };
 
   evalHndler = () => {
     const id = this.props.match.params.id;
@@ -582,21 +735,109 @@ class CandidateView extends Component {
       });
   };
 
-  wtf = () => {
-    // const id = this.props.match.params.id;
-    // axios
-    //   .get("/usr/getcandidate/" + id)
-    //   .then(res => {
-    //     this.setState({ data: res.data.candidateData });
-    //     this.setState({ userarr: res.data.userData });
-    //     this.setState({ cvUrl: res.data.candidateData.cvUrl });
-    //     console.log(res);
-    //     console.log(this.state);
-    //     console.log("date - - - -" + JSON.stringify(res.data));
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+  chngehandlsecondarystate = e => {
+    this.setState({ status_change: 0 });
+    // this.setState({ status: e.target.value });
+    console.log("status 1k" + e.target.value);
+    var id = this.props.match.params.id;
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var payload = { status: e.target.value };
+
+    axios
+      .post("/usr/updatesecondstatus/" + id, payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          this.setState({ status_change: 1 });
+          this.closeModal5();
+        }
+
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
+  };
+
+  valtokey = () => {
+    var arr = this.state.data.skills;
+
+    var keyrr = [];
+
+    arr.forEach(element => {
+      keyrr.push({ key: element.value, label: element.label });
+    });
+    return keyrr;
+  };
+
+  scheduleHandler = e => {
+    e.preventDefault();
+    console.log("add interview");
+    console.log(this.state.selectedinterviwerOption);
+    console.log("add interview");
+    console.log(this.state.selectedDate);
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var dataeinter = moments(this.state.selectedDate._d);
+
+    console.log();
+
+    var payload = {
+      candidateid: this.state.data._id,
+      scheduler: this.state.id,
+      interviewer: this.state.selectedinterviwerOption.value,
+      datetime: dataeinter.toISOString()
+    };
+
+    console.log(payload);
+
+    if (this.state.data.interview) {
+      console.log("update"); //updateinterview
+
+      axios
+        .post("/usr/updateinterview", payload, config)
+        .then(res => {
+          console.log(res.data.msg);
+          if (res.data.msg === "sucsess") {
+            this.setState({ status_change: 1 });
+            this.closeModal6();
+          }
+
+          console.log("awoooooooooo");
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ status_change: 0 });
+        });
+    } else {
+      axios
+        .post("/usr/addinterview", payload, config)
+        .then(res => {
+          console.log(res.data.msg);
+          if (res.data.msg === "sucsess") {
+            this.setState({ status_change: 1 });
+            this.closeModal5();
+          }
+
+          console.log("awoooooooooo");
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ status_change: 0 });
+        });
+    }
   };
 
   render() {
@@ -604,7 +845,7 @@ class CandidateView extends Component {
     //   console.log("wjooop");
     //   console.log("date - - - -" + this.state.recivedago);
     //   // var dd = new Date(this.state.data.date);
-    //   // var d = dd.toJSON().slice(0, 10);
+    // var d = dd.toJSON().slice(0, 10);
 
     //   /**
     //    * var s =this.props.allocatedDate//.slice(4, 24)
@@ -766,7 +1007,7 @@ class CandidateView extends Component {
                       value={this.state.data.email}
                       disabled={true}
                     />
-                    <input
+                    {/* <input
                       required
                       type="text"
                       name="job specification "
@@ -776,14 +1017,18 @@ class CandidateView extends Component {
                       id="jobspec"
                       value={this.state.data.jobspec}
                       // disabled={true}
+                    /> */}
+
+                    <Select
+                      placeholder={this.state.data.jobspec}
+                      value={this.selectedJobspecOption}
+                      onChange={this.handleChangemodalselect}
+                      options={this.state.selectoptionsnamelist}
                     />
-                    add skills chips
-                    <input
-                      type="submit"
-                      className="btn btn-primary"
-                      //onClick={this.edidcandidatedetails}
-                      value="confirm"
-                      //id="submit"
+
+                    <ChipsArraywdelete
+                      id={this.state.data._id}
+                      currentskills={this.valtokey}
                     />
                   </div>
                 </form>
@@ -881,8 +1126,136 @@ shortlisterName: "Bharana perera"
 status: "New"
   */}
 
+            <Container maxWidth="sm">
+              <List
+                style={{
+                  width: "100%",
+                  maxWidth: 360,
+                  marginTop: -100
+                }}
+              >
+                {this.state.recivedago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <SubdirectoryArrowRight />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Received"
+                      secondary={this.state.recivedago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.data.shortlisterName && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <WorkIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Assigned to"
+                      secondary={this.state.data.shortlisterName}
+                    />
+                  </ListItem>
+                )}{" "}
+                <Divider variant="inset" component="li" />
+                {this.state.data.assignToshortlisterbyName && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <BeachAccessIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="Assigned by"
+                      secondary={this.state.data.assignToshortlisterbyName}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.alocatedago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <WatchLater />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="allocated"
+                      secondary={this.state.alocatedago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                {this.state.shortago && (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <BeachAccessIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary="shortlist"
+                      secondary={this.state.shortago}
+                    />
+                  </ListItem>
+                )}
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <AccountCircle />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Name"
+                    secondary={this.state.data.name}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Drafts />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Email"
+                    secondary={this.state.data.email}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <NextWeek />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Job specification"
+                    secondary={this.state.data.jobspec}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Gavel />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="Current status"
+                    secondary={this.state.data.status}
+                  />
+                </ListItem>
+              </List>
+            </Container>
+
             <ul className="list-group list-group-flush ">
-              {this.state.data.shortlisterName && (
+              {/* {this.state.data.shortlisterName && (
                 <li className="list-group-item">
                   Allocated to shortlist to - {this.state.data.shortlisterName}
                 </li>
@@ -927,16 +1300,9 @@ status: "New"
               <li className="list-group-item">
                 {" "}
                 current candidate status : {this.state.data.status}
-              </li>
+              </li> */}
 
-              {this.state.data.skills && (
-                <li className="list-group-item">
-                  skills :
-                  {this.state.data.skills.map(ele => {
-                    return " " + ele + " ";
-                  })}
-                </li>
-              )}
+              <ChipsArraywodelete currentskills={this.state.data.skills} />
             </ul>
           </div>
 
@@ -1016,6 +1382,131 @@ status: "New"
             </div>
           </Modal>
 
+          <Modal
+            isOpen={this.state.modalIsOpen5}
+            onAfterOpen={this.afterOpenModal5}
+            onRequestClose={this.closeModal5}
+            style={customStyles}
+            contentLabel="Example 5 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>status</h2>
+
+            <div class="form-group">
+              <label
+                className="canviewshortlistform"
+                for="exampleFormControlSelect2"
+                hidden={
+                  this.state.usertype === "admin" ||
+                  this.state.usertype === "depthead"
+                    ? false
+                    : true
+                }
+              >
+                change candidate secondary status
+              </label>
+
+              <select
+                class="form-control"
+                id="status"
+                onChange={this.chngehandlsecondarystate} //chngehandlsecondarystate
+              >
+                <option selected>Select...</option>
+                <option id="status" value="cancel">
+                  Canceled
+                </option>
+                <option id="status" value="noshow">
+                  No show
+                </option>
+                {/* <option id="status" value="accepted">
+                  accepted
+                </option>
+                <option id="status" value="shortlisted">
+                  shortlisted
+                </option> */}
+              </select>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={this.state.modalIsOpen6}
+            onAfterOpen={this.afterOpenModal6}
+            onRequestClose={this.closeModal6}
+            style={customStyles6}
+            contentLabel="Example 5 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>Schedule</h2>
+
+            <Container>
+              {this.state.data.interview
+                ? "this candidate has been scheduled to interview " +
+                  this.state.data.interviewerName +
+                  " on  " +
+                  moments(this.state.data.interviewtime)
+                    .toDate()
+                    .toDateString() +
+                  " in  " +
+                  " on " +
+                  moments(this.state.data.interviewtime).hour() +
+                  ":" +
+                  moments(this.state.data.interviewtime).minute() +
+                  " do you want to update "
+                : ""}
+
+              <form onSubmit={this.scheduleHandler}>
+                <table style={{ textAlign: "left", width: "50%" }}>
+                  <tr>
+                    <td>candidate name - </td>
+                    <td> {this.state.data.name} </td>
+                  </tr>
+                  <tr>
+                    <td>allocater name - </td>
+                    <td>
+                      {" "}
+                      {this.state.firstName + " " + this.state.lastName}{" "}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>interviewer - </td>
+                    <td>
+                      {" "}
+                      <Select
+                        required={true}
+                        value={this.state.selectedinterviwerOption}
+                        placeholder={this.state.selectedinterviwerOption.label}
+                        onChange={
+                          this
+                            .handleChangemodalselectscheduleinterviewinterviewer
+                        }
+                        options={this.state.userarr}
+                      />{" "}
+                    </td>
+                  </tr>
+                  <td>Date &amp; time</td>
+                  <td>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <DateTimePicker
+                        value={this.selectedDate}
+                        onChange={this.handleDateChange}
+                        disablePast={true}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </td>
+                </table>
+                <Button className="btn btn-primary" type="submit">
+                  Confirm Interview
+                </Button>
+              </form>
+            </Container>
+          </Modal>
+
+          <button
+            disabled={this.state.usertype === "depthead" ? true : false}
+            onClick={this.changestatusforhr}
+            className="btn btn-primary"
+          >
+            change secondary status
+          </button>
+
           <button onClick={this.evalHndler} className="btn btn-primary">
             evaluate
           </button>
@@ -1024,6 +1515,9 @@ status: "New"
           </button>
           <button onClick={this.editcandidatemodal} className="btn btn-primary">
             edit candidate
+          </button>
+          <button onClick={this.schedule} className="btn btn-primary">
+            schedule
           </button>
           <br />
           <br />
