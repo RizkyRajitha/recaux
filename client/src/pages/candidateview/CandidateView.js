@@ -803,21 +803,41 @@ class CandidateView extends Component {
 
     console.log(payload);
 
-    axios
-      .post("/usr/addinterview", payload, config)
-      .then(res => {
-        console.log(res.data.msg);
-        if (res.data.msg === "sucsess") {
-          this.setState({ status_change: 1 });
-          this.closeModal5();
-        }
+    if (this.state.data.interview) {
+      console.log("update"); //updateinterview
 
-        console.log("awoooooooooo");
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ status_change: 0 });
-      });
+      axios
+        .post("/usr/updateinterview", payload, config)
+        .then(res => {
+          console.log(res.data.msg);
+          if (res.data.msg === "sucsess") {
+            this.setState({ status_change: 1 });
+            this.closeModal6();
+          }
+
+          console.log("awoooooooooo");
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ status_change: 0 });
+        });
+    } else {
+      axios
+        .post("/usr/addinterview", payload, config)
+        .then(res => {
+          console.log(res.data.msg);
+          if (res.data.msg === "sucsess") {
+            this.setState({ status_change: 1 });
+            this.closeModal5();
+          }
+
+          console.log("awoooooooooo");
+        })
+        .catch(err => {
+          console.log(err);
+          this.setState({ status_change: 0 });
+        });
+    }
   };
 
   render() {
@@ -1417,7 +1437,21 @@ status: "New"
             <h2 ref={subtitle => (this.subtitle = subtitle)}>Schedule</h2>
 
             <Container>
-              schedule
+              {this.state.data.interview
+                ? "this candidate has been scheduled to interview " +
+                  this.state.data.interviewerName +
+                  " on  " +
+                  moments(this.state.data.interviewtime)
+                    .toDate()
+                    .toDateString() +
+                  " in  " +
+                  " on " +
+                  moments(this.state.data.interviewtime).hour() +
+                  ":" +
+                  moments(this.state.data.interviewtime).minute() +
+                  " do you want to update "
+                : ""}
+
               <form onSubmit={this.scheduleHandler}>
                 <table style={{ textAlign: "left", width: "50%" }}>
                   <tr>
@@ -1447,7 +1481,7 @@ status: "New"
                       />{" "}
                     </td>
                   </tr>
-                  <td>on</td>
+                  <td>Date &amp; time</td>
                   <td>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                       <DateTimePicker

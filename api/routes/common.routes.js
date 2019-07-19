@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const fs = require("fs");
 const Jobspec = require("../db/jobspec");
+const Interview = require("../db/interviews");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
@@ -138,18 +139,35 @@ exports.getOneCandidate = (req, res) => {
             };
           });
 
-          console.log(userDataArr);
+          Interview.findOne({ candidateId: iid })
+            .then(doc1 => {
+              console.log(doc1);
 
-          const payload = {
-            userData: userDataArr,
-            candidateData: result
-          };
+              var objRes = result.toObject();
 
-          console.log("\n\n");
+              if (doc1) {
+                objRes.interview = true;
+                objRes.interviewerName = doc1.interviwerName;
+                objRes.interviewerId = doc1.interviwerId;
+                objRes.scheduler = doc1.schedulerId;
+                objRes.schedulerName = doc1.schedulerName;
+                objRes.interviewtime = doc1.datetime;
+              } else {
+                objRes.interview = false;
+              }
 
-          console.log(result);
+              const payload = {
+                userData: userDataArr,
+                candidateData: objRes
+              };
 
-          res.status(200).json(payload);
+              console.log("\n\n");
+
+              //console.log(result);
+
+              res.status(200).json(payload);
+            })
+            .catch(err => console.log(err));
         })
         .catch(err => {
           res.status(500).json(err);
@@ -1025,11 +1043,90 @@ exports.addinterview = (req, res, next) => {
       } else {
         console.log(req.body);
         var datain = req.body;
+
+        User.findById(ObjectID(datain.scheduler))
+          .then(doc1 => {
+            User.findById(ObjectID(datain.interviewer))
+              .then(doc2 => {
+                Candidate.findById(ObjectID(datain.candidateid))
+                  .then(doc3 => {
+                    var newinterview = new Interview({
+                      schedulerId: datain.scheduler,
+                      schedulerName: doc1.firstName + " " + doc1.lastName,
+                      interviwerId: datain.interviewer,
+                      interviwerName: doc2.firstName + " " + doc2.lastName,
+                      candidateId: datain.candidateid,
+                      candidateName: doc3.name,
+                      datetime: datain.datetime
+                    });
+
+                    newinterview
+                      .save()
+                      .then(doc => {
+                        console.log(doc);
+                        res.status(200).json(doc);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
       }
     }
   )(req, res, next);
 };
 
+exports.updateinterview = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(datain.scheduler))
+          .then(doc1 => {
+            User.findById(ObjectID(datain.interviewer))
+              .then(doc2 => {
+                Candidate.findById(ObjectID(datain.candidateid))
+                  .then(doc3 => {
+                    Interview.findOneAndUpdate(
+                      { candidateId: datain.candidateid },
+                      {
+                        $set: {
+                          schedulerId: datain.scheduler,
+                          schedulerName: doc1.firstName + " " + doc1.lastName,
+                          interviwerId: datain.interviewer,
+                          interviwerName: doc2.firstName + " " + doc2.lastName,
+
+                          datetime: datain.datetime
+                        }
+                      }
+                    )
+                      .then(doc => {
+                        console.log(doc);
+                        res.status(200).json(doc);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
 
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(
