@@ -13,6 +13,7 @@ const fileUpload = require("./fileupload.routes");
 const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
+const Jobspec = require("../db/jobspec");
 const fs = require("fs");
 //const skillJson = require("../config/skills.json");
 
@@ -158,27 +159,46 @@ router.post("/addskill/:id", commonRoutes.addskill);
 router.post("/removeskill/:id", commonRoutes.removeskill);
 router.post("/addnewskill", commonRoutes.addnewskill);
 router.post("/deletenewskill", commonRoutes.deletenewskill);
-router.get('/searchany',commonRoutes.searchmany)
+router.post("/searchmany", commonRoutes.searchmany);
+router.post("/addnewjobspec", commonRoutes.addnewjobspec);
+router.get("/getjobspeclist", commonRoutes.getjobspeclist);
+router.post("/deletenewjobspec", commonRoutes.deletenewjobspec);
+router.post("/addinterview", commonRoutes.addinterview);
+router.post("/updateinterview", commonRoutes.updateinterview);
 
-router.get("/test", (req, res) => {
-  var pt = path.join(__dirname, "../", "config", "skills.json");
-  console.log(pt);
+router.get("/testing", (req, res) => {
+  var newjobspec = new Jobspec({
+    label: "buha",
+    value: "habubu"
+  });
 
-  try {
-    var ori = fs.readFileSync(pt, "utf8");
+  var payload = [];
 
-    jsonobj = JSON.parse(ori);
-    console.log(jsonobj.skills.length);
-    var skilllength = jsonobj.skills.length;
-    jsonobj.skills.push({ value: skilllength, lable: "jeehaaaaa" });
-    //var obj = { yolo: 55 };
+  Jobspec.find()
+    .then(doc => {
+      doc.forEach(item => {
+        try {
+          console.log(item.label);
+          payload.push({ value: item.value, label: item.label });
+        } catch (error) {
+          console.log(error);
+        }
+      });
 
-    fs.writeFileSync(pt, JSON.stringify(jsonobj));
+      res.json({ jobspeclist: payload });
+    })
+    .catch(err => {});
 
-    res.send(JSON.stringify(jsonobj));
-  } catch (error) {
-    console.log(error);
-  }
+  // newjobspec
+  //   .save()
+  //   .then(doc => {
+  //     console.log(doc);
+  //     res.status(200).json(doc);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //     res.status(200).json(err);
+  //   });
 });
 
 router.post("/shortlistOne/:id", (req, res, next) => {

@@ -28,14 +28,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ChipsArray(props) {
+export default function ChipsArray2(props) {
   // const [selectedOption, setselectedOption] = useState({});
   // const [selectoptionsnamelist, setselectoptionsnamelist] = useState([]);
   const [newSkill, setnewSkill] = useState(""); //errorskill
   const [errorskill, seterrorskill] = useState(false);
   const [onload, setonload] = useState(false);
   const classes = useStyles(); //onload
-  const [chipData, setChipData] = useState(props.currentskills);
+  const [chipData, setChipData] = useState(props.currentjobspecs);
 
   // useEffect(() => {
   // console.log("props - - -");
@@ -100,7 +100,7 @@ export default function ChipsArray(props) {
     };
     setonload(true);
     axios
-      .post("/usr/deletenewskill", chipToDelete, config)
+      .post("/usr/deletenewjobspec", chipToDelete, config)
       .then(res => {
         console.log(res.data);
         setonload(false);
@@ -144,7 +144,7 @@ export default function ChipsArray(props) {
       //console.log(this.state);
       setonload(true);
       axios
-        .post("/usr/addnewskill", { skill: newSkill }, config)
+        .post("/usr/addnewjobspec", { jobspec: newSkill }, config)
         .then(res => {
           console.log(res.data);
           setonload(false);
@@ -164,7 +164,7 @@ export default function ChipsArray(props) {
     <Container>
       <TextField
         id="settingsaddskill"
-        label="New skill"
+        label="New Jobspec"
         //className={clsx(classes.textField, classes.dense)}
         margin="dense"
         variant="outlined"

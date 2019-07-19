@@ -105,7 +105,7 @@ exports.addNewUser = (req, res, next) => {
                 email: datain.email,
                 usertype: datain.usertype
               });
-
+ 
               newuser
                 .save()
                 .then(doc => {

@@ -8,6 +8,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import Select from "react-select";
 import Drawer from "../../components/sidenav";
+import Button from "@material-ui/core/Button";
 
 const jsonwebtoken = require("jsonwebtoken");
 
@@ -352,19 +353,20 @@ class dashboard extends Component {
           /> */}
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
 
-          <button
+          <Button variant="contained" color="primary"
             onClick={this.usrprofile}
-            className="btn btn-outline-primary"
+            // className="btn btn-outline-primary"
             id="userprofile"
           >
             edit profile
-          </button>
+          </Button>
           <br />
           <br />
 
-          <button
+          <Button
             onClick={this.addcandidate}
-            className="btn btn-outline-primary"
+            variant="contained" color="primary"
+            // className="btn btn-outline-primary"
             id="addcan"
             disabled={
               this.state.usertype === "hr_staff" ||
@@ -374,17 +376,19 @@ class dashboard extends Component {
             }
           >
             Add new candidate
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="contained"
+            color="primary"
             onClick={this.addcandidate}
-            className="btn btn-outline-primary"
+            // className="btn btn-outline-primary"
             id="shortlist"
             disabled={this.state.numofshort === 0}
             onClick={this.shortlistmodal}
           >
             Shortlist Many
-          </button>
+          </Button>
 
           <Modal
             isOpen={this.state.modalIsOpen}
