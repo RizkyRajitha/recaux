@@ -163,10 +163,7 @@ router.post("/searchmany", commonRoutes.searchmany);
 router.post("/addnewjobspec", commonRoutes.addnewjobspec);
 router.get("/getjobspeclist", commonRoutes.getjobspeclist);
 router.post("/deletenewjobspec", commonRoutes.deletenewjobspec);
-
-
-
-
+router.post("/addinterview", commonRoutes.addinterview);
 
 router.get("/testing", (req, res) => {
   var newjobspec = new Jobspec({

@@ -28,6 +28,14 @@ import { Document, Page, pdfjs } from "react-pdf";
 import ChipsArraywdelete from "./components/skillschipsWithDelete";
 import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
 import moments from "moment";
+import {
+  DatePicker,
+  TimePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import { Button } from "@material-ui/core";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
@@ -100,6 +108,19 @@ const customStyles5 = {
   }
 };
 
+const customStyles6 = {
+  content: {
+    width: "50%",
+    height: "40%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
 Modal.setAppElement("#root");
 
 class CandidateView extends Component {
@@ -132,7 +153,10 @@ class CandidateView extends Component {
     changedjobspec: null,
     editcanSuccess: false,
     selectoptionsnamelist: [],
-    selectedOption: ""
+    selectedOption: "",
+    selectedJobspecOption: "",
+    selectedinterviwerOption: "",
+    selectedDate: ""
   };
   /****************************************** */
   openModal = () => {
@@ -255,6 +279,26 @@ class CandidateView extends Component {
 
   changestatusforhr = () => {
     this.openModal5();
+  };
+
+  /***************************************** */
+
+  openModal6 = () => {
+    this.setState({ modalIsOpen6: true });
+  };
+
+  afterOpenModal6 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal6 = () => {
+    this.setState({ modalIsOpen6: false });
+  };
+
+  schedule = () => {
+    this.openModal6();
   };
 
   /***************************************** */
@@ -514,6 +558,13 @@ class CandidateView extends Component {
       });
   };
 
+  handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({ selectedinterviwerOption: selectedOption });
+    console.log(this.state.selectedinterviwerOption);
+  };
+
   componentDidMount() {
     console.log("comp did mount");
 
@@ -638,6 +689,11 @@ class CandidateView extends Component {
     //this.wtf();
   }
 
+  handleDateChange = e => {
+    console.log(e);
+    this.setState({ selectedDate: e });
+  };
+
   evalHndler = () => {
     const id = this.props.match.params.id;
 
@@ -721,12 +777,55 @@ class CandidateView extends Component {
     return keyrr;
   };
 
+  scheduleHandler = e => {
+    e.preventDefault();
+    console.log("add interview");
+    console.log(this.state.selectedinterviwerOption);
+    console.log("add interview");
+    console.log(this.state.selectedDate);
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var dataeinter = moments(this.state.selectedDate._d);
+
+    console.log();
+
+    var payload = {
+      candidateid: this.state.data._id,
+      scheduler: this.state.id,
+      interviewer: this.state.selectedinterviwerOption.value,
+      datetime: dataeinter.toISOString()
+    };
+
+    console.log(payload);
+
+    axios
+      .post("/usr/addinterview", payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          this.setState({ status_change: 1 });
+          this.closeModal5();
+        }
+
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
+  };
+
   render() {
     // if (this.state.recivedago) {
     //   console.log("wjooop");
     //   console.log("date - - - -" + this.state.recivedago);
     //   // var dd = new Date(this.state.data.date);
-    //   // var d = dd.toJSON().slice(0, 10);
+    // var d = dd.toJSON().slice(0, 10);
 
     //   /**
     //    * var s =this.props.allocatedDate//.slice(4, 24)
@@ -902,7 +1001,7 @@ class CandidateView extends Component {
 
                     <Select
                       placeholder={this.state.data.jobspec}
-                      value={this.selectedOption}
+                      value={this.selectedJobspecOption}
                       onChange={this.handleChangemodalselect}
                       options={this.state.selectoptionsnamelist}
                     />
@@ -1308,6 +1407,64 @@ status: "New"
             </div>
           </Modal>
 
+          <Modal
+            isOpen={this.state.modalIsOpen6}
+            onAfterOpen={this.afterOpenModal6}
+            onRequestClose={this.closeModal6}
+            style={customStyles6}
+            contentLabel="Example 5 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>Schedule</h2>
+
+            <Container>
+              schedule
+              <form onSubmit={this.scheduleHandler}>
+                <table style={{ textAlign: "left", width: "50%" }}>
+                  <tr>
+                    <td>candidate name - </td>
+                    <td> {this.state.data.name} </td>
+                  </tr>
+                  <tr>
+                    <td>allocater name - </td>
+                    <td>
+                      {" "}
+                      {this.state.firstName + " " + this.state.lastName}{" "}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>interviewer - </td>
+                    <td>
+                      {" "}
+                      <Select
+                        required={true}
+                        value={this.state.selectedinterviwerOption}
+                        placeholder={this.state.selectedinterviwerOption.label}
+                        onChange={
+                          this
+                            .handleChangemodalselectscheduleinterviewinterviewer
+                        }
+                        options={this.state.userarr}
+                      />{" "}
+                    </td>
+                  </tr>
+                  <td>on</td>
+                  <td>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <DateTimePicker
+                        value={this.selectedDate}
+                        onChange={this.handleDateChange}
+                        disablePast={true}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </td>
+                </table>
+                <Button className="btn btn-primary" type="submit">
+                  Confirm Interview
+                </Button>
+              </form>
+            </Container>
+          </Modal>
+
           <button
             disabled={this.state.usertype === "depthead" ? true : false}
             onClick={this.changestatusforhr}
@@ -1324,6 +1481,9 @@ status: "New"
           </button>
           <button onClick={this.editcandidatemodal} className="btn btn-primary">
             edit candidate
+          </button>
+          <button onClick={this.schedule} className="btn btn-primary">
+            schedule
           </button>
           <br />
           <br />

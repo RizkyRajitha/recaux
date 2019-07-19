@@ -1009,6 +1009,27 @@ allocated date recieved date shortlisted date added by
 
   // )(req, res, next);
 };
+//addinterview
+
+exports.addinterview = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+      }
+    }
+  )(req, res, next);
+};
+
 
 exports.anythingpassportexample = (req, res, next) => {
   passport.authenticate(
