@@ -130,7 +130,9 @@ class CandidateView extends Component {
     newest_cv_url: null,
     newest_cv_date: null,
     changedjobspec: null,
-    editcanSuccess: false
+    editcanSuccess: false,
+    selectoptionsnamelist: [],
+    selectedOption: ""
   };
   /****************************************** */
   openModal = () => {
@@ -479,6 +481,39 @@ class CandidateView extends Component {
     }
   };
 
+  handleChangemodalselect = selectedOption => {
+    console.log("jobspec selected -  " + selectedOption);
+    this.setState({ isLoading: true });
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    var payload = {
+      newjobspec: selectedOption.label //this.state.data.jobspec
+    };
+
+    console.log(this.state.data._id);
+
+    axios
+      .post("/usr/edituserdetails/" + this.state.data._id, payload, config)
+      .then(res => {
+        console.log(JSON.stringify(res.data));
+        //this.setState({shorlistSuccess:true})
+        this.setState({ isLoading: false });
+        if (res.data.msg == "edit_success") {
+          this.setState({ editcanSuccess: true });
+          //window.location.reload(false);
+        }
+        this.closeModal4();
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ isLoading: false });
+      });
+  };
+
   componentDidMount() {
     console.log("comp did mount");
 
@@ -583,6 +618,16 @@ class CandidateView extends Component {
           newest_cv_date: newestdate,
           newest_cv_url: newesturl
         });
+
+        axios
+          .get("/usr/getjobspeclist", config)
+          .then(res => {
+            console.log("skillset - - ");
+            console.log(res.data.jobspeclist);
+
+            this.setState({ selectoptionsnamelist: res.data.jobspeclist });
+          })
+          .catch(err => {});
 
         setTimeout(() => console.log(this.state), 1000);
       })
@@ -843,7 +888,7 @@ class CandidateView extends Component {
                       value={this.state.data.email}
                       disabled={true}
                     />
-                    <input
+                    {/* <input
                       required
                       type="text"
                       name="job specification "
@@ -853,19 +898,18 @@ class CandidateView extends Component {
                       id="jobspec"
                       value={this.state.data.jobspec}
                       // disabled={true}
+                    /> */}
+
+                    <Select
+                      placeholder={this.state.data.jobspec}
+                      value={this.selectedOption}
+                      onChange={this.handleChangemodalselect}
+                      options={this.state.selectoptionsnamelist}
                     />
 
                     <ChipsArraywdelete
                       id={this.state.data._id}
                       currentskills={this.valtokey}
-                    />
-
-                    <input
-                      type="submit"
-                      className="btn btn-primary"
-                      //onClick={this.edidcandidatedetails}
-                      value="confirm"
-                      //id="submit"
                     />
                   </div>
                 </form>

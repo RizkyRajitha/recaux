@@ -26,6 +26,11 @@ var candidateSchema = new Schema({
     type: String
   },
 
+  primaryStatus: {
+    type: String,
+    default: "New"
+  },
+
   source: {
     type: String
   },

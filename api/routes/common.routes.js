@@ -5,6 +5,7 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const path = require("path");
 const fs = require("fs");
+const Jobspec = require("../db/jobspec");
 require("../config/passport");
 const emailhandler = require("../config/emailhandler");
 
@@ -169,8 +170,22 @@ exports.getAllCandidates = (req, res) => {
   // var iid = req.params.id;
   //console.log(iid);
 
+  var newcandicates = {};
+  var shortlistedcandicates = {};
+  var scheduledcandicates = {};
+
   Candidate.find()
     .then(result => {
+      // result.forEach(element => {
+      //   if (element.primaryStatus === "New") {
+      //     newcandicates.push(element);
+      //   } else if (element.primaryStatus === "Shortlisted") {
+      //     shortlistedcandicates.push(element);
+      //   } else if (element.primaryStatus === "Sheduled") {
+      //     scheduledcandicates.push(element);
+      //   }
+      // });
+
       User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
           const userDataArr = doc.map(ele => {
@@ -792,6 +807,136 @@ exports.deletenewskill = (req, res, next) => {
               } catch (error) {
                 console.log(error);
               }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.getjobspeclist = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        // console.log(req.body);
+        // var datain = req.body;
+
+        var payload = [];
+
+        Jobspec.find()
+          .then(doc => {
+            doc.forEach(item => {
+              try {
+                console.log(item.label);
+                payload.push({ value: item.value, label: item.label });
+              } catch (error) {
+                console.log(error);
+              }
+            });
+
+            res.json({ jobspeclist: payload });
+          })
+          .catch(err => {});
+      }
+    }
+  )(req, res, next);
+};
+
+exports.addnewjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+              var payload = [];
+              Jobspec.find()
+                .then(doc => {
+                  doc.forEach(item => {
+                    console.log(item.label);
+                    payload.push({ value: item.value, label: item.label });
+                  });
+
+                  console.log(doc.length);
+
+                  const newjobspec = new Jobspec({
+                    label: datain.jobspec,
+                    value: doc.length
+                  });
+
+                  newjobspec
+                    .save()
+                    .then(doc1 => {
+                      console.log(doc1);
+                      payload.push({ value: doc1.value, label: doc1.label });
+                      res.status(200).json({ jobs: payload });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                })
+                .catch(err => console.log(err));
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.deletenewjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        User.findById(ObjectID(user.id))
+          .then(data => {
+            if (data.usertype == "admin" || data.usertype == "hr_staff") {
+              console.log(req.body);
+              var datain = req.body;
+
+              Jobspec.findOneAndDelete({ label: datain.label }).then(docc => {
+                console.log(docc);
+                var payload = [];
+                Jobspec.find().then(doc => {
+                  doc.forEach(item => {
+                    console.log(item.label);
+                    payload.push({ value: item.value, label: item.label });
+                  });
+
+                  res.status(200).json({ jobs: payload });
+                });
+              });
             }
           })
           .catch(err => {

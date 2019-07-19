@@ -8,7 +8,7 @@ const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
 
 class Settings extends Component {
-  state = { skillset: "", newskill: "" };
+  state = { skillset: "", newskill: "", jobspecset: "" };
 
   componentDidMount() {
     var jwt = localStorage.getItem("jwt");
@@ -17,7 +17,7 @@ class Settings extends Component {
       headers: {
         authorization: jwt
       }
-    };
+    }; //jobspeclist
 
     axios
       .get("/usr/skilllist", config)
@@ -28,10 +28,31 @@ class Settings extends Component {
         this.setState({ skillset: res.data.skills });
       })
       .catch(err => {});
+
+    axios
+      .get("/usr/getjobspeclist", config)
+      .then(res => {
+        console.log("skillset - - ");
+        console.log(res.data.jobspeclist);
+
+        this.setState({ jobspecset: res.data.jobspeclist });
+      })
+      .catch(err => {});
   }
 
   valtokey = () => {
     var arr = this.state.skillset;
+
+    var keyrr = [];
+
+    arr.forEach(element => {
+      keyrr.push({ key: element.value, label: element.label });
+    });
+    return keyrr;
+  };
+
+  valtokeyjobs = () => {
+    var arr = this.state.jobspecset;
 
     var keyrr = [];
 
@@ -53,10 +74,10 @@ class Settings extends Component {
     console.log(this.state);
 
     axios
-      .post("/usr/addnewskill", { skill: this.state.newskill }, config)
+      .post("/usr/addnewjobspec", { skill: this.state.newskill }, config)
       .then(res => {
         console.log(res.data);
-        this.setState({ skillset: res.data.skills });
+        this.setState({ skillset: res.data.jobs });
         //this.forceUpdate();
         //setselectoptionsnamelist(res.data.skills);
       })
@@ -75,9 +96,11 @@ class Settings extends Component {
 
         {/* <input type="text" onChange={this.hndleskillchange} />
         <button onClick={this.addskill}>add</button> */}
+        {/* <ChipsArray2 /> */}
 
-
-
+        {this.state.jobspecset && (
+          <ChipsArray2 currentjobspecs={this.valtokeyjobs} />
+        )}
 
         {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
       </div>
