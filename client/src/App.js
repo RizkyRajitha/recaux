@@ -6,9 +6,7 @@ import "./App.css";
 //import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
-
 // import 'materialize-css/dist/css/materialize.min.css'
-
 // import M from 'materialize-css/dist/js/materialize.min.js'
 
 import Login from "./pages/login/login";
@@ -40,6 +38,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 import Notfound from "./components/notFound";
 import Userlist from "./pages/userlist/userlist";
+import Interview from './pages/interviews/interviews'
 
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
@@ -82,6 +81,11 @@ class App extends Component {
             ) : (
               ""
             )}
+            {usertype === "admin" || usertype === "depthead" ? (
+              <Route path="/interviews" component={Interview} />
+            ) : (
+                ""
+              )}
             <Route path="*" component={Notfound} />
           </Switch>
         </div>
