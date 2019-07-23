@@ -36,6 +36,7 @@ import TemporaryDrawer from "./components/sidenav_mat";
 //import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import analyticsdashboard from "./pages/analytics/analyticsdashboard";
+import analyticsdashboard2 from "./pages/analytics/analyticsdashboard2";
 import Notfound from "./components/notFound";
 import Userlist from "./pages/userlist/userlist";
 import Interview from './pages/interviews/interviews'
@@ -71,6 +72,7 @@ class App extends Component {
             <Route path="/search" component={Search} />
             <Route path="/newuserconfig/:id" component={NewUserConfig} />
             <Route path="/analytics" component={analyticsdashboard} />
+            <Route path="/searchAnalytics" component={analyticsdashboard2} />
             {usertype === "admin" ? (
               <Route path="/settings" component={Settings} />
             ) : (

@@ -118,7 +118,7 @@ class Search extends Component {
     console.log("date reset - ");
     this.setState({ bothdatesselected: false, date: null });
   };
-
+//////////////////////////////////////////////////////////////////////////////////////////
   submitesearchbydate = () => {
     if (this.state.date.from && this.state.date.to) {
       const token = localStorage.getItem("jwt");
