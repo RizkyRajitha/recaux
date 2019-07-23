@@ -96,7 +96,7 @@ exports.profileimgup = (req, ress, next) => {
             console.log(path.extname(req.file.originalname));
             var imgexte = path.extname(req.file.originalname);
             cloudinary.uploader.upload(
-              "c:/Users/Pasindu/Desktop/react/hell project/recaux-3/recaux/assets/avatar" +
+              "/home/dealwithit/Documents/dev/recaux/assets/avatar/" +
                 req.params.id +
                 imgexte,
               {
@@ -176,7 +176,7 @@ exports.cvupload = (req, ress, next) => {
                 var cvno = candoc.cvUrl.length;
                 console.log("cv number - " + cvno);
                 var filePath =
-                  "c:/Users/Pasindu/Desktop/react/hell project/recaux-3/recaux/assets/cv/" +
+                  "/home/dealwithit/Documents/dev/recaux/assets/cv/" +
                   req.params.id +
                   cvexte;
                 cloudinary.uploader.upload(
