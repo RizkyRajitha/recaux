@@ -6,9 +6,7 @@ import "./App.css";
 //import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
-
 // import 'materialize-css/dist/css/materialize.min.css'
-
 // import M from 'materialize-css/dist/js/materialize.min.js'
 
 import Login from "./pages/login/login";
