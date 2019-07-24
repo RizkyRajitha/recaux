@@ -8,6 +8,7 @@
       .container2{
         display:flex;
         justify-content: space-around;
+        margin-left: 25px;
       }
 
     .growth{
@@ -25,4 +26,20 @@
           height:225px;
           padding:25px;
           text-align: center;
+        }
+
+        .bar{
+         width:90%;
+         height:400px;
+
+        }
+
+        .pie{
+         height:300px;
+         width:100px;
+        }
+
+        .button{
+          margin-left:1375px; 
+          
         }
