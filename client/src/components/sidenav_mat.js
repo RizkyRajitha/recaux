@@ -27,25 +27,15 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
-import CardTravel from '@material-ui/icons/CardTravel'
+import CardTravel from "@material-ui/icons/CardTravel";
 import Settings from "@material-ui/icons/Settings";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
-
-function MadeWithLove() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Built with love by the "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
-      </Link>
-      {" team."}
-    </Typography>
-  );
-}
-
+import "./sidenav_mat.css";
 const drawerWidth = 240;
 const drawerHeight = 960;
 
@@ -149,7 +139,7 @@ function Dashboard(props) {
   const [open, setOpen] = React.useState(false);
   const [logedin, setlogedin] = React.useState(false);
   const [avatarUrl, setavatarUrl] = React.useState("");
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const usertype = localStorage.getItem("usertype");
 
   const handleDrawerOpen = () => {
@@ -158,6 +148,14 @@ function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  function handleClick(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
 
   React.useEffect(() => {
     var jwt = localStorage.getItem("jwt");
@@ -233,7 +231,7 @@ function Dashboard(props) {
               RECRUITMENT@AUXENTA
             </Typography>
 
-            <div className={classes.divcontnotify}>
+            <div className="divcontnotify">
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <NotificationsIcon onClick={() => console.log("cliked")} />
@@ -242,9 +240,41 @@ function Dashboard(props) {
                 <Avatar
                   alt="Remy Sharp"
                   src={avatarUrl}
-                  style={{ marginLeft: 20, width: 40, height: 40 }}
+                  style={{ marginLeft: 48, width: 40, height: 40 }}
+                  onClick={handleClick}
                   //className={classes.avatar}
                 />
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      var id = localStorage.getItem("userId");
+                      props.history.push("/user/" + id);
+                      handleClose();
+                    }}
+                  >
+                    Profile
+                  </MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      localStorage.removeItem("jwt");
+                      localStorage.removeItem("userId");
+                      localStorage.removeItem("usertype");
+                      props.history.push("/login");
+                      setlogedin(false);
+                      //window.location.reload(false);
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
 
                 {/* <Button
                   className={classes.logoutButton}
@@ -362,7 +392,7 @@ function Dashboard(props) {
                 <ListItem
                   button
                   onClick={() => {
-                    props.history.push("/search");
+                    props.history.push("/settings");
                   }}
                 >
                   <ListItemIcon>
@@ -388,7 +418,7 @@ function Dashboard(props) {
               ) : (
                 ""
               )}
-              <ListItem
+              {/* <ListItem
                 button
                 onClick={() => {
                   localStorage.removeItem("jwt");
@@ -402,7 +432,7 @@ function Dashboard(props) {
                   <CallReceived />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
-              </ListItem>
+              </ListItem> */}
             </div>
           </List>
 

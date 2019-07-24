@@ -1064,7 +1064,7 @@ exports.addinterview = (req, res, next) => {
                       .save()
                       .then(doc => {
                         console.log(doc);
-                        res.status(200).json(doc);
+                        res.status(200).json({ msg: "sucsess" });
                       })
                       .catch(err => console.log(err));
                   })
@@ -1114,7 +1114,7 @@ exports.updateinterview = (req, res, next) => {
                     )
                       .then(doc => {
                         console.log(doc);
-                        res.status(200).json(doc);
+                        res.status(200).json({ msg: "sucsess" });
                       })
                       .catch(err => console.log(err));
                   })

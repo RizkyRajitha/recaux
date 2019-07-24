@@ -150,7 +150,7 @@ router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
 router.post("/searchbyname", commonRoutes.searchByName);
 router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
 
-router.post("/edituserdetails/:id", commonRoutes.editCandidateDetails);
+router.post("/editcandidatedetails/:id", commonRoutes.editCandidateDetails);
 router.post("/reg", adminRoutes.addNewUser);
 router.post("/configurenewuser", commonRoutes.configureNewUser);
 router.post("/changeuserstate/:id", adminRoutes.changeuserstate);

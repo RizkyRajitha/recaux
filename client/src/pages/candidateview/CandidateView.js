@@ -27,6 +27,11 @@ import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
 import ChipsArraywdelete from "./components/skillschipsWithDelete";
 import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
 import moments from "moment";
 import {
   DatePicker,
@@ -46,7 +51,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const customStyles = {
   content: {
     width: "50%",
-    height: "40%",
+    height: "30%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -84,8 +89,8 @@ const customStyles3 = {
 
 const customStyles4 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "60%",
+    height: "60%",
     top: "55%",
     left: "50%",
     right: "auto",
@@ -97,8 +102,8 @@ const customStyles4 = {
 
 const customStyles5 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "80%",
+    height: "70%",
     top: "55%",
     left: "50%",
     right: "auto",
@@ -156,7 +161,9 @@ class CandidateView extends Component {
     selectedOption: "",
     selectedJobspecOption: "",
     selectedinterviwerOption: "",
-    selectedDate: ""
+    selectedDate: new Date(),
+    snackbaropen: false,
+    snackbarmsg: ""
   };
   /****************************************** */
   openModal = () => {
@@ -307,6 +314,16 @@ class CandidateView extends Component {
     this.setState({ numPages });
   };
 
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
+
+  /******************************************************************* */
+
   chngehndlcv = e => {
     this.setState({ cvFile: e.target.files[0] });
     console.log(e.target.files);
@@ -434,10 +451,14 @@ class CandidateView extends Component {
         //this.setState({shorlistSuccess:true})
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
-          this.setState({ editcanSuccess: true });
+          //this.setState({ editcanSuccess: true });
           //window.location.reload(false);
+          this.closeModal4();
         }
-        this.closeModal4();
+
+        setTimeout(() => {
+          this.setState({ open: true });
+        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -498,7 +519,11 @@ class CandidateView extends Component {
           this.setState({ isLoading: false });
           if (results.data.msg == "allocated_success") {
             this.setState({ shorlistSuccess: true });
-            window.location.reload(false);
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: "shortlist updated succsessfully"
+            });
+            //window.location.reload(false);
           }
           this.closeModal();
         })
@@ -513,8 +538,12 @@ class CandidateView extends Component {
           //this.setState({shorlistSuccess:true})
           this.setState({ isLoading: false });
           if (res.data.msg == "allocated_success") {
-            this.setState({ shorlistSuccess: true });
-            window.location.reload(false);
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: "added to shortlist succsessfully"
+            });
+
+            //window.location.reload(false);
           }
           this.closeModal();
         })
@@ -541,16 +570,23 @@ class CandidateView extends Component {
     console.log(this.state.data._id);
 
     axios
-      .post("/usr/edituserdetails/" + this.state.data._id, payload, config)
+      .post("/usr/editcandidatedetails/" + this.state.data._id, payload, config)
       .then(res => {
         console.log(JSON.stringify(res.data));
         //this.setState({shorlistSuccess:true})
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
-          this.setState({ editcanSuccess: true });
+          //this.setState({ editcanSuccess: true });
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "candidate edited successfully"
+          });
           //window.location.reload(false);
         }
-        this.closeModal4();
+
+        setTimeout(() => {
+          this.closeModal4();
+        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -811,7 +847,12 @@ class CandidateView extends Component {
         .then(res => {
           console.log(res.data.msg);
           if (res.data.msg === "sucsess") {
-            this.setState({ status_change: 1 });
+            //this.setState({ status_change: 1 });
+            console.log("schedule interview");
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: " Re-scheduled interview succsessfully"
+            });
             this.closeModal6();
           }
 
@@ -827,8 +868,12 @@ class CandidateView extends Component {
         .then(res => {
           console.log(res.data.msg);
           if (res.data.msg === "sucsess") {
-            this.setState({ status_change: 1 });
-            this.closeModal5();
+            console.log("schedule first interview");
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: " scheduled interview succsessfully"
+            });
+            this.closeModal6();
           }
 
           console.log("awoooooooooo");
@@ -866,7 +911,7 @@ class CandidateView extends Component {
     // }
 
     const { selectedOption, selectoptionsnamelist } = this.state;
-
+    const { snackbaropen } = this.state;
     return (
       <div>
         {/* <Navbar />
@@ -890,11 +935,11 @@ class CandidateView extends Component {
               </div>
             )}
 
-            {this.state.editcanSuccess && (
+            {/* {this.state.editcanSuccess && (
               <div class="alert alert-success" role="alert">
                 edited candidate succsessfuly
               </div>
-            )}
+            )} */}
 
             <Modal
               isOpen={this.state.modalIsOpen}
@@ -1018,14 +1063,14 @@ class CandidateView extends Component {
                       value={this.state.data.jobspec}
                       // disabled={true}
                     /> */}
-
+                    <div className="canviewborderdividcandidtaeeditdetails" />
                     <Select
                       placeholder={this.state.data.jobspec}
                       value={this.selectedJobspecOption}
                       onChange={this.handleChangemodalselect}
                       options={this.state.selectoptionsnamelist}
                     />
-
+                    <div className="canviewborderdividcandidtaeeditdetails" />
                     <ChipsArraywdelete
                       id={this.state.data._id}
                       currentskills={this.valtokey}
@@ -1470,7 +1515,8 @@ status: "New"
                     <td>
                       {" "}
                       <Select
-                        required={true}
+                        native
+                        required
                         value={this.state.selectedinterviwerOption}
                         placeholder={this.state.selectedinterviwerOption.label}
                         onChange={
@@ -1485,7 +1531,7 @@ status: "New"
                   <td>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                       <DateTimePicker
-                        value={this.selectedDate}
+                        value={this.state.selectedDate}
                         onChange={this.handleDateChange}
                         disablePast={true}
                       />
@@ -1521,6 +1567,32 @@ status: "New"
           </button>
           <br />
           <br />
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "center"
+            }}
+            open={snackbaropen}
+            autoHideDuration={2000}
+            onClose={() => this.setState({ snackbaropen: false })}
+            //onClose={this.handleClose}
+            ContentProps={{
+              "aria-describedby": "message-id"
+            }}
+            message={<span id="message-id">{this.state.snackbarmsg}</span>}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                //className={classes.close}
+                onClick={this.handleClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
 
           {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>

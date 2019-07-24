@@ -27,11 +27,15 @@
   margin-right: 20px;
 }
 
-.canviewshortlistform{
+.canviewborderdividcandidtaeeditdetails {
+  margin-top: 2%;
+}
+
+.canviewshortlistform {
   margin-left: 40%;
 }
 
-.canviewmodal2closebtn{
+.canviewmodal2closebtn {
   background-color: #246ad3;
 }
 

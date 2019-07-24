@@ -394,14 +394,14 @@ class Search extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-
+{/* 
         <button
           id="searchbydatebtn"
           className="btn btn-primary"
           onClick={this.searchModal}
         >
           search by date
-        </button>
+        </button> */}
 
         <div className="searchParamsdiv">
           <form

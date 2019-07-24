@@ -112,12 +112,6 @@ export default function ChipsArray(props) {
 
   return (
     <div>
-      <Select
-        value={selectedOption}
-        onChange={handleChangemodalselect}
-        options={selectoptionsnamelist}
-      />
-      <Divider variant="inset" component="li" />
       <Paper className={classes.root}>
         {chipData.map(data => {
           let icon;
@@ -132,6 +126,15 @@ export default function ChipsArray(props) {
           );
         })}
       </Paper>
+
+      <Divider variant="inset" component="li" />
+      <div style={{ marginTop: "1%" }} />
+
+      <Select
+        value={selectedOption}
+        onChange={handleChangemodalselect}
+        options={selectoptionsnamelist}
+      />
     </div>
   );
 }
