@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Interviewcard from "./components/interviewcard";
+import Card from '@material-ui/core/Card';
 const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
 
@@ -65,16 +66,16 @@ class Interview extends Component {
         /> */}
 
         {this.state.data &&
-          this.state.data.forEach(element => {
-            console.log(element.schedulerName);
+          this.state.data.map(element => {
+            console.log("hahah   " + element.datetime);
             return (
-              <div>{element.schedulerName}</div>
-              // <Interviewcard
-              //   schedulerName={element.schedulerName}
-              //   candidateName={element.candidateName}
-              //   interviwerName={element.interviwerName}
-              //   datetime={element.datetime}
-              // />
+              <Interviewcard
+                datetime={element.datetime}
+                schedulerName={element.schedulerName}
+                candidateName={element.candidateName}
+                interviwerName={element.interviwerName}
+                datetime={element.datetime}
+              />
             );
           })}
       </div>

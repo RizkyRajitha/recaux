@@ -2,7 +2,7 @@ const passport = require("passport");
 const User = require("../db/users");
 const Candidate = require("../db/candidates");
 const Evaluation = require("../db/evaluation");
-const Interview = require('../db/interviews')
+const Interview = require("../db/interviews");
 const ObjectID = require("mongodb").ObjectID;
 var fs = require("fs");
 
@@ -391,7 +391,6 @@ exports.shortlistOverideOne = (req, res, next) => {
 
 //interviews
 
-
 exports.interviews = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
@@ -404,25 +403,19 @@ exports.interviews = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
-        
         console.log(req.body);
         var datain = req.body;
 
         Interview.find({
-          interviwerId:user.id
-        }).then(doc=>{
-          res.status(200).json(doc)
-          console.log(doc)
-        }).catch(err=>{
-          console.log(err)
+          interviwerId: user.id
         })
-
-
-
-
-
-
-
+          .then(doc => {
+            res.status(200).json(doc);
+            console.log(doc);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);

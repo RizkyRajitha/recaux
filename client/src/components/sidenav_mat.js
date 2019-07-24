@@ -19,6 +19,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import Link from "@material-ui/core/Link";
@@ -26,6 +27,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
+import CardTravel from '@material-ui/icons/CardTravel'
 import Settings from "@material-ui/icons/Settings";
 import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
@@ -52,7 +54,8 @@ const useStyles = makeStyles(theme => ({
     display: "flex"
   },
   toolbar: {
-    paddingRight: 24 // keep right padding when drawer closed
+    paddingRight: 24
+    // keep right padding when drawer closed
   },
   toolbarIcon: {
     display: "flex",
@@ -85,7 +88,8 @@ const useStyles = makeStyles(theme => ({
     display: "none"
   },
   title: {
-    flexGrow: 1
+    flexGrow: 0,
+    width: "40%"
   },
   drawerPaper: {
     position: "relative",
@@ -134,6 +138,9 @@ const useStyles = makeStyles(theme => ({
   },
   logoutButton: {
     marginLeft: 36
+  },
+  divcontnotify: {
+    marginLeft: "75%"
   }
 }));
 
@@ -141,6 +148,7 @@ function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [logedin, setlogedin] = React.useState(false);
+  const [avatarUrl, setavatarUrl] = React.useState("");
 
   const usertype = localStorage.getItem("usertype");
 
@@ -162,28 +170,28 @@ function Dashboard(props) {
         headers: { authorization: jwt }
       };
 
-      // axios
-      //   .get("/usr/basicuserdetails", config)
-      //   .then(res => {
-      //     console.log(res.data);
-      //     var datain = res.data;
+      axios
+        .get("/usr/basicuserdetails", config)
+        .then(res => {
+          console.log(res.data);
+          var datain = res.data;
 
-      //     var preurl = res.data.avatarUrl.slice(0, 48);
-      //     var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-      //     var config = "/w_290,h_295,c_thumb/";
+          var preurl = res.data.avatarUrl.slice(0, 48);
+          var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+          var config = "/w_290,h_295,c_thumb/";
 
-      //     var baseUrl = preurl + config + posturl;
-      //     // this.setState({ avatarUrl: baseUrl });
-
-      //     this.setState({
-      //       id: datain._id,
-      //       firstName: datain.firstName,
-      //       lastName: datain.lastName,
-      //       usertype: datain.usertype,
-      //       avatarUrl: baseUrl
-      //     });
-      //   })
-      //   .catch(err => {});
+          var baseUrl = preurl + config + posturl;
+          // this.setState({ avatarUrl: baseUrl });
+          setavatarUrl(baseUrl);
+          // this.setState({
+          //   id: datain._id,
+          //   firstName: datain.firstName,
+          //   lastName: datain.lastName,
+          //   usertype: datain.usertype,
+          //   avatarUrl: baseUrl
+          // });
+        })
+        .catch(err => {});
     } catch (error) {
       console.log(error);
       props.history.push("/login");
@@ -220,29 +228,39 @@ function Dashboard(props) {
               component="h1"
               variant="h6"
               color="inherit"
-              noWrap
               className={classes.title}
             >
-              Recrutement@Auxenta
+              RECRUITMENT@AUXENTA
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon onClick={() => console.log("cliked")} />
-              </Badge>
-              <Button
-                className={classes.logoutButton}
-                color="inherit"
-                onClick={() => {
-                  localStorage.removeItem("jwt");
-                  localStorage.removeItem("userId");
-                  localStorage.removeItem("usertype");
-                  props.history.push("/login");
-                  window.location.reload(false);
-                }}
-              >
-                Logout
-              </Button>
-            </IconButton>
+
+            <div className={classes.divcontnotify}>
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
+                  <NotificationsIcon onClick={() => console.log("cliked")} />
+                </Badge>
+
+                <Avatar
+                  alt="Remy Sharp"
+                  src={avatarUrl}
+                  style={{ marginLeft: 20, width: 40, height: 40 }}
+                  //className={classes.avatar}
+                />
+
+                {/* <Button
+                  className={classes.logoutButton}
+                  color="inherit"
+                  onClick={() => {
+                    localStorage.removeItem("jwt");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("usertype");
+                    props.history.push("/login");
+                    window.location.reload(false);
+                  }}
+                >
+                  Logout
+                </Button> */}
+              </IconButton>
+            </div>
           </Toolbar>
         </AppBar>
 
@@ -329,11 +347,22 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Search" />
               </ListItem>
-              {usertype === "admin" || usertype === "hr_staff" ? (
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/interviews");
+                }}
+              >
+                <ListItemIcon>
+                  <CardTravel />
+                </ListItemIcon>
+                <ListItemText primary="Interviews" />
+              </ListItem>
+              {usertype === "admin" || usertype === "depthead" ? (
                 <ListItem
                   button
                   onClick={() => {
-                    props.history.push("/settings");
+                    props.history.push("/search");
                   }}
                 >
                   <ListItemIcon>
@@ -374,7 +403,6 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItem>
-              
             </div>
           </List>
 

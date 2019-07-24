@@ -25,7 +25,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import jsonwebtoken from "jsonwebtoken";
 //import Navbar from "../../components/navbar";
-//import "./login.css";
+import "./login.css";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -52,10 +52,12 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     flexGrow: 1
-  },appbar: {
+  },
+  appbar: {
     flexGrow: 1,
-    alignItems: 'center',
-
+    alignItems: "center",
+    letterSpacing:5,
+    fontWeight:"bold"
   }
 }));
 
@@ -94,10 +96,15 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
       <AppBar position="static" >
         <Toolbar>
           <Typography variant="h6" color="inherit" noWrap align="center" className={classes.appbar} >
-            Recruitement @ Auxenta
+          RECRUITMENT@AUXENTA
           </Typography>
         </Toolbar>
       </AppBar>
+      <br/>
+      <h1 className="sameera" > </h1>
+      <br />
+      <br />
+
       <Container component="main" maxWidth="xs">
         {errors.invalidcred && (
           <div class="alert alert-danger" role="alert">
