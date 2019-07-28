@@ -7,7 +7,9 @@ const path = require("path");
 const fs = require("fs");
 const Jobspec = require("../db/jobspec");
 const Interview = require("../db/interviews");
+const Notifications = require("../db/nortification");
 require("../config/passport");
+const serverss = require("../server");
 const emailhandler = require("../config/emailhandler");
 
 exports.configureNewUser = (req, res, next) => {
@@ -66,6 +68,10 @@ exports.addCandidate = (req, res) => {
     .save()
     .then(result => {
       res.status(200).json(result);
+      serverss.wsfunc("new_interview", {
+        candidateId: result.id,
+        dis: "new candidate " + req.body.candidatename
+      });
     })
     .catch(err => {
       console.log(err);
@@ -1064,7 +1070,29 @@ exports.addinterview = (req, res, next) => {
                       .save()
                       .then(doc => {
                         console.log(doc);
-                        res.status(200).json({ msg: "sucsess" });
+
+                        const newnot = new Notifications({
+                          dis: ` you have new interview with ${doc3.name} on ${
+                            datain.datetime
+                          } scheduled by ${doc1.firstName +
+                            " " +
+                            doc1.lastName} `,
+                          title: "Interview",
+                          time: new Date().toISOString(),
+                          userIdShow: datain.interviewer
+                        });
+
+                        newnot
+                          .save()
+                          .then(docs => {
+                            var objdocs = docs.toObject();
+                            objdocs.candidateId = datain.candidateid;
+                            serverss.wsfunc("new_interview", docs);
+                            res.status(200).json({ msg: "sucsess" });
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
                       })
                       .catch(err => console.log(err));
                   })

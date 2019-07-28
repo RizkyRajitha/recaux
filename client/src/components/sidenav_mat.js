@@ -36,8 +36,20 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import "./sidenav_mat.css";
+import io from "socket.io-client";
+
 const drawerWidth = 240;
 const drawerHeight = 960;
+//let socket = "";
+
+//do work
+
+//socket = io();
+
+const socket = io("http://127.0.0.1:3001", {
+  transports: ["websocket"],
+  upgrade: false
+});
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -140,7 +152,11 @@ function Dashboard(props) {
   const [logedin, setlogedin] = React.useState(false);
   const [avatarUrl, setavatarUrl] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open2, setOpen2] = React.useState(false);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
   const usertype = localStorage.getItem("usertype");
+
+  const [data, setdata] = React.useState([]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -153,8 +169,15 @@ function Dashboard(props) {
     setAnchorEl(event.currentTarget);
   }
 
+  function handleClick2(event) {
+    setAnchorEl2(event.currentTarget);
+  }
+
   function handleClose() {
     setAnchorEl(null);
+  }
+  function handleClose2() {
+    setAnchorEl2(null);
   }
 
   React.useEffect(() => {
@@ -197,6 +220,16 @@ function Dashboard(props) {
       //this.setState({ loggedin: false });
       //this.props.history.push("/login");
     }
+
+    socket.on("new_interview", newitne => {
+      console.log("awa");
+      console.log(newitne);
+      setdata(state => {
+        return state.concat([newitne]);
+      });
+
+      console.log(data);
+    });
   }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -233,8 +266,11 @@ function Dashboard(props) {
 
             <div className="divcontnotify">
               <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <NotificationsIcon onClick={() => console.log("cliked")} />
+                <Badge badgeContent={data.length} color="secondary">
+                  <NotificationsIcon
+                    onClick={handleClick2}
+                    style={{ width: 30, height: 30 }}
+                  />
                 </Badge>
 
                 <Avatar
@@ -244,6 +280,26 @@ function Dashboard(props) {
                   onClick={handleClick}
                   //className={classes.avatar}
                 />
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl2}
+                  keepMounted
+                  open={Boolean(anchorEl2)}
+                  onClose={handleClose2}
+                >
+                  {data.map(ele => {
+                    return (
+                      <MenuItem
+                        onClick={() =>
+                          props.history.push("/getcandidate/" + ele.candidateId)
+                        }
+                      >
+                        {ele.dis}
+                      </MenuItem>
+                    );
+                  })}
+                </Menu>
 
                 <Menu
                   id="simple-menu"

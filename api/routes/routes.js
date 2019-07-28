@@ -1,3 +1,4 @@
+//import io from 'socket.io'
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -15,6 +16,11 @@ const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
 const Jobspec = require("../db/jobspec");
 const fs = require("fs");
+
+const serverss = require('../server')
+
+
+
 //const skillJson = require("../config/skills.json");
 
 //const mailhandleremailconfirm = require('../config/emailhandler')
@@ -170,27 +176,38 @@ router.get('/interviews',deptheadRoutes.interviews)
 
 
 router.get("/testing", (req, res) => {
-  var newjobspec = new Jobspec({
-    label: "buha",
-    value: "habubu"
-  });
+ 
+ 
+ 
+  io.emit("new_candidate", result);
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  // var newjobspec = new Jobspec({
+  //   label: "buha",
+  //   value: "habubu"
+  // });
 
-  var payload = [];
+  // var payload = [];
 
-  Jobspec.find()
-    .then(doc => {
-      doc.forEach(item => {
-        try {
-          console.log(item.label);
-          payload.push({ value: item.value, label: item.label });
-        } catch (error) {
-          console.log(error);
-        }
-      });
+  // Jobspec.find()
+  //   .then(doc => {
+  //     doc.forEach(item => {
+  //       try {
+  //         console.log(item.label);
+  //         payload.push({ value: item.value, label: item.label });
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     });
 
-      res.json({ jobspeclist: payload });
-    })
-    .catch(err => {});
+  //     res.json({ jobspeclist: payload });
+  //   })
+  //   .catch(err => {});
 
   // newjobspec
   //   .save()
@@ -526,6 +543,15 @@ if (uniqecan) {
 //     res.status(400).send("adding new evaluation form failed");
 //   });
 // });
+
+
+
+router.get("/testws", (req, res) => {
+
+  serverss.wsfunc( 'new_interview',[{msg:"new interview"}])
+  res.send('bla bla')
+
+})
 
 router.get("/test", (req, res) => {
   var ada = new Date();

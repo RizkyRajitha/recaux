@@ -42,6 +42,12 @@ app.use("/static", express.static(path.join(__dirname, "../assets")));
 
 app.use("/usr", require("./routes/routes"));
 
+app.get("/ws", (req, res) => {
+  console.log("ws test.....");
+  io.emit("new_candidate", [{ msg: "hola" }, { msg: "aloha" }]);
+  res.send("juhu");
+});
+
 /******************************************************************* */
 
 cloudinary.config({
@@ -247,6 +253,10 @@ io.on("connection", sock => {
     console.log("user disconnected");
   });
 });
+
+module.exports.wsfunc = (eventname, data) => {
+  io.emit(eventname, data);
+};
 
 http.listen(port, () => {
   console.log("listning on 3001");
