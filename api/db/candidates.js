@@ -34,14 +34,16 @@ var candidateSchema = new Schema({
   source: {
     type: String
   },
-  evaluationData: {
-    evaluatorId: String,
-    evaluationMarks: Number,
-    acadamicBackground: String,
-    indusrtyExperiance: String,
-    currentPosition: String,
-    JobPeriod: String
+    interviewed: {
+    type: Boolean,
+    default: false
   },
+
+  shortlisted: {
+    type: Boolean,
+    default: false
+  },
+
   assignToshortlisterbyId: { type: String },
   assignToshortlisterbyName: { type: String },
   shortlister: { type: String },

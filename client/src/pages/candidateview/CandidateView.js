@@ -885,6 +885,25 @@ class CandidateView extends Component {
     }
   };
 
+  showevalpdf = () => {
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var id = this.props.match.params.id;
+
+    //window.open("/usr/getevalpdf/" + id);
+
+    axios
+      .get("/usr/getevalpdf/" + id, config)
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => {});
+  };
+
   render() {
     // if (this.state.recivedago) {
     //   console.log("wjooop");
@@ -1553,9 +1572,16 @@ status: "New"
             change secondary status
           </button>
 
-          <button onClick={this.evalHndler} className="btn btn-primary">
-            evaluate
-          </button>
+          {this.state.data.interviewed ? (
+            <button onClick={this.showevalpdf} className="btn btn-primary">
+              Evaluation PDF
+            </button>
+          ) : (
+            <button onClick={this.evalHndler} className="btn btn-primary">
+              evaluate
+            </button>
+          )}
+
           <button onClick={this.viewcvsmodal} className="btn btn-primary">
             candidate history
           </button>

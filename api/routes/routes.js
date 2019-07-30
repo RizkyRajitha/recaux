@@ -17,6 +17,11 @@ const commonRoutes = require("./common.routes");
 const Jobspec = require("../db/jobspec");
 const fs = require("fs");
 
+
+const pdf = require('html-pdf');
+const options = {format: 'Letter'};
+const evaluationPdfTemplate = require('../config/evaluationPdf/template')
+
 const serverss = require('../server')
 
 
@@ -172,14 +177,35 @@ router.post("/deletenewjobspec", commonRoutes.deletenewjobspec);
 router.post("/addinterview", commonRoutes.addinterview);
 router.post("/updateinterview", commonRoutes.updateinterview);
 router.get('/interviews',deptheadRoutes.interviews)
+router.get('/getevalpdf/:id',deptheadRoutes.getevalpdf)
 
 
 
 router.get("/testing", (req, res) => {
+
+
+  Candidate.find().then(doc=>{
+
+    pdf.create( evaluationPdfTemplate({ name, interviwedDate, Jobspec, academicBackground,industryExperience,currentPosition,currentEmployer ,interviwerName}),{} ).toFile('config/evalpdf.pdf',function(err,res){
+
+      if(err) {
+        console.log(err);
+    }else{
+      console.log('res')
+      console.log(res)
+      res.send('haha')
+    }
+
+
+  }).catch(err=>console.log(err))
  
+
  
- 
-  io.emit("new_candidate", result);
+
+
+})
+
+  //io.emit("new_candidate", result);
  
  
  

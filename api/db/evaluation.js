@@ -5,13 +5,22 @@ let Evaluation = new Schema({
   name: {
     type: String
   },
+  candidateId: {
+    type: String
+  },
+
   role: {
     type: String
   },
   date: {
     type: String
   },
-  interviewedBy: {
+
+  interviewedById: {
+    type: String
+  },
+
+  interviewedByName: {
     type: String
   },
   academicBackground: {
@@ -140,6 +149,10 @@ let Evaluation = new Schema({
   period2: {
     type: String
   },
+  approveid: {
+    type: String
+  },
+
   approve: {
     type: String
   }
