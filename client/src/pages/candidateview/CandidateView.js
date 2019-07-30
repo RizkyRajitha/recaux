@@ -27,6 +27,7 @@ import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
 import ChipsArraywdelete from "./components/skillschipsWithDelete";
 import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
+import ChipsArrayPanal from "./components/skillsChipWithDeletePanal";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -45,7 +46,7 @@ import { Button } from "@material-ui/core";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
 }/pdf.worker.js`;
-
+const FileDownload = require("file-saver");
 // import { Document } from 'react-pdf/dist/entry.webpack';
 
 const customStyles = {
@@ -598,6 +599,7 @@ class CandidateView extends Component {
     console.log(selectedOption);
     console.log("................");
     this.setState({ selectedinterviwerOption: selectedOption });
+    //this.forceUpdate()
     console.log(this.state.selectedinterviwerOption);
   };
 
@@ -813,6 +815,17 @@ class CandidateView extends Component {
     return keyrr;
   };
 
+  valtokeypanal = () => {
+    var arr = [this.state.selectedinterviwerOption];
+
+    var keyrr = [];
+
+    arr.forEach(element => {
+      keyrr.push({ key: element.value, label: element.label });
+    });
+    return keyrr;
+  };
+
   scheduleHandler = e => {
     e.preventDefault();
     console.log("add interview");
@@ -889,19 +902,45 @@ class CandidateView extends Component {
     var token = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: token }
+      headers: { authorization: token },
+      responseType: "blob"
     };
 
     var id = this.props.match.params.id;
 
     //window.open("/usr/getevalpdf/" + id);
 
+    // axios({
+    //   url: "/usr/getevalpdf/" + id, //your url
+    //   method: 'POST',
+    //   responseType: 'blob', // important
+    // }).then((response) => {
+    //    const url = window.URL.createObjectURL(new Blob([response.data]));
+    //    const link = document.createElement('a');
+    //    link.href = url;
+    //    link.setAttribute('download', 'file.pdf'); //or any other extension
+    //    document.body.appendChild(link);
+    //    link.click();
+    // });
+
     axios
       .get("/usr/getevalpdf/" + id, config)
       .then(res => {
-        console.log(res.data)
+        console.log(res);
+        //FileDownload(res.data);
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        //FileDownload(res.data, "evalpdf.pdf");
+        FileDownload.saveAs(pdfBlob, this.state.data.name + "_evalpdf.pdf");
+
+        if (res.data.msg === "sucsess") {
+          // FileDownload()
+        }
       })
       .catch(err => {});
+  };
+
+  gteinterviewpanal = panal => {
+    console.log(panal);
   };
 
   render() {
@@ -1556,6 +1595,29 @@ status: "New"
                       />
                     </MuiPickersUtilsProvider>
                   </td>
+
+                  <tr>
+                    <td>interviewe panal- </td>
+                    <td>
+                      <div className="" />
+                      <ChipsArrayPanal
+                        hidden={
+                          this.state.selectedinterviwerOption.value
+                            ? false
+                            : true
+                        }
+                        id={this.state.data._id}
+                        //remuser={this.state.selectedinterviwerOption}
+                        currentskills={[
+                          {
+                            key: this.state.selectedinterviwerOption.value,
+                            label: this.state.selectedinterviwerOption.label
+                          }
+                        ]}
+                        setpanal={this.gteinterviewpanal}
+                      />
+                    </td>
+                  </tr>
                 </table>
                 <Button className="btn btn-primary" type="submit">
                   Confirm Interview

@@ -1070,7 +1070,6 @@ exports.addinterview = (req, res, next) => {
                       .save()
                       .then(doc => {
                         console.log(doc);
-
                         const newnot = new Notifications({
                           dis: ` you have new interview with ${doc3.name} on ${
                             datain.datetime
@@ -1079,7 +1078,8 @@ exports.addinterview = (req, res, next) => {
                             doc1.lastName} `,
                           title: "Interview",
                           time: new Date().toISOString(),
-                          userIdShow: datain.interviewer
+                          userIdShow: [datain.interviewer],
+                          candidateId: datain.candidateid
                         });
 
                         newnot
@@ -1149,6 +1149,64 @@ exports.updateinterview = (req, res, next) => {
                   .catch(err => console.log(err));
               })
               .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.notifications = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Notifications.find({ userIdShow: user.id, viwed: false })
+          .then(docs => {
+            console.log(docs);
+            res.status(200).json(docs);
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.userdataarr = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
+          .then(doc => {
+            const userDataArr = doc.map(ele => {
+              return {
+                label: `${ele.firstName + " " + ele.lastName}`,
+                value: ele.id
+              };
+            });
+
+            res.status(200).json(userDataArr);
           })
           .catch(err => console.log(err));
       }

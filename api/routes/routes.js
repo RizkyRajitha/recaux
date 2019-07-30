@@ -178,7 +178,8 @@ router.post("/addinterview", commonRoutes.addinterview);
 router.post("/updateinterview", commonRoutes.updateinterview);
 router.get('/interviews',deptheadRoutes.interviews)
 router.get('/getevalpdf/:id',deptheadRoutes.getevalpdf)
-
+router.get('/notifications',commonRoutes.notifications)
+router.get('/userdataarr',commonRoutes.userdataarr)
 
 
 router.get("/testing", (req, res) => {

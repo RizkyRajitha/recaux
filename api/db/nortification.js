@@ -6,9 +6,9 @@ var nortificationSchema = new Schema({
   title: { type: String },
   dis: { type: String },
   timeCre: { type: String },
-  userIdShow: { type: String },
-  viwed: { type: Boolean, default: false }
-  
+  userIdShow: [],
+  viwed: { type: Boolean, default: false },
+  candidateId: { type: String }
 });
 
 const Notifications = mongoose.model("Notifications", nortificationSchema);

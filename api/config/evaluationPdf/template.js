@@ -1,6 +1,15 @@
-module.exports = ({ name, interviwedDate, Jobspec, academicBackground,industryExperience,currentPosition,currentEmployer ,interviwerName}) => {
-    const today = new Date();
-return `
+module.exports = ({
+  name,
+  interviwedDate,
+  Jobspec,
+  academicBackground,
+  industryExperience,
+  currentPosition,
+  currentEmployer,
+  interviwerName
+}) => {
+  const today = new Date();
+  return `
     <!doctype html>
     <html>
        <head>
@@ -86,7 +95,7 @@ return `
                    <td colspan="2">
                       <table>
                          <tr>
-                            <td class="title"><img  src="https://i2.wp.com/cleverlogos.co/wp-content/uploads/2018/05/reciepthound_1.jpg?fit=800%2C600&ssl=1"
+                            <td class="title"><img  src="https://pbs.twimg.com/profile_images/987193092145950720/qEQhRm98_400x400.jpg"
                                style="width:100%; max-width:156px;"></td>
                             <td>
                                Date interviewed : ${interviwedDate}
@@ -115,26 +124,26 @@ return `
                 </tr>
                 <tr class="item">
                    <td>Acadamic background:</td>
-                   <td>${academicBackground}$</td>
+                   <td>${academicBackground}</td>
                 </tr>
                 <tr class="item">
                    <td>Industry Experience :</td>
-                   <td>${industryExperience}$</td>
+                   <td>${industryExperience}</td>
                 </tr>
 
              <tr class="item">
              <td>Current position & period :</td>
-             <td>${currentPosition}$</td>
+             <td>${currentPosition}</td>
           </tr>
 
           <tr class="item">
           <td>Current Empolyer :</td>
-          <td>${currentEmployer}$</td>
+          <td>${currentEmployer}</td>
        </tr>
 
              </table>
              <br />
-             <h3 class="justify-center">Interviwed by: ${interviwerName}$</h1>
+             <h3 class="justify-center">Interviwed by: ${interviwerName}</h1>
           </div>
        </body>
     </html>

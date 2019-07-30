@@ -253,7 +253,7 @@ exports.evaluationAdd = (req, res, next) => {
           candidateId: req.body.candidateId,
           role: req.body.role,
           date: req.body.date,
-          interviewedByName: req.body.interviewedBy,
+          interviewedByName: req.body.interviewedByName,
           interviewedById: user.id,
           academicBackground: req.body.academicBackground,
           industryExperience: req.body.industryExperience,
@@ -362,7 +362,9 @@ exports.getevalpdf = (req, res, next) => {
                 {}
               )
               .toFile(
-                "../assets/evaluationforms/" + req.params.id + "evalpdf.pdf",
+                "../assets/evaluationforms/" +
+                  req.params.id +
+                  "evaluationpdf.pdf",
                 function(err, pdfdata) {
                   if (err) {
                     console.log(err);
@@ -370,23 +372,29 @@ exports.getevalpdf = (req, res, next) => {
                     console.log("res");
                     console.log(pdfdata);
 
-                    //res.status(200).json({msg:"sucsess",url:''})
+                    // res.status(200).json({
+                    //   msg: "sucsess",
+                    //   url:
+                    //     "http://localhost:3001/evaluation/" +
+                    //     req.params.id +
+                    //     "evaluationpdf.pdf"
+                    // }); //"5d3de640973a806147d74de2evaluationpdf.pdf'})
 
-                    // res.download(
-                    //   pdfdata.filename,
-                    //   req.params.id + "evalpdf.pdf",
-                    //   function(err) {
-                    //     if (err) {
-                    //       console.log(err);
-                    //       // Handle error, but keep in mind the response may be partially-sent
-                    //       // so check res.headersSent
-                    //     } else {
+                    res.download(
+                      pdfdata.filename,
+                      req.params.id + "evalpdf.pdf",
+                      function(err) {
+                        if (err) {
+                          console.log(err);
+                          // Handle error, but keep in mind the response may be partially-sent
+                          // so check res.headersSent
+                        } else {
 
-                    //       // decrement a download credit, etc.
-                    //     }
-                    //   }
-                    // );
-                    //
+                          // decrement a download credit, etc.
+                        }
+                      }
+                    );
+                    
                     //res.download();
                   }
                 }

@@ -9,6 +9,7 @@
     "@material-ui/pickers": "^3.2.0",
     "@trendmicro/react-sidenav": "^0.4.5",
     "axios": "^0.18.0",
+    "file-saver": "^2.0.2",
     "formik": "^1.5.4",
     "formik-material-ui": "0.0.18",
     "jsonwebtoken": "^8.4.0",

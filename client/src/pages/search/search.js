@@ -76,7 +76,7 @@ class Search extends Component {
     usertype: "",
     avatarUrl: false,
     searchbydateclieked: false,
-    searchName: "",
+    searchName: "",  
     searchemail: "",
     searchjobspec: "",
     searchsource: "",
@@ -87,7 +87,7 @@ class Search extends Component {
   openModal = () => {
     this.setState({ modalIsOpen: true });
   };
-
+//5
   afterOpenModal = () => {
     // references are now sync'd and can be accessed.
     this.subtitle.style.color = "#f00";

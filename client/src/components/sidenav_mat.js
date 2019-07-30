@@ -221,6 +221,18 @@ function Dashboard(props) {
       //this.props.history.push("/login");
     }
 
+    axios
+      .get("/usr/notifications", config)
+      .then(res => {
+        console.log("555555555555555555555555555555555555555555555555");
+        console.log("555555555555555555555555555555555555555555555555");
+        console.log("555555555555555555555555555555555555555555555555");
+        console.log("555555555555555555555555555555555555555555555555");
+        console.log(res.data);
+        setdata(res.data);
+      })
+      .catch(err => console.log(err));
+
     socket.on("new_interview", newitne => {
       console.log("awa");
       console.log(newitne);

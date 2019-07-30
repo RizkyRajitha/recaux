@@ -23,7 +23,8 @@ var InterviewSchema = new Schema({
   },
   datetime: {
     type: String
-  }
+  },
+  panal: []
 });
 
 const Interview = mongoose.model("Interview", InterviewSchema);
