@@ -1,0 +1,26 @@
+.usercardbadgeDiv{
+    font-size: 1.5rem;
+    inline-size: 10%;
+    padding-top: 3%;
+    position: absolute;
+    margin-left: 85%;
+}
+
+#usercardtitle{
+    margin-right: 10%;
+    text-align: left;
+}
+
+.usercardbadgeDivforstate{
+
+    font-size: 1rem;
+    inline-size: 10%;
+    padding-top: 5%;
+    position: absolute;
+    margin-left: 55%;
+
+}
+
+#usercard11{
+    width: 80%;
+}

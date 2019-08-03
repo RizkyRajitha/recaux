@@ -1,18 +1,23 @@
 #userprofile{
     position: absolute;
-    top: 20%;
+    top: 10%;
     left:90%;
 }
 
 #addcan {
     position: absolute;
-    top: 20%;
+    top: 10%;
     left:75%;
    
 }
+#shortlist{
+    position: absolute;
+    top: 10%;
+    left:65%;
+}
 
 .dashboardmain{
-    background-color: #666666;
+    
     height: 600px;
     width: 100%;
 }
@@ -21,35 +26,68 @@
     text-align: center
    
 }
-#cardcontainer1{
+
+/**
+*/
+#dashboardcardcontainer1{
    
     position: absolute;
-    top: 44%;
-    left:1%;
+    top: 25%;
+    left:6%;
     width: 39%;
-    background-color: #3f51b5 ;
-    text-align: center;
+    padding-right: 10%;
+    
+    text-align: left;
     
 }
-#cardcontainer2{
+
+#dashboardcardcontainer2{
    
     position: absolute;
-    top: 44%;
-    left:41%;
-    width: 57%;
-    background-color: #00bcd4;
+    top: 25%;
+    left:37%;
+    width: 39%;
+    padding-right: 10%;
+    
+    text-align: left;
+    
+}#dashboardcardcontainer3{
+   
+    position: absolute;
+    top: 25%;
+    left:68.5%;
+    width: 39%;
+    padding-right: 10%;
+    
+    text-align: left;
+    
+}
+
+
+.cardcontainer2_nonadmin{
+   
+    position: absolute;
+    top: 20%;
+    left:10%;
+    width: 87%;
+    
     text-align: center;
     
 }
 
-.greet{
-    color: #    ;
+.cardcontainer2_admin{
+   
+    position: absolute;
+    top: 20%;
+    left:32%;
+    width: 67%;
+    
+    text-align: center;
+    
 }
 
-#verifyemail{
-    background-color: #e53935;
-    height: 70px;
+.usrtype{
+    
+    inline-size: 300px;
 }
-#verifyemailbtn{
-    background-color: #e53935;
-}
+

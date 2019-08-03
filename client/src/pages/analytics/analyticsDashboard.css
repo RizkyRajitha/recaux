@@ -1,0 +1,45 @@
+
+    .container1{
+        display:flex;
+        justify-content: space-around;
+        
+      } 
+    
+      .container2{
+        display:flex;
+        justify-content: space-around;
+        margin-left: 25px;
+      }
+
+    .growth{
+        display:flex;
+        margin-left: 25px;
+    }
+    
+  
+      .analyticsdash {
+          display: inline-block;
+          margin-top: 10px;
+          border: 1px solid rgb(1, 0, 7);
+          /* box-shadow: 0 2px 2px rgb(80, 29, 57); */
+          width: 350px;
+          height:225px;
+          padding:25px;
+          text-align: center;
+        }
+
+        .bar{
+         width:90%;
+         height:400px;
+
+        }
+
+        .pie{
+         height:300px;
+         width:100px;
+        }
+
+        .button{
+          margin-left:1375px; 
+          
+        }

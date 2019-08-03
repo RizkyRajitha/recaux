@@ -14,14 +14,17 @@ var userSchema = new Schema({
     required: true,
     dropDups: true
   },
-  firstName: { 
-    type: String 
+  firstName: {
+    type: String
   },
 
   lastName: {
-     type: String 
-    }
-     ,
+    type: String
+  },
+  state: {
+    type: Boolean,
+    default: false
+  },
   hash: {
     type: String
   },
@@ -31,19 +34,35 @@ var userSchema = new Schema({
   usertype: {
     type: String
   },
-  candidatesAssinged:{
-    type:String,
-    default:0
+  source: {
+    type: String
   },
-  assinngedCandidates:[[]]
+  joined: {
+    type: String
+  },
+  noOfcandidatesAssinged: {
+    type: String,
+    default: 0
+  },
+  avatarUrl: { type: String, default: null },
+  shortlist: [
+    {
+      candidateId: { type: String },
+      allocatedbyUserId: { type: String },
+      allocatedDate: { type: String },
+      allocatedUserName: { type: String },
+      shortlistedDate: { type: String },
+      shortlistStatus: { type: Boolean, default: false }
+    }
+  ]
 });
 
-userSchema.pre("save", function(next) {
-  console.log("savin.....");
-  this.salt = bcrypt.genSaltSync(saltRounds);
-  this.hash = bcrypt.hashSync(this.hash, this.salt);
-  next();
-});
+// userSchema.pre("save", function(next) {
+//   console.log("savin.....");
+//   this.salt = bcrypt.genSaltSync(saltRounds);
+//   this.hash = bcrypt.hashSync(this.hash, this.salt);
+//   next();
+// });
 
 // userSchema.pre("update", function(next) {
 //   console.log("updating.....");
@@ -99,7 +118,7 @@ userSchema.methods.generateJWT = function() {
       emailverified: this.emailverified
     },
     "authdemo",
-    { expiresIn: "10m" }
+    { expiresIn: "3600m" }
   );
 };
 

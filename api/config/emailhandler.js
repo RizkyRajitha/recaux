@@ -1,9 +1,14 @@
 var nodemailer = require("nodemailer");
 //const config = require("./keys");
-var jwt= require('jsonwebtoken')
+var jwt = require("jsonwebtoken");
+const path = require("path");
+const hbs = require("nodemailer-express-handlebars");
+//const hbss = require("handlebars");
 
 const passwordResetApi = "http://localhost:3000/resetpassword";
 const emailConfirmApi = "http://localhost:3000/confirmemail";
+const newuserconfig = "http://localhost:3000/newuserconfig";
+///
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
@@ -13,22 +18,96 @@ var transporter = nodemailer.createTransport({
   }
 });
 
+// viewEngine: {
+// extName: '.hbs',
+// partialsDir: 'some/path',
+//   layoutsDir: 'some/path',
+//   defaultLayout: 'email.body.hbs',
+// },
+// viewPath: 'some/path',
+// extName: '.hbs'
+
+transporter.use(
+  "compile",
+  hbs({
+    viewEngine: {
+      extName: ".hbs",
+      partialsDir:
+        "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
+      layoutsDir:
+        "/home/dealwithit/Documents/dev/recaux/api/config/views/layouts/"
+    },
+    viewPath:
+      "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
+    extName: ".hbs"
+  })
+);
+
+//var a = require("./emails/mars/")
 //console.log(config.jwtexp)
 
-exports.mailhandlerpasswordreset = (email, id) => {
+exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
 
+  console.log("password reset");
+  //console.log("path - " + path.join(__dirname, "emails", "mars"));
+
+  console.log(ursname);
+
+  jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" }, function(err, token) {
+    const mailOptions = {
+      from: "kithminiatdev@gmail.com",
+      to: "rajithagunathilake@gmail.com",
+      subject: "password reset",
+      text: "visit - ",
+      template: "temp2",
+      context: {
+        title: "password reset",
+        message: `${passwordResetApi}/${token}`,
+        name: ursname,
+        uniqeid:Math.random()*1000000
+      }
+      // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
+    };
+
+    console.log("send > > > > >> > ");
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("mail senddd")
+        console.log("send email - ");
+        console.log("Email sent: " + info.response);
+      }
+    });
+  });
+};
+
+
+
+exports.mailhandleremailconfirm = (ursname, email, id) => {
+
+
+
+  
   try {
-    var token = jwt.sign({"id":id},'authdemo', { expiresIn: "10m" })
+    var token = jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 
+  console.log("sending confirm email ............");
   var mailOptions = {
     from: "kithminiatdev@gmail.com",
     to: "rajithagunathilake@gmail.com",
-    subject: "password reset",
+    subject: "email confirmation",
     text: "visit - ",
-    html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
+    template: "templtt",
+    context: {
+      title: " confirm email ",
+      message: `${emailConfirmApi}/${token}`,
+      name: ursname,
+      uniqeid:Math.round(Math.random()*10000000000000)
+    }
   };
 
   transporter.sendMail(mailOptions, function(error, info) {
@@ -41,31 +120,42 @@ exports.mailhandlerpasswordreset = (email, id) => {
   });
 };
 
-exports.mailhandleremailconfirm = (email, id) => {
 
-  try {
-    var token = jwt.sign({"id":id},'authdemo', { expiresIn: "10m" })
-  } catch (error) {
-    console.log(error)
-  }
 
-  console.log("sending confirm email ............");
-  var mailOptions = {
-    from: "kithminiatdev@gmail.com",
-    to: "rajithagunathilake@gmail.com",
-    subject: "email confirmation",
-    text: "visit - ",
-    html: `<h1> please visit -${emailConfirmApi}/${token}  to confirm your email </h1>`
-  };
+exports.mailhandlernewuseremail = (email, id, type) => {
+ 
+  jwt.sign(
+    { id: id, email: email, usertype: type },
+    "authdemo",
+    {
+      expiresIn: "30m"
+    },
+    function(err, data) {
+      console.log(err);
 
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("send email - " + email);
-      console.log("Email sent: " + info.response);
+      var mailOptions = {
+        from: "kithminiatdev@gmail.com",
+        to: "rajithagunathilake@gmail.com",
+        subject: "email confirmation",
+        text: "visit - ",
+        template: "newuser",
+        context: {
+          title: " confirm email ",
+          msg: `${newuserconfig}/${data}`,
+          uniqeid:Math.random()*1000000
+        }
+      };
+
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("send email - ");
+          console.log("Email sent: " + info.response);
+        }
+      });
     }
-  });
+  )
 };
 
 //module.exports = {mailhandlerpasswordreset,mailhandleremailconfirm};

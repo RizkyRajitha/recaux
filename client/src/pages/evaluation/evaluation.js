@@ -1,37 +1,562 @@
 import React, { Component } from "react";
-import "./evaluation.css";
-import jsonwebtoken from 'jsonwebtoken'
+import axios from "axios";
 
-const axios = require("axios");
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import jsonwebtoken from "jsonwebtoken";
+import BaseSelect from "react-select";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import FixRequiredSelect from "./fixreqselect";
 
-class evaluation extends Component {
-  state = {
-    name: "",
-    jobspec: "",
-    status: "",
-    success_added_flag: false,
-    evaluatorId:String,
-    candidateId:String,
-    evaluationMarks:Number,
-    acadamicBackground:String,
-    indusrtyExperiance:String,
-    currentPosition:String,
-    JobPeriod:String,
-    data:[]
-  };
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
 
-  componentWillMount() {
+export default class CreateEvaluationForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeRole = this.onChangeRole.bind(this);
+    this.onChangeDate = this.onChangeDate.bind(this);
+    this.onChangeInterviewedBy = this.onChangeInterviewedBy.bind(this);
+    this.onChangeAcademicBackground = this.onChangeAcademicBackground.bind(
+      this
+    );
+    this.onChangeIndustryExperience = this.onChangeIndustryExperience.bind(
+      this
+    );
+    this.onChangeCurrentPosition = this.onChangeCurrentPosition.bind(this);
+    this.onChangeCurrentEmployer = this.onChangeCurrentEmployer.bind(this);
+    this.onChangeSkill1 = this.onChangeSkill1.bind(this);
+    this.onChangeSkill2 = this.onChangeSkill2.bind(this);
+    this.onChangeSkill3 = this.onChangeSkill3.bind(this);
+    this.onChangeSkill4 = this.onChangeSkill4.bind(this);
+    this.onChangeSkill5 = this.onChangeSkill5.bind(this);
+    this.onChangeSkill6 = this.onChangeSkill6.bind(this);
+    this.onChangeSkill7 = this.onChangeSkill7.bind(this);
+    this.onChangeSkill8 = this.onChangeSkill8.bind(this);
+    this.onChangeSkill9 = this.onChangeSkill9.bind(this);
+    this.onChangeSkill10 = this.onChangeSkill10.bind(this);
+    this.onChangeSkill11 = this.onChangeSkill11.bind(this);
+    this.onChangeSkill12 = this.onChangeSkill12.bind(this);
+    this.onChangeSkill13 = this.onChangeSkill13.bind(this);
+    this.onChangeSkill14 = this.onChangeSkill14.bind(this);
+    this.onChangeRate1 = this.onChangeRate1.bind(this);
+    this.onChangeRate2 = this.onChangeRate2.bind(this);
+    this.onChangeRate3 = this.onChangeRate3.bind(this);
+    this.onChangeRate4 = this.onChangeRate4.bind(this);
+    this.onChangeRate5 = this.onChangeRate5.bind(this);
+    this.onChangeRate6 = this.onChangeRate6.bind(this);
+    this.onChangeRate7 = this.onChangeRate7.bind(this);
+    this.onChangeRate8 = this.onChangeRate8.bind(this);
+    this.onChangeRate9 = this.onChangeRate9.bind(this);
+    this.onChangeRate10 = this.onChangeRate10.bind(this);
+    this.onChangeRate11 = this.onChangeRate11.bind(this);
+    this.onChangeRate12 = this.onChangeRate12.bind(this);
+    this.onChangeRate13 = this.onChangeRate13.bind(this);
+    this.onChangeRate14 = this.onChangeRate14.bind(this);
+    this.onChangeOverrallRating = this.onChangeOverrallRating.bind(this);
+    this.onChangeSummary = this.onChangeSummary.bind(this);
+    this.onChangeSalary1 = this.onChangeSalary1.bind(this);
+    this.onChangeSalary2 = this.onChangeSalary2.bind(this);
+    this.onChangeSalary3 = this.onChangeSalary3.bind(this);
+    this.onChangeSalary4 = this.onChangeSalary4.bind(this);
+    this.onChangePeriod1 = this.onChangePeriod1.bind(this);
+    this.onChangePeriod2 = this.onChangePeriod2.bind(this);
+    this.onChangeApprove = this.onChangeApprove.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+    this.state = {
+      name: "",
+      role: "",
+      date: "",
+      interviewedBy: "",
+      academicBackground: "",
+      industryExperience: "",
+      currentPosition: "",
+      currentEmployer: "",
+      skill1: "",
+      skill2: "",
+      skill3: "",
+      skill4: "",
+      skill5: "",
+      skill6: "",
+      skill7: "",
+      skill8: "",
+      skill9: "",
+      skill10: "",
+      skill11: "",
+      skill12: "",
+      skill13: "",
+      skill14: "",
+      rate1: "",
+      rate2: "",
+      rate3: "",
+      rate4: "",
+      rate5: "",
+      rate6: "",
+      rate7: "",
+      rate8: "",
+      rate9: "",
+      rate10: "",
+      rate11: "",
+      rate12: "",
+      rate13: "",
+      rate14: "",
+      overrallRating: "",
+      summary: "",
+      salary1: "",
+      salary2: "",
+      salary3: "",
+      salary4: "",
+      period1: "",
+      period2: "",
+      approve: "",
+      selectedinterviwerOption: "",
+      snackbaropen: false,
+      snackbarmsg: "",
+      skilllist: []
+    };
+  }
+
+  onChangeName(e) {
+    this.setState({
+      name: e.target.value
+    });
+  }
+
+  onChangeRole(e) {
+    this.setState({
+      role: e.target.value
+    });
+  }
+
+  onChangeDate(e) {
+    this.setState({
+      date: e.target.value
+    });
+  }
+  onChangeInterviewedBy(e) {
+    this.setState({
+      interviewedBy: e.target.value
+    });
+  }
+
+  onChangeAcademicBackground(e) {
+    this.setState({
+      academicBackground: e.target.value
+    });
+  }
+  onChangeIndustryExperience(e) {
+    this.setState({
+      industryExperience: e.target.value
+    });
+  }
+  onChangeCurrentPosition(e) {
+    this.setState({
+      currentPosition: e.target.value
+    });
+  }
+  onChangeCurrentEmployer(e) {
+    this.setState({
+      currentEmployer: e.target.value
+    });
+  }
+  onChangeSkill1(e) {
+    this.setState({
+      skill1: e.target.value
+    });
+  }
+  onChangeSkill2(e) {
+    this.setState({
+      skill2: e.target.value
+    });
+  }
+  onChangeSkill3(e) {
+    this.setState({
+      skill3: e.target.value
+    });
+  }
+  onChangeSkill4(e) {
+    this.setState({
+      skill4: e.target.value
+    });
+  }
+  onChangeSkill5(e) {
+    this.setState({
+      skill5: e.target.value
+    });
+  }
+  onChangeSkill6(e) {
+    this.setState({
+      skill6: e.target.value
+    });
+  }
+  onChangeSkill7(e) {
+    this.setState({
+      skill7: e.target.value
+    });
+  }
+  onChangeSkill8(e) {
+    this.setState({
+      skill8: e.target.value
+    });
+  }
+  onChangeSkill9(e) {
+    this.setState({
+      skill9: e.target.value
+    });
+  }
+  onChangeSkill10(e) {
+    this.setState({
+      skill10: e.target.value
+    });
+  }
+  onChangeSkill11(e) {
+    this.setState({
+      skill11: e.target.value
+    });
+  }
+  onChangeSkill12(e) {
+    this.setState({
+      skill12: e.target.value
+    });
+  }
+  onChangeSkill13(e) {
+    this.setState({
+      skill13: e.target.value
+    });
+  }
+
+  onChangeSkill14(e) {
+    this.setState({
+      skill14: e.target.value
+    });
+  }
+  onChangeRate1(e) {
+    this.setState({
+      rate1: e.target.value
+    });
+  }
+  onChangeRate2(e) {
+    this.setState({
+      rate2: e.target.value
+    });
+  }
+  onChangeRate3(e) {
+    this.setState({
+      rate3: e.target.value
+    });
+  }
+  onChangeRate4(e) {
+    this.setState({
+      rate4: e.target.value
+    });
+  }
+  onChangeRate5(e) {
+    this.setState({
+      rate5: e.target.value
+    });
+  }
+  onChangeRate6(e) {
+    this.setState({
+      rate6: e.target.value
+    });
+  }
+  onChangeRate7(e) {
+    this.setState({
+      rate7: e.target.value
+    });
+  }
+  onChangeRate8(e) {
+    this.setState({
+      rate8: e.target.value
+    });
+  }
+  onChangeRate9(e) {
+    this.setState({
+      rate9: e.target.value
+    });
+  }
+  onChangeRate10(e) {
+    this.setState({
+      rate10: e.target.value
+    });
+  }
+  onChangeRate11(e) {
+    this.setState({
+      rate11: e.target.value
+    });
+  }
+  onChangeRate12(e) {
+    this.setState({
+      rate12: e.target.value
+    });
+  }
+  onChangeRate13(e) {
+    this.setState({
+      rate13: e.target.value
+    });
+  }
+  onChangeRate14(e) {
+    this.setState({
+      rate14: e.target.value
+    });
+  }
+  onChangeOverrallRating(e) {
+    this.setState({
+      overrallRating: e.target.value
+    });
+  }
+  onChangeSummary(e) {
+    this.setState({
+      summary: e.target.value
+    });
+  }
+  onChangeSalary1(e) {
+    this.setState({
+      salary1: e.target.value
+    });
+  }
+  onChangeSalary2(e) {
+    this.setState({
+      salary2: e.target.value
+    });
+  }
+  onChangeSalary3(e) {
+    this.setState({
+      salary3: e.target.value
+    });
+  }
+  onChangeSalary4(e) {
+    this.setState({
+      salary4: e.target.value
+    });
+  }
+  onChangePeriod1(e) {
+    this.setState({
+      period1: e.target.value
+    });
+  }
+  onChangePeriod2(e) {
+    this.setState({
+      period2: e.target.value
+    });
+  }
+
+  onChangeApprove(e) {
+    this.setState({
+      approve: e.target.value
+    });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    console.log(`Form submitted:`);
+    console.log(`Name : ${this.state.name}`);
+    console.log(`Role :${this.state.role}`);
+    console.log(`Date:${this.state.date}`);
+    console.log(` InterviewedBy:${this.state.interviewedBy}`);
+    console.log(` AcademicBackground:${this.state.academicBackground}`);
+    console.log(` IndustryExperience:${this.state.industryExperience}`);
+    console.log(` CurrentPosition:${this.state.currentPosition}`);
+    console.log(` CurrentEmployer:${this.state.currentEmployer}`);
+    console.log(` Skill1:${this.state.skill1}`);
+    console.log(` Skill2:${this.state.skill2}`);
+    console.log(` Skill3:${this.state.skill3}`);
+    console.log(` Skill4:${this.state.skill4}`);
+    console.log(` Skill5:${this.state.skill5}`);
+    console.log(` Skill6:${this.state.skill6}`);
+    console.log(` Skill7:${this.state.skill7}`);
+    console.log(` Skill8:${this.state.skill8}`);
+    console.log(` Skill9:${this.state.skill9}`);
+    console.log(` Skill10:${this.state.skill10}`);
+    console.log(` Skill11:${this.state.skill11}`);
+    console.log(` Skill12:${this.state.skill12}`);
+    console.log(` Skill13:${this.state.skill13}`);
+    console.log(` Skill14:${this.state.skill14}`);
+    console.log(` Rate1:${this.state.rate1}`);
+    console.log(` Rate2:${this.state.rate2}`);
+    console.log(` Rate3:${this.state.rate3}`);
+    console.log(` Rate4:${this.state.rate4}`);
+    console.log(` Rate5:${this.state.rate5}`);
+    console.log(` Rate6:${this.state.rate6}`);
+    console.log(` Rate7:${this.state.rate7}`);
+    console.log(` Rate8:${this.state.rate8}`);
+    console.log(` Rate9:${this.state.rate9}`);
+    console.log(` Rate10:${this.state.rate10}`);
+    console.log(` Rate11:${this.state.rate11}`);
+    console.log(` Rate12:${this.state.rate12}`);
+    console.log(` Rate13:${this.state.rate13}`);
+    console.log(` Rate14:${this.state.rate14}`);
+    console.log(` OverrallRating:${this.state.overrallRating}`);
+    console.log(` Summary:${this.state.summary}`);
+    console.log(` Salary1:${this.state.salary1}`);
+    console.log(` Salary2:${this.state.salary2}`);
+    console.log(` Salary3:${this.state.salary3}`);
+    console.log(` Salary4:${this.state.salary4}`);
+    console.log(` Period1:${this.state.period1}`);
+    console.log(` Period2:${this.state.period2}`);
+    console.log(` Approve:${this.state.approve}`);
+
+    const newEvaluation = {
+      name: this.state.name,
+      role: this.state.role,
+      candidateId: this.props.match.params.id,
+      date: this.state.date,
+      interviewedByName: this.state.interviewedBy,
+      academicBackground: this.state.academicBackground,
+      industryExperience: this.state.industryExperience,
+      currentPosition: this.state.currentPosition,
+      currentEmployer: this.state.currentEmployer,
+      skill1: this.state.skill1,
+      skill2: this.state.skill2,
+      skill3: this.state.skill3,
+      skill4: this.state.skill4,
+      skill5: this.state.skill5,
+      skill6: this.state.skill6,
+      skill7: this.state.skill7,
+      skill8: this.state.skill8,
+      skill9: this.state.skill9,
+      skill10: this.state.skill10,
+      skill11: this.state.skill11,
+      skill12: this.state.skill12,
+      skill13: this.state.skill13,
+      skill14: this.state.skill14,
+      rate1: this.state.rate1,
+      rate2: this.state.rate2,
+      rate3: this.state.rate3,
+      rate4: this.state.rate4,
+      rate5: this.state.rate5,
+      rate6: this.state.rate6,
+      rate7: this.state.rate7,
+      rate8: this.state.rate8,
+      rate9: this.state.rate9,
+      rate10: this.state.rate10,
+      rate11: this.state.rate11,
+      rate12: this.state.rate12,
+      rate13: this.state.rate13,
+      rate14: this.state.rate14,
+      overrallRating: this.state.overrallRating,
+      summary: this.state.summary,
+      salary1: this.state.salary1,
+      salary2: this.state.salary2,
+      salary3: this.state.salary3,
+      salary4: this.state.salary4,
+      period1: this.state.period1,
+      period2: this.state.period2,
+      approve: this.state.selectedinterviwerOption.label,
+      approveid: this.state.selectedinterviwerOption.value
+    };
+
+    // console.log("parms - " + this.p);
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post(
+        "http://localhost:3001/usr/evaluationadd/" + this.props.match.params.id,
+        newEvaluation,
+        config
+      )
+      .then(res => {
+        console.log(res.data);
+
+        if (res.data.msg === "sucsess") {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Evaluation succsessfull"
+          });
+
+          setTimeout(() => {
+            this.props.history.push(
+              "/getcandidate/" + this.props.match.params.id
+            );
+          }, 5000);
+        }
+      })
+      .catch(err => console.log(err));
+
+    this.setState({
+      name: "",
+      role: "",
+      date: "",
+      interviewedBy: "",
+      academicBackground: "",
+      industryExperience: "",
+      currentPosition: "",
+      currentEmployer: "",
+      skill1: "",
+      skill2: "",
+      skill3: "",
+      skill4: "",
+      skill5: "",
+      skill6: "",
+      skill7: "",
+      skill8: "",
+      skill9: "",
+      skill10: "",
+      skill11: "",
+      skill12: "",
+      skill13: "",
+      skill14: "",
+      rate1: "",
+      rate2: "",
+      rate3: "",
+      rate4: "",
+      rate5: "",
+      rate6: "",
+      rate7: "",
+      rate8: "",
+      rate9: "",
+      rate10: "",
+      rate11: "",
+      rate12: "",
+      rate13: "",
+      rate14: "",
+      overrallRating: "",
+      summary: "",
+      salary1: "",
+      salary2: "",
+      salary3: "",
+      salary4: "",
+      period1: "",
+      period2: "",
+      approve: ""
+    });
+  }
+
+  componentDidMount() {
+    this.setState({ date: new Date().toISOString().substr(0, 10) });
+    // document.getElementById("evaluationdate").valueAsDate = new Date();
+
+    console.log("comp did mount");
+
+    const id = this.props.match.params.id;
+    console.log(id);
 
     const jwt = localStorage.getItem("jwt");
-    console.log('jwt token -- - -- >>>'+jwt);
+    //console.log("jwt token -- - -- >>>" + jwt);
 
     try {
       console.log("in register");
       var pay = jsonwebtoken.verify(jwt, "authdemo");
-      console.log('payload - '+pay);
-      console.log('************************************' )
-
-      
+      // console.log("payload - " + pay);
+      console.log("************************************");
     } catch (error) {
       console.log("not logged in redirecting...............");
 
@@ -39,159 +564,656 @@ class evaluation extends Component {
       this.props.history.push("/Login");
     }
 
+    // var usertype = localStorage.getItem("usertype");
 
-    const id = this.props.match.params.id;
-    this.setState({candidateId:id})
-    const userid = localStorage.getItem('userId');
-    console.log(userid)
-    this.setState({evaluatorId:userid})
+    // this.setState({ usertype: usertype });
 
-
-    axios
-    .get("/usr/getcandidate/" + id)
-    .then(res => {
-      this.setState({ data: res.data });
-      console.log(res);
-      console.log(this.state);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
-  }
-
-  submithndler = (e) => {
-    e.preventDefault();
-
-    console.log(this.state)
-
-
-    const id = this.props.match.params.id;
-
-    var payload={
-      evaluatorId:this.state.evaluatorId,
-      candidateId:this.state.candidateId,
-    evaluationMarks:this.state.evaluationMarks,
-    acadamicBackground:this.state.acadamicBackground,
-    indusrtyExperiance:this.state.indusrtyExperiance,
-    currentPosition:this.state.currentPosition,
-    JobPeriod:this.state.JobPeriod
-    }
-
-    console.log(payload)
+    var config = {
+      headers: { authorization: jwt }
+    };
 
     axios
-      .post("/usr/evaluation/" + id,  payload )
+      .get("/usr/basicuserdetails", config)
       .then(res => {
-        console.log(res)
-        this.setState({ success_added_flag: true });
+        console.log(res.data);
+        var datain = res.data;
+
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_290,h_295,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
+
+        // var resdate = this.state.data.date
+        //  var alodate = this.state.data.allocatedDate
+        //  var shrtdate = this.state.data.shortlistedDate
+
+        this.setState({
+          interviwerid: datain.id,
+          interviewedBy: datain.firstName + " " + datain.lastName
+        });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(err => {});
+
+    axios.get("/usr/getcandidate/" + id).then(res => {
+      console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
+
+      res.data.candidateData.skills.map((ele, index) => {
+        if (index == 0) {
+          this.setState({
+            skill1: ele.label
+          });
+        } else if (index == 1) {
+          this.setState({
+            skill2: ele.label
+          });
+        } else if (index == 2) {
+          this.setState({
+            skill3: ele.label
+          });
+        } else if (index == 3) {
+          this.setState({
+            skill4: ele.label
+          });
+        } else if (index == 4) {
+          this.setState({
+            skill5: ele.label
+          });
+        } else if (index == 5) {
+          this.setState({
+            skill6: ele.label
+          });
+        } else if (index == 6) {
+          this.setState({
+            skill7: ele.label
+          });
+        } else if (index == 7) {
+          this.setState({
+            skill8: ele.label
+          });
+        }
       });
 
-    //   this.props.history.push('/getcandidate/'+id)
-  };
-  chngehandl = e => {
-    //console.log(e.target.name,)
-    this.setState({ [e.target.name]: e.target.value });
+      this.setState({
+        name: res.data.candidateData.name,
+        role: res.data.candidateData.jobspec,
+        skilllist: res.data.candidateData.skills,
+        userarr: res.data.userData
+      });
+    });
 
-    console.log(this.state);
-  };
-
-  chngehandlsel = e=>{
-    this.setState({ status: e.target.value });
-    console.log(this.state);
+    setTimeout(() => {
+      console.log(this.state);
+    }, 1000);
   }
+
+  handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({ selectedinterviwerOption: selectedOption });
+    console.log(this.state.selectedinterviwerOption);
+
+    setTimeout(() => {
+      console.log(this.state.selectedinterviwerOption.label);
+    }, 1000);
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
 
   render() {
     return (
-      <div className="eval">
-        <form onSubmit={this.submithndler}>
-          <br />
-          <br />
-          <br />
+      <React.Fragment>
+        <CssBaseline />
+        <Container fixed>
+          <div style={{ marginTop: 20 }}>
+            <h3 align="center">Auxenta Interview Evaluation Form</h3>
+            <br />
+            <form onSubmit={this.onSubmit}>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Name: </label>
+                <div class="col-sm-10">
+                  <input
+                    placeholder="Name"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    value={this.state.name}
+                    onChange={this.onChangeName}
+                  />
+                </div>
+              </div>
 
-          <h6> name : {this.state.data.name}</h6>
-              <h6> email : {this.state.data.email}</h6>
-              <h6> job spec : {this.state.data.jobspec}</h6>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Role: </label>
+                <div class="col-sm-10">
+                  <input
+                    placeholder="Role"
+                    type="text"
+                    size="75"
+                    name="role"
+                    class="form-control"
+                    value={this.state.role}
+                    onChange={this.onChangeRole}
+                  />
+                </div>
+              </div>
 
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Date:</label>
+                <div class="col-sm-10">
+                  <input
+                    id="evaluationdate"
+                    placeholder="Date"
+                    type="Date"
+                    size="75"
+                    name="date"
+                    class="form-control"
+                    value={this.state.date}
+                    onChange={this.onChangeDate}
+                  />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Interviewed By: </label>
+                <div class="col-sm-10">
+                  <input
+                    placeholder="Interviewed By"
+                    type="text"
+                    size="50"
+                    name="interviewedBy"
+                    class="form-control"
+                    value={this.state.interviewedBy}
+                    onChange={this.onChangeInterviewedBy}
+                  />
+                </div>
+              </div>
 
-          <div className="form-group">
-            <input
-              type="text"
-              name="acadamicBackground"
-              className="form-control"
-              onChange={this.chngehandl}
-              placeholder="enter candidate acadamicBackground "
-              id="name"
+              <div class="form-group">
+                <label>Academic Background : </label>
+                <textarea
+                  name="academicBackground"
+                  class="form-control"
+                  rows="3"
+                  value={this.state.academicBackground}
+                  onChange={this.onChangeAcademicBackground}
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Industry Experience : </label>
+                <textarea
+                  name="industryExperience"
+                  class="form-control"
+                  rows="3"
+                  value={this.state.industryExperience}
+                  onChange={this.onChangeIndustryExperience}
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Current position & period : </label>
+                <textarea
+                  name="currentPosition"
+                  class="form-control"
+                  rows="3"
+                  value={this.state.currentPosition}
+                  onChange={this.onChangeCurrentPosition}
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Current Empolyer : </label>
+                <textarea
+                  name="currentEmployer"
+                  class="form-control"
+                  rows="3"
+                  value={this.state.currentEmployer}
+                  onChange={this.onChangeCurrentEmployer}
+                />
+              </div>
+
+              <p>Technical skill set(Rate out of 5 & 5 is the high rate ) : </p>
+              <input
+                placeholder=""
+                type="text"
+                size="50"
+                name="skill1"
+                value={this.state.skill1}
+                onChange={this.onChangeSkill1}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate1"
+                value={this.state.rate1}
+                onChange={this.onChangeRate1}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill2"
+                size="50"
+                value={this.state.skill2}
+                onChange={this.onChangeSkill2}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate2"
+                value={this.state.rate2}
+                onChange={this.onChangeRate2}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                size="50"
+                name="skill3"
+                value={this.state.skill3}
+                onChange={this.onChangeSkill3}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate3"
+                value={this.state.rate3}
+                onChange={this.onChangeRate3}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill4"
+                size="50"
+                value={this.state.skill4}
+                onChange={this.onChangeSkill4}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate4"
+                value={this.state.rate4}
+                onChange={this.onChangeRate4}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                size="50"
+                name="skill5"
+                value={this.state.skill5}
+                onChange={this.onChangeSkill5}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate5"
+                value={this.state.rate5}
+                onChange={this.onChangeRate5}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                size="50"
+                name="skill6"
+                value={this.state.skill6}
+                onChange={this.onChangeSkill6}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate6"
+                value={this.state.rate6}
+                onChange={this.onChangeRate6}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill7"
+                size="50"
+                value={this.state.skill7}
+                onChange={this.onChangeSkill7}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate7"
+                value={this.state.rate7}
+                onChange={this.onChangeRate7}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill8"
+                size="50"
+                value={this.state.skill8}
+                onChange={this.onChangeSkill8}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate8"
+                value={this.state.rate8}
+                onChange={this.onChangeRate8}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill9"
+                size="50"
+                value={this.state.skill9}
+                onChange={this.onChangeSkill9}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate9"
+                value={this.state.rate9}
+                onChange={this.onChangeRate9}
+              />
+              <br />
+
+              <input
+                placeholder=""
+                type="text"
+                name="skill10"
+                size="50"
+                value={this.state.skill10}
+                onChange={this.onChangeSkill10}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate10"
+                value={this.state.rate10}
+                onChange={this.onChangeRate10}
+              />
+              <br />
+              <br />
+              <p>Communication : </p>
+              <input
+                placeholder=""
+                type="text"
+                name="skill11"
+                size="50"
+                value={this.state.skill11}
+                onChange={this.onChangeSkill11}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate11"
+                value={this.state.rate11}
+                onChange={this.onChangeRate11}
+              />
+              <br />
+              <br />
+
+              <p>Leadership Skills: </p>
+              <input
+                placeholder=""
+                type="text"
+                name="skill12"
+                size="50"
+                value={this.state.skill12}
+                onChange={this.onChangeSkill12}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate12"
+                value={this.state.rate12}
+                onChange={this.onChangeRate12}
+              />
+              <br />
+              <br />
+
+              <p>Team work: </p>
+              <input
+                placeholder=""
+                type="text"
+                name="skill13"
+                size="50"
+                value={this.state.skill13}
+                onChange={this.onChangeSkill13}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate13"
+                value={this.state.rate13}
+                onChange={this.onChangeRate13}
+              />
+              <br />
+              <br />
+
+              <p>Special Notes : </p>
+              <input
+                placeholder=""
+                type="text"
+                name="skill14"
+                size="50"
+                value={this.state.skill14}
+                onChange={this.onChangeSkill14}
+              />
+              <input
+                placeholder=""
+                type="number"
+                max="5"
+                min="0"
+                name="rate14"
+                value={this.state.rate14}
+                onChange={this.onChangeRate14}
+              />
+              <br />
+              <br />
+              <p>Overrall Rating</p>
+              <input
+                placeholder=""
+                type="number"
+                min="0"
+                name="overrallRating"
+                value={this.state.overrallRating}
+                onChange={this.onChangeOverrallRating}
+              />
+              <br />
+              <br />
+
+              <div class="form-group">
+                <label>Summary & Recomandation from the interviewer</label>
+                <textarea
+                  name="summary"
+                  class="form-control"
+                  rows="3"
+                  value={this.state.summary}
+                  onChange={this.onChangeSummary}
+                />
+              </div>
+
+              <hr />
+              <p>HR Report</p>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Salary Expected : </label>
+                  <input
+                    type="Currency"
+                    name="salary1"
+                    class="form-control"
+                    value={this.state.salary1}
+                    onChange={this.onChangeSalary1}
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Current Salary : </label>
+                  <input
+                    type="text"
+                    name="salary2"
+                    class="form-control"
+                    value={this.state.salary2}
+                    onChange={this.onChangeSalary2}
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Salary Band : </label>
+                  <input
+                    type="text"
+                    name="salary3"
+                    class="form-control"
+                    value={this.state.salary3}
+                    onChange={this.onChangeSalary3}
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Agreed Salary : </label>
+                  <input
+                    type="text"
+                    name="salary4"
+                    class="form-control"
+                    value={this.state.salary4}
+                    onChange={this.onChangeSalary4}
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Notice period : </label>
+                  <input
+                    type="text"
+                    name="period1"
+                    class="form-control"
+                    value={this.state.period1}
+                    onChange={this.onChangePeriod1}
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Starting Date : </label>
+                  <input
+                    type="Date"
+                    name="period2"
+                    class="form-control"
+                    value={this.state.period2}
+                    onChange={this.onChangePeriod2}
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Approved By : </label>
+                <div class="col-sm-10">
+                  <Select
+                    options={this.state.userarr}
+                    isSearchable
+                    required
+                    value={this.state.selectedinterviwerOption}
+                    placeholder={this.state.selectedinterviwerOption.label}
+                    onChange={
+                      this.handleChangemodalselectscheduleinterviewinterviewer
+                    }
+                  />
+
+                  {/* <Select
+                    native
+                    required
+                    value={this.state.selectedinterviwerOption}
+                    placeholder={this.state.selectedinterviwerOption.label}
+                    onChange={
+                      this.handleChangemodalselectscheduleinterviewinterviewer
+                    }
+                    options={this.state.userarr}
+                  />{" "} */}
+                </div>
+              </div>
+              <br />
+
+              <br />
+              <div className="form-group">
+                <input
+                  type="submit"
+                  value="Submit"
+                  className="btn btn-primary"
+                />
+              </div>
+            </form>
+
+            <Snackbar
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center"
+              }}
+              open={this.state.snackbaropen}
+              autoHideDuration={6000}
+              onClose={() => this.setState({ snackbaropen: false })}
+              //onClose={this.handleClose}
+              ContentProps={{
+                "aria-describedby": "message-id"
+              }}
+              message={<span id="message-id">{this.state.snackbarmsg}</span>}
+              action={[
+                <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  //className={classes.close}
+                  onClick={this.handleClose}
+                >
+                  <CloseIcon />
+                </IconButton>
+              ]}
             />
           </div>
-          <div className="form-group">
-            <input
-              type="number"
-              name="evaluationMarks"
-              className="form-control"
-              placeholder="enter candidate marks"
-              onChange={this.chngehandl}
-              id="evaluationMarks"
-            />
-          </div>
-          <div className="form-group">
-            <label> </label>
-            <input
-              type="text"
-              name="indusrtyExperiance"
-              className="form-control"
-              placeholder="enter candidate indusrty Experiance"
-              onChange={this.chngehandl}
-              id="job"
-            />
-          </div>
-          <div className="form-group">
-            <label> </label>
-            <input
-              type="text"
-              name="currentPosition"
-              className="form-control"
-              placeholder="enter candidate currentPosition"
-              onChange={this.chngehandl}
-              id="job"
-            />
-          </div>
-
-         
-          <div className="form-group">
-            <label> </label>
-            <input
-              type="text"
-              name="JobPeriod"
-              className="form-control"
-              placeholder="enter candidate Job Period"
-              onChange={this.chngehandl}
-              id="job"
-            />
-          </div>
-
-
-
-          <div class="form-group">
-            <label for="exampleFormControlSelect2">
-              change candidate status
-            </label>
-            <select class="form-control" id="status" onChange={this.chngehandlsel}>
-              <option id='status'>1</option>
-              <option id='status'>2</option>
-              <option id='status'>3</option>
-              <option id='status'>4</option>
-              <option id='status'>5</option>
-            </select>
-          </div>
-          <input type="submit" className="btn btn-primary" value="add" />
-        </form>
-      </div>
+        </Container>
+      </React.Fragment>
     );
   }
 }
-
-export default evaluation;

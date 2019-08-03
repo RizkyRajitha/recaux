@@ -9,15 +9,51 @@
   padding: 10px;
 }
 
-#status{
+#status {
   margin: auto;
   width: 25%;
 }
-.list{
-  margin: 0; padding: 0;
+.list {
+  margin: 0;
+  padding: 0;
   text-align: left;
-
 }
-.canview,.canview2{
-  text-align: center
+.canview,
+.canview2 {
+  text-align: center;
+}
+
+.uploadtaglable {
+  margin-right: 20px;
+}
+
+.canviewborderdividcandidtaeeditdetails {
+  margin-top: 2%;
+}
+
+.canviewshortlistform {
+  margin-left: 40%;
+}
+
+.canviewmodal2closebtn {
+  background-color: #246ad3;
+}
+
+.loader-candidateview {
+  margin-left: 47%;
+  border: 6px solid #f3f3f3; /* Light grey */
+  border-top: 6px solid #246ad3; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

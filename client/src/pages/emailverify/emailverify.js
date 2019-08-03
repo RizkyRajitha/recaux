@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
+//import {Alert} from 'reactstrap'
 const jwt = require('jsonwebtoken')
+
 
 class emailverify extends Component {
   state = {
@@ -43,21 +45,21 @@ class emailverify extends Component {
   render() {
     if (!this.state.sucsess) {
       return (
-        <div class="alert alert-dark" role="alert">
+        <div color="dark" role="div">
   please wait 
 </div>
       );
     }
     if (this.state.exp) {
       return (
-        <div class="alert alert-dark" role="alert">
+        <div color="dark" role="div">
   token expired , please try again
 </div>
       );
     }
     
     else {
-      return (<div class="alert alert-success" role="alert">
+      return (<div color="success" role="div">
       email confirmed
     </div>)
     }

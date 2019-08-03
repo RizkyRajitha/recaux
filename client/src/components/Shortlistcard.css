@@ -1,0 +1,73 @@
+.cancardbadgeDiv {
+    text-align:  right;
+    font-size: 30px;
+    padding-top: 0%;
+    position: absolute;
+    margin-left: 93%;
+  }
+  #cancard {
+    font-size: 16px;
+   
+    
+  }
+  
+  .divecancard {
+    position: absolute;
+    top: 14%;
+    left: 5%;
+  }
+  
+  #cardcontainer1{
+      top:8%;
+      margin-left: 9%;
+    padding-left: 100px;
+    width: 90%;
+  }
+  
+
+ 
+  
+  /* Hide the browser's default checkbox */
+
+  
+  /* Create a custom checkbox */
+
+  
+  /* On mouse-over, add a grey background color */
+
+  /* When the checkbox is checked, add a blue background */
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+
+  
+  /* Show the checkmark when checked */
+ 
+  
+  /* Style the checkmark/indicator */
+
+  
+  #candidateCardDate {
+    margin-top: 40px;
+  }
+  
+  #listItemsCanCard {
+    font-size: 18px;
+  }
+  
+  .cancardTable {
+    text-align: left;
+    margin-top: 0%;
+  }
+  
+  #cancardtables{
+    /* margin-top: 4%; */
+  }
+  
+  .cancarddivtime{
+  width: 25%;
+  margin-top:1%;
+  margin-left:1%;
+  text-align: left;
+  
+  }
+  
