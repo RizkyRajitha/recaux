@@ -962,6 +962,10 @@ class CandidateView extends Component {
     console.log(panal);
   };
 
+  outsourceproject = () => {
+    this.props.history.push("/outsourceprojects/" + this.state.id);
+  };
+
   render() {
     // if (this.state.recivedago) {
     //   console.log("wjooop");
@@ -1633,7 +1637,6 @@ status: "New"
                       <Select
                         isSearchable
                         required
-                       
                         value={this.state.selectedinterviwerOption}
                         placeholder={this.state.selectedinterviwerOption.label}
                         onChange={
@@ -1713,8 +1716,8 @@ status: "New"
             schedule
           </button>
 
-          <button onClick={this.OutS} className="btn btn-primary">
-            schedule
+          <button onClick={this.outsourceproject} className="btn btn-primary">
+            generate formal resume
           </button>
           <br />
           <br />
