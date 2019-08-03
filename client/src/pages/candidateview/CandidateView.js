@@ -5,7 +5,7 @@ import jsonwebtoken from "jsonwebtoken";
 import Navbar from "../../components/navbar";
 //import exp from "../pdf.pdf";
 import Modal from "react-modal";
-import Select from "react-select";
+import BaseSelect from "react-select";
 import Drawer from "../../components/sidenav";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -42,6 +42,17 @@ import {
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { Button } from "@material-ui/core";
+import FixRequiredSelect from "./fixreqselect";
+
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
@@ -164,7 +175,8 @@ class CandidateView extends Component {
     selectedinterviwerOption: "",
     selectedDate: new Date(),
     snackbaropen: false,
-    snackbarmsg: ""
+    snackbarmsg: "",
+    selectedinterviwertype: ""
   };
   /****************************************** */
   openModal = () => {
@@ -324,6 +336,12 @@ class CandidateView extends Component {
   };
 
   /******************************************************************* */
+
+  handleChangemodalselectedinterviwertype = int => {
+    console.log(int);
+
+    this.setState({ selectedinterviwertype: int });
+  };
 
   chngehndlcv = e => {
     this.setState({ cvFile: e.target.files[0] });
@@ -847,7 +865,8 @@ class CandidateView extends Component {
       candidateid: this.state.data._id,
       scheduler: this.state.id,
       interviewer: this.state.selectedinterviwerOption.value,
-      datetime: dataeinter.toISOString()
+      datetime: dataeinter.toISOString(),
+      interviewtype: this.state.selectedinterviwertype.value
     };
 
     console.log(payload);
@@ -1020,6 +1039,8 @@ class CandidateView extends Component {
                 <p>{this.state.shortedcanarrnamelist}</p>
 
                 <Select
+                  isSearchable
+                  required
                   value={selectedOption}
                   onChange={this.handleChangemodalselect}
                   options={this.state.userarr}
@@ -1123,6 +1144,8 @@ class CandidateView extends Component {
                     /> */}
                     <div className="canviewborderdividcandidtaeeditdetails" />
                     <Select
+                      isSearchable
+                      required
                       placeholder={this.state.data.jobspec}
                       value={this.selectedJobspecOption}
                       onChange={this.handleChangemodalselect}
@@ -1191,6 +1214,13 @@ class CandidateView extends Component {
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
                 </div>
               }
+
+              <a href={this.state.newest_cv_url} target="_blank">
+                view externally
+              </a>
+
+              <br />
+
               <label>
                 Recieved -
                 {moments(
@@ -1568,13 +1598,42 @@ status: "New"
                       {this.state.firstName + " " + this.state.lastName}{" "}
                     </td>
                   </tr>
+
+                  <tr>
+                    <td>Interview type </td>
+                    <td>
+                      <Select
+                        isSearchable
+                        required
+                        value={this.state.selectedinterviwertype}
+                        //placeholder={this.state.selectedinterviwertype.label}
+                        onChange={this.handleChangemodalselectedinterviwertype}
+                        options={[
+                          {
+                            label: "First interview",
+                            value: "firstinterview"
+                          },
+                          {
+                            label: "Second interview",
+                            value: "secondinterview"
+                          },
+                          {
+                            label: "Client interview",
+                            value: "clientinterview"
+                          }
+                        ]}
+                      />{" "}
+                    </td>
+                  </tr>
+
                   <tr>
                     <td>interviewer - </td>
                     <td>
                       {" "}
                       <Select
-                        native
+                        isSearchable
                         required
+                       
                         value={this.state.selectedinterviwerOption}
                         placeholder={this.state.selectedinterviwerOption.label}
                         onChange={

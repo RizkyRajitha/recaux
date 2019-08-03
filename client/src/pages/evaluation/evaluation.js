@@ -5,10 +5,21 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import jsonwebtoken from "jsonwebtoken";
-import Select from "react-select";
+import BaseSelect from "react-select";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import FixRequiredSelect from "./fixreqselect";
+
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
 
 export default class CreateEvaluationForm extends Component {
   constructor(props) {
@@ -113,7 +124,8 @@ export default class CreateEvaluationForm extends Component {
       approve: "",
       selectedinterviwerOption: "",
       snackbaropen: false,
-      snackbarmsg: ""
+      snackbarmsg: "",
+      skilllist: []
     };
   }
 
@@ -587,9 +599,46 @@ export default class CreateEvaluationForm extends Component {
     axios.get("/usr/getcandidate/" + id).then(res => {
       console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
 
+      res.data.candidateData.skills.map((ele, index) => {
+        if (index == 0) {
+          this.setState({
+            skill1: ele.label
+          });
+        } else if (index == 1) {
+          this.setState({
+            skill2: ele.label
+          });
+        } else if (index == 2) {
+          this.setState({
+            skill3: ele.label
+          });
+        } else if (index == 3) {
+          this.setState({
+            skill4: ele.label
+          });
+        } else if (index == 4) {
+          this.setState({
+            skill5: ele.label
+          });
+        } else if (index == 5) {
+          this.setState({
+            skill6: ele.label
+          });
+        } else if (index == 6) {
+          this.setState({
+            skill7: ele.label
+          });
+        } else if (index == 7) {
+          this.setState({
+            skill8: ele.label
+          });
+        }
+      });
+
       this.setState({
         name: res.data.candidateData.name,
         role: res.data.candidateData.jobspec,
+        skilllist: res.data.candidateData.skills,
         userarr: res.data.userData
       });
     });
@@ -604,6 +653,10 @@ export default class CreateEvaluationForm extends Component {
     console.log("................");
     this.setState({ selectedinterviwerOption: selectedOption });
     console.log(this.state.selectedinterviwerOption);
+
+    setTimeout(() => {
+      console.log(this.state.selectedinterviwerOption.label);
+    }, 1000);
   };
 
   handleClose = (event, reason) => {
@@ -1098,15 +1151,18 @@ export default class CreateEvaluationForm extends Component {
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Approved By : </label>
                 <div class="col-sm-10">
-                  <input
-                    type="text"
-                    name="approve"
-                    required
-                    class="form-control"
-                    value={this.state.approve}
-                    onChange={this.onChangeApprove}
-                  />
                   <Select
+                    options={this.state.userarr}
+                    isSearchable
+                    required
+                    value={this.state.selectedinterviwerOption}
+                    placeholder={this.state.selectedinterviwerOption.label}
+                    onChange={
+                      this.handleChangemodalselectscheduleinterviewinterviewer
+                    }
+                  />
+
+                  {/* <Select
                     native
                     required
                     value={this.state.selectedinterviwerOption}
@@ -1115,7 +1171,7 @@ export default class CreateEvaluationForm extends Component {
                       this.handleChangemodalselectscheduleinterviewinterviewer
                     }
                     options={this.state.userarr}
-                  />{" "}
+                  />{" "} */}
                 </div>
               </div>
               <br />

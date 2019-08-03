@@ -1063,7 +1063,8 @@ exports.addinterview = (req, res, next) => {
                       interviwerName: doc2.firstName + " " + doc2.lastName,
                       candidateId: datain.candidateid,
                       candidateName: doc3.name,
-                      datetime: datain.datetime
+                      datetime: datain.datetime,
+                      interviewtype: datain.interviewtype
                     });
 
                     newinterview
@@ -1135,7 +1136,7 @@ exports.updateinterview = (req, res, next) => {
                           schedulerName: doc1.firstName + " " + doc1.lastName,
                           interviwerId: datain.interviewer,
                           interviwerName: doc2.firstName + " " + doc2.lastName,
-
+                          interviewtype: datain.interviewtype,
                           datetime: datain.datetime
                         }
                       }
