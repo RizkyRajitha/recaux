@@ -1565,6 +1565,10 @@ status: "New"
           <button onClick={this.schedule} className="btn btn-primary">
             schedule
           </button>
+
+          <button onClick={this.OutS} className="btn btn-primary">
+            schedule
+          </button>
           <br />
           <br />
 
