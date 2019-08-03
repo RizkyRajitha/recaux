@@ -573,7 +573,7 @@ class CandidateView extends Component {
     }
   };
 
-  handleChangemodalselect = selectedOption => {
+  handleChangemodalselectjobspec = selectedOption => {
     console.log("jobspec selected -  " + selectedOption);
     this.setState({ isLoading: true });
     var jwt = localStorage.getItem("jwt");
@@ -1152,7 +1152,7 @@ class CandidateView extends Component {
                       required
                       placeholder={this.state.data.jobspec}
                       value={this.selectedJobspecOption}
-                      onChange={this.handleChangemodalselect}
+                      onChange={this.handleChangemodalselectjobspec}
                       options={this.state.selectoptionsnamelist}
                     />
                     <div className="canviewborderdividcandidtaeeditdetails" />
@@ -1503,14 +1503,11 @@ status: "New"
                 onChange={this.chngehandlsel}
               >
                 <option selected>Select...</option>
-                <option id="status" value="hr_interview">
-                  HR interview
+                <option id="status" value="rejected">
+                  Rejected
                 </option>
                 <option id="status" value="onhold">
                   onhold
-                </option>
-                <option id="status" value="accepted">
-                  accepted
                 </option>
                 <option id="status" value="shortlisted">
                   shortlisted
@@ -1553,6 +1550,9 @@ status: "New"
                 </option>
                 <option id="status" value="noshow">
                   No show
+                </option>
+                <option id="status" value="present">
+                  present
                 </option>
                 {/* <option id="status" value="accepted">
                   accepted

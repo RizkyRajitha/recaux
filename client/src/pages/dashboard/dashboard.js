@@ -49,7 +49,10 @@ class dashboard extends Component {
     shortlistbythisuser: [],
     shortedcanarrnamelist: [],
     shrtlistSuccess: false,
-    isLoading: false
+    isLoading: false,
+    scheduledcandicates: [],
+    shortlistedcandicates: [],
+    newcandicates: []
   };
 
   openModal = () => {
@@ -120,7 +123,10 @@ class dashboard extends Component {
         console.log("candidate data - - - " + data.data);
         this.setState({
           candidatedata: data.data.candidateData,
-          selectoptionsnamelist: data.data.userData
+          selectoptionsnamelist: data.data.userData,
+          scheduledcandicates: data.data.scheduledcandicates,
+          shortlistedcandicates: data.data.shortlistedcandicates,
+          newcandicates: data.data.newcandicates
         });
       })
       .catch(err => {
@@ -353,7 +359,9 @@ class dashboard extends Component {
           /> */}
           <p className="usrtype">Logged in as : {this.state.usertype}</p>
 
-          <Button variant="contained" color="primary"
+          <Button
+            variant="contained"
+            color="primary"
             onClick={this.usrprofile}
             // className="btn btn-outline-primary"
             id="userprofile"
@@ -365,7 +373,8 @@ class dashboard extends Component {
 
           <Button
             onClick={this.addcandidate}
-            variant="contained" color="primary"
+            variant="contained"
+            color="primary"
             // className="btn btn-outline-primary"
             id="addcan"
             disabled={
@@ -437,31 +446,10 @@ class dashboard extends Component {
           )} */}
 
           <div class="row">
-            {this.state.usertype === "admin" && (
-              <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-                {usrdetails.map(can => {
-                  //console.log(can.name+can.email+can.jobspec)
-                  return (
-                    <UserCard
-                      name={can.firstName + " " + can.lastName}
-                      pendingcan={can.candidatesAssinged}
-                      id={can.id}
-                      state={can.state}
-                      avatar={can.avatarUrl}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            <div
-              className={
-                this.state.usertype === "admin"
-                  ? "cardcontainer2_admin"
-                  : "cardcontainer2_nonadmin"
-              }
-            >
-              {cndetailes.map((can, iid) => {
+            <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
+            {this.state.newcandicates.length===0 && (<p>no new candidates</p>)}
+              {this.state.newcandicates.map(can => {
+                //console.log(can.name+can.email+can.jobspec)
                 return (
                   <CandidateCard
                     triggershrt={this.shortlisting}
@@ -470,12 +458,61 @@ class dashboard extends Component {
                     jobspec={can.jobspec}
                     _id={can._id}
                     date={can.date}
-                    status={can.status}
+                    status={can.primaryStatus}
                     shortlisterId={can.shortlister}
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}
                     assignToshortlisterbyName={can.assignToshortlisterbyName}
                     skills={can.skills}
+                  />
+                );
+              })}
+            </div>{" "}
+            <div className="col-s4-m4-l4" id="dashboardcardcontainer2">
+
+              {this.state.shortlistedcandicates.length===0 && (<p>no new candidates</p>)}
+
+
+              {this.state.shortlistedcandicates.map(can => {
+                //console.log(can.name+can.email+can.jobspec)
+                return (
+                  <CandidateCard
+                    triggershrt={this.shortlisting}
+                    name={can.name}
+                    email={can.email}
+                    jobspec={can.jobspec}
+                    _id={can._id}
+                    date={can.date}
+                    status={can.primaryStatus}
+                    shortlisterId={can.shortlister}
+                    shortlisterName={can.shortlisterName}
+                    assignToshortlisterbyId={can.assignToshortlisterbyId}
+                    assignToshortlisterbyName={can.assignToshortlisterbyName}
+                    skills={can.skills}
+                    disableshortcheck={true}
+                  />
+                );
+              })}
+            </div>{" "}
+            <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
+            {this.state.shortlistedcandicates.length===0 && (<p>no scheduled candidates</p>)}
+              {this.state.scheduledcandicates.map(can => {
+                //console.log(can.name+can.email+can.jobspec)
+                return (
+                  <CandidateCard
+                    triggershrt={this.shortlisting}
+                    name={can.name}
+                    email={can.email}
+                    jobspec={can.jobspec}
+                    _id={can._id}
+                    date={can.date}
+                    status={can.primaryStatus}
+                    shortlisterId={can.shortlister}
+                    shortlisterName={can.shortlisterName}
+                    assignToshortlisterbyId={can.assignToshortlisterbyId}
+                    assignToshortlisterbyName={can.assignToshortlisterbyName}
+                    skills={can.skills}
+                    disableshortcheck={true}
                   />
                 );
               })}

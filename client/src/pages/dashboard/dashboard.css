@@ -33,13 +33,37 @@
    
     position: absolute;
     top: 25%;
-    left:7%;
+    left:6%;
     width: 39%;
     padding-right: 10%;
     
     text-align: left;
     
 }
+
+#dashboardcardcontainer2{
+   
+    position: absolute;
+    top: 25%;
+    left:37%;
+    width: 39%;
+    padding-right: 10%;
+    
+    text-align: left;
+    
+}#dashboardcardcontainer3{
+   
+    position: absolute;
+    top: 25%;
+    left:68.5%;
+    width: 39%;
+    padding-right: 10%;
+    
+    text-align: left;
+    
+}
+
+
 .cardcontainer2_nonadmin{
    
     position: absolute;

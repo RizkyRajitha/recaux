@@ -194,21 +194,29 @@ exports.getAllCandidates = (req, res) => {
   // var iid = req.params.id;
   //console.log(iid);
 
-  var newcandicates = {};
-  var shortlistedcandicates = {};
-  var scheduledcandicates = {};
+  var newcandicates = [];
+  var shortlistedcandicates = [];
+  var scheduledcandicates = [];
 
   Candidate.find()
     .then(result => {
-      // result.forEach(element => {
-      //   if (element.primaryStatus === "New") {
-      //     newcandicates.push(element);
-      //   } else if (element.primaryStatus === "Shortlisted") {
-      //     shortlistedcandicates.push(element);
-      //   } else if (element.primaryStatus === "Sheduled") {
-      //     scheduledcandicates.push(element);
-      //   }
-      // });
+      result.forEach(element => {
+        if (element.primaryStatus === "New") {
+          newcandicates.push(element);
+        } else {
+          if (element.interviewscheduled) {
+            scheduledcandicates.push(element);
+          } else {
+            shortlistedcandicates.push(element);
+          }
+        }
+      });
+      console.log("---------new-----------------------");
+      console.log(newcandicates);
+      console.log("---------scheduled-----------------------");
+      console.log(scheduledcandicates);
+      console.log("---------shortliste-----------------------");
+      console.log(shortlistedcandicates);
 
       User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
@@ -223,7 +231,10 @@ exports.getAllCandidates = (req, res) => {
 
           const payload = {
             userData: userDataArr,
-            candidateData: result.reverse()
+            candidateData: result.reverse(),
+            scheduledcandicates: scheduledcandicates,
+            shortlistedcandicates: shortlistedcandicates,
+            newcandicates: newcandicates
           };
 
           console.log("candidates found");
@@ -1026,6 +1037,14 @@ allocated date recieved date shortlisted date added by
     searchQuery.source = req.body.source;
   }
 
+  if (isjobspec) {
+    console.log("jobspec tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    searchQuery.jobspec = req.body.jobspec;
+  }
+
   Candidate.find(searchQuery).then(doc => {
     console.log(doc);
     res.json(doc);
@@ -1086,6 +1105,17 @@ exports.addinterview = (req, res, next) => {
                         newnot
                           .save()
                           .then(docs => {
+                            Candidate.findByIdAndUpdate(
+                              ObjectID(datain.candidateid),
+                              {
+                                $set: {
+                                  interviewscheduled: true
+                                }
+                              }
+                            )
+                              .then(doc => {})
+                              .catch(err => {});
+
                             var objdocs = docs.toObject();
                             objdocs.candidateId = datain.candidateid;
                             serverss.wsfunc("new_interview", docs);

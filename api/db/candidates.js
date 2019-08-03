@@ -18,7 +18,13 @@ var candidateSchema = new Schema({
     type: String
   },
   skills: [],
+
   status: {
+    type: String,
+    default: "New"
+  },
+
+  primaryStatus: {
     type: String,
     default: "New"
   },
@@ -26,15 +32,18 @@ var candidateSchema = new Schema({
     type: String
   },
 
-  primaryStatus: {
-    type: String,
-    default: "New"
+  finalStatus: {
+    type: String
   },
-
   source: {
     type: String
   },
-    interviewed: {
+  interviewed: {
+    type: Boolean,
+    default: false
+  },
+
+  interviewscheduled: {
     type: Boolean,
     default: false
   },

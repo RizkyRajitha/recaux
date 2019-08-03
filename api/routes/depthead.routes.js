@@ -128,19 +128,20 @@ exports.updateStatus = (req, res, next) => {
               var id = req.params.id;
               console.log(req.body.status);
 
-              if (req.body.status === "shortlisted") {
-                Candidate.findByIdAndUpdate(
-                  ObjectID(id),
-                  {
-                    $set: {
-                      primaryStatus: "Shortlisted"
-                    }
-                  },
-                  { new: true }
-                )
-                  .then(doc1 => {})
-                  .catch(err => console.log(err));
-              }
+              // if (req.body.status === "shortlisted") {
+              //   Candidate.findByIdAndUpdate(
+              //     ObjectID(id),
+              //     {
+              //       $set: {
+              //         shortlisted: true,
+              //         primaryStatus: "Shortlisted"
+              //       }
+              //     },
+              //     { new: true }
+              //   )
+              //     .then(doc1 => {})
+              //     .catch(err => console.log(err));
+              // }
 
               Candidate.findById(ObjectID(id))
                 .then(candoc => {
@@ -155,7 +156,7 @@ exports.updateStatus = (req, res, next) => {
                       ObjectID(id),
                       {
                         $set: {
-                          status: req.body.status,
+                          primaryStatus: req.body.status,
                           shortlistedDate: new Date().toISOString()
                         }
                       },
@@ -389,12 +390,11 @@ exports.getevalpdf = (req, res, next) => {
                           // Handle error, but keep in mind the response may be partially-sent
                           // so check res.headersSent
                         } else {
-
                           // decrement a download credit, etc.
                         }
                       }
                     );
-                    
+
                     //res.download();
                   }
                 }

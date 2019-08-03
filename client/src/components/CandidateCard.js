@@ -62,7 +62,7 @@ class CandidateCard extends Component {
       <div>
         <div id="cancard" className="card bg-light  mt-5">
           <div className="addtoshortlist_container">
-            <label class="containershbox">
+            <label class="containershbox"  hidden={this.props.disableshortcheck} >
               Add to Shortlist
               <input
                 type="checkbox"

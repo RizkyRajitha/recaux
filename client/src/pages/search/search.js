@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
+import RSelect from "react-select";
 import "./search.css";
 
 const jwt = require("jsonwebtoken");
@@ -82,7 +83,9 @@ class Search extends Component {
     searchjobspec: "",
     searchsource: "",
     searchresults: [],
-    searchnoresults: false
+    searchnoresults: false,
+    jobspeclist: [],
+    selectedOption: {}
   };
 
   openModal = () => {
@@ -235,6 +238,15 @@ class Search extends Component {
         });
       })
       .catch(err => {});
+
+    axios
+      .get("/usr/getjobspeclist", config)
+      .then(data => {
+        this.setState({
+          jobspeclist: data.data.jobspeclist
+        });
+      })
+      .catch(err => {});
   }
 
   searchformsubmit = e => {
@@ -243,6 +255,46 @@ class Search extends Component {
       name: this.state.searchName,
       email: this.state.searchemail,
       jobspec: this.state.searchjobspec,
+      source: this.state.searchsource
+    };
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  handleChangemodalselect = opt => {
+    console.log(opt);
+    this.setState({ searchjobspec: opt.label, selectedOption: opt });
+
+    //e.preventDefault();
+    var payload = {
+      name: this.state.searchName,
+      email: this.state.searchemail,
+      jobspec: opt.label, //this.state.searchjobspec,
       source: this.state.searchsource
     };
 
@@ -351,7 +403,7 @@ class Search extends Component {
   searchformsubmitemail = e => {
     e.preventDefault();
     var payload = {
-      name: this.state.searchemail,
+      name: this.state.searchName,
       email: e.target.value,
       jobspec: this.state.searchjobspec,
       source: this.state.searchsource
@@ -453,21 +505,11 @@ class Search extends Component {
 
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="age-simple">Job spec</InputLabel>
-              <Select
-                value={this.state.searchjobspec}
-                onChange={e => {
-                  //  console.log(e.target.value);
-                  this.setState({ searchjobspec: e.target.value });
-                }}
-                inputProps={{
-                  name: "age",
-                  id: "age-simple"
-                }}
-              >
-                <MenuItem value={"CEO"}>CEO</MenuItem>
-                <MenuItem value={"HR"}>Human resource</MenuItem>
-                <MenuItem value={"TECH_LEAD"}>leader</MenuItem>
-              </Select>
+              <RSelect
+                value={this.state.selectedOption}
+                onChange={this.handleChangemodalselect}
+                options={this.state.jobspeclist}
+              />
             </FormControl>
 
             <Button
