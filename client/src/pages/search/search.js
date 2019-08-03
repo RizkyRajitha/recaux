@@ -14,6 +14,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
 import "./search.css";
+
 const jwt = require("jsonwebtoken");
 
 const useStyles = theme => ({
@@ -76,7 +77,7 @@ class Search extends Component {
     usertype: "",
     avatarUrl: false,
     searchbydateclieked: false,
-    searchName: "",  
+    searchName: "",
     searchemail: "",
     searchjobspec: "",
     searchsource: "",
@@ -87,7 +88,7 @@ class Search extends Component {
   openModal = () => {
     this.setState({ modalIsOpen: true });
   };
-//5
+  //5
   afterOpenModal = () => {
     // references are now sync'd and can be accessed.
     this.subtitle.style.color = "#f00";
@@ -118,7 +119,7 @@ class Search extends Component {
     console.log("date reset - ");
     this.setState({ bothdatesselected: false, date: null });
   };
-//////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////
   submitesearchbydate = () => {
     if (this.state.date.from && this.state.date.to) {
       const token = localStorage.getItem("jwt");
@@ -394,7 +395,7 @@ class Search extends Component {
           username={this.state.firstName + " " + this.state.lastName}
           type={this.state.usertype}
         /> */}
-{/* 
+        {/* 
         <button
           id="searchbydatebtn"
           className="btn btn-primary"
@@ -469,7 +470,6 @@ class Search extends Component {
               </Select>
             </FormControl>
 
-           
             <Button
               variant="contained"
               color="primary"
