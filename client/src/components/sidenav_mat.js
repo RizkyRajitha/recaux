@@ -224,24 +224,24 @@ function Dashboard(props) {
     axios
       .get("/usr/notifications", config)
       .then(res => {
-        console.log("555555555555555555555555555555555555555555555555");
-        console.log("555555555555555555555555555555555555555555555555");
-        console.log("555555555555555555555555555555555555555555555555");
-        console.log("555555555555555555555555555555555555555555555555");
+        console.log(
+          "5555555555555555555555555 nortifications 55555555555555555555555"
+        );
+
         console.log(res.data);
         setdata(res.data);
       })
       .catch(err => console.log(err));
 
-    socket.on("new_interview", newitne => {
-      console.log("awa");
-      console.log(newitne);
-      setdata(state => {
-        return state.concat([newitne]);
-      });
+    // socket.on("new_interview", newitne => {
+    //   console.log("awa");
+    //   console.log(newitne);
+    //   setdata(state => {
+    //     return state.concat([newitne]);
+    //   });
 
-      console.log(data);
-    });
+    // console.log(data);
+    // });
   }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -300,17 +300,40 @@ function Dashboard(props) {
                   open={Boolean(anchorEl2)}
                   onClose={handleClose2}
                 >
-                  {data.map(ele => {
-                    return (
-                      <MenuItem
-                        onClick={() =>
-                          props.history.push("/getcandidate/" + ele.candidateId)
-                        }
-                      >
-                        {ele.dis}
-                      </MenuItem>
-                    );
-                  })}
+                  {data &&
+                    data.map((ele, index) => {
+                      return (
+                        <MenuItem
+                          onClick={() => {
+                            setdata(sata => {
+                              return sata.splice(index, 1);
+                            });
+
+                            props.history.push(
+                              "/getcandidate/" + ele.candidateId
+                            );
+                            var jwt = localStorage.getItem("jwt");
+
+                            var config = {
+                              headers: { authorization: jwt }
+                            };
+
+                            axios
+                              .post(
+                                "/usr/notificationseen",
+                                {
+                                  nortid: ele._id
+                                },
+                                config
+                              )
+                              .then()
+                              .catch(err => console.log(err)); //nortid
+                          }}
+                        >
+                          {ele.dis}
+                        </MenuItem>
+                      );
+                    })}
                 </Menu>
 
                 <Menu

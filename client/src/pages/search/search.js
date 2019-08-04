@@ -99,7 +99,9 @@ class Search extends Component {
   };
 
   openModal = () => {
-    this.setState({ modalIsOpen: true });
+    this.setState({
+      modalIsOpen: true
+    });
   };
   //5
   afterOpenModal = () => {
@@ -109,38 +111,55 @@ class Search extends Component {
   };
 
   closeModal = () => {
-    this.setState({ modalIsOpen: false });
+    this.setState({
+      modalIsOpen: false
+    });
   };
 
   searchModal = () => {
     this.openModal();
-    this.setState({ searchbydateclieked: true });
+    this.setState({
+      searchbydateclieked: true
+    });
   };
 
   getdatefromdatepicke = dateobj => {
     console.log("date from modal - " + JSON.stringify(dateobj));
-    this.setState({ date: dateobj });
+    this.setState({
+      date: dateobj
+    });
 
     if (dateobj.from && dateobj.to) {
-      this.setState({ bothdatesselected: true });
+      this.setState({
+        bothdatesselected: true
+      });
     } else {
-      this.setState({ bothdatesselected: true });
+      this.setState({
+        bothdatesselected: true
+      });
     }
   };
 
   resetdatepicker = () => {
     console.log("date reset - ");
-    this.setState({ bothdatesselected: false, date: null });
+    this.setState({
+      bothdatesselected: false,
+      date: null
+    });
   };
   //////////////////////////////////////////////////////////////////////////////////////////
   submitesearchbydate = () => {
     if (this.state.date.from && this.state.date.to) {
       const token = localStorage.getItem("jwt");
 
-      this.setState({ searchbynameResults: [] });
+      this.setState({
+        searchbynameResults: []
+      });
 
       var config = {
-        headers: { authorization: token }
+        headers: {
+          authorization: token
+        }
       };
 
       console.log("submit date - " + JSON.stringify(this.state.date));
@@ -151,7 +170,9 @@ class Search extends Component {
         .post("/usr/searchbydate", payload, config)
         .then(data => {
           console.log(data.data);
-          this.setState({ searchbydateResults: data.data });
+          this.setState({
+            searchbydateResults: data.data
+          });
           this.closeModal();
         })
         .catch(err => {
@@ -159,7 +180,10 @@ class Search extends Component {
         });
     } else {
       console.log("select a date");
-      this.setState({ bothdatesselected: false, date: null });
+      this.setState({
+        bothdatesselected: false,
+        date: null
+      });
     }
   };
 
@@ -167,23 +191,31 @@ class Search extends Component {
 
   namehndlechange = e => {
     console.log("tr - " + e.target.value);
-    this.setState({ searchbyname_value: e.target.value });
+    this.setState({
+      searchbyname_value: e.target.value
+    });
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     console.log("name sub - " + this.state.searchbyname_value);
 
-    var payload = { name: e.target.value };
+    var payload = {
+      name: e.target.value
+    };
 
     axios
       .post("/usr/searchbyname", payload, config)
       .then(res => {
         console.log(res.data);
-        this.setState({ searchbynameResults: res.data });
+        this.setState({
+          searchbynameResults: res.data
+        });
       })
       .catch(err => {});
   };
@@ -192,12 +224,16 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     console.log("name sub - " + this.state.searchbyname_value);
 
-    var payload = { name: this.state.searchbyname_value };
+    var payload = {
+      name: this.state.searchbyname_value
+    };
 
     axios
       .post("/usr/searchbyname", payload, config)
@@ -211,8 +247,12 @@ class Search extends Component {
 
   handleDateChange = e => {
     console.log(e);
-    this.setState({ selectedDate: e });
-    this.setState({ clearselectedDate2: true });
+    this.setState({
+      selectedDate: e
+    });
+    this.setState({
+      clearselectedDate2: true
+    });
     this.searchformsubmitrecieveddate(e);
   };
 
@@ -231,7 +271,9 @@ class Search extends Component {
     }
 
     var config = {
-      headers: { authorization: token }
+      headers: {
+        authorization: token
+      }
     };
 
     axios
@@ -245,7 +287,9 @@ class Search extends Component {
         var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
-        this.setState({ avatarUrl: baseUrl });
+        this.setState({
+          avatarUrl: baseUrl
+        });
 
         this.setState({
           id: datain._id,
@@ -287,7 +331,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -298,11 +344,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -312,7 +366,10 @@ class Search extends Component {
 
   handleChangemodalselect = opt => {
     console.log(opt);
-    this.setState({ searchjobspec: opt.label, selectedOption: opt });
+    this.setState({
+      searchjobspec: opt.label,
+      selectedOption: opt
+    });
     var dataeinter = moments(this.state.selectedDate._d);
     //e.preventDefault();
 
@@ -333,7 +390,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -344,11 +403,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -372,7 +439,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -383,11 +452,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -415,7 +492,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -426,11 +505,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -458,7 +545,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -469,11 +558,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -505,7 +602,9 @@ class Search extends Component {
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -516,11 +615,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -532,21 +639,21 @@ class Search extends Component {
     const { classes } = this.props;
     return (
       <div>
+        {" "}
         {/* <Navbar />
-        <Drawer
-          avatarUrl={this.state.avatarUrl}
-          username={this.state.firstName + " " + this.state.lastName}
-          type={this.state.usertype}
-        /> */}
-        {/* 
-        <button
-          id="searchbydatebtn"
-          className="btn btn-primary"
-          onClick={this.searchModal}
-        >
-          search by date
-        </button> */}
-
+                <Drawer
+                  avatarUrl={this.state.avatarUrl}
+                  username={this.state.firstName + " " + this.state.lastName}
+                  type={this.state.usertype}
+                /> */}{" "}
+        {/*
+                <button
+                  id="searchbydatebtn"
+                  className="btn btn-primary"
+                  onClick={this.searchModal}
+                >
+                  search by date
+                </button> */}
         <div className="searchParamsdiv">
           <form
             className={classes.root}
@@ -559,7 +666,9 @@ class Search extends Component {
               className={classes.textField}
               //value={"ciao"}
               onChange={e => {
-                this.setState({ searchName: e.target.value });
+                this.setState({
+                  searchName: e.target.value
+                });
                 this.searchformsubmitname(e);
               }}
               margin="normal"
@@ -569,19 +678,22 @@ class Search extends Component {
               label="email"
               className={classes.textField}
               onChange={e => {
-                this.setState({ searchemail: e.target.value });
+                this.setState({
+                  searchemail: e.target.value
+                });
                 this.searchformsubmitemail(e);
               }}
               margin="normal"
             />
-
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="searchsource">source</InputLabel>
+              <InputLabel htmlFor="searchsource"> source </InputLabel>{" "}
               <Select
                 value={this.state.searchsource}
                 onChange={e => {
                   console.log(e.target.value);
-                  this.setState({ searchsource: e.target.value });
+                  this.setState({
+                    searchsource: e.target.value
+                  });
                   this.searchformsubmitsource(e);
                 }}
                 inputProps={{
@@ -589,30 +701,27 @@ class Search extends Component {
                   id: "searchsource"
                 }}
               >
-                <MenuItem value={"email"}>Via email</MenuItem>
-                <MenuItem value={"manual"}>Via refereal</MenuItem>
-              </Select>
+                <MenuItem value={"email"}> Via email </MenuItem>{" "}
+                <MenuItem value={"manual"}> Via refereal </MenuItem>{" "}
+              </Select>{" "}
             </FormControl>
-
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="age-simple">Job spec</InputLabel>
+              <InputLabel htmlFor="age-simple"> Job spec </InputLabel>{" "}
               <RSelect
                 value={this.state.selectedOption}
                 onChange={this.handleChangemodalselect}
                 options={this.state.jobspeclist}
-              />
+              />{" "}
             </FormControl>
-
             <FormControl className={classes.formControl}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <DatePicker
                   value={this.state.selectedDate}
                   onChange={this.handleDateChange}
                   disableFuture={true}
-                />
-              </MuiPickersUtilsProvider>
+                />{" "}
+              </MuiPickersUtilsProvider>{" "}
             </FormControl>
-
             <Button
               variant="contained"
               color="primary"
@@ -624,9 +733,9 @@ class Search extends Component {
                 })
               }
             >
-              {!this.state.clearselectedDate2 ? "set date" : "remove date"}
+              {" "}
+              {!this.state.clearselectedDate2 ? "set date" : "remove date"}{" "}
             </Button>
-
             <Button
               variant="contained"
               color="primary"
@@ -635,40 +744,39 @@ class Search extends Component {
               //onClick={}
             >
               <i class="fa fa-search" />
-            </Button>
-          </form>
+            </Button>{" "}
+          </form>{" "}
         </div>
-
         <div className="searchcontainer">
+          {" "}
           {/* <div>
-            <input
-              type="text"
-              // onChange={this.namehndlechange}
-              // className="searchname"
-              name="search"
-              placeholder="Search.."
-            />
-            <input type="radio" name="source" value="email" /> via email
-            <input type="radio" name="source" value="manual" /> via manual
-            <Datepicker
-              datechnage={this.getdatefromdatepicke}
-              datereset={this.resetdatepicker}
-            />
-            jobspec add
-          </div> */}
-
+                    <input
+                      type="text"
+                      // onChange={this.namehndlechange}
+                      // className="searchname"
+                      name="search"
+                      placeholder="Search.."
+                    />
+                    <input type="radio" name="source" value="email" /> via email
+                    <input type="radio" name="source" value="manual" /> via manual
+                    <Datepicker
+                      datechnage={this.getdatefromdatepicke}
+                      datereset={this.resetdatepicker}
+                    />
+                    jobspec add
+                  </div> */}
           {this.state.searchresults && (
             <div>
+              {" "}
               {this.state.searchresults &&
                 this.state.searchresults.map(can => {
                   //console.log(can.name+can.email+can.jobspec)
                   return <Searchcard name={can.name} _id={can._id} />;
-                })}
+                })}{" "}
             </div>
           )}
-
-          {this.state.searchnoresults && <p> no results found </p>}
-        </div>
+          {this.state.searchnoresults && <p> no results found </p>}{" "}
+        </div>{" "}
       </div>
     );
   }

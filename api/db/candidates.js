@@ -60,6 +60,9 @@ var candidateSchema = new Schema({
   shortlistedDate: { type: String },
   allocatedDate: { type: String },
   shortlistStatus: { type: Boolean },
+
+  //shortlistStatus: { type: Boolean },
+
   cvUrl: [
     {
       url: { type: String, default: null },

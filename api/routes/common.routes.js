@@ -67,11 +67,34 @@ exports.addCandidate = (req, res) => {
   newcandidate
     .save()
     .then(result => {
-      res.status(200).json(result);
-      serverss.wsfunc("new_interview", {
-        candidateId: result.id,
-        dis: "new candidate " + req.body.candidatename
-      });
+      var userarr = [];
+
+      User.find({ usertype: "hr_staff" })
+        .then(docs => {
+          docs.forEach(element => {
+            userarr.push(ObjectID(element._id).toString());
+          });
+
+          const newnot = new Notifications({
+            dis: ` new candidate ${result.name} `,
+            title: "New candidate",
+            time: new Date().toISOString(),
+            userIdShow: userarr,
+            candidateId: ObjectID(result._id).toString()
+          });
+
+          newnot
+            .save(doc => {
+              res.status(200).json(result);
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+
+      // serverss.wsfunc("new_interview", {
+      //   candidateId: result.id,
+      //   dis: "new candidate " + req.body.candidatename
+      // });
     })
     .catch(err => {
       console.log(err);
@@ -1215,10 +1238,51 @@ exports.notifications = (req, res, next) => {
         console.log(req.body);
         var datain = req.body;
 
-        Notifications.find({ userIdShow: user.id, viwed: false })
+        Notifications.find({ userIdShow: { $in: [user.id] }, viwed: false })
           .then(docs => {
+            console.log("nortifications");
             console.log(docs);
-            res.status(200).json(docs);
+
+            if (docs === null) {
+              res.status(200).json([]);
+            } else {
+              res.status(200).json(docs);
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.notificationseen = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        // { $pull: { skills: { label: datain.label } } }
+        Notifications.findOneAndUpdate(
+          { _id: datain.nortid },
+          { $pull: { userIdShow: user.id } }
+        )
+          .then(docs => {
+            console.log("nortifications");
+            console.log(docs);
+
+            if (docs === null) {
+              res.status(200).json([]);
+            } else {
+              res.status(200).json(docs);
+            }
           })
           .catch(err => console.log(err));
       }

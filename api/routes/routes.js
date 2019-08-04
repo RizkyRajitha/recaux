@@ -180,7 +180,7 @@ router.get('/interviews',deptheadRoutes.interviews)
 router.get('/getevalpdf/:id',deptheadRoutes.getevalpdf)
 router.get('/notifications',commonRoutes.notifications)
 router.get('/userdataarr',commonRoutes.userdataarr)
-
+router.post('/notificationseen',commonRoutes.notificationseen)
 
 router.get("/testing", (req, res) => {
 
