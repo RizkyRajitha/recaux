@@ -46,10 +46,10 @@ const drawerHeight = 960;
 
 //socket = io();
 
-const socket = io("http://127.0.0.1:3001", {
-  transports: ["websocket"],
-  upgrade: false
-});
+// const socket = io("http://127.0.0.1:3001", {
+//   transports: ["websocket"],
+//   upgrade: false
+// });
 
 const useStyles = makeStyles(theme => ({
   root: {

@@ -39,8 +39,9 @@ import analyticsdashboard from "./pages/analytics/analyticsdashboard";
 import analyticsdashboard2 from "./pages/analytics/analyticsdashboard2";
 import Notfound from "./components/notFound";
 import Userlist from "./pages/userlist/userlist";
-import Interview from './pages/interviews/interviews'
-import OutSourceProject from './pages/OutSourceProject/OutSourceProject'
+import Interview from "./pages/interviews/interviews";
+import OutSourceProject from "./pages/OutSourceProject/OutSourceProject";
+import LandingPage from "./pages/landingpage/landingpage";
 
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
@@ -75,7 +76,7 @@ class App extends Component {
             <Route path="/analytics" component={analyticsdashboard} />
             <Route path="/searchAnalytics" component={analyticsdashboard2} />
             <Route path="/outsourceprojects/:id" component={OutSourceProject} />
-            
+            <Route path="/landingpage" component={LandingPage} />
             {usertype === "admin" ? (
               <Route path="/settings" component={Settings} />
             ) : (
@@ -89,8 +90,8 @@ class App extends Component {
             {usertype === "admin" || usertype === "depthead" ? (
               <Route path="/interviews" component={Interview} />
             ) : (
-                ""
-              )}
+              ""
+            )}
             <Route path="*" component={Notfound} />
           </Switch>
         </div>
