@@ -1011,6 +1011,7 @@ allocated date recieved date shortlisted date added by
   req.body.email ? (isemail = true) : "";
   req.body.jobspec ? (isjobspec = true) : "";
   req.body.source ? (isSource = true) : "";
+  req.body.reciveddate ? (isRecivedDate = true) : (isRecivedDate = false);
 
   var searchQuery = {};
 
@@ -1043,6 +1044,18 @@ allocated date recieved date shortlisted date added by
     //var regexemail = { $regex: req.body.source, $options: "i" };
 
     searchQuery.jobspec = req.body.jobspec;
+  }
+
+  if (isRecivedDate) {
+    console.log("recievd date  tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    // searchQuery.date = req.body.reciveddate;
+    searchQuery.date = {
+      $gt: req.body.reciveddate.slice(0, 10) + "T00:00:00.000Z",
+      $lt: req.body.reciveddate.slice(0, 10) + "T23:59:59.000Z"
+    };
   }
 
   Candidate.find(searchQuery).then(doc => {

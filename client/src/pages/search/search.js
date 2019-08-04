@@ -15,6 +15,14 @@ import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
 import RSelect from "react-select";
 import "./search.css";
+import moments from "moment";
+import {
+  DatePicker,
+  TimePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
 
 const jwt = require("jsonwebtoken");
 
@@ -85,7 +93,9 @@ class Search extends Component {
     searchresults: [],
     searchnoresults: false,
     jobspeclist: [],
-    selectedOption: {}
+    selectedOption: {},
+    selectedDate: new Date(),
+    clearselectedDate2: false
   };
 
   openModal = () => {
@@ -199,6 +209,13 @@ class Search extends Component {
 
   //searchbyname
 
+  handleDateChange = e => {
+    console.log(e);
+    this.setState({ selectedDate: e });
+    this.setState({ clearselectedDate2: true });
+    this.searchformsubmitrecieveddate(e);
+  };
+
   componentDidMount() {
     const token = localStorage.getItem("jwt");
     //console.log("jwt token -- - -- >>>" + jwt);
@@ -251,12 +268,19 @@ class Search extends Component {
 
   searchformsubmit = e => {
     e.preventDefault();
+    var dataeinter = moments(this.state.selectedDate._d);
+
     var payload = {
       name: this.state.searchName,
       email: this.state.searchemail,
       jobspec: this.state.searchjobspec,
       source: this.state.searchsource
+      //reciveddate: dataeinter.toISOString()
     };
+
+    if (this.state.clearselectedDate2) {
+      payload.reciveddate = dataeinter.toISOString();
+    }
 
     console.log(payload);
 
@@ -289,14 +313,20 @@ class Search extends Component {
   handleChangemodalselect = opt => {
     console.log(opt);
     this.setState({ searchjobspec: opt.label, selectedOption: opt });
-
+    var dataeinter = moments(this.state.selectedDate._d);
     //e.preventDefault();
+
     var payload = {
       name: this.state.searchName,
       email: this.state.searchemail,
       jobspec: opt.label, //this.state.searchjobspec,
       source: this.state.searchsource
+      //reciveddate: dataeinter.toISOString()
     };
+
+    if (this.state.clearselectedDate2) {
+      payload.reciveddate = dataeinter.toISOString();
+    }
 
     console.log(payload);
 
@@ -328,11 +358,13 @@ class Search extends Component {
 
   searchformsubmitsource = e => {
     e.preventDefault();
+    var dataeinter = moments(this.state.selectedDate._d);
     var payload = {
       name: this.state.searchName,
       email: this.state.searchemail,
       jobspec: this.state.searchjobspec,
-      source: e.target.value
+      source: e.target.value,
+      reciveddate: dataeinter.toISOString()
     };
 
     console.log(payload);
@@ -365,12 +397,18 @@ class Search extends Component {
 
   searchformsubmitname = e => {
     e.preventDefault();
+    var dataeinter = moments(this.state.selectedDate._d);
     var payload = {
       name: e.target.value,
       email: this.state.searchemail,
       jobspec: this.state.searchjobspec,
       source: this.state.searchsource
+      //reciveddate: dataeinter.toISOString()
     };
+
+    if (this.state.clearselectedDate2) {
+      payload.reciveddate = dataeinter.toISOString();
+    }
 
     console.log(payload);
 
@@ -402,12 +440,65 @@ class Search extends Component {
 
   searchformsubmitemail = e => {
     e.preventDefault();
+    var dataeinter = moments(this.state.selectedDate2._d);
     var payload = {
       name: this.state.searchName,
       email: e.target.value,
       jobspec: this.state.searchjobspec,
       source: this.state.searchsource
+      // reciveddate: dataeinter.toISOString()
     };
+
+    if (this.state.clearselectedDate2) {
+      payload.reciveddate = dataeinter.toISOString();
+    }
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({ searchnoresults: true });
+          this.setState({ searchresults: data.data });
+        } else {
+          this.setState({ searchnoresults: false });
+          this.setState({ searchresults: data.data });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  //
+
+  searchformsubmitrecieveddate = e => {
+    //e.preventDefault();
+
+    var dataeinter = moments(e._d);
+
+    var payload = {
+      name: this.state.searchName,
+      email: this.state.searchemail,
+      jobspec: this.state.searchjobspec,
+      source: this.state.searchsource
+      // reciveddate: dataeinter.toISOString()
+    };
+
+    if (this.state.clearselectedDate2) {
+      payload.reciveddate = dataeinter.toISOString();
+    }
 
     console.log(payload);
 
@@ -512,6 +603,30 @@ class Search extends Component {
               />
             </FormControl>
 
+            <FormControl className={classes.formControl}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <DatePicker
+                  value={this.state.selectedDate}
+                  onChange={this.handleDateChange}
+                  disableFuture={true}
+                />
+              </MuiPickersUtilsProvider>
+            </FormControl>
+
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              type="submit"
+              onClick={() =>
+                this.setState({
+                  clearselectedDate2: !this.state.clearselectedDate2
+                })
+              }
+            >
+              {!this.state.clearselectedDate2 ? "set date" : "remove date"}
+            </Button>
+
             <Button
               variant="contained"
               color="primary"
@@ -554,29 +669,6 @@ class Search extends Component {
 
           {this.state.searchnoresults && <p> no results found </p>}
         </div>
-
-        <Modal
-          isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <h2 ref={subtitle => (this.subtitle = subtitle)}>search by date</h2>
-          <div>
-            <Datepicker
-              datechnage={this.getdatefromdatepicke}
-              datereset={this.resetdatepicker}
-            />
-
-            <button
-              disabled={!this.state.bothdatesselected}
-              onClick={this.submitesearchbydate}
-            >
-              search{" "}
-            </button>
-          </div>
-        </Modal>
       </div>
     );
   }

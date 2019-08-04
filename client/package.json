@@ -12,6 +12,7 @@
     "file-saver": "^2.0.2",
     "formik": "^1.5.4",
     "formik-material-ui": "0.0.18",
+    "jshint": "^2.10.2",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
