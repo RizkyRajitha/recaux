@@ -171,7 +171,7 @@ exports.getOneCandidate = (req, res) => {
           Interview.findOne({ candidateId: iid })
             .then(doc1 => {
               console.log(doc1);
-
+              console.log(result);
               var objRes = result.toObject();
 
               if (doc1) {
@@ -181,6 +181,7 @@ exports.getOneCandidate = (req, res) => {
                 objRes.scheduler = doc1.schedulerId;
                 objRes.schedulerName = doc1.schedulerName;
                 objRes.interviewtime = doc1.datetime;
+                objRes.panalwname = doc1.panalwname;
               } else {
                 objRes.interview = false;
               }
@@ -1102,6 +1103,7 @@ exports.addinterview = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
+        console.log("addinterviewssssssssssssssssssssssssssssss");
         console.log(req.body);
         var datain = req.body;
 
@@ -1119,7 +1121,9 @@ exports.addinterview = (req, res, next) => {
                       candidateId: datain.candidateid,
                       candidateName: doc3.name,
                       datetime: datain.datetime,
-                      interviewtype: datain.interviewtype
+                      interviewtype: datain.interviewtype,
+                      panal: datain.panal,
+                      panalwname: datain.panalwname
                     });
 
                     newinterview
@@ -1134,7 +1138,7 @@ exports.addinterview = (req, res, next) => {
                             doc1.lastName} `,
                           title: "Interview",
                           time: new Date().toISOString(),
-                          userIdShow: [datain.interviewer],
+                          userIdShow: datain.panal,
                           candidateId: datain.candidateid
                         });
 
@@ -1203,11 +1207,30 @@ exports.updateinterview = (req, res, next) => {
                           interviwerId: datain.interviewer,
                           interviwerName: doc2.firstName + " " + doc2.lastName,
                           interviewtype: datain.interviewtype,
-                          datetime: datain.datetime
+                          datetime: datain.datetime,
+                          panal: datain.panal,
+                          panalwname: datain.panalwname
                         }
                       }
                     )
                       .then(doc => {
+                        const newnot = new Notifications({
+                          dis: ` you have new interview with ${doc3.name} on ${
+                            datain.datetime
+                          } scheduled by ${doc1.firstName +
+                            " " +
+                            doc1.lastName} `,
+                          title: "Interview update",
+                          time: new Date().toISOString(),
+                          userIdShow: datain.panal,
+                          candidateId: datain.candidateid
+                        });
+
+                        newnot
+                          .save()
+                          .then(doss => {})
+                          .catch(err => console.log(err));
+
                         console.log(doc);
                         res.status(200).json({ msg: "sucsess" });
                       })
@@ -1315,6 +1338,61 @@ exports.userdataarr = (req, res, next) => {
             });
 
             res.status(200).json(userDataArr);
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.reportsjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var payload = [];
+
+        Candidate.find()
+          .then(docs => {
+            Jobspec.find()
+              .then(joblist => {
+                var jobsmat = [];
+
+                joblist.forEach(element => {
+                  docs.forEach(elementcan => {
+                    if (elementcan.jobspec === element.label) {
+                      jobsmat.push(element.label);
+                    }
+                  });
+                });
+
+                var counts = {};
+                jobsmat.forEach(function(x) {
+                  counts[x] = (counts[x] || 0) + 1;
+                });
+
+                for (var key in counts) {
+                  if (counts.hasOwnProperty(key)) {
+                    payload.push({ name: key, value: counts[key] });
+
+                    console.log(key, counts[key]);
+                  }
+                }
+
+                res.json(payload);
+                console.log(payload);
+              })
+              .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
       }

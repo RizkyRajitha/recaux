@@ -300,7 +300,9 @@ function Dashboard(props) {
                   open={Boolean(anchorEl2)}
                   onClose={handleClose2}
                 >
-                  {data &&
+                  {data.length === 0 ? (
+                    <MenuItem> No Notifications </MenuItem>
+                  ) : (
                     data.map((ele, index) => {
                       return (
                         <MenuItem
@@ -333,7 +335,8 @@ function Dashboard(props) {
                           {ele.dis}
                         </MenuItem>
                       );
-                    })}
+                    })
+                  )}
                 </Menu>
 
                 <Menu

@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var InterviewSchema = new Schema({
-
   interviwerId: {
     type: String
   },
@@ -28,9 +27,9 @@ var InterviewSchema = new Schema({
   interviewtype: {
     type: String
   },
-  
-  panal: []
 
+  panal: [],
+  panalwname: []
 });
 
 const Interview = mongoose.model("Interview", InterviewSchema);

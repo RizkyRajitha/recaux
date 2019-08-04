@@ -182,28 +182,9 @@ router.get('/getevalpdf/:id',deptheadRoutes.getevalpdf)
 router.get('/notifications',commonRoutes.notifications)
 router.get('/userdataarr',commonRoutes.userdataarr)
 router.post('/notificationseen',commonRoutes.notificationseen)
+router.get('/reportsjobspec',commonRoutes.reportsjobspec)
 
 router.get("/testing", (req, res) => {
-
-
-  Candidate.find().then(doc=>{
-
-    pdf.create( evaluationPdfTemplate({ name, interviwedDate, Jobspec, academicBackground,industryExperience,currentPosition,currentEmployer ,interviwerName}),{} ).toFile('config/evalpdf.pdf',function(err,res){
-
-      if(err) {
-        console.log(err);
-    }else{
-      console.log('res')
-      console.log(res)
-      res.send('haha')
-    }
-
-
-  }).catch(err=>console.log(err))
- 
-
- 
-
 
 })
 
@@ -247,7 +228,6 @@ router.get("/testing", (req, res) => {
   //     console.log(err);
   //     res.status(200).json(err);
   //   });
-});
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(

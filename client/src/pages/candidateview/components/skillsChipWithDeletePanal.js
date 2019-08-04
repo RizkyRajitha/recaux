@@ -27,8 +27,9 @@ export default function ChipsArray(props) {
   const [chipData, setChipData] = useState([]);
 
   useEffect(() => {
-    setChipData(props.currentskills);
-    console.log("remuser " + props.remuser);
+    setChipData(props.currentpanal);
+
+    console.log("remuser " + JSON.stringify(props.currentpanal));
     var jwt = localStorage.getItem("jwt");
 
     var config = {
@@ -42,7 +43,7 @@ export default function ChipsArray(props) {
       .then(res => {
         console.log(res.data);
 
-        console.log("remuser - " + props.remuser);
+        // console.log("remuser - " + props.remuser);
 
         setselectoptionsnamelist(res.data);
       })

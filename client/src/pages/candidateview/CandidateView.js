@@ -169,14 +169,16 @@ class CandidateView extends Component {
     newest_cv_date: null,
     changedjobspec: null,
     editcanSuccess: false,
-    selectoptionsnamelist: [],
+    selectoptionsjobspeclist: [],
     selectedOption: "",
     selectedJobspecOption: "",
     selectedinterviwerOption: "",
     selectedDate: new Date(),
     snackbaropen: false,
     snackbarmsg: "",
-    selectedinterviwertype: ""
+    selectedinterviwertype: "",
+    slectformchipplanal: false,
+    interviewpanal: []
   };
   /****************************************** */
   openModal = () => {
@@ -616,7 +618,17 @@ class CandidateView extends Component {
   handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
     console.log(selectedOption);
     console.log("................");
-    this.setState({ selectedinterviwerOption: selectedOption });
+    this.setState({
+      selectedinterviwerOption: selectedOption,
+      slectformchipplanal: false
+    });
+
+    //this.setState({ slectformchipplanal: true });
+
+    setTimeout(() => {
+      this.setState({ slectformchipplanal: true });
+    }, 100);
+
     //this.forceUpdate()
     console.log(this.state.selectedinterviwerOption);
   };
@@ -726,13 +738,21 @@ class CandidateView extends Component {
           newest_cv_url: newesturl
         });
 
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
         axios
           .get("/usr/getjobspeclist", config)
           .then(res => {
-            console.log("skillset - - ");
-            console.log(res.data.jobspeclist);
+            console.log("jobslistasds;kd;sankd;ks - - ");
+            console.log(res.data);
 
-            this.setState({ selectoptionsnamelist: res.data.jobspeclist });
+            this.setState({ selectoptionsjobspeclist: res.data.jobspeclist });
           })
           .catch(err => {});
 
@@ -861,12 +881,23 @@ class CandidateView extends Component {
 
     console.log();
 
+    var panalset = [];
+
+    this.state.interviewpanal.forEach(element => {
+      console.log(element.key);
+      panalset.push(element.key);
+    });
+
+    console.log(this.state);
+
     var payload = {
       candidateid: this.state.data._id,
       scheduler: this.state.id,
       interviewer: this.state.selectedinterviwerOption.value,
       datetime: dataeinter.toISOString(),
-      interviewtype: this.state.selectedinterviwertype.value
+      interviewtype: this.state.selectedinterviwertype.value,
+      panal: panalset,
+      panalwname: this.state.interviewpanal
     };
 
     console.log(payload);
@@ -960,10 +991,11 @@ class CandidateView extends Component {
 
   gteinterviewpanal = panal => {
     console.log(panal);
+    this.setState({ interviewpanal: panal });
   };
 
   outsourceproject = () => {
-    this.props.history.push("/outsourceprojects/" + this.state.id);
+    this.props.history.push("/outsourceprojects/" + this.state.data._id);
   };
 
   render() {
@@ -1153,7 +1185,7 @@ class CandidateView extends Component {
                       placeholder={this.state.data.jobspec}
                       value={this.selectedJobspecOption}
                       onChange={this.handleChangemodalselectjobspec}
-                      options={this.state.selectoptionsnamelist}
+                      options={this.state.selectoptionsjobspeclist}
                     />
                     <div className="canviewborderdividcandidtaeeditdetails" />
                     <ChipsArraywdelete
@@ -1586,8 +1618,14 @@ status: "New"
                   moments(this.state.data.interviewtime).hour() +
                   ":" +
                   moments(this.state.data.interviewtime).minute() +
-                  " do you want to update "
+                  " do you want to update \n interview panal"
                 : ""}
+              <ul>
+                {this.state.data.panalwname &&
+                  this.state.data.panalwname.map(ele => {
+                    return <li> {ele.label} </li>;
+                  })}{" "}
+              </ul>
 
               <form onSubmit={this.scheduleHandler}>
                 <table style={{ textAlign: "left", width: "50%" }}>
@@ -1662,22 +1700,20 @@ status: "New"
                     <td>interviewe panal- </td>
                     <td>
                       <div className="" />
-                      <ChipsArrayPanal
-                        hidden={
-                          this.state.selectedinterviwerOption.value
-                            ? false
-                            : true
-                        }
-                        id={this.state.data._id}
-                        //remuser={this.state.selectedinterviwerOption}
-                        currentskills={[
-                          {
-                            key: this.state.selectedinterviwerOption.value,
-                            label: this.state.selectedinterviwerOption.label
-                          }
-                        ]}
-                        setpanal={this.gteinterviewpanal}
-                      />
+
+                      {this.state.slectformchipplanal && (
+                        <ChipsArrayPanal
+                          id={this.state.data._id}
+                          //remuser={this.state.selectedinterviwerOption}
+                          currentpanal={[
+                            {
+                              key: this.state.selectedinterviwerOption.value,
+                              label: this.state.selectedinterviwerOption.label
+                            }
+                          ]}
+                          setpanal={this.gteinterviewpanal}
+                        />
+                      )}
                     </td>
                   </tr>
                 </table>
