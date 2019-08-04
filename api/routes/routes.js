@@ -15,6 +15,7 @@ const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
 const Jobspec = require("../db/jobspec");
+const Notifications = require('../db/nortification')
 const fs = require("fs");
 
 
@@ -304,8 +305,35 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                         "user doc -" +
                         JSON.stringify(docc)
                     );
+
                     if (candoc.ok === 1 && docc.ok === 1) {
-                      res.json({ msg: "allocated_success" });
+                     
+
+Candidate.findById(ObjectID(datain.candidateallocated)).then(candidatedocs=>{
+
+
+ const newnot = new Notifications({
+            dis: ` new shortlist  candidate ${candidatedocs.name} `,
+            title: "New Shortlist",
+            time: new Date().toISOString(),
+            userIdShow:  [datain.allocateduser] ,
+            candidateId: ObjectID(candidatedocs._id).toString()
+          });
+
+          newnot
+            .save(doc => {
+               res.json({ msg: "allocated_success" });
+              //res.status(200).json(result);
+            })
+            .catch(err => console.log(err));
+
+}).catch(err=>{
+  console.log(err)
+})
+
+
+
+
                     }
                   })
                   .catch(err => {
@@ -386,6 +414,31 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                             allocaterUserDoc.lastName,
                           allocatedDate: new Date().toISOString()
                         });
+
+
+Candidate.findById(ObjectID(element)).then(candidatedocs=>{
+
+
+ const newnot = new Notifications({
+            dis: ` new shortlist  candidate ${candidatedocs.name} `,
+            title: "New Shortlist",
+            time: new Date().toISOString(),
+            userIdShow:  [allocatedUserId] ,
+            candidateId: ObjectID(candidatedocs._id).toString()
+          });
+
+          newnot
+            .save(doc => {
+             // res.status(200).json(result);
+            })
+            .catch(err => console.log(err));
+
+}).catch(err=>{
+  console.log(err)
+})
+
+
+
                       });
 
                       userDoc
