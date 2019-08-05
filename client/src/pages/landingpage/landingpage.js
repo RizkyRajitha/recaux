@@ -4,6 +4,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { withRouter } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import "./landingpage.css";
+import moment from "moment";
 
 const drawerWidth = 240;
 const drawerHeight = 960;
@@ -13,8 +14,11 @@ const LandingPage = props => {
   const [greet, setgreet] = React.useState("");
   const [name, setname] = React.useState("");
   const [avatarUrl, setavatarUrl] = React.useState("");
-  const [interviewdata, setinterviewdata] = React.useState("");
+  const [interviewdata, setinterviewdata] = React.useState([]);
   const [fromatinterviewdata, setfromatinterviewdata] = React.useState([]);
+  const [intdates, setintdates] = React.useState([]);
+  const [id, setid] = React.useState("");
+  const [shortlists, setshortlists] = React.useState([]);
 
   React.useEffect(() => {
     var hours = new Date().hours;
@@ -49,6 +53,10 @@ const LandingPage = props => {
           // this.setState({ avatarUrl: baseUrl });
           setavatarUrl(baseUrl);
           setname(datain.firstName + " " + datain.lastName);
+          setid(datain.id);
+          console.log("user id");
+          console.log(datain.id);
+
           // this.setState({
           //   id: datain._id,
           //   firstName: datain.firstName,
@@ -67,20 +75,43 @@ const LandingPage = props => {
     }
 
     axios
-      .get("/usr/interviews", config)
+      .get("/usr/getshortlistdata/" + decode.id, config)
+      .then(res => {
+        console.log("short datakkkkkkkkkkkkkkkkkkkkkkkk");
+        console.log(res.data);
+
+        setshortlists(res.data);
+
+        console.log("arr length - " + JSON.stringify(res.data));
+      })
+      .catch(err => {});
+
+    axios
+      .post("/usr/landingpage", { today: new Date().toISOString() }, config)
       .then(res => {
         console.log("interview data - - - ");
 
-        //console.log(data.data)
+        console.log(res.data);
 
-        // setfromatinterviewdata(state=>{
+        var times = [];
 
-        //     res.data.forEach(element => {
+        res.data.forEach(element => {
+          var frpamtedtimes = {};
+          var datehigh = moment(element.datetime).add(30, "minutes"); //.format("DD:HH:mm:ss", { trim: false });
+          var datelow = moment(element.datetime).subtract(30, "minutes");
 
-        //     });
+          // console.log("dolots");
+          // console.log(datelow.toISOString());
 
-        // })
+          frpamtedtimes.from = datelow.format("HH:mm:ss", { trim: false }); //+ ":" + datelow.minutes();
 
+          frpamtedtimes.to = datehigh.format("HH:mm:ss", { trim: false }); //.hours() + ":" + datehigh.minutes();
+          frpamtedtimes.name = element.candidateName;
+          // console.log("datetimes");
+          // console.log(frpamtedtimes);
+          times.push(frpamtedtimes);
+        });
+        setintdates(times.reverse());
         setinterviewdata(res.data);
       })
       .catch(err => {
@@ -102,7 +133,31 @@ const LandingPage = props => {
           // className={classes.avatar}
         />
       </div>
-      you have {interviewdata.length} Today
+      <div className="landingcontetdic">
+        you have {interviewdata.length} Interview(s) Today
+        <ul>
+          {intdates.map(ele => {
+            return (
+              <li className="listinterivewslandingpage">
+                {" "}
+                with {ele.name + "  "}
+                from {" " + ele.from + " "} to {" " + ele.to} <br />
+              </li>
+            );
+          })}
+          you have {shortlists.length === 0 ? " no " : "few"} shortlists(s)
+          Pending
+          {shortlists.map(ele => {
+            return (
+              <li className="listinterivewslandingpage">
+                {ele.name + " "} is on Pending shortlists{" "}
+                <a href={"/getcandidate/" + ele._id}>view</a>
+                <br />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };

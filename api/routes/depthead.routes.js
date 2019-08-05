@@ -143,59 +143,68 @@ exports.updateStatus = (req, res, next) => {
               //     .catch(err => console.log(err));
               // }
 
-              Candidate.findById(ObjectID(id))
-                .then(candoc => {
-                  console.log(candoc.shortlister);
-                  console.log("   " + result._id);
-                  console.log("  555 " + result._id.equals(candoc.shortlister));
+              User.findById(ObjectID(user.id))
+                .then(docusr => {
+                  Candidate.findById(ObjectID(id))
+                    .then(candoc => {
+                      console.log(candoc.shortlister);
+                      console.log("   " + result._id);
+                      console.log(
+                        "  555 " + result._id.equals(candoc.shortlister)
+                      );
 
-                  if (result._id.equals(candoc.shortlister)) {
-                    console.log("valid user elegible for shortlisting");
+                      if (
+                        result._id.equals(candoc.shortlister) ||
+                        docusr.usertype === "admin"
+                      ) {
+                        console.log("valid user elegible for shortlisting");
 
-                    Candidate.findByIdAndUpdate(
-                      ObjectID(id),
-                      {
-                        $set: {
-                          primaryStatus: req.body.status,
-                          shortlistedDate: new Date().toISOString()
-                        }
-                      },
-                      { new: true }
-                    )
-                      .then(doc => {
-                        User.findOneAndUpdate(
-                          {
-                            _id: result._id,
-                            "shortlist.candidateId": id
-                          },
+                        Candidate.findByIdAndUpdate(
+                          ObjectID(id),
                           {
                             $set: {
-                              "shortlist.$.shortlistStatus": true,
-                              "shortlist.$.shortlistedDate": new Date().toISOString()
+                              primaryStatus: req.body.status,
+                              shortlistedDate: new Date().toISOString()
                             }
                           },
                           { new: true }
                         )
-                          .then(userdoc2 => {
-                            console.log(
-                              "updated dco - " + JSON.stringify(userdoc2)
-                            );
+                          .then(doc => {
+                            User.findOneAndUpdate(
+                              {
+                                _id: result._id,
+                                "shortlist.candidateId": id
+                              },
+                              {
+                                $set: {
+                                  "shortlist.$.shortlistStatus": true,
+                                  "shortlist.$.shortlistedDate": new Date().toISOString()
+                                }
+                              },
+                              { new: true }
+                            )
+                              .then(userdoc2 => {
+                                console.log(
+                                  "updated dco - " + JSON.stringify(userdoc2)
+                                );
 
-                            console.log("doc");
-                            console.log(doc);
-                            res.status(200).json({ msg: "sucsess" });
+                                console.log("doc");
+                                console.log(doc);
+                                res.status(200).json({ msg: "sucsess" });
+                              })
+                              .catch(err => {
+                                console.log(err);
+                              });
                           })
                           .catch(err => {
                             console.log(err);
+                            res.json(err);
                           });
-                      })
-                      .catch(err => {
-                        console.log(err);
-                        res.json(err);
-                      });
-                  } else {
-                    res.status(401).send("less previladge");
-                  }
+                      } else {
+                        res.status(401).send("less previladge");
+                      }
+                    })
+                    .catch(err => {});
                 })
                 .catch(err => {});
 
@@ -621,6 +630,58 @@ exports.interviews = (req, res, next) => {
           .catch(err => {
             console.log(err);
           });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.updatefinalstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Interview.find({ candidateId: datain.canid, interviwerId: user.id })
+          .then(doccan => {
+            console.log(doccan);
+
+            if (doccan.length > 0) {
+              console.log("final elegible doc can");
+              User.findById(ObjectID(user.id))
+                .then(userdoc => {
+                  Candidate.findByIdAndUpdate(ObjectID(datain.canid), {
+                    $set: {
+                      finalStatus: req.body.finalstatus,
+                      finalStatusdate: new Date().toISOString(),
+                      finalStatussetby:
+                        userdoc.firstName + " " + userdoc.lastName
+                    }
+                  })
+                    .then(chdoc => {
+                      console.log(chdoc);
+                      res.status(200).json({ msg: "sucsess" });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            } else {
+              res.status(200).json({ msg: "less_previ" });
+            }
+          })
+          .catch(err => console.log(err));
       }
     }
   )(req, res, next);

@@ -85,6 +85,7 @@ class CandidateCard extends Component {
               {this.props.status === "shortlisted" ? "Shortlisted" : ""}
               {this.props.status === "hr_interview" ? "HR interview" : ""}
               {this.props.status === "New" ? "New" : ""}
+               {this.props.status === "rejected" ? "Rejected" : ""}
             </span>
           </div>
           <div class="card-body">

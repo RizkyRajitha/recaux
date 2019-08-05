@@ -38,6 +38,8 @@ app.use(bp.json());
 //app.use("/static", express.static(path.join(__dirname, "../assets")));
 //app.use(express.static('../client/public'));
 
+// /home/dealwithit/Documents/dev/recaux/client/build
+
 app.use(
   "/evaluation",
   express.static(path.join(__dirname, "../assets/evaluationforms/"))
@@ -45,11 +47,17 @@ app.use(
 
 app.use("/usr", require("./routes/routes"));
 
-app.get("/ws", (req, res) => {
-  console.log("ws test.....");
-  io.emit("new_candidate", [{ msg: "hola" }, { msg: "aloha" }]);
-  res.send("juhu");
-});
+// app.use(express.static("../client/build"));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../", "client", "build", "index.html"));
+// });
+
+// app.get("/ws", (req, res) => {
+//   console.log("ws test.....");
+//   io.emit("new_candidate", [{ msg: "hola" }, { msg: "aloha" }]);
+//   res.send("juhu");
+// });
 
 /******************************************************************* */
 
@@ -173,7 +181,7 @@ channel.bind("my-event", function(data) {
                 title: "new candidate",
                 time: new Date().toISOString(),
                 userIdShow: datain.interviewer,
-                candidateId:datain.candidateid
+                candidateId: datain.candidateid
               });
 
               newnot

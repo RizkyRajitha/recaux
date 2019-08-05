@@ -177,6 +177,7 @@ class CandidateView extends Component {
     snackbaropen: false,
     snackbarmsg: "",
     selectedinterviwertype: "",
+    finalstatus: "",
     slectformchipplanal: false,
     interviewpanal: []
   };
@@ -343,7 +344,13 @@ class CandidateView extends Component {
     console.log(int);
 
     this.setState({ selectedinterviwertype: int });
-  };
+  }; //handlefinalstatus
+
+  // handlefinalstatus = int => {
+  //   console.log(int);
+
+  //   this.setState({ finalstatus: int.value });
+  // }; //handlefinalstatus
 
   chngehndlcv = e => {
     this.setState({ cvFile: e.target.files[0] });
@@ -490,6 +497,41 @@ class CandidateView extends Component {
   handleChangemodalselect = selectedOption => {
     this.setState({ selectedOption });
     console.log(`Option selected:`, selectedOption);
+  };
+
+  handlefinalstatus = finaloption => {
+    // this.setState({ finalstatus: });
+    console.log(`final status selected:`, finaloption);
+
+    const jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post(
+        "/usr/updatefinalstatus",
+        { canid: this.state.data._id, finalstatus: finaloption.value },
+        config
+      )
+      .then(res => {
+        console.log("updatefinal");
+        console.log(res.data);
+
+        if (res.data.msg === "sucsess") {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Final state updated sucessfully"
+          });
+        } else {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Final state updated error , less previladges"
+          });
+        }
+      })
+      .catch(err => console.log(err));
   };
 
   viewoldcv = cancvid => {
@@ -742,10 +784,6 @@ class CandidateView extends Component {
         console.log("jobslistasds;kd;sankd;ks - - ");
         console.log("jobslistasds;kd;sankd;ks - - ");
         console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
         axios
           .get("/usr/getjobspeclist", config)
           .then(res => {
@@ -799,7 +837,10 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === "sucsess") {
-          this.setState({ status_change: 1 });
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Primary status update successfully"
+          });
           this.closeModal1();
         }
 
@@ -807,7 +848,11 @@ class CandidateView extends Component {
       })
       .catch(err => {
         console.log(err);
-        this.setState({ status_change: 0 });
+        this.setState({
+          snackbaropen: true,
+          snackbarmsg: "Primary status update error"
+        });
+        //this.setState({ status_change: 0 });
       });
   };
 
@@ -1417,7 +1462,7 @@ status: "New"
                   </ListItemAvatar>
                   <ListItemText
                     primary="Current status"
-                    secondary={this.state.data.status}
+                    secondary={this.state.data.primaryStatus}
                   />
                 </ListItem>
               </List>
@@ -1489,8 +1534,8 @@ status: "New"
 
           <button
             disabled={
-              this.state.data.shortlister !== this.state.id ||
-              this.state.usertype === "admin"
+              this.state.data.shortlister !== this.state.id &&
+              !(this.state.usertype === "admin")
                 ? true
                 : false
             }
@@ -1563,7 +1608,7 @@ status: "New"
                 for="exampleFormControlSelect2"
                 hidden={
                   this.state.usertype === "admin" ||
-                  this.state.usertype === "depthead"
+                  this.state.usertype === "hr_staff"
                     ? false
                     : true
                 }
@@ -1737,7 +1782,11 @@ status: "New"
               Evaluation PDF
             </button>
           ) : (
-            <button onClick={this.evalHndler} className="btn btn-primary">
+            <button
+              onClick={this.evalHndler}
+              disabled={!(this.state.id === this.state.data.interviewerId)}
+              className="btn btn-primary"
+            >
               evaluate
             </button>
           )}
@@ -1757,6 +1806,35 @@ status: "New"
           </button>
           <br />
           <br />
+
+          <div
+            hidden={
+              this.state.data.interviewerId === this.state.id ||
+              this.state.usertype === "admin"
+                ? false
+                : true
+            }
+          >
+            Final Status
+            <Select
+              disabled={true}
+              isSearchable
+              required
+              value={this.state.finalstatus}
+              //placeholder={this.state.selectedinterviwertype.label}
+              onChange={this.handlefinalstatus}
+              options={[
+                {
+                  label: "Accepted",
+                  value: "accepted"
+                },
+                {
+                  label: "Rejected",
+                  value: "rejected"
+                }
+              ]}
+            />{" "}
+          </div>
 
           <Snackbar
             anchorOrigin={{

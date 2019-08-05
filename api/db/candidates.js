@@ -11,6 +11,11 @@ var candidateSchema = new Schema({
   name: {
     type: String
   },
+
+  addedby: {
+    type: String
+  },
+
   jobspec: {
     type: String
   },
@@ -28,11 +33,36 @@ var candidateSchema = new Schema({
     type: String,
     default: "New"
   },
+  primaryStatussetby: {
+    type: String,
+    default: "New"
+  },
+  primaryStatusdate: {
+    type: String,
+    default: "New"
+  },
+
   statusHr: {
     type: String
   },
+  statusHrdate: {
+    type: String,
+    default: "New"
+  },
+
+  statusHrsetby: {
+    type: String,
+    default: "New"
+  },
 
   finalStatus: {
+    type: String
+  },
+  finalStatusdate: {
+    type: String,
+    default: "New"
+  },
+  finalStatussetby: {
     type: String
   },
   source: {

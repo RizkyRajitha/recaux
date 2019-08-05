@@ -119,8 +119,8 @@ module.exports = ({
                    </td>
                 </tr>
                 <tr class="heading">
-                   <td>Bought items:</td>
-                   <td>Price</td>
+                   <td></td>
+                   <td></td>
                 </tr>
                 <tr class="item">
                    <td>Acadamic background:</td>
@@ -141,9 +141,43 @@ module.exports = ({
           <td>${currentEmployer}</td>
        </tr>
 
+
+             <tr class="item">
+             <td>Current position & period :</td>
+             <td>${currentPosition}</td>
+          </tr>
+
+          <tr class="item">
+          <td>Current Empolyer :</td>
+          <td>${currentEmployer}</td>
+       </tr>
+
+             <tr class="item">
+             <td>Current position & period :</td>
+             <td>${currentPosition}</td>
+          </tr>
+
+          <tr class="item">
+          <td>Current Empolyer :</td>
+          <td>${currentEmployer}</td>
+       </tr>
+
+             <tr class="item">
+             <td>Current position & period :</td>
+             <td>${currentPosition}</td>
+          </tr>
+
+          <tr class="item">
+          <td>Current Empolyer :</td>
+          <td>${currentEmployer}</td>
+       </tr>
+
+
              </table>
              <br />
-             <h3 class="justify-center">Interviwed by: ${interviwerName}</h1>
+             <h3 class="justify-center">Interviwed by: ${interviwerName}</h3>
+             <br />
+             <h3 class="justify-center">Approved by: ${approvename}</h3>
           </div>
        </body>
     </html>

@@ -280,7 +280,7 @@ class dashboard extends Component {
   };
 
   componentDidMount() {
-    this.greet();
+    //this.greet();
     console.log("mount");
     var jwt = localStorage.getItem("jwt");
 

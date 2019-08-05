@@ -30,6 +30,7 @@ import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
 import CardTravel from "@material-ui/icons/CardTravel";
 import Settings from "@material-ui/icons/Settings";
 import Menu from "@material-ui/core/Menu";
+import Apps from "@material-ui/icons/Apps";
 import MenuItem from "@material-ui/core/MenuItem";
 import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
@@ -406,6 +407,18 @@ function Dashboard(props) {
               <ListItem
                 button
                 onClick={() => {
+                  props.history.push("/landingpage");
+                }}
+              >
+                <ListItemIcon>
+                  <Apps />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+
+ <ListItem
+                button
+                onClick={() => {
                   props.history.push("/dashboard");
                 }}
               >
@@ -414,6 +427,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItem>
+
               <ListItem
                 button
                 onClick={() => {

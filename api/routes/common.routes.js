@@ -170,6 +170,9 @@ exports.getOneCandidate = (req, res) => {
 
           Interview.findOne({ candidateId: iid })
             .then(doc1 => {
+
+
+              
               console.log(doc1);
               console.log(result);
               var objRes = result.toObject();
@@ -1395,6 +1398,44 @@ exports.reportsjobspec = (req, res, next) => {
               .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.landingpage = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+
+        var datain = req.body;
+
+        var lday = datain.today.slice(0, 10) + "T00:00:00.000Z";
+        var uday = datain.today.slice(0, 10) + "T23:59:59.000Z";
+
+        Interview.find({
+          panal: { $in: [user.id] },
+          datetime: {
+            $gte: lday,
+            $lt: uday
+          }
+        })
+          .then(docs => {
+            console.log(docs);
+            res.status(200).json(docs);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);

@@ -183,6 +183,8 @@ router.get('/notifications',commonRoutes.notifications)
 router.get('/userdataarr',commonRoutes.userdataarr)
 router.post('/notificationseen',commonRoutes.notificationseen)
 router.get('/reportsjobspec',commonRoutes.reportsjobspec)
+router.post('/landingpage',commonRoutes.landingpage)
+router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
 
 router.get("/testing", (req, res) => {
 
