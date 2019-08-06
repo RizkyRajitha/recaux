@@ -119,92 +119,79 @@ exports.updateStatus = (req, res, next) => {
         res.status(401).send(info);
       } else {
         User.findById(ObjectID(user.id))
-          .then(result => {
-            if (result.usertype === "admin" || result.usertype === "depthead") {
+          .then(docusr => {
+            if (docusr.usertype === "admin" || docusr.usertype === "depthead") {
               console.log(req.body);
               var datain = req.body;
-
+              console.log("admin or depthead");
               console.log(req.params.id);
               var id = req.params.id;
               console.log(req.body.status);
 
-              // if (req.body.status === "shortlisted") {
-              //   Candidate.findByIdAndUpdate(
-              //     ObjectID(id),
-              //     {
-              //       $set: {
-              //         shortlisted: true,
-              //         primaryStatus: "Shortlisted"
-              //       }
-              //     },
-              //     { new: true }
-              //   )
-              //     .then(doc1 => {})
-              //     .catch(err => console.log(err));
-              // }
+              Candidate.findById(ObjectID(id))
+                .then(candoc => {
+                  console.log(candoc.shortlister);
+                  console.log("   " + docusr._id);
+                  console.log(
+                    "  555 ids " + docusr._id.equals(candoc.shortlister)
+                  );
+                  console.log("  555 usertype -  " + docusr.usertype);
+                  console.log("  555 comp " + (docusr.usertype === "admin"));
 
-              User.findById(ObjectID(user.id))
-                .then(docusr => {
-                  Candidate.findById(ObjectID(id))
-                    .then(candoc => {
-                      console.log(candoc.shortlister);
-                      console.log("   " + result._id);
-                      console.log(
-                        "  555 " + result._id.equals(candoc.shortlister)
-                      );
+                  if (
+                    docusr._id.equals(candoc.shortlister) ||
+                    docusr.usertype === "admin"
+                  ) {
+                    console.log("valid user elegible for shortlisting");
 
-                      if (
-                        result._id.equals(candoc.shortlister) ||
-                        docusr.usertype === "admin"
-                      ) {
-                        console.log("valid user elegible for shortlisting");
-
-                        Candidate.findByIdAndUpdate(
-                          ObjectID(id),
+                    Candidate.findByIdAndUpdate(
+                      ObjectID(id),
+                      {
+                        $set: {
+                          primaryStatus: req.body.status,
+                          shortlistedDate: new Date().toISOString(),
+                          primaryStatussetby:
+                            docusr.firstName + " " + docusr.lastName,
+                          primaryStatussetbyusertype: docusr.usertype,
+                          status: req.body.status
+                        }
+                      },
+                      { new: true }
+                    )
+                      .then(doc => {
+                        User.findOneAndUpdate(
+                          {
+                            _id: docusr._id,
+                            "shortlist.candidateId": id
+                          },
                           {
                             $set: {
-                              primaryStatus: req.body.status,
-                              shortlistedDate: new Date().toISOString()
+                              "shortlist.$.shortlistStatus": true,
+                              "shortlist.$.shortlistedDate": new Date().toISOString()
                             }
                           },
                           { new: true }
                         )
-                          .then(doc => {
-                            User.findOneAndUpdate(
-                              {
-                                _id: result._id,
-                                "shortlist.candidateId": id
-                              },
-                              {
-                                $set: {
-                                  "shortlist.$.shortlistStatus": true,
-                                  "shortlist.$.shortlistedDate": new Date().toISOString()
-                                }
-                              },
-                              { new: true }
-                            )
-                              .then(userdoc2 => {
-                                console.log(
-                                  "updated dco - " + JSON.stringify(userdoc2)
-                                );
+                          .then(userdoc2 => {
+                            console.log(
+                              "updated dco - " + JSON.stringify(userdoc2)
+                            );
 
-                                console.log("doc");
-                                console.log(doc);
-                                res.status(200).json({ msg: "sucsess" });
-                              })
-                              .catch(err => {
-                                console.log(err);
-                              });
+                            console.log("doc");
+                            console.log(doc);
+                            res.status(200).json({ msg: "sucsess" });
                           })
                           .catch(err => {
                             console.log(err);
-                            res.json(err);
                           });
-                      } else {
-                        res.status(401).send("less previladge");
-                      }
-                    })
-                    .catch(err => {});
+                      })
+                      .catch(err => {
+                        console.log(err);
+                        res.json(err);
+                      });
+                  } else {
+                    res.status(401).send("less previladge");
+                  }
                 })
                 .catch(err => {});
 
@@ -663,7 +650,8 @@ exports.updatefinalstatus = (req, res, next) => {
                       finalStatus: req.body.finalstatus,
                       finalStatusdate: new Date().toISOString(),
                       finalStatussetby:
-                        userdoc.firstName + " " + userdoc.lastName
+                        userdoc.firstName + " " + userdoc.lastName,
+                      status: req.body.finalstatus
                     }
                   })
                     .then(chdoc => {

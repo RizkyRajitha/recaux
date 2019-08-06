@@ -256,7 +256,7 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                 { _id: datain.candidateallocated },
 
                 {
-                  $set: {
+                  $set: {allocatedtoshorltistdone:true,
                     assignToshortlisterbyName:
                       allocaterdoc.firstName + " " + allocaterdoc.lastName,
                     assignToshortlisterbyId: user.id,
@@ -369,6 +369,7 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                     },
                     {
                       $set: {
+                        allocatedtoshorltistdone:true,
                         assignToshortlisterbyName:
                           allocaterUserDoc.firstName +
                           " " +

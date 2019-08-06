@@ -53,67 +53,89 @@ exports.configureNewUser = (req, res, next) => {
   )(req, res, next);
 };
 
-exports.addCandidate = (req, res) => {
-  console.log(req.body);
+exports.addCandidate = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
 
-  const newcandidate = new Candidate({
-    email: req.body.candidateemail,
-    name: req.body.candidatename,
-    jobspec: req.body.candidatejobspec,
-    date: new Date().toISOString(),
-    source: "manual"
-  });
-
-  newcandidate
-    .save()
-    .then(result => {
-      var userarr = [];
-
-      User.find({ usertype: "hr_staff" })
-        .then(docs => {
-          docs.forEach(element => {
-            userarr.push(ObjectID(element._id).toString());
-          });
-
-          const newnot = new Notifications({
-            dis: ` new candidate ${result.name} `,
-            title: "New candidate",
-            time: new Date().toISOString(),
-            userIdShow: userarr,
-            candidateId: ObjectID(result._id).toString()
-          });
-
-          newnot
-            .save(doc => {
-              res.status(200).json(result);
-            })
-            .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-
-      // serverss.wsfunc("new_interview", {
-      //   candidateId: result.id,
-      //   dis: "new candidate " + req.body.candidatename
-      // });
-    })
-    .catch(err => {
-      console.log(err);
-
-      if (err.code === 11000) {
-        console.log(" reg err duplicate email found ");
-
-        Candidate.findOne({ email: req.body.candidateemail }).then(
-          dupcandoc => {
-            console.log("dup can id - " + dupcandoc);
-            console.log("dup can id - " + dupcandoc.id);
-
-            res.status(403).json({ errcode: err.code, dupcanid: dupcandoc.id });
-          }
-        );
+      if (!user) {
+        res.status(401).send(info);
       } else {
-        res.status(403).json(err);
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(user.id))
+          .then(userdoc => {
+            const newcandidate = new Candidate({
+              email: req.body.candidateemail,
+              name: req.body.candidatename,
+              jobspec: req.body.candidatejobspec,
+              date: new Date().toISOString(),
+              source: "manual",
+              addedby: userdoc.firstName + " " + userdoc.lastName
+            });
+
+            newcandidate
+              .save()
+              .then(result => {
+                var userarr = [];
+
+                User.find({ usertype: "hr_staff" })
+                  .then(docs => {
+                    docs.forEach(element => {
+                      userarr.push(ObjectID(element._id).toString());
+                    });
+
+                    const newnot = new Notifications({
+                      dis: ` new candidate ${result.name} `,
+                      title: "New candidate",
+                      time: new Date().toISOString(),
+                      userIdShow: userarr,
+                      candidateId: ObjectID(result._id).toString()
+                    });
+
+                    newnot
+                      .save(doc => {
+                        res.status(200).json(result);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+
+                // serverss.wsfunc("new_interview", {
+                //   candidateId: result.id,
+                //   dis: "new candidate " + req.body.candidatename
+                // });
+              })
+              .catch(err => {
+                console.log(err);
+
+                if (err.code === 11000) {
+                  console.log(" reg err duplicate email found ");
+
+                  Candidate.findOne({ email: req.body.candidateemail }).then(
+                    dupcandoc => {
+                      console.log("dup can id - " + dupcandoc);
+                      console.log("dup can id - " + dupcandoc.id);
+
+                      res
+                        .status(403)
+                        .json({ errcode: err.code, dupcanid: dupcandoc.id });
+                    }
+                  );
+                } else {
+                  res.status(403).json(err);
+                }
+              });
+          })
+          .catch(err => console.log(err));
       }
-    });
+    }
+  )(req, res, next);
 };
 
 exports.editCandidateDetails = (req, res, next) => {
@@ -170,9 +192,6 @@ exports.getOneCandidate = (req, res) => {
 
           Interview.findOne({ candidateId: iid })
             .then(doc1 => {
-
-
-              
               console.log(doc1);
               console.log(result);
               var objRes = result.toObject();

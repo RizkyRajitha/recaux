@@ -29,38 +29,35 @@ var candidateSchema = new Schema({
     default: "New"
   },
 
+
   primaryStatus: {
     type: String,
     default: "New"
   },
   primaryStatussetby: {
-    type: String,
-    default: "New"
+    type: String
   },
-  primaryStatusdate: {
-    type: String,
-    default: "New"
-  },
+  primaryStatussetbyusertype: {
+    type: String
+  }
+,
 
   statusHr: {
     type: String
   },
   statusHrdate: {
-    type: String,
-    default: "New"
+    type: String
   },
 
   statusHrsetby: {
-    type: String,
-    default: "New"
+    type: String
   },
 
   finalStatus: {
     type: String
   },
   finalStatusdate: {
-    type: String,
-    default: "New"
+    type: String
   },
   finalStatussetby: {
     type: String
@@ -74,6 +71,11 @@ var candidateSchema = new Schema({
   },
 
   interviewscheduled: {
+    type: Boolean,
+    default: false
+  },
+
+  allocatedtoshorltistdone: {
     type: Boolean,
     default: false
   },

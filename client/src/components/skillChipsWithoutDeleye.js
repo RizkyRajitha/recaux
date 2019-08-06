@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
-
+import "./home.css";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -26,13 +26,14 @@ export default function ChipsArray(props) {
   });
 
   return (
-    <div >
+    <div>
       {chipData &&
         chipData.map(data => {
           return (
             <a href="#" class="badge badge-primary  sk">
               {data.label}
             </a>
+            // <Chip key={data.key} label={data.label} className={classes.chip} />
           );
         })}
     </div>

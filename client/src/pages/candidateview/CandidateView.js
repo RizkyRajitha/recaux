@@ -179,7 +179,8 @@ class CandidateView extends Component {
     selectedinterviwertype: "",
     finalstatus: "",
     slectformchipplanal: false,
-    interviewpanal: []
+    interviewpanal: [],
+    currentskillskeyvals: []
   };
   /****************************************** */
   openModal = () => {
@@ -759,6 +760,16 @@ class CandidateView extends Component {
           userarr: res.data.userData
         });
 
+        var arr = res.data.candidateData.skills;
+
+        var keyrr = [];
+
+        arr.forEach(element => {
+          keyrr.push({ key: element.value, label: element.label });
+        });
+
+        this.setState({ currentskillskeyvals: keyrr });
+
         var newesturl = "";
         if (res.data.candidateData.cvUrl) {
           newesturl =
@@ -887,16 +898,7 @@ class CandidateView extends Component {
       });
   };
 
-  valtokey = () => {
-    var arr = this.state.data.skills;
-
-    var keyrr = [];
-
-    arr.forEach(element => {
-      keyrr.push({ key: element.value, label: element.label });
-    });
-    return keyrr;
-  };
+  valtokey = () => {};
 
   valtokeypanal = () => {
     var arr = [this.state.selectedinterviwerOption];
@@ -1079,8 +1081,8 @@ class CandidateView extends Component {
           type={this.state.usertype}
         /> */}
 
-        <div className="canview">
-          <div className="canview2">
+        <div className="">
+          <div className="">
             {this.state.status_change === 1 && (
               <div class="alert alert-success" role="alert">
                 status change succsessfuly
@@ -1178,71 +1180,6 @@ class CandidateView extends Component {
             </Modal>
 
             <Modal
-              isOpen={this.state.modalIsOpen4}
-              onAfterOpen={this.afterOpenModal4}
-              onRequestClose={this.closeModal4}
-              style={customStyles4}
-              contentLabel="Example Modal"
-            >
-              <h2 ref={subtitle => (this.subtitle = subtitle)}>
-                {" "}
-                edit {this.state.data.name}{" "}
-              </h2>
-              <div>
-                <form onSubmit={this.edidcandidatedetails}>
-                  <div className="">
-                    <input
-                      required
-                      type="text"
-                      name="Candidate name"
-                      className="form-control"
-                      onChange={this.chngehandlfname}
-                      id="firstName"
-                      value={this.state.data.name}
-                      disabled={true}
-                    />
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      className="form-control"
-                      placeholder="enter candidate email"
-                      onChange={this.chngehandlemail}
-                      id="email"
-                      value={this.state.data.email}
-                      disabled={true}
-                    />
-                    {/* <input
-                      required
-                      type="text"
-                      name="job specification "
-                      className="form-control"
-                      onChange={this.onchangejobspec}
-                      placeholder="enter new job specification"
-                      id="jobspec"
-                      value={this.state.data.jobspec}
-                      // disabled={true}
-                    /> */}
-                    <div className="canviewborderdividcandidtaeeditdetails" />
-                    <Select
-                      isSearchable
-                      required
-                      placeholder={this.state.data.jobspec}
-                      value={this.selectedJobspecOption}
-                      onChange={this.handleChangemodalselectjobspec}
-                      options={this.state.selectoptionsjobspeclist}
-                    />
-                    <div className="canviewborderdividcandidtaeeditdetails" />
-                    <ChipsArraywdelete
-                      id={this.state.data._id}
-                      currentskills={this.valtokey}
-                    />
-                  </div>
-                </form>
-              </div>
-            </Modal>
-
-            <Modal
               isOpen={this.state.modalIsOpen2}
               onAfterOpen={this.afterOpenModal2}
               onRequestClose={this.closeModal2}
@@ -1328,222 +1265,420 @@ class CandidateView extends Component {
               </div>
             </Modal>
 
-            {/**
-  assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
-assignToshortlisterbyName: "Bharana perera"
-date: "2019-05-03T14:55:20.889Z"
-email: "mark@facebook.com"
-jobspec: "CCO"
-name: "Mark Zuckerburg"
-shortlister: "5caa511c56a61d6a2492ec96"
-shortlisterName: "Bharana perera"
-status: "New"
-  */}
+            <div class="container">
+              <div class="row my-2">
+                <div class="col-lg-8 order-lg-2">
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a
+                        href=""
+                        data-target="#profile"
+                        data-toggle="tab"
+                        class="nav-link active"
+                      >
+                        Profile
+                      </a>
+                    </li>
 
-            <Container maxWidth="sm">
-              <List
-                style={{
-                  width: "100%",
-                  maxWidth: 360,
-                  marginTop: -100
-                }}
-              >
-                {this.state.recivedago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <SubdirectoryArrowRight />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Received"
-                      secondary={this.state.recivedago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.data.shortlisterName && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <WorkIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Assigned to"
-                      secondary={this.state.data.shortlisterName}
-                    />
-                  </ListItem>
-                )}{" "}
-                <Divider variant="inset" component="li" />
-                {this.state.data.assignToshortlisterbyName && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Assigned by"
-                      secondary={this.state.data.assignToshortlisterbyName}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.alocatedago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <WatchLater />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="allocated"
-                      secondary={this.state.alocatedago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.shortago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="shortlist"
-                      secondary={this.state.shortago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <AccountCircle />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Name"
-                    secondary={this.state.data.name}
+                    <li class="nav-item">
+                      <a
+                        href=""
+                        data-target="#edit"
+                        data-toggle="tab"
+                        class="nav-link"
+                      >
+                        Edit
+                      </a>
+                    </li>
+
+                    <p className="rec"> Received:{this.state.recivedago}</p>
+                  </ul>
+                  <div class="tab-content py-4">
+                    <div class="tab-pane active" id="profile">
+                      {/* <h5 class="mb-3">User Profile</h5> */}
+                      <div class="row">
+                        <div class="col-md-6">
+                          <h6 class="h6colorcanview">Email</h6>
+                          <p class="pcolorcanview">{this.state.data.email}</p>
+                          <Divider />
+                          <h6 class="h6colorcanview"> Job Specification</h6>
+                          <p class="pcolorcanview">{this.state.data.jobspec}</p>
+                          <Divider />
+                        </div>
+                        <div class="col-md-6">
+                          <h6 class="h6colorcanview">Skills</h6>
+
+                          <ChipsArraywodelete
+                            currentskills={this.state.data.skills}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane" id="edit">
+                      <div>
+                        <form onSubmit={this.edidcandidatedetails}>
+                          <div className="">
+                            <div className="canviewborderdividcandidtaeeditdetails" />
+                            <Select
+                              isSearchable
+                              required
+                              placeholder={this.state.data.jobspec}
+                              value={this.selectedJobspecOption}
+                              onChange={this.handleChangemodalselectjobspec}
+                              options={this.state.selectoptionsjobspeclist}
+                            />
+                            <div className="canviewborderdividcandidtaeeditdetails" />
+
+                            <ChipsArraywdelete
+                              id={this.state.data._id}
+                              //currentskills={this.state.currentskillskeyvals}
+                            />
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 order-lg-1 text-center">
+                  <img
+                    src="https://www.pinclipart.com/picdir/big/200-2008697_account-customer-login-man-user-icon-login-icon.png"
+                    style={{ width: 200, height: 200 }}
+                    class="mx-auto img-fluid img-circle d-block"
+                    alt="avatar"
                   />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Drafts />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Email"
-                    secondary={this.state.data.email}
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <NextWeek />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Job specification"
-                    secondary={this.state.data.jobspec}
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Gavel />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Current status"
-                    secondary={this.state.data.primaryStatus}
-                  />
-                </ListItem>
-              </List>
-            </Container>
+                  <h3 class="mt-2">{this.state.data.name}</h3>
+                  <div className="">
+                    <span className="badge badge-pill badge-danger">
+                      {this.state.data.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-            <ul className="list-group list-group-flush ">
-              {/* {this.state.data.shortlisterName && (
-                <li className="list-group-item">
-                  Allocated to shortlist to - {this.state.data.shortlisterName}
-                </li>
-              )}
+              <div className="btngroupdivcanview">
+                <button
+                  disabled={this.state.usertype === "depthead" ? true : false}
+                  onClick={this.shortlistmodal}
+                  className="btn btn-primary canviewbtngroup"
+                >
+                  allocate to shortlist
+                </button>
 
-              {this.state.data.assignToshortlisterbyName && (
-                <li className="list-group-item">
-                  Assigned by - {this.state.data.assignToshortlisterbyName}
-                </li>
-              )}
+                <button
+                  onClick={this.addcvmodal}
+                  className="btn canviewbtngroup btn-primary"
+                >
+                  view cv
+                </button>
 
-              {this.state.recivedago && (
-                <li className="list-group-item">
-                  {" "}
-                  recived - : {this.state.recivedago}
-                </li>
-              )}
-              {this.state.alocatedago && (
-                <li className="list-group-item">
-                  {" "}
-                  allocated - : {this.state.alocatedago}
-                </li>
-              )}
-              {this.state.shortago && (
-                <li className="list-group-item">
-                  {" "}
-                  shortlist - : {this.state.shortago}
-                </li>
-              )}
-              <li className="list-group-item">
-                {" "}
-                name : {this.state.data.name}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                email : {this.state.data.email}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                job spec : {this.state.data.jobspec}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                current candidate status : {this.state.data.status}
-              </li> */}
+                <button
+                  onClick={this.viewcvsmodal}
+                  className="btn canviewbtngroup btn-primary"
+                >
+                  candidate history
+                </button>
+                <button
+                  onClick={this.editcandidatemodal}
+                  className="btn btn-primary"
+                >
+                  edit candidate
+                </button>
 
-              <ChipsArraywodelete currentskills={this.state.data.skills} />
-            </ul>
+                <button
+                  onClick={this.outsourceproject}
+                  className="btn canviewbtngroup btn-primary"
+                >
+                  generate formal resume
+                </button>
+                <br />
+              </div>
+
+              <br />
+              <br />
+              <br />
+              <div class="threecol">
+                <div class="col-md-12 xx">
+                  <h6 className="shortlistheadingcanview">
+                    {" "}
+                    Shortlist Details{" "}
+                  </h6>
+
+                  <table class="table table-borderless ssss">
+                    <tbody>
+                      {/* <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Assigned to</h6>
+                        </td>
+                        <td>angela jayathissa</td>
+                      </tr> */}
+                      {this.state.data.shortlisterName && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview"> Assigned to</h6>
+                          </td>
+                          <td>{this.state.data.shortlisterName}</td>
+                        </tr>
+                      )}
+                      {this.state.data.assignToshortlisterbyName && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview"> Assigned by</h6>
+                          </td>
+                          <td>{this.state.data.assignToshortlisterbyName}</td>
+                        </tr>
+                      )}
+                      {this.state.alocatedago && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">allocated</h6>
+                          </td>
+                          <td>{this.state.alocatedago}</td>
+                        </tr>
+                      )}
+                      {this.state.data.allocatedtoshorltistdone && ( //allocatedtoshorltistdone
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">shortlist</h6>
+                          </td>
+                          <td>
+                            {this.state.shortago
+                              ? this.state.shortago
+                              : "Pending"}
+                          </td>
+                        </tr>
+                      )}
+
+                      {this.state.data.primaryStatussetbyusertype && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">
+                              Status{" "}
+                              {this.state.data.primaryStatussetbyusertype ===
+                              "admin"
+                                ? "overide by "
+                                : "set by"}
+                            </h6>
+                          </td>
+                          <td>
+                            {this.state.data.primaryStatussetby + " "}{" "}
+                            {this.state.data.primaryStatussetbyusertype ===
+                            "admin" ? (
+                              <span className="badge badge-pill badge-danger">
+                                Admin
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+
+                  <button
+                    hidden={!this.state.shortago}
+                    onClick={this.schedule}
+                    className="btn canviewbtngroup btn-primary"
+                  >
+                    schedule
+                  </button>
+
+                  <button
+                    disabled={
+                      this.state.data.shortlister !== this.state.id &&
+                      !(this.state.usertype === "admin")
+                        ? true
+                        : false
+                    }
+                    onClick={this.changeStatusmodal}
+                    className="btn canviewbtngroup btn-primary"
+                  >
+                    shorlist
+                  </button>
+                </div>
+
+                <div
+                  class="col-md-12 xx interviewseccanview "
+                  hidden={!this.state.data.interviewscheduled}
+                >
+                  <h6 className="shortlistheadingcanview">
+                    {" "}
+                    Interview Details{" "}
+                  </h6>
+                  <table class="table table-borderless ssss">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Interview Scheduled By</h6>
+                        </td>
+                        <td>{this.state.data.schedulerName}</td>
+                      </tr>
+                      <tr>
+                        {" "}
+                        <td>
+                          <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                        </td>
+                        <td>{this.state.data.interviewerName}</td>
+                      </tr>
+                      <tr>
+                        {" "}
+                        <td>
+                          <h6 class="h6colorcanview">Interviewe panal</h6>{" "}
+                        </td>
+                        <td>
+                          <ChipsArraywodelete
+                            currentskills={this.state.data.panalwname}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Interviewe Time</h6>{" "}
+                        </td>
+                        <td>
+                          {moments(this.state.data.interviewtime)
+                            .toDate()
+                            .toDateString() +
+                            "  " +
+                            " at " +
+                            moments(this.state.data.interviewtime).hour() +
+                            ":" +
+                            moments(this.state.data.interviewtime).minute()}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Interviewe status</h6>{" "}
+                        </td>
+                        <td>
+                          {this.state.data.statusHr
+                            ? this.state.data.statusHr
+                            : "Pending..."}
+                        </td>
+                      </tr>
+
+                      {this.state.data.finalStatussetby && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">Final Status</h6>
+                          </td>
+                          <td>
+                            {this.state.data.finalStatus === "accepted" ? (
+                              <span className="badge badge-pill badge-success">
+                                Accepted
+                              </span>
+                            ) : (
+                              <span className="badge badge-pill badge-danger">
+                                Rejected
+                              </span>
+                            )}
+                            <br />
+                            {"Set by " +
+                              this.state.data.primaryStatussetby +
+                              " on "}
+
+                            {moments(this.state.data.finalStatusdate)
+                              .toDate()
+                              .toDateString() +
+                              "  " +
+                              " at " +
+                              moments(this.state.data.finalStatusdate).hour() +
+                              ":" +
+                              moments(this.state.data.finalStatusdate).minute()}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+
+                  <button
+                    disabled={this.state.usertype === "depthead" ? true : false}
+                    onClick={this.changestatusforhr}
+                    className="btn canviewbtngroup btn-primary"
+                  >
+                    change secondary status
+                  </button>
+
+                  {this.state.data.interviewed ? (
+                    <button
+                      onClick={this.showevalpdf}
+                      className="btn canviewbtngroup btn-primary"
+                    >
+                      Evaluation PDF
+                    </button>
+                  ) : (
+                    <button
+                      onClick={this.evalHndler}
+                      disabled={
+                        !(this.state.id === this.state.data.interviewerId)
+                      }
+                      className="btn canviewbtngroup btn-primary"
+                    >
+                      evaluate
+                    </button>
+                  )}
+
+                  <div
+                    className="finalstateforinterviewcanview"
+                    hidden={
+                      this.state.data.interviewerId === this.state.id ||
+                      this.state.usertype === "admin"
+                        ? false
+                        : true
+                    }
+                  >
+                    Final Status
+                    <BaseSelect
+                      value={this.state.finalstatus}
+                      //placeholder={this.state.selectedinterviwertype.label}
+                      onChange={this.handlefinalstatus}
+                      options={[
+                        {
+                          label: "Accepted",
+                          value: "accepted"
+                        },
+                        {
+                          label: "Rejected",
+                          value: "rejected"
+                        }
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                {/* <div class="col-md-12 xx">
+                  <h6 className="shortlistheadingcanview">
+                    {" "}
+                    Evaluation Details{" "}
+                  </h6>
+                  <table class="table table-borderless ">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Assigned to</h6>
+                        </td>
+                        <td>angela jayathissa</td>
+                      </tr>
+                      <tr>
+                        <td>Assigned by</td>
+                        <td>kalani welagedara</td>
+                      </tr>
+                      <tr>
+                        <td>shortlist</td>
+                        <td>20 hours</td>
+                      </tr>
+                      <tr>
+                        <td>allocated</td>
+                        <td>2 days ago</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div> */}
+              </div>
+            </div>
           </div>
-
-          <button
-            disabled={this.state.usertype === "depthead" ? true : false}
-            onClick={this.shortlistmodal}
-            className="btn btn-primary"
-          >
-            allocate to shortlist
-          </button>
-
-          <button onClick={this.addcvmodal} className="btn btn-primary">
-            view cv
-          </button>
-
-          <button
-            disabled={
-              this.state.data.shortlister !== this.state.id &&
-              !(this.state.usertype === "admin")
-                ? true
-                : false
-            }
-            onClick={this.changeStatusmodal}
-            className="btn btn-primary"
-          >
-            shorlist
-          </button>
 
           <Modal
             isOpen={this.state.modalIsOpen1}
@@ -1768,73 +1903,6 @@ status: "New"
               </form>
             </Container>
           </Modal>
-
-          <button
-            disabled={this.state.usertype === "depthead" ? true : false}
-            onClick={this.changestatusforhr}
-            className="btn btn-primary"
-          >
-            change secondary status
-          </button>
-
-          {this.state.data.interviewed ? (
-            <button onClick={this.showevalpdf} className="btn btn-primary">
-              Evaluation PDF
-            </button>
-          ) : (
-            <button
-              onClick={this.evalHndler}
-              disabled={!(this.state.id === this.state.data.interviewerId)}
-              className="btn btn-primary"
-            >
-              evaluate
-            </button>
-          )}
-
-          <button onClick={this.viewcvsmodal} className="btn btn-primary">
-            candidate history
-          </button>
-          <button onClick={this.editcandidatemodal} className="btn btn-primary">
-            edit candidate
-          </button>
-          <button onClick={this.schedule} className="btn btn-primary">
-            schedule
-          </button>
-
-          <button onClick={this.outsourceproject} className="btn btn-primary">
-            generate formal resume
-          </button>
-          <br />
-          <br />
-
-          <div
-            hidden={
-              this.state.data.interviewerId === this.state.id ||
-              this.state.usertype === "admin"
-                ? false
-                : true
-            }
-          >
-            Final Status
-            <Select
-              disabled={true}
-              isSearchable
-              required
-              value={this.state.finalstatus}
-              //placeholder={this.state.selectedinterviwertype.label}
-              onChange={this.handlefinalstatus}
-              options={[
-                {
-                  label: "Accepted",
-                  value: "accepted"
-                },
-                {
-                  label: "Rejected",
-                  value: "rejected"
-                }
-              ]}
-            />{" "}
-          </div>
 
           <Snackbar
             anchorOrigin={{

@@ -27,7 +27,14 @@ export default function ChipsArray(props) {
   const [chipData, setChipData] = useState([]);
 
   useEffect(() => {
-    setChipData(props.currentskills);
+    console.log("dddd");
+    axios.get("/usr/getcandidate/" + props.id).then(res => {
+      console.log("dddd");
+      console.log(res.data.candidateData.skills);
+      setChipData(res.data.candidateData.skills);
+    });
+
+    //setChipData(props.currentskills);
 
     var jwt = localStorage.getItem("jwt");
 
@@ -112,20 +119,18 @@ export default function ChipsArray(props) {
 
   return (
     <div>
-      <Paper className={classes.root}>
-        {chipData.map(data => {
-          let icon;
+      {chipData.map(data => {
+        let icon;
 
-          return (
-            <Chip
-              key={data.key}
-              label={data.label}
-              onDelete={handleDelete(data)}
-              className={classes.chip}
-            />
-          );
-        })}
-      </Paper>
+        return (
+          <Chip
+            key={data.key}
+            label={data.label}
+            onDelete={handleDelete(data)}
+            className={classes.chip}
+          />
+        );
+      })}
 
       <Divider variant="inset" component="li" />
       <div style={{ marginTop: "1%" }} />

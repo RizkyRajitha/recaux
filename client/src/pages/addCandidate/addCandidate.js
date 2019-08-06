@@ -79,6 +79,12 @@ class Addcandidate extends Component {
     //this.setState({ cvFile: e.target.files[0] });
     console.log("is file available " + this.state.cvFile);
 
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
     this.setState({ addedsucsess: 0 });
     e.preventDefault();
     var can = this.state;
@@ -93,7 +99,7 @@ class Addcandidate extends Component {
       this.setState({ addedsucsess: false });
       this.setState({ isLoading: true });
       axios
-        .post("/usr/addcandidate", params)
+        .post("/usr/addcandidate", params, config)
         .then(data => {
           console.log(data.data);
           this.setState({

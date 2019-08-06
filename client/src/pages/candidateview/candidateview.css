@@ -1,11 +1,11 @@
 .canview {
   margin: auto;
-  width: 50%;
+  /* width: 50%; */
   padding: 10px;
 }
 .canview2 {
   margin: auto;
-  width: 50%;
+  /* width: 50%; */
   padding: 10px;
 }
 
@@ -56,4 +56,57 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.rec {
+  text-align: right;
+  margin: auto 0;
+  margin-left: 45%;
+  color: brown;
+}
+.sk {
+  margin: 0 5px 0 0;
+}
+
+.pcolorcanview {
+  margin-bottom: 1%;
+}
+.h6colorcanview {
+  margin-top: 1%;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.threecol {
+  flex-flow: row nowrap;
+}
+.xx {
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 32%;
+}
+
+.btngroupdivcanview {
+  margin-left: 30%;
+  text-align: center;
+}
+
+.finalstateforinterviewcanview {
+  text-align: center;
+  /* float: right; */
+  /* width: 20%; */
+  align-content: center;
+  /* margin-left: 40%; */
+}
+
+.canviewbtngroup {
+  margin: 0.3%;
+}
+.shortlistheadingcanview {
+  text-align: center;
+}
+
+.interviewseccanview {
+  margin-left: 15%;
+  width: 50%;
 }
