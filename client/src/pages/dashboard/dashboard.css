@@ -1,93 +1,82 @@
-#userprofile{
-    position: absolute;
-    top: 10%;
-    left:90%;
+#userprofile {
+  position: absolute;
+  top: 10%;
+  left: 90%;
 }
 
 #addcan {
-    position: absolute;
-    top: 10%;
-    left:75%;
-   
+  position: absolute;
+  top: 10%;
+  left: 75%;
 }
-#shortlist{
-    position: absolute;
-    top: 10%;
-    left:65%;
-}
-
-.dashboardmain{
-    
-    height: 600px;
-    width: 100%;
+#shortlist {
+  position: absolute;
+  top: 10%;
+  left: 65%;
 }
 
-.card{
-    text-align: center
-   
+.dashboardmain {
+  height: 600px;
+  width: 100%;
+}
+
+.card {
+  text-align: center;
 }
 
 /**
 */
-#dashboardcardcontainer1{
-   
-    position: absolute;
-    top: 25%;
-    left:6%;
-    width: 39%;
-    padding-right: 10%;
-    
-    text-align: left;
-    
+#dashboardcardcontainer1 {
+  position: absolute;
+  top: 25%;
+  left: 6%;
+  width: 39%;
+  padding-right: 10%;
+
+  text-align: left;
 }
 
-#dashboardcardcontainer2{
-   
-    position: absolute;
-    top: 25%;
-    left:37%;
-    width: 39%;
-    padding-right: 10%;
-    
-    text-align: left;
-    
-}#dashboardcardcontainer3{
-   
-    position: absolute;
-    top: 25%;
-    left:68.5%;
-    width: 39%;
-    padding-right: 10%;
-    
-    text-align: left;
-    
+#dashboardcardcontainer2 {
+  position: absolute;
+  top: 25%;
+  left: 37%;
+  width: 39%;
+  padding-right: 10%;
+
+  text-align: left;
+}
+#dashboardcardcontainer3 {
+  position: absolute;
+  top: 25%;
+  left: 68.5%;
+  width: 30%;
+  /* padding-right: 10%; */
+
+  text-align: left;
 }
 
+.cardcontainer2_nonadmin {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 87%;
 
-.cardcontainer2_nonadmin{
-   
-    position: absolute;
-    top: 20%;
-    left:10%;
-    width: 87%;
-    
-    text-align: center;
-    
+  text-align: center;
 }
 
-.cardcontainer2_admin{
-   
-    position: absolute;
-    top: 20%;
-    left:32%;
-    width: 67%;
-    
-    text-align: center;
-    
+.cardcontainer2_admin {
+  position: absolute;
+  top: 20%;
+  left: 32%;
+  width: 67%;
+
+  text-align: center;
 }
 
-.usrtype{
-    
-    inline-size: 300px;
+.usrtype {
+  inline-size: 300px;
 }
 
+.noschedulecanh6 {
+  text-align: center;
+}

@@ -24,17 +24,15 @@ export default function ChipsArray(props) {
   const [selectedOption, setselectedOption] = useState({});
   const [selectoptionsnamelist, setselectoptionsnamelist] = useState([]);
   const classes = useStyles();
-  const [chipData, setChipData] = useState([]);
+  const [chipData, setChipData] = useState(props.currentskills);
 
   useEffect(() => {
     console.log("dddd");
-    axios.get("/usr/getcandidate/" + props.id).then(res => {
-      console.log("dddd");
-      console.log(res.data.candidateData.skills);
-      setChipData(res.data.candidateData.skills);
-    });
 
     //setChipData(props.currentskills);
+
+    console.log("chips current skill 0 ");
+    console.log(props.currentskills);
 
     var jwt = localStorage.getItem("jwt");
 

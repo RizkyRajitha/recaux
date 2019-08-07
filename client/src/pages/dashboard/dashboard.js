@@ -357,7 +357,7 @@ class dashboard extends Component {
             username={this.state.firstName + " " + this.state.lastName}
             type={this.state.usertype}
           /> */}
-          <p className="usrtype">Logged in as : {this.state.usertype}</p>
+          {/* <p className="usrtype">Logged in as : {this.state.usertype}</p> */}
 
           <Button
             variant="contained"
@@ -447,7 +447,9 @@ class dashboard extends Component {
 
           <div class="row">
             <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-            {this.state.newcandicates.length===0 && (<p>no new candidates</p>)}
+              {this.state.newcandicates.length === 0 && (
+                <h6 className="noschedulecanh6"> no new candidates </h6>
+              )}
               {this.state.newcandicates.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
@@ -469,9 +471,9 @@ class dashboard extends Component {
               })}
             </div>{" "}
             <div className="col-s4-m4-l4" id="dashboardcardcontainer2">
-
-              {this.state.shortlistedcandicates.length===0 && (<p>no new candidates</p>)}
-
+              {this.state.shortlistedcandicates.length === 0 && (
+                <h6 className="noschedulecanh6"> No Shortlisted Candidates </h6>
+              )}
 
               {this.state.shortlistedcandicates.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
@@ -495,7 +497,9 @@ class dashboard extends Component {
               })}
             </div>{" "}
             <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
-            {this.state.shortlistedcandicates.length===0 && (<p>no scheduled candidates</p>)}
+              {this.state.shortlistedcandicates.length === 0 && (
+                <h6 className="noschedulecanh6">No scheduled candidates</h6>
+              )}
               {this.state.scheduledcandicates.map(can => {
                 //console.log(can.name+can.email+can.jobspec)
                 return (
@@ -506,7 +510,7 @@ class dashboard extends Component {
                     jobspec={can.jobspec}
                     _id={can._id}
                     date={can.date}
-                    status={can.primaryStatus}
+                    status={can.status}
                     shortlisterId={can.shortlister}
                     shortlisterName={can.shortlisterName}
                     assignToshortlisterbyId={can.assignToshortlisterbyId}

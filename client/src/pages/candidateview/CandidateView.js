@@ -180,7 +180,8 @@ class CandidateView extends Component {
     finalstatus: "",
     slectformchipplanal: false,
     interviewpanal: [],
-    currentskillskeyvals: []
+    currentskillskeyvals: [],
+    rendercurrenskills: false
   };
   /****************************************** */
   openModal = () => {
@@ -805,7 +806,10 @@ class CandidateView extends Component {
           })
           .catch(err => {});
 
-        setTimeout(() => console.log(this.state), 1000);
+        setTimeout(() => {
+          console.log(this.state);
+          this.setState({ rendercurrenskills: true });
+        }, 1000);
       })
       .catch(err => {
         console.log(err);
@@ -886,15 +890,22 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === "sucsess") {
-          this.setState({ status_change: 1 });
-          this.closeModal5();
+          this.setState({ snackbaropen: true });
+          this.setState({
+            snackbarmsg: "Secondary status changed successfully"
+          });
+          // this.closeModal5();
         }
 
         console.log("awoooooooooo");
       })
       .catch(err => {
         console.log(err);
-        this.setState({ status_change: 0 });
+        this.setState({ snackbaropen: true });
+        this.setState({
+          snackbarmsg:
+            "Secondary status changed Failed : Error " + err.response.data.msg
+        });
       });
   };
 
@@ -1329,11 +1340,12 @@ class CandidateView extends Component {
                               options={this.state.selectoptionsjobspeclist}
                             />
                             <div className="canviewborderdividcandidtaeeditdetails" />
-
-                            <ChipsArraywdelete
-                              id={this.state.data._id}
-                              //currentskills={this.state.currentskillskeyvals}
-                            />
+                            {this.state.rendercurrenskills && (
+                              <ChipsArraywdelete
+                                id={this.state.data._id}
+                                currentskills={this.state.currentskillskeyvals}
+                              />
+                            )}
                           </div>
                         </form>
                       </div>
@@ -1358,14 +1370,6 @@ class CandidateView extends Component {
 
               <div className="btngroupdivcanview">
                 <button
-                  disabled={this.state.usertype === "depthead" ? true : false}
-                  onClick={this.shortlistmodal}
-                  className="btn btn-primary canviewbtngroup"
-                >
-                  allocate to shortlist
-                </button>
-
-                <button
                   onClick={this.addcvmodal}
                   className="btn canviewbtngroup btn-primary"
                 >
@@ -1378,27 +1382,20 @@ class CandidateView extends Component {
                 >
                   candidate history
                 </button>
-                <button
-                  onClick={this.editcandidatemodal}
-                  className="btn btn-primary"
-                >
-                  edit candidate
-                </button>
 
                 <button
-                  onClick={this.outsourceproject}
+                  onClick={this.openModal}
                   className="btn canviewbtngroup btn-primary"
                 >
-                  generate formal resume
+                  Allocate for shortlisting
                 </button>
-                <br />
               </div>
 
-              <br />
-              <br />
-              <br />
               <div class="threecol">
-                <div class="col-md-12 xx">
+                <div
+                  class="col-md-12 xx"
+                  hidden={!this.state.data.allocatedtoshorltistdone}
+                >
                   <h6 className="shortlistheadingcanview">
                     {" "}
                     Shortlist Details{" "}
@@ -1477,7 +1474,9 @@ class CandidateView extends Component {
                   </table>
 
                   <button
-                    hidden={!this.state.shortago}
+                    hidden={
+                      !this.state.shortago || this.state.usertype === "depthead"
+                    }
                     onClick={this.schedule}
                     className="btn canviewbtngroup btn-primary"
                   >
@@ -1485,7 +1484,7 @@ class CandidateView extends Component {
                   </button>
 
                   <button
-                    disabled={
+                    hidden={
                       this.state.data.shortlister !== this.state.id &&
                       !(this.state.usertype === "admin")
                         ? true
@@ -1508,6 +1507,12 @@ class CandidateView extends Component {
                   </h6>
                   <table class="table table-borderless ssss">
                     <tbody>
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Interview type</h6>
+                        </td>
+                        <td>{this.state.data.interviewtype}</td>
+                      </tr>
                       <tr>
                         <td>
                           <h6 class="h6colorcanview">Interview Scheduled By</h6>
@@ -1547,7 +1552,6 @@ class CandidateView extends Component {
                             moments(this.state.data.interviewtime).minute()}
                         </td>
                       </tr>
-
                       <tr>
                         <td>
                           <h6 class="h6colorcanview">Interviewe status</h6>{" "}
@@ -1558,7 +1562,6 @@ class CandidateView extends Component {
                             : "Pending..."}
                         </td>
                       </tr>
-
                       {this.state.data.finalStatussetby && (
                         <tr>
                           <td>
@@ -1594,7 +1597,7 @@ class CandidateView extends Component {
                   </table>
 
                   <button
-                    disabled={this.state.usertype === "depthead" ? true : false}
+                    hidden={this.state.usertype === "depthead" ? true : false}
                     onClick={this.changestatusforhr}
                     className="btn canviewbtngroup btn-primary"
                   >
@@ -1611,7 +1614,7 @@ class CandidateView extends Component {
                   ) : (
                     <button
                       onClick={this.evalHndler}
-                      disabled={
+                      hidden={
                         !(this.state.id === this.state.data.interviewerId)
                       }
                       className="btn canviewbtngroup btn-primary"
@@ -1619,7 +1622,18 @@ class CandidateView extends Component {
                       evaluate
                     </button>
                   )}
-
+                  <button
+                    onClick={this.outsourceproject}
+                    className="btn canviewbtngroup btn-primary"
+                    hidden={
+                      this.state.usertype === "depthead" ||
+                      this.state.usertype === "admin"
+                        ? false
+                        : true
+                    }
+                  >
+                    generate formal resume
+                  </button>
                   <div
                     className="finalstateforinterviewcanview"
                     hidden={
@@ -1647,6 +1661,12 @@ class CandidateView extends Component {
                     />
                   </div>
                 </div>
+                {/* 
+                <div className="paddingdivforcanview">
+                  <p className="paddingdivforcanview">
+                    Sorry i had no choice :( sad devoloper
+                  </p>
+                </div> */}
 
                 {/* <div class="col-md-12 xx">
                   <h6 className="shortlistheadingcanview">
@@ -1897,7 +1917,10 @@ class CandidateView extends Component {
                     </td>
                   </tr>
                 </table>
-                <Button className="btn btn-primary" type="submit">
+                <Button
+                  className="btn canviewbtngroup btn-primary"
+                  type="submit"
+                >
                   Confirm Interview
                 </Button>
               </form>

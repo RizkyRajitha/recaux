@@ -1,6 +1,6 @@
 .avatardivlandingpage {
   margin-left: 15%;
-  margin-top: 0%;
+  margin-top: 3%;
 }
 
 .spanlandingpagegreet {
@@ -11,7 +11,19 @@
   padding-bottom: 1%;
 }
 .landingcontetdic {
-  margin-left: 36%;
+  margin-top: 5%;
+  margin-left: 6%;
   text-align: left;
-  inline-size: 10%
+  /* inline-size: 10%; */
+}
+
+.maindivlandigpage {
+  text-align: center;
+}
+
+.anddataavatrdivlandignpage {
+  display: flex;
+}
+.h3forlandigpage {
+  text-align: left;
 }

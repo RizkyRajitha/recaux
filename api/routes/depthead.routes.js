@@ -161,7 +161,7 @@ exports.updateStatus = (req, res, next) => {
                       .then(doc => {
                         User.findOneAndUpdate(
                           {
-                            _id: docusr._id,
+                            _id: candoc.shortlister,
                             "shortlist.candidateId": id
                           },
                           {
@@ -354,7 +354,8 @@ exports.getevalpdf = (req, res, next) => {
                   industryExperience: doc[0].industryExperience,
                   currentPosition: doc[0].currentPosition,
                   currentEmployer: doc[0].currentEmployer,
-                  interviwerName: doc[0].interviewedByName
+                  interviwerName: doc[0].interviewedByName,
+                  approve: doc[0].approve
                 }),
                 {}
               )

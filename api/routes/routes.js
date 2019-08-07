@@ -262,7 +262,8 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                     assignToshortlisterbyId: user.id,
                     shortlister: datain.allocateduser,
                     shortlisterName: userDoc.firstName + " " + userDoc.lastName,
-                    allocatedDate: new Date().toISOString()
+                    allocatedDate: new Date().toISOString(),
+                    allocatedtoshorltistdone:true
                   }
                 }
               ).then(candoc => {

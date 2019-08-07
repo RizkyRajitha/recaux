@@ -6,7 +6,8 @@ module.exports = ({
   industryExperience,
   currentPosition,
   currentEmployer,
-  interviwerName
+  interviwerName,
+  approve
 }) => {
   const today = new Date();
   return `
@@ -177,7 +178,7 @@ module.exports = ({
              <br />
              <h3 class="justify-center">Interviwed by: ${interviwerName}</h3>
              <br />
-             <h3 class="justify-center">Approved by: ${approvename}</h3>
+             <h3 class="justify-center">Approved by: ${approve}</h3>    
           </div>
        </body>
     </html>

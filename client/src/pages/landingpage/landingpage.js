@@ -107,6 +107,7 @@ const LandingPage = props => {
 
           frpamtedtimes.to = datehigh.format("HH:mm:ss", { trim: false }); //.hours() + ":" + datehigh.minutes();
           frpamtedtimes.name = element.candidateName;
+          frpamtedtimes.id = element.candidateId;
           // console.log("datetimes");
           // console.log(frpamtedtimes);
           times.push(frpamtedtimes);
@@ -122,41 +123,51 @@ const LandingPage = props => {
 
   return (
     <div>
-      {" "}
-      <span className="spanlandingpagegreet"> {greet + name + "!"} </span>
-      <div className="avatardivlandingpage">
-        <Avatar
-          alt="Remy Sharp"
-          src={avatarUrl}
-          style={{ marginLeft: 0, width: 300, height: 300 }}
-          //onClick={handleClick}
-          // className={classes.avatar}
-        />
-      </div>
-      <div className="landingcontetdic">
-        you have {interviewdata.length} Interview(s) Today
-        <ul>
-          {intdates.map(ele => {
-            return (
-              <li className="listinterivewslandingpage">
-                {" "}
-                with {ele.name + "  "}
-                from {" " + ele.from + " "} to {" " + ele.to} <br />
-              </li>
-            );
-          })}
-          you have {shortlists.length === 0 ? " no " : "few"} shortlists(s)
-          Pending
-          {shortlists.map(ele => {
-            return (
-              <li className="listinterivewslandingpage">
-                {ele.name + " "} is on Pending shortlists{" "}
-                <a href={"/getcandidate/" + ele._id}>view</a>
-                <br />
-              </li>
-            );
-          })}
-        </ul>
+      <div className="maindivlandigpage">
+        <span className="spanlandingpagegreet"> {greet + name + "!"} </span>
+
+        <div className="anddataavatrdivlandignpage">
+          <div className="avatardivlandingpage">
+            <Avatar
+              alt="Remy Sharp"
+              src={avatarUrl}
+              style={{ marginLeft: 0, width: 300, height: 300 }}
+              //onClick={handleClick}
+              // className={classes.avatar}
+            />
+          </div>
+          <div className="landingcontetdic">
+            <h3 className="h3forlandigpage">
+              {" "}
+              you have {interviewdata.length} Interview(s) Today
+            </h3>
+
+            {intdates.map(ele => {
+              return (
+                <p className="listinterivewslandingpage">
+                  {" "}
+                  with {ele.name + "  "}
+                  from {" " + ele.from + " "} to {" " + ele.to}{" "}
+                  <a href={"/getcandidate/" + ele.  id}>view</a>
+                </p>
+              );
+            })}
+            <h3 className="h3forlandigpage">
+              {" "}
+              you have {shortlists.length === 0 ? " no " : "few"} shortlists(s)
+              Pending
+            </h3>
+            {shortlists.map(ele => {
+              return (
+                <p className="listinterivewslandingpage">
+                  {ele.name + " "} is on Pending shortlists{" "}
+                  <a href={"/getcandidate/" + ele._id}>view</a>
+                  <br />
+                </p>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

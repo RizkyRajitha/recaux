@@ -78,6 +78,7 @@
 
 .threecol {
   flex-flow: row nowrap;
+  /* margin-bottom: 10%; */
 }
 .xx {
   float: left;
@@ -89,12 +90,14 @@
 .btngroupdivcanview {
   margin-left: 30%;
   text-align: center;
+  margin-bottom: 5%;
 }
 
 .finalstateforinterviewcanview {
   text-align: center;
   /* float: right; */
   /* width: 20%; */
+  margin-bottom: 20%;
   align-content: center;
   /* margin-left: 40%; */
 }
@@ -109,4 +112,9 @@
 .interviewseccanview {
   margin-left: 15%;
   width: 50%;
+}
+.paddingdivforcanview {
+  /* margin-bottom: 10%; */
+  /* height: 100%; */
+  color: #ffffff;
 }

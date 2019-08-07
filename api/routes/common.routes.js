@@ -204,6 +204,7 @@ exports.getOneCandidate = (req, res) => {
                 objRes.schedulerName = doc1.schedulerName;
                 objRes.interviewtime = doc1.datetime;
                 objRes.panalwname = doc1.panalwname;
+                objRes.interviewtype = doc1.interviewtype;
               } else {
                 objRes.interview = false;
               }
@@ -278,9 +279,9 @@ exports.getAllCandidates = (req, res) => {
           const payload = {
             userData: userDataArr,
             candidateData: result.reverse(),
-            scheduledcandicates: scheduledcandicates,
-            shortlistedcandicates: shortlistedcandicates,
-            newcandicates: newcandicates
+            scheduledcandicates: scheduledcandicates.reverse(),
+            shortlistedcandicates: shortlistedcandicates.reverse(),
+            newcandicates: newcandicates.reverse()
           };
 
           console.log("candidates found");
@@ -1250,7 +1251,20 @@ exports.updateinterview = (req, res, next) => {
 
                         newnot
                           .save()
-                          .then(doss => {})
+                          .then(doss => {
+                            Candidate.findOneAndUpdate(
+                              { _id: ObjectID(datain.candidateid) },
+                              {
+                                $set: {
+                                  statusHr: "Pending"
+                                }
+                              }
+                            )
+                              .then(dosss => {
+                                console.log(dosss);
+                              })
+                              .catch(err => console.log(err));
+                          })
                           .catch(err => console.log(err));
 
                         console.log(doc);
