@@ -161,34 +161,29 @@ export default function ChipsArray(props) {
   };
 
   return (
-    <Container>
-      <TextField
-        id="settingsaddskill"
-        label="New skill"
-        //className={clsx(classes.textField, classes.dense)}
-        margin="dense"
-        variant="outlined"
+    <div className="container settignjobspcmaindiv ">
+      <input
         type="text"
+        className="form-control settingsaddskill "
+        placeholder="Enter new Skill"
+        label="New skill"
         onChange={hndleskillchange}
         onKeyPress={handleKeyPress}
-        className="settingsaddskill"
       />
 
-      <Button
-        id={!onload ? "settingsaddskillbtn" : "settingsaddskillbtnonload"}
-        variant="contained"
-        color="primary"
+      <button
+        className="btn btn-primary settingsaddskillbtn"
         onClick={addskill}
       >
         add
-      </Button>
-      <CircularProgress
+      </button>
+      {/* <CircularProgress
         id="settingsloadingspinner"
         hidden={!onload}
         className={classes.progress}
-      />
-      <Divider variant="inset" component="li" />
-      <Paper className={classes.root}>
+      /> */}
+
+      <div className="settingsjobspecchipdiv">
         {chipData.map(data => {
           return (
             <Chip
@@ -199,7 +194,7 @@ export default function ChipsArray(props) {
             />
           );
         })}
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }

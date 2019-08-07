@@ -93,7 +93,7 @@ class Settings extends Component {
     return (
       <div>
         <div className="settingsmaindiv">
-          <h1>Settings</h1>
+          <h1>Preferances</h1>
 
           {/* <input type="text" onChange={this.hndleskillchange} />
         <button onClick={this.addskill}>add</button> */}
@@ -102,6 +102,8 @@ class Settings extends Component {
           {this.state.jobspecset && (
             <ChipsArray2 currentjobspecs={this.valtokeyjobs} />
           )}
+
+<div className='paddingdivsettings' ></div>
 
           {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
         </div>

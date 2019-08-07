@@ -110,7 +110,7 @@ module.exports = ({
             </table>
 
             <h2 style="text-align: center">Auxenta Profile</h2> 
-             <h4 style="text-align: center">${out_Name}</h4> 
+             <h4 style="text-align: center ;  text-transform: uppercase;">${out_Name}</h4> 
              <h4 style="text-align: center"> ${out_Designation}</h4> 
           </td>
         </tr>
