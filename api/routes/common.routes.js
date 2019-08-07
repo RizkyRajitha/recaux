@@ -53,44 +53,89 @@ exports.configureNewUser = (req, res, next) => {
   )(req, res, next);
 };
 
-exports.addCandidate = (req, res) => {
-  console.log(req.body);
+exports.addCandidate = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
 
-  const newcandidate = new Candidate({
-    email: req.body.candidateemail,
-    name: req.body.candidatename,
-    jobspec: req.body.candidatejobspec,
-    date: new Date().toISOString(),
-    source: "manual"
-  });
-
-  newcandidate
-    .save()
-    .then(result => {
-      res.status(200).json(result);
-      serverss.wsfunc("new_interview", {
-        candidateId: result.id,
-        dis: "new candidate " + req.body.candidatename
-      });
-    })
-    .catch(err => {
-      console.log(err);
-
-      if (err.code === 11000) {
-        console.log(" reg err duplicate email found ");
-
-        Candidate.findOne({ email: req.body.candidateemail }).then(
-          dupcandoc => {
-            console.log("dup can id - " + dupcandoc);
-            console.log("dup can id - " + dupcandoc.id);
-
-            res.status(403).json({ errcode: err.code, dupcanid: dupcandoc.id });
-          }
-        );
+      if (!user) {
+        res.status(401).send(info);
       } else {
-        res.status(403).json(err);
+        console.log(req.body);
+        var datain = req.body;
+
+        User.findById(ObjectID(user.id))
+          .then(userdoc => {
+            const newcandidate = new Candidate({
+              email: req.body.candidateemail,
+              name: req.body.candidatename,
+              jobspec: req.body.candidatejobspec,
+              date: new Date().toISOString(),
+              source: "manual",
+              addedby: userdoc.firstName + " " + userdoc.lastName
+            });
+
+            newcandidate
+              .save()
+              .then(result => {
+                var userarr = [];
+
+                User.find({ usertype: "hr_staff" })
+                  .then(docs => {
+                    docs.forEach(element => {
+                      userarr.push(ObjectID(element._id).toString());
+                    });
+
+                    const newnot = new Notifications({
+                      dis: ` new candidate ${result.name} `,
+                      title: "New candidate",
+                      time: new Date().toISOString(),
+                      userIdShow: userarr,
+                      candidateId: ObjectID(result._id).toString()
+                    });
+
+                    newnot
+                      .save(doc => {
+                        res.status(200).json(result);
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => console.log(err));
+
+                // serverss.wsfunc("new_interview", {
+                //   candidateId: result.id,
+                //   dis: "new candidate " + req.body.candidatename
+                // });
+              })
+              .catch(err => {
+                console.log(err);
+
+                if (err.code === 11000) {
+                  console.log(" reg err duplicate email found ");
+
+                  Candidate.findOne({ email: req.body.candidateemail }).then(
+                    dupcandoc => {
+                      console.log("dup can id - " + dupcandoc);
+                      console.log("dup can id - " + dupcandoc.id);
+
+                      res
+                        .status(403)
+                        .json({ errcode: err.code, dupcanid: dupcandoc.id });
+                    }
+                  );
+                } else {
+                  res.status(403).json(err);
+                }
+              });
+          })
+          .catch(err => console.log(err));
       }
-    });
+    }
+  )(req, res, next);
 };
 
 exports.editCandidateDetails = (req, res, next) => {
@@ -148,7 +193,7 @@ exports.getOneCandidate = (req, res) => {
           Interview.findOne({ candidateId: iid })
             .then(doc1 => {
               console.log(doc1);
-
+              console.log(result);
               var objRes = result.toObject();
 
               if (doc1) {
@@ -158,6 +203,8 @@ exports.getOneCandidate = (req, res) => {
                 objRes.scheduler = doc1.schedulerId;
                 objRes.schedulerName = doc1.schedulerName;
                 objRes.interviewtime = doc1.datetime;
+                objRes.panalwname = doc1.panalwname;
+                objRes.interviewtype = doc1.interviewtype;
               } else {
                 objRes.interview = false;
               }
@@ -194,21 +241,29 @@ exports.getAllCandidates = (req, res) => {
   // var iid = req.params.id;
   //console.log(iid);
 
-  var newcandicates = {};
-  var shortlistedcandicates = {};
-  var scheduledcandicates = {};
+  var newcandicates = [];
+  var shortlistedcandicates = [];
+  var scheduledcandicates = [];
 
   Candidate.find()
     .then(result => {
-      // result.forEach(element => {
-      //   if (element.primaryStatus === "New") {
-      //     newcandicates.push(element);
-      //   } else if (element.primaryStatus === "Shortlisted") {
-      //     shortlistedcandicates.push(element);
-      //   } else if (element.primaryStatus === "Sheduled") {
-      //     scheduledcandicates.push(element);
-      //   }
-      // });
+      result.forEach(element => {
+        if (element.primaryStatus === "New") {
+          newcandicates.push(element);
+        } else {
+          if (element.interviewscheduled) {
+            scheduledcandicates.push(element);
+          } else {
+            shortlistedcandicates.push(element);
+          }
+        }
+      });
+      console.log("---------new-----------------------");
+      console.log(newcandicates);
+      console.log("---------scheduled-----------------------");
+      console.log(scheduledcandicates);
+      console.log("---------shortliste-----------------------");
+      console.log(shortlistedcandicates);
 
       User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
         .then(doc => {
@@ -223,7 +278,10 @@ exports.getAllCandidates = (req, res) => {
 
           const payload = {
             userData: userDataArr,
-            candidateData: result.reverse()
+            candidateData: result.reverse(),
+            scheduledcandicates: scheduledcandicates.reverse(),
+            shortlistedcandicates: shortlistedcandicates.reverse(),
+            newcandicates: newcandicates.reverse()
           };
 
           console.log("candidates found");
@@ -1000,6 +1058,7 @@ allocated date recieved date shortlisted date added by
   req.body.email ? (isemail = true) : "";
   req.body.jobspec ? (isjobspec = true) : "";
   req.body.source ? (isSource = true) : "";
+  req.body.reciveddate ? (isRecivedDate = true) : (isRecivedDate = false);
 
   var searchQuery = {};
 
@@ -1026,6 +1085,26 @@ allocated date recieved date shortlisted date added by
     searchQuery.source = req.body.source;
   }
 
+  if (isjobspec) {
+    console.log("jobspec tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    searchQuery.jobspec = req.body.jobspec;
+  }
+
+  if (isRecivedDate) {
+    console.log("recievd date  tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    // searchQuery.date = req.body.reciveddate;
+    searchQuery.date = {
+      $gt: req.body.reciveddate.slice(0, 10) + "T00:00:00.000Z",
+      $lt: req.body.reciveddate.slice(0, 10) + "T23:59:59.000Z"
+    };
+  }
+
   Candidate.find(searchQuery).then(doc => {
     console.log(doc);
     res.json(doc);
@@ -1047,6 +1126,7 @@ exports.addinterview = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
+        console.log("addinterviewssssssssssssssssssssssssssssss");
         console.log(req.body);
         var datain = req.body;
 
@@ -1063,14 +1143,16 @@ exports.addinterview = (req, res, next) => {
                       interviwerName: doc2.firstName + " " + doc2.lastName,
                       candidateId: datain.candidateid,
                       candidateName: doc3.name,
-                      datetime: datain.datetime
+                      datetime: datain.datetime,
+                      interviewtype: datain.interviewtype,
+                      panal: datain.panal,
+                      panalwname: datain.panalwname
                     });
 
                     newinterview
                       .save()
                       .then(doc => {
                         console.log(doc);
-
                         const newnot = new Notifications({
                           dis: ` you have new interview with ${doc3.name} on ${
                             datain.datetime
@@ -1079,12 +1161,24 @@ exports.addinterview = (req, res, next) => {
                             doc1.lastName} `,
                           title: "Interview",
                           time: new Date().toISOString(),
-                          userIdShow: datain.interviewer
+                          userIdShow: datain.panal,
+                          candidateId: datain.candidateid
                         });
 
                         newnot
                           .save()
                           .then(docs => {
+                            Candidate.findByIdAndUpdate(
+                              ObjectID(datain.candidateid),
+                              {
+                                $set: {
+                                  interviewscheduled: true
+                                }
+                              }
+                            )
+                              .then(doc => {})
+                              .catch(err => {});
+
                             var objdocs = docs.toObject();
                             objdocs.candidateId = datain.candidateid;
                             serverss.wsfunc("new_interview", docs);
@@ -1135,12 +1229,44 @@ exports.updateinterview = (req, res, next) => {
                           schedulerName: doc1.firstName + " " + doc1.lastName,
                           interviwerId: datain.interviewer,
                           interviwerName: doc2.firstName + " " + doc2.lastName,
-
-                          datetime: datain.datetime
+                          interviewtype: datain.interviewtype,
+                          datetime: datain.datetime,
+                          panal: datain.panal,
+                          panalwname: datain.panalwname
                         }
                       }
                     )
                       .then(doc => {
+                        const newnot = new Notifications({
+                          dis: ` you have new interview with ${doc3.name} on ${
+                            datain.datetime
+                          } scheduled by ${doc1.firstName +
+                            " " +
+                            doc1.lastName} `,
+                          title: "Interview update",
+                          time: new Date().toISOString(),
+                          userIdShow: datain.panal,
+                          candidateId: datain.candidateid
+                        });
+
+                        newnot
+                          .save()
+                          .then(doss => {
+                            Candidate.findOneAndUpdate(
+                              { _id: ObjectID(datain.candidateid) },
+                              {
+                                $set: {
+                                  statusHr: "Pending"
+                                }
+                              }
+                            )
+                              .then(dosss => {
+                                console.log(dosss);
+                              })
+                              .catch(err => console.log(err));
+                          })
+                          .catch(err => console.log(err));
+
                         console.log(doc);
                         res.status(200).json({ msg: "sucsess" });
                       })
@@ -1151,6 +1277,198 @@ exports.updateinterview = (req, res, next) => {
               .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.notifications = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Notifications.find({ userIdShow: { $in: [user.id] }, viwed: false })
+          .then(docs => {
+            console.log("nortifications");
+            console.log(docs);
+
+            if (docs === null) {
+              res.status(200).json([]);
+            } else {
+              res.status(200).json(docs);
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.notificationseen = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        // { $pull: { skills: { label: datain.label } } }
+        Notifications.findOneAndUpdate(
+          { _id: datain.nortid },
+          { $pull: { userIdShow: user.id } }
+        )
+          .then(docs => {
+            console.log("nortifications");
+            console.log(docs);
+
+            if (docs === null) {
+              res.status(200).json([]);
+            } else {
+              res.status(200).json(docs);
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.userdataarr = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        User.find({ $or: [{ usertype: "admin" }, { usertype: "depthead" }] })
+          .then(doc => {
+            const userDataArr = doc.map(ele => {
+              return {
+                label: `${ele.firstName + " " + ele.lastName}`,
+                value: ele.id
+              };
+            });
+
+            res.status(200).json(userDataArr);
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.reportsjobspec = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var payload = [];
+
+        Candidate.find()
+          .then(docs => {
+            Jobspec.find()
+              .then(joblist => {
+                var jobsmat = [];
+
+                joblist.forEach(element => {
+                  docs.forEach(elementcan => {
+                    if (elementcan.jobspec === element.label) {
+                      jobsmat.push(element.label);
+                    }
+                  });
+                });
+
+                var counts = {};
+                jobsmat.forEach(function(x) {
+                  counts[x] = (counts[x] || 0) + 1;
+                });
+
+                for (var key in counts) {
+                  if (counts.hasOwnProperty(key)) {
+                    payload.push({ name: key, value: counts[key] });
+
+                    console.log(key, counts[key]);
+                  }
+                }
+
+                res.json(payload);
+                console.log(payload);
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.landingpage = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+
+        var datain = req.body;
+
+        var lday = datain.today.slice(0, 10) + "T00:00:00.000Z";
+        var uday = datain.today.slice(0, 10) + "T23:59:59.000Z";
+
+        Interview.find({
+          panal: { $in: [user.id] },
+          datetime: {
+            $gte: lday,
+            $lt: uday
+          }
+        })
+          .then(docs => {
+            console.log(docs);
+            res.status(200).json(docs);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);

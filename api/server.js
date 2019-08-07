@@ -35,18 +35,29 @@ app.use(require("morgan")("dev"));
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
 
-app.use("/static", express.static(path.join(__dirname, "../assets")));
+//app.use("/static", express.static(path.join(__dirname, "../assets")));
 //app.use(express.static('../client/public'));
 
-app.use("/static", express.static(path.join(__dirname, "../assets")));
+// /home/dealwithit/Documents/dev/recaux/client/build
+
+app.use(
+  "/evaluation",
+  express.static(path.join(__dirname, "../assets/evaluationforms/"))
+);
 
 app.use("/usr", require("./routes/routes"));
 
-app.get("/ws", (req, res) => {
-  console.log("ws test.....");
-  io.emit("new_candidate", [{ msg: "hola" }, { msg: "aloha" }]);
-  res.send("juhu");
-});
+// app.use(express.static("../client/build"));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../", "client", "build", "index.html"));
+// });
+
+// app.get("/ws", (req, res) => {
+//   console.log("ws test.....");
+//   io.emit("new_candidate", [{ msg: "hola" }, { msg: "aloha" }]);
+//   res.send("juhu");
+// });
 
 /******************************************************************* */
 
@@ -164,7 +175,28 @@ channel.bind("my-event", function(data) {
             .then(doc => {
               fs.unlinkSync(filePath);
               console.log(cvuploaddata);
-              io.emit("new_candidate", result);
+
+              const newnot = new Notifications({
+                dis: ` you have new candidate  ${result.name} `,
+                title: "new candidate",
+                time: new Date().toISOString(),
+                userIdShow: datain.interviewer,
+                candidateId: datain.candidateid
+              });
+
+              newnot
+                .save()
+                .then(docs => {
+                  var objdocs = docs.toObject();
+                  objdocs.candidateId = datain.candidateid;
+                  serverss.wsfunc("new_interview", docs);
+                  res.status(200).json({ msg: "sucsess" });
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+
+              //io.emit("new_candidate", result);
             })
             .catch(err => {});
 

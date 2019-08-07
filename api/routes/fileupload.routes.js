@@ -96,9 +96,13 @@ exports.profileimgup = (req, ress, next) => {
             console.log(path.extname(req.file.originalname));
             var imgexte = path.extname(req.file.originalname);
             cloudinary.uploader.upload(
-              "/home/dealwithit/Documents/dev/recaux/assets/avatar/" +
-                req.params.id +
-                imgexte,
+              path.join(
+                __dirname,
+                "../",
+                "../",
+                "assets",
+                "avatar/" + `${req.params.id + imgexte}`
+              ), // "/home/dealwithit/Documents/dev/recaux/assets/avatar/" +
               {
                 tags: "basic_sample",
                 folder: "recaux/avatar",
@@ -180,7 +184,13 @@ exports.cvupload = (req, ress, next) => {
                   req.params.id +
                   cvexte;
                 cloudinary.uploader.upload(
-                  filePath,
+                  path.join(
+                    __dirname,
+                    "../",
+                    "../",
+                    "assets",
+                    "cv/" + `${req.params.id + cvexte}`
+                  ),
                   {
                     tags: "basic_sample",
                     folder: "recaux/resume",
@@ -213,12 +223,15 @@ exports.cvupload = (req, ress, next) => {
                       .then(doc => {
                         //var filePath = 'c:/book/discovery.docx';
                         fs.unlinkSync(filePath);
-                        Candidate.findById(ObjectID(req.params.id)).then(canupdateddco=>{
-                          console.log(canupdateddco)
-                         
-                          ress.status(200).json(canupdateddco.cvUrl);
-                        }).catch(err=>{console.log(err)})
-                        
+                        Candidate.findById(ObjectID(req.params.id))
+                          .then(canupdateddco => {
+                            console.log(canupdateddco);
+
+                            ress.status(200).json(canupdateddco.cvUrl);
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
                       })
                       .catch(err => {});
 

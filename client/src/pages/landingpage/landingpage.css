@@ -1,0 +1,29 @@
+.avatardivlandingpage {
+  margin-left: 15%;
+  margin-top: 3%;
+}
+
+.spanlandingpagegreet {
+  font-size: 3rem;
+}
+.listinterivewslandingpage {
+  text-align: left;
+  padding-bottom: 1%;
+}
+.landingcontetdic {
+  margin-top: 5%;
+  margin-left: 6%;
+  text-align: left;
+  /* inline-size: 10%; */
+}
+
+.maindivlandigpage {
+  text-align: center;
+}
+
+.anddataavatrdivlandignpage {
+  display: flex;
+}
+.h3forlandigpage {
+  text-align: left;
+}

@@ -79,10 +79,16 @@ class Addcandidate extends Component {
     //this.setState({ cvFile: e.target.files[0] });
     console.log("is file available " + this.state.cvFile);
 
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
     this.setState({ addedsucsess: 0 });
     e.preventDefault();
     var can = this.state;
-    console.log("state -  " +can );
+    console.log("state -  " + can);
 
     if (can.name && can.email && can.jobspec) {
       console.log("submited");
@@ -93,10 +99,16 @@ class Addcandidate extends Component {
       this.setState({ addedsucsess: false });
       this.setState({ isLoading: true });
       axios
-        .post("/usr/addcandidate", params)
+        .post("/usr/addcandidate", params, config)
         .then(data => {
           console.log(data.data);
-          this.setState({ addedsucsess: 2, name: "", jobspec: "", email: "", isLoading: false });
+          this.setState({
+            addedsucsess: 2,
+            name: "",
+            jobspec: "",
+            email: "",
+            isLoading: false
+          });
 
           var addeduserid = data.data._id;
           if (this.state.cvFile === null) {
@@ -192,7 +204,7 @@ class Addcandidate extends Component {
 
                 {this.state.duplicateemailerr && (
                   <div class="alert alert-danger" role="alert">
-                    This candidate is already in the system 
+                    This candidate is already in the system
                     <button
                       onClick={this.viewdupcanprofile}
                       className="btn btn-outline-danger"
@@ -201,7 +213,7 @@ class Addcandidate extends Component {
                       view
                     </button>
                   </div>
-                )}  
+                )}
 
                 {this.state.resumeupoadsuccsess && (
                   <div class="alert alert-success" role="alert">
@@ -265,7 +277,12 @@ class Addcandidate extends Component {
                     />
                   </div>
 
-                  <input type="file" name="cv" onChange={this.chngehndlcv} />
+                  <input
+                    required
+                    type="file"
+                    name="cv"
+                    onChange={this.chngehndlcv}
+                  />
                   {this.state.errchoseefilelater && (
                     <div class="alert alert-danger" role="alert">
                       you can add a resume later using candidate profile

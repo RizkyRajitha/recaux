@@ -30,6 +30,7 @@ import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
 import CardTravel from "@material-ui/icons/CardTravel";
 import Settings from "@material-ui/icons/Settings";
 import Menu from "@material-ui/core/Menu";
+import Apps from "@material-ui/icons/Apps";
 import MenuItem from "@material-ui/core/MenuItem";
 import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
@@ -46,10 +47,10 @@ const drawerHeight = 960;
 
 //socket = io();
 
-const socket = io("http://127.0.0.1:3001", {
-  transports: ["websocket"],
-  upgrade: false
-});
+// const socket = io("http://127.0.0.1:3001", {
+//   transports: ["websocket"],
+//   upgrade: false
+// });
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -221,15 +222,27 @@ function Dashboard(props) {
       //this.props.history.push("/login");
     }
 
-    socket.on("new_interview", newitne => {
-      console.log("awa");
-      console.log(newitne);
-      setdata(state => {
-        return state.concat([newitne]);
-      });
+    axios
+      .get("/usr/notifications", config)
+      .then(res => {
+        console.log(
+          "5555555555555555555555555 nortifications 55555555555555555555555"
+        );
 
-      console.log(data);
-    });
+        console.log(res.data);
+        setdata(res.data);
+      })
+      .catch(err => console.log(err));
+
+    // socket.on("new_interview", newitne => {
+    //   console.log("awa");
+    //   console.log(newitne);
+    //   setdata(state => {
+    //     return state.concat([newitne]);
+    //   });
+
+    // console.log(data);
+    // });
   }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -288,17 +301,43 @@ function Dashboard(props) {
                   open={Boolean(anchorEl2)}
                   onClose={handleClose2}
                 >
-                  {data.map(ele => {
-                    return (
-                      <MenuItem
-                        onClick={() =>
-                          props.history.push("/getcandidate/" + ele.candidateId)
-                        }
-                      >
-                        {ele.dis}
-                      </MenuItem>
-                    );
-                  })}
+                  {data.length === 0 ? (
+                    <MenuItem> No Notifications </MenuItem>
+                  ) : (
+                    data.map((ele, index) => {
+                      return (
+                        <MenuItem
+                          onClick={() => {
+                            setdata(sata => {
+                              return sata.splice(index, 1);
+                            });
+
+                            props.history.push(
+                              "/getcandidate/" + ele.candidateId
+                            );
+                            var jwt = localStorage.getItem("jwt");
+
+                            var config = {
+                              headers: { authorization: jwt }
+                            };
+
+                            axios
+                              .post(
+                                "/usr/notificationseen",
+                                {
+                                  nortid: ele._id
+                                },
+                                config
+                              )
+                              .then()
+                              .catch(err => console.log(err)); //nortid
+                          }}
+                        >
+                          {ele.dis}
+                        </MenuItem>
+                      );
+                    })
+                  )}
                 </Menu>
 
                 <Menu
@@ -368,6 +407,18 @@ function Dashboard(props) {
               <ListItem
                 button
                 onClick={() => {
+                  props.history.push("/landingpage");
+                }}
+              >
+                <ListItemIcon>
+                  <Apps />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+
+ <ListItem
+                button
+                onClick={() => {
                   props.history.push("/dashboard");
                 }}
               >
@@ -376,6 +427,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItem>
+
               <ListItem
                 button
                 onClick={() => {

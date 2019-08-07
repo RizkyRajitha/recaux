@@ -24,16 +24,12 @@ export default function ChipsArray(props) {
   const [selectedOption, setselectedOption] = useState({});
   const [selectoptionsnamelist, setselectoptionsnamelist] = useState([]);
   const classes = useStyles();
-  const [chipData, setChipData] = useState(props.currentskills);
+  const [chipData, setChipData] = useState([]);
 
   useEffect(() => {
-    console.log("dddd");
+    setChipData(props.currentpanal);
 
-    //setChipData(props.currentskills);
-
-    console.log("chips current skill 0 ");
-    console.log(props.currentskills);
-
+    console.log("remuser " + JSON.stringify(props.currentpanal));
     var jwt = localStorage.getItem("jwt");
 
     var config = {
@@ -43,11 +39,13 @@ export default function ChipsArray(props) {
     };
 
     axios
-      .get("/usr/skilllist", config)
+      .get("/usr/userdataarr", config)
       .then(res => {
-        console.log(res.data.skills);
+        console.log(res.data);
 
-        setselectoptionsnamelist(res.data.skills);
+        // console.log("remuser - " + props.remuser);
+
+        setselectoptionsnamelist(res.data);
       })
       .catch(err => {});
   }, []);
@@ -75,21 +73,26 @@ export default function ChipsArray(props) {
 
       console.log(`Option selected:`, selectedOption);
 
-      var jwt = localStorage.getItem("jwt");
+      props.setpanal([
+        ...chipData,
+        { key: selectedOption.value, label: selectedOption.label }
+      ]);
 
-      var config = {
-        headers: {
-          authorization: jwt
-        }
-      };
+      //   var jwt = localStorage.getItem("jwt");
 
-      axios
-        .post("/usr/addskill/" + props.id, selectedOption, config)
-        .then(res => {
-          console.log(res.data.skills);
-          //setselectoptionsnamelist(res.data.skills);
-        })
-        .catch(err => {});
+      //   var config = {
+      //     headers: {
+      //       authorization: jwt
+      //     }
+      //   };
+
+      //   axios
+      //     .post("/usr/addskill/" + props.id, selectedOption, config)
+      //     .then(res => {
+      //       console.log(res.data.skills);
+      //       //setselectoptionsnamelist(res.data.skills);
+      //     })
+      //     .catch(err => {});
     }
   };
 
@@ -117,18 +120,20 @@ export default function ChipsArray(props) {
 
   return (
     <div>
-      {chipData.map(data => {
-        let icon;
+      <Paper className={classes.root}>
+        {chipData.map(data => {
+          let icon;
 
-        return (
-          <Chip
-            key={data.key}
-            label={data.label}
-            onDelete={handleDelete(data)}
-            className={classes.chip}
-          />
-        );
-      })}
+          return (
+            <Chip
+              key={data.key}
+              label={data.label}
+              onDelete={handleDelete(data)}
+              className={classes.chip}
+            />
+          );
+        })}
+      </Paper>
 
       <Divider variant="inset" component="li" />
       <div style={{ marginTop: "1%" }} />

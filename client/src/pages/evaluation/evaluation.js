@@ -4,6 +4,22 @@ import axios from "axios";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import jsonwebtoken from "jsonwebtoken";
+import BaseSelect from "react-select";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import FixRequiredSelect from "./fixreqselect";
+
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
 
 export default class CreateEvaluationForm extends Component {
   constructor(props) {
@@ -105,7 +121,11 @@ export default class CreateEvaluationForm extends Component {
       salary4: "",
       period1: "",
       period2: "",
-      approve: ""
+      approve: "",
+      selectedinterviwerOption: "",
+      snackbaropen: false,
+      snackbarmsg: "",
+      skilllist: []
     };
   }
 
@@ -393,8 +413,9 @@ export default class CreateEvaluationForm extends Component {
     const newEvaluation = {
       name: this.state.name,
       role: this.state.role,
+      candidateId: this.props.match.params.id,
       date: this.state.date,
-      interviewedBy: this.state.interviewedBy,
+      interviewedByName: this.state.interviewedBy,
       academicBackground: this.state.academicBackground,
       industryExperience: this.state.industryExperience,
       currentPosition: this.state.currentPosition,
@@ -435,17 +456,40 @@ export default class CreateEvaluationForm extends Component {
       salary4: this.state.salary4,
       period1: this.state.period1,
       period2: this.state.period2,
-      approve: this.state.approve
+      approve: this.state.selectedinterviwerOption.label,
+      approveid: this.state.selectedinterviwerOption.value
     };
 
-    console.log("parms - " + this.p);
+    // console.log("parms - " + this.p);
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
 
     axios
       .post(
         "http://localhost:3001/usr/evaluationadd/" + this.props.match.params.id,
-        newEvaluation
+        newEvaluation,
+        config
       )
-      .then(res => console.log(res.data));
+      .then(res => {
+        console.log(res.data);
+
+        if (res.data.msg === "sucsess") {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Evaluation succsessfull"
+          });
+
+          setTimeout(() => {
+            this.props.history.push(
+              "/getcandidate/" + this.props.match.params.id
+            );
+          }, 5000);
+        }
+      })
+      .catch(err => console.log(err));
 
     this.setState({
       name: "",
@@ -496,6 +540,133 @@ export default class CreateEvaluationForm extends Component {
     });
   }
 
+  componentDidMount() {
+    this.setState({ date: new Date().toISOString().substr(0, 10) });
+    // document.getElementById("evaluationdate").valueAsDate = new Date();
+
+    console.log("comp did mount");
+
+    const id = this.props.match.params.id;
+    console.log(id);
+
+    const jwt = localStorage.getItem("jwt");
+    //console.log("jwt token -- - -- >>>" + jwt);
+
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      // console.log("payload - " + pay);
+      console.log("************************************");
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
+
+    // var usertype = localStorage.getItem("usertype");
+
+    // this.setState({ usertype: usertype });
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+
+        var preurl = res.data.avatarUrl.slice(0, 48);
+        var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+        var config = "/w_290,h_295,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        this.setState({ avatarUrl: baseUrl });
+
+        // var resdate = this.state.data.date
+        //  var alodate = this.state.data.allocatedDate
+        //  var shrtdate = this.state.data.shortlistedDate
+
+        this.setState({
+          interviwerid: datain.id,
+          interviewedBy: datain.firstName + " " + datain.lastName
+        });
+      })
+      .catch(err => {});
+
+    axios.get("/usr/getcandidate/" + id).then(res => {
+      console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
+
+      res.data.candidateData.skills.map((ele, index) => {
+        if (index == 0) {
+          this.setState({
+            skill1: ele.label
+          });
+        } else if (index == 1) {
+          this.setState({
+            skill2: ele.label
+          });
+        } else if (index == 2) {
+          this.setState({
+            skill3: ele.label
+          });
+        } else if (index == 3) {
+          this.setState({
+            skill4: ele.label
+          });
+        } else if (index == 4) {
+          this.setState({
+            skill5: ele.label
+          });
+        } else if (index == 5) {
+          this.setState({
+            skill6: ele.label
+          });
+        } else if (index == 6) {
+          this.setState({
+            skill7: ele.label
+          });
+        } else if (index == 7) {
+          this.setState({
+            skill8: ele.label
+          });
+        }
+      });
+
+      this.setState({
+        name: res.data.candidateData.name,
+        role: res.data.candidateData.jobspec,
+        skilllist: res.data.candidateData.skills,
+        userarr: res.data.userData
+      });
+    });
+
+    setTimeout(() => {
+      console.log(this.state);
+    }, 1000);
+  }
+
+  handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({ selectedinterviwerOption: selectedOption });
+    console.log(this.state.selectedinterviwerOption);
+
+    setTimeout(() => {
+      console.log(this.state.selectedinterviwerOption.label);
+    }, 1000);
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -538,6 +709,7 @@ export default class CreateEvaluationForm extends Component {
                 <label class="col-sm-2 col-form-label">Date:</label>
                 <div class="col-sm-10">
                   <input
+                    id="evaluationdate"
                     placeholder="Date"
                     type="Date"
                     size="75"
@@ -979,14 +1151,27 @@ export default class CreateEvaluationForm extends Component {
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Approved By : </label>
                 <div class="col-sm-10">
-                  <input
-                    type="text"
-                    name="approve"
+                  <Select
+                    options={this.state.userarr}
+                    isSearchable
                     required
-                    class="form-control"
-                    value={this.state.approve}
-                    onChange={this.onChangeApprove}
+                    value={this.state.selectedinterviwerOption}
+                    placeholder={this.state.selectedinterviwerOption.label}
+                    onChange={
+                      this.handleChangemodalselectscheduleinterviewinterviewer
+                    }
                   />
+
+                  {/* <Select
+                    native
+                    required
+                    value={this.state.selectedinterviwerOption}
+                    placeholder={this.state.selectedinterviwerOption.label}
+                    onChange={
+                      this.handleChangemodalselectscheduleinterviewinterviewer
+                    }
+                    options={this.state.userarr}
+                  />{" "} */}
                 </div>
               </div>
               <br />
@@ -1000,6 +1185,32 @@ export default class CreateEvaluationForm extends Component {
                 />
               </div>
             </form>
+
+            <Snackbar
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center"
+              }}
+              open={this.state.snackbaropen}
+              autoHideDuration={6000}
+              onClose={() => this.setState({ snackbaropen: false })}
+              //onClose={this.handleClose}
+              ContentProps={{
+                "aria-describedby": "message-id"
+              }}
+              message={<span id="message-id">{this.state.snackbarmsg}</span>}
+              action={[
+                <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  //className={classes.close}
+                  onClick={this.handleClose}
+                >
+                  <CloseIcon />
+                </IconButton>
+              ]}
+            />
           </div>
         </Container>
       </React.Fragment>

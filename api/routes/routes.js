@@ -15,8 +15,14 @@ const adminRoutes = require("./admin.routes");
 const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
 const Jobspec = require("../db/jobspec");
+const Notifications = require('../db/nortification')
 const fs = require("fs");
 const OutSourceProject = require("../db/OutSourceProject");
+
+
+const pdf = require('html-pdf');
+const options = {format: 'Letter'};
+const evaluationPdfTemplate = require('../config/evaluationPdf/template')
 
 const serverss = require('../server')
 
@@ -174,14 +180,19 @@ router.post("/deletenewjobspec", commonRoutes.deletenewjobspec);
 router.post("/addinterview", commonRoutes.addinterview);
 router.post("/updateinterview", commonRoutes.updateinterview);
 router.get('/interviews',deptheadRoutes.interviews)
-
-
+router.get('/getevalpdf/:id',deptheadRoutes.getevalpdf)
+router.get('/notifications',commonRoutes.notifications)
+router.get('/userdataarr',commonRoutes.userdataarr)
+router.post('/notificationseen',commonRoutes.notificationseen)
+router.get('/reportsjobspec',commonRoutes.reportsjobspec)
+router.post('/landingpage',commonRoutes.landingpage)
+router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
 
 router.get("/testing", (req, res) => {
- 
- 
- 
-  io.emit("new_candidate", result);
+
+})
+
+  //io.emit("new_candidate", result);
  
  
  
@@ -221,7 +232,6 @@ router.get("/testing", (req, res) => {
   //     console.log(err);
   //     res.status(200).json(err);
   //   });
-});
 
 router.post("/shortlistOne/:id", (req, res, next) => {
   passport.authenticate(
@@ -248,13 +258,14 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                 { _id: datain.candidateallocated },
 
                 {
-                  $set: {
+                  $set: {allocatedtoshorltistdone:true,
                     assignToshortlisterbyName:
                       allocaterdoc.firstName + " " + allocaterdoc.lastName,
                     assignToshortlisterbyId: user.id,
                     shortlister: datain.allocateduser,
                     shortlisterName: userDoc.firstName + " " + userDoc.lastName,
-                    allocatedDate: new Date().toISOString()
+                    allocatedDate: new Date().toISOString(),
+                    allocatedtoshorltistdone:true
                   }
                 }
               ).then(candoc => {
@@ -279,8 +290,35 @@ router.post("/shortlistOne/:id", (req, res, next) => {
                         "user doc -" +
                         JSON.stringify(docc)
                     );
+
                     if (candoc.ok === 1 && docc.ok === 1) {
-                      res.json({ msg: "allocated_success" });
+                     
+
+Candidate.findById(ObjectID(datain.candidateallocated)).then(candidatedocs=>{
+
+
+ const newnot = new Notifications({
+            dis: ` new shortlist  candidate ${candidatedocs.name} `,
+            title: "New Shortlist",
+            time: new Date().toISOString(),
+            userIdShow:  [datain.allocateduser] ,
+            candidateId: ObjectID(candidatedocs._id).toString()
+          });
+
+          newnot
+            .save(doc => {
+               res.json({ msg: "allocated_success" });
+              //res.status(200).json(result);
+            })
+            .catch(err => console.log(err));
+
+}).catch(err=>{
+  console.log(err)
+})
+
+
+
+
                     }
                   })
                   .catch(err => {
@@ -334,6 +372,7 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                     },
                     {
                       $set: {
+                        allocatedtoshorltistdone:true,
                         assignToshortlisterbyName:
                           allocaterUserDoc.firstName +
                           " " +
@@ -361,6 +400,31 @@ router.post("/shortlistMany/:id", (req, res, next) => {
                             allocaterUserDoc.lastName,
                           allocatedDate: new Date().toISOString()
                         });
+
+
+Candidate.findById(ObjectID(element)).then(candidatedocs=>{
+
+
+ const newnot = new Notifications({
+            dis: ` new shortlist  candidate ${candidatedocs.name} `,
+            title: "New Shortlist",
+            time: new Date().toISOString(),
+            userIdShow:  [allocatedUserId] ,
+            candidateId: ObjectID(candidatedocs._id).toString()
+          });
+
+          newnot
+            .save(doc => {
+             // res.status(200).json(result);
+            })
+            .catch(err => console.log(err));
+
+}).catch(err=>{
+  console.log(err)
+})
+
+
+
                       });
 
                       userDoc

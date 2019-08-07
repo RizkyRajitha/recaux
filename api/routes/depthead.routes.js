@@ -6,6 +6,8 @@ const OutSourceProject = require("../db/OutSourceProject");
 const Interview = require("../db/interviews");
 const ObjectID = require("mongodb").ObjectID;
 var fs = require("fs");
+const pdf = require("html-pdf");
+const evaluationPdfTemplate = require("../config/evaluationPdf/template");
 
 exports.shortlistData = (req, res, next) => {
   passport.authenticate(
@@ -118,44 +120,41 @@ exports.updateStatus = (req, res, next) => {
         res.status(401).send(info);
       } else {
         User.findById(ObjectID(user.id))
-          .then(result => {
-            if (result.usertype === "admin" || result.usertype === "depthead") {
+          .then(docusr => {
+            if (docusr.usertype === "admin" || docusr.usertype === "depthead") {
               console.log(req.body);
               var datain = req.body;
-
+              console.log("admin or depthead");
               console.log(req.params.id);
               var id = req.params.id;
               console.log(req.body.status);
 
-              if (req.body.status === "shortlisted") {
-                Candidate.findByIdAndUpdate(
-                  ObjectID(id),
-                  {
-                    $set: {
-                      primaryStatus: "Shortlisted"
-                    }
-                  },
-                  { new: true }
-                )
-                  .then(doc1 => {})
-                  .catch(err => console.log(err));
-              }
-
               Candidate.findById(ObjectID(id))
                 .then(candoc => {
                   console.log(candoc.shortlister);
-                  console.log("   " + result._id);
-                  console.log("  555 " + result._id.equals(candoc.shortlister));
+                  console.log("   " + docusr._id);
+                  console.log(
+                    "  555 ids " + docusr._id.equals(candoc.shortlister)
+                  );
+                  console.log("  555 usertype -  " + docusr.usertype);
+                  console.log("  555 comp " + (docusr.usertype === "admin"));
 
-                  if (result._id.equals(candoc.shortlister)) {
+                  if (
+                    docusr._id.equals(candoc.shortlister) ||
+                    docusr.usertype === "admin"
+                  ) {
                     console.log("valid user elegible for shortlisting");
 
                     Candidate.findByIdAndUpdate(
                       ObjectID(id),
                       {
                         $set: {
-                          status: req.body.status,
-                          shortlistedDate: new Date().toISOString()
+                          primaryStatus: req.body.status,
+                          shortlistedDate: new Date().toISOString(),
+                          primaryStatussetby:
+                            docusr.firstName + " " + docusr.lastName,
+                          primaryStatussetbyusertype: docusr.usertype,
+                          status: req.body.status
                         }
                       },
                       { new: true }
@@ -163,7 +162,7 @@ exports.updateStatus = (req, res, next) => {
                       .then(doc => {
                         User.findOneAndUpdate(
                           {
-                            _id: result._id,
+                            _id: candoc.shortlister,
                             "shortlist.candidateId": id
                           },
                           {
@@ -223,74 +222,277 @@ exports.updateStatus = (req, res, next) => {
   )(req, res, next);
 };
 
-exports.evaluationAdd = (req, res) => {
-  console.log("eval");
+exports.evaluationAdd = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
 
-  console.log(req.params.id);
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
 
-  console.log(req.body);
+        console.log("eval");
 
-  console.log("bodtyyy " + req.body.evaluatorId);
-  console.log("bodtyyy " + req.body.evaluationMarks);
+        console.log(req.params.id);
 
-  const evalation = new Evaluation({
-    name: req.body.name,
-    role: req.body.role,
-    date: req.body.date,
-    interviewedBy: req.body.interviewedBy,
-    academicBackground: req.body.academicBackground,
-    industryExperience: req.body.industryExperience,
-    currentPosition: req.body.currentPosition,
-    currentEmployer: req.body.currentEmployer,
-    skill1: req.body.skill1,
-    skill2: req.body.skill2,
-    skill3: req.body.skill3,
-    skill4: req.body.skill4,
-    skill5: req.body.skill5,
-    skill6: req.body.skill6,
-    skill7: req.body.skill7,
-    skill8: req.body.skill8,
-    skill9: req.body.skill9,
-    skill10: req.body.skill10,
-    skill11: req.body.skill11,
-    skill12: req.body.skill12,
-    skill13: req.body.skill13,
-    skill14: req.body.skill14,
-    rate1: req.body.rate1,
-    rate2: req.body.rate2,
-    rate3: req.body.rate3,
-    rate4: req.body.rate4,
-    rate5: req.body.rate5,
-    rate6: req.body.rate6,
-    rate7: req.body.rate7,
-    rate8: req.body.rate8,
-    rate9: req.body.rate9,
-    rate10: req.body.rate10,
-    rate11: req.body.rate11,
-    rate12: req.body.rate12,
-    rate13: req.body.rate13,
-    rate14: req.body.rate14,
-    overrallRating: req.body.overrallRating,
-    summary: req.body.summary,
-    salary1: req.body.salary1,
-    salary2: req.body.salary2,
-    salary3: req.body.salary3,
-    salary4: req.body.salary4,
-    period1: req.body.period1,
-    period2: req.body.period2,
-    approve: req.body.approve
-  });
+        // console.log(req.body);
 
-  evalation
-    .save()
-    .then(doc => {
-      console.log(doc);
-      res.status(200).json(doc);
-    })
-    .catch(er => {
-      console.log(er);
-    });
+        console.log("bodtyyy " + req.body.evaluatorId);
+        console.log("bodtyyy " + req.body.evaluationMarks);
+
+        const evalation = new Evaluation({
+          name: req.body.name,
+          candidateId: req.body.candidateId,
+          role: req.body.role,
+          date: req.body.date,
+          interviewedByName: req.body.interviewedByName,
+          interviewedById: user.id,
+          academicBackground: req.body.academicBackground,
+          industryExperience: req.body.industryExperience,
+          currentPosition: req.body.currentPosition,
+          currentEmployer: req.body.currentEmployer,
+          skill1: req.body.skill1,
+          skill2: req.body.skill2,
+          skill3: req.body.skill3,
+          skill4: req.body.skill4,
+          skill5: req.body.skill5,
+          skill6: req.body.skill6,
+          skill7: req.body.skill7,
+          skill8: req.body.skill8,
+          skill9: req.body.skill9,
+          skill10: req.body.skill10,
+          skill11: req.body.skill11,
+          skill12: req.body.skill12,
+          skill13: req.body.skill13,
+          skill14: req.body.skill14,
+          rate1: req.body.rate1,
+          rate2: req.body.rate2,
+          rate3: req.body.rate3,
+          rate4: req.body.rate4,
+          rate5: req.body.rate5,
+          rate6: req.body.rate6,
+          rate7: req.body.rate7,
+          rate8: req.body.rate8,
+          rate9: req.body.rate9,
+          rate10: req.body.rate10,
+          rate11: req.body.rate11,
+          rate12: req.body.rate12,
+          rate13: req.body.rate13,
+          rate14: req.body.rate14,
+          overrallRating: req.body.overrallRating,
+          summary: req.body.summary,
+          salary1: req.body.salary1,
+          salary2: req.body.salary2,
+          salary3: req.body.salary3,
+          salary4: req.body.salary4,
+          period1: req.body.period1,
+          period2: req.body.period2,
+          approve: req.body.approve,
+          approveid: req.body.approveid
+        });
+
+        evalation
+          .save()
+          .then(doc => {
+            //console.log(doc);
+
+            Candidate.updateOne(
+              { _id: req.body.candidateId },
+
+              {
+                $set: {
+                  interviewed: true
+                }
+              }
+            )
+              .then(doc => {
+                console.log(doc);
+              })
+              .catch(err => console.log(err));
+
+            res.status(200).json({ msg: "sucsess" });
+          })
+          .catch(er => {
+            console.log(er);
+          });
+      }
+    }
+  )(req, res, next);
 };
+
+exports.getevalpdf = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+        var canid = req.params.id;
+        console.log("canid - " + req.params.id);
+
+        Evaluation.find({ candidateId: req.params.id })
+          .then(doc => {
+            pdf
+              .create(
+                evaluationPdfTemplate({
+                  name: doc[0].name,
+                  interviwedDate: doc[0].date,
+                  Jobspec: doc[0].role,
+                  academicBackground: doc[0].academicBackground,
+                  industryExperience: doc[0].industryExperience,
+                  currentPosition: doc[0].currentPosition,
+                  currentEmployer: doc[0].currentEmployer,
+                  interviwerName: doc[0].interviewedByName,
+                  approve: doc[0].approve
+                }),
+                {}
+              )
+              .toFile(
+                "../assets/evaluationforms/" +
+                  req.params.id +
+                  "evaluationpdf.pdf",
+                function(err, pdfdata) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("res");
+                    console.log(pdfdata);
+
+                    // res.status(200).json({
+                    //   msg: "sucsess",
+                    //   url:
+                    //     "http://localhost:3001/evaluation/" +
+                    //     req.params.id +
+                    //     "evaluationpdf.pdf"
+                    // }); //"5d3de640973a806147d74de2evaluationpdf.pdf'})
+
+                    res.download(
+                      pdfdata.filename,
+                      req.params.id + "evalpdf.pdf",
+                      function(err) {
+                        if (err) {
+                          console.log(err);
+                          // Handle error, but keep in mind the response may be partially-sent
+                          // so check res.headersSent
+                        } else {
+                          // decrement a download credit, etc.
+                        }
+                      }
+                    );
+
+                    //res.download();
+                  }
+                }
+              );
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
+};
+
+exports.anythingpassportexample = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+      }
+    }
+  )(req, res, next);
+};
+
+// exports.evaluationAdd = (req, res) => {
+//   console.log("eval");
+
+//   console.log(req.params.id);
+
+//   console.log(req.body);
+
+//   console.log("bodtyyy " + req.body.evaluatorId);
+//   console.log("bodtyyy " + req.body.evaluationMarks);
+
+//   const evalation = new Evaluation({
+//     name: req.body.name,
+//     candidateId: req.body.candidateId,
+//     role: req.body.role,
+//     date: req.body.date,
+//     interviewedBy: req.body.interviewedBy,
+//     interviewedById: req.body.interviewedBy,
+//     academicBackground: req.body.academicBackground,
+//     industryExperience: req.body.industryExperience,
+//     currentPosition: req.body.currentPosition,
+//     currentEmployer: req.body.currentEmployer,
+//     skill1: req.body.skill1,
+//     skill2: req.body.skill2,
+//     skill3: req.body.skill3,
+//     skill4: req.body.skill4,
+//     skill5: req.body.skill5,
+//     skill6: req.body.skill6,
+//     skill7: req.body.skill7,
+//     skill8: req.body.skill8,
+//     skill9: req.body.skill9,
+//     skill10: req.body.skill10,
+//     skill11: req.body.skill11,
+//     skill12: req.body.skill12,
+//     skill13: req.body.skill13,
+//     skill14: req.body.skill14,
+//     rate1: req.body.rate1,
+//     rate2: req.body.rate2,
+//     rate3: req.body.rate3,
+//     rate4: req.body.rate4,
+//     rate5: req.body.rate5,
+//     rate6: req.body.rate6,
+//     rate7: req.body.rate7,
+//     rate8: req.body.rate8,
+//     rate9: req.body.rate9,
+//     rate10: req.body.rate10,
+//     rate11: req.body.rate11,
+//     rate12: req.body.rate12,
+//     rate13: req.body.rate13,
+//     rate14: req.body.rate14,
+//     overrallRating: req.body.overrallRating,
+//     summary: req.body.summary,
+//     salary1: req.body.salary1,
+//     salary2: req.body.salary2,
+//     salary3: req.body.salary3,
+//     salary4: req.body.salary4,
+//     period1: req.body.period1,
+//     period2: req.body.period2,
+//     approve: req.body.approve
+//   });
+
+//   evalation
+//     .save()
+//     .then(doc => {
+//       console.log(doc);
+//       res.status(200).json(doc);
+//     })
+//     .catch(er => {
+//       console.log(er);
+//     });
+// };
 
 exports.shortlistOverideOne = (req, res, next) => {
   passport.authenticate(
@@ -423,36 +625,56 @@ exports.interviews = (req, res, next) => {
 };
 
 
-//OutSourceProject
+exports.updatefinalstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
 
-exports.OutSourceProject = (req, res) => {
-  console.log("outl");
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
 
-  console.log(req.params.id);
+        Interview.find({ candidateId: datain.canid, interviwerId: user.id })
+          .then(doccan => {
+            console.log(doccan);
 
-  console.log(req.body);
-
-  console.log("outttt " + req.body.out_Name);
-  console.log("outtt " + req.body.out_Designation);
-
-  // const OutSourceProject = new OutSourceProject({
-  //   out_Name: req.body.out_Name,
-  //   out_Designation: req.body.out_Designation,
-  //   out_ExeProfile: req.body.out_ExeProfile,
-  //   Skill: req.body.Skill,
-  //   Projects: req.body.Projects[{Company:" ", DesignationP:" ",Duration:" ",Environment:" ",TechnologiesP:" "}],
-  //   out_Qualification: req.body.out_Qualification,
-
-  // });
-
-  // OutSourceProject
-  //   .save()
-  //   .then(doc => {
-  //     console.log(doc);
-  //     res.status(200).json(doc);
-  //   })
-  //   .catch(er => {
-  //     console.log(er);
-  //   });
+            if (doccan.length > 0) {
+              console.log("final elegible doc can");
+              User.findById(ObjectID(user.id))
+                .then(userdoc => {
+                  Candidate.findByIdAndUpdate(ObjectID(datain.canid), {
+                    $set: {
+                      finalStatus: req.body.finalstatus,
+                      finalStatusdate: new Date().toISOString(),
+                      finalStatussetby:
+                        userdoc.firstName + " " + userdoc.lastName,
+                      status: req.body.finalstatus
+                    }
+                  })
+                    .then(chdoc => {
+                      console.log(chdoc);
+                      res.status(200).json({ msg: "sucsess" });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            } else {
+              res.status(200).json({ msg: "less_previ" });
+            }
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  )(req, res, next);
 };
 
