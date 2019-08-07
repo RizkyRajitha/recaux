@@ -312,7 +312,6 @@ class Search extends Component {
 
   searchformsubmit = e => {
     e.preventDefault();
-    var dataeinter = moments(this.state.selectedDate._d);
 
     var payload = {
       name: this.state.searchName,
@@ -323,6 +322,8 @@ class Search extends Component {
     };
 
     if (this.state.clearselectedDate2) {
+      var dataeinter = moments(this.state.selectedDate._d);
+
       payload.reciveddate = dataeinter.toISOString();
     }
 
@@ -370,7 +371,6 @@ class Search extends Component {
       searchjobspec: opt.label,
       selectedOption: opt
     });
-    var dataeinter = moments(this.state.selectedDate._d);
     //e.preventDefault();
 
     var payload = {
@@ -382,6 +382,8 @@ class Search extends Component {
     };
 
     if (this.state.clearselectedDate2) {
+      var dataeinter = moments(this.state.selectedDate._d);
+
       payload.reciveddate = dataeinter.toISOString();
     }
 
@@ -474,7 +476,7 @@ class Search extends Component {
 
   searchformsubmitname = e => {
     e.preventDefault();
-    var dataeinter = moments(this.state.selectedDate._d);
+
     var payload = {
       name: e.target.value,
       email: this.state.searchemail,
@@ -484,6 +486,7 @@ class Search extends Component {
     };
 
     if (this.state.clearselectedDate2) {
+      var dataeinter = moments(this.state.selectedDate._d);
       payload.reciveddate = dataeinter.toISOString();
     }
 
@@ -527,7 +530,7 @@ class Search extends Component {
 
   searchformsubmitemail = e => {
     e.preventDefault();
-    var dataeinter = moments(this.state.selectedDate2._d);
+
     var payload = {
       name: this.state.searchName,
       email: e.target.value,
@@ -537,6 +540,7 @@ class Search extends Component {
     };
 
     if (this.state.clearselectedDate2) {
+      var dataeinter = moments(this.state.selectedDate2._d);
       payload.reciveddate = dataeinter.toISOString();
     }
 
@@ -639,21 +643,6 @@ class Search extends Component {
     const { classes } = this.props;
     return (
       <div>
-        {" "}
-        {/* <Navbar />
-                <Drawer
-                  avatarUrl={this.state.avatarUrl}
-                  username={this.state.firstName + " " + this.state.lastName}
-                  type={this.state.usertype}
-                /> */}{" "}
-        {/*
-                <button
-                  id="searchbydatebtn"
-                  className="btn btn-primary"
-                  onClick={this.searchModal}
-                >
-                  search by date
-                </button> */}
         <div className="searchParamsdiv">
           <form
             className={classes.root}
@@ -706,12 +695,14 @@ class Search extends Component {
               </Select>{" "}
             </FormControl>
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="age-simple"> Job spec </InputLabel>{" "}
-              <RSelect
-                value={this.state.selectedOption}
-                onChange={this.handleChangemodalselect}
-                options={this.state.jobspeclist}
-              />{" "}
+              <div className="">
+                <InputLabel htmlFor="age-simple"> Job spec </InputLabel>{" "}
+                <RSelect
+                  value={this.state.selectedOption}
+                  onChange={this.handleChangemodalselect}
+                  options={this.state.jobspeclist}
+                />{" "}
+              </div>
             </FormControl>
             <FormControl className={classes.formControl}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -749,22 +740,6 @@ class Search extends Component {
         </div>
         <div className="searchcontainer">
           {" "}
-          {/* <div>
-                    <input
-                      type="text"
-                      // onChange={this.namehndlechange}
-                      // className="searchname"
-                      name="search"
-                      placeholder="Search.."
-                    />
-                    <input type="radio" name="source" value="email" /> via email
-                    <input type="radio" name="source" value="manual" /> via manual
-                    <Datepicker
-                      datechnage={this.getdatefromdatepicke}
-                      datereset={this.resetdatepicker}
-                    />
-                    jobspec add
-                  </div> */}
           {this.state.searchresults && (
             <div>
               {" "}

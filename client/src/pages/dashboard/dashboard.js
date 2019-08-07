@@ -284,6 +284,18 @@ class dashboard extends Component {
     console.log("mount");
     var jwt = localStorage.getItem("jwt");
 
+    try {
+      console.log("in register");
+      var pay = jsonwebtoken.verify(jwt, "authdemo");
+      // console.log("payload - " + pay);
+      console.log("************************************");
+    } catch (error) {
+      console.log("not logged in redirecting...............");
+
+      //e.preventDefault();
+      this.props.history.push("/Login");
+    }
+
     this.setState({ isLoading: true });
     var config = {
       headers: { authorization: jwt }
@@ -345,92 +357,91 @@ class dashboard extends Component {
   }
 
   render() {
-    if (this.state.logedin === true) {
-      var cndetailes = this.state.candidatedata;
-      var usrdetails = this.state.userdata.slice(0, 5);
-      const { selectedOption, selectoptionsnamelist } = this.state;
-      return (
-        <div className="dashboardmain">
-          {/* <Navbar />
+    var cndetailes = this.state.candidatedata;
+    var usrdetails = this.state.userdata.slice(0, 5);
+    const { selectedOption, selectoptionsnamelist } = this.state;
+    return (
+      <div className="dashboardmain">
+        {/* <Navbar />
           <Drawer
             avatarUrl={this.state.avatarUrl}
             username={this.state.firstName + " " + this.state.lastName}
             type={this.state.usertype}
           /> */}
-          {/* <p className="usrtype">Logged in as : {this.state.usertype}</p> */}
+        {/* <p className="usrtype">Logged in as : {this.state.usertype}</p> */}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.usrprofile}
-            // className="btn btn-outline-primary"
-            id="userprofile"
-          >
-            edit profile
-          </Button>
-          <br />
-          <br />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.usrprofile}
+          // className="btn btn-outline-primary"
+          id="userprofile"
+        >
+          edit profile
+        </Button>
+        <br />
+        <br />
 
-          <Button
-            onClick={this.addcandidate}
-            variant="contained"
-            color="primary"
-            // className="btn btn-outline-primary"
-            id="addcan"
-            disabled={
-              this.state.usertype === "hr_staff" ||
-              this.state.usertype === "admin"
-                ? false
-                : true
-            }
-          >
-            Add new candidate
-          </Button>
+        <Button
+          onClick={this.addcandidate}
+          variant="contained"
+          color="primary"
+          // className="btn btn-outline-primary"
+          id="addcan"
+          disabled={
+            this.state.usertype === "hr_staff" ||
+            this.state.usertype === "admin"
+              ? false
+              : true
+          }
+        >
+          Add new candidate
+        </Button>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.addcandidate}
-            // className="btn btn-outline-primary"
-            id="shortlist"
-            disabled={this.state.numofshort === 0}
-            onClick={this.shortlistmodal}
-          >
-            Shortlist Many
-          </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.addcandidate}
+          // className="btn btn-outline-primary"
+          id="shortlist"
+          disabled={this.state.numofshort === 0}
+          onClick={this.shortlistmodal}
+        >
+          Shortlist Many
+        </Button>
 
-          <Modal
-            isOpen={this.state.modalIsOpen}
-            onAfterOpen={this.afterOpenModal}
-            onRequestClose={this.closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
-          >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
 
-            <div class="input-field col s12">
-              <p>{this.state.shortedcanarrnamelist}</p>
+          <div class="input-field col s12">
+            <p>{this.state.shortedcanarrnamelist}</p>
 
-              <Select
-                required
-                value={selectedOption}
-                onChange={this.handleChangemodalselect}
-                options={selectoptionsnamelist}
-              />
-            </div>
+            <Select
+              required
+              value={selectedOption}
+              onChange={this.handleChangemodalselect}
+              options={selectoptionsnamelist}
+            />
+          </div>
 
-            <div className="submit">
-              <input
-                type="submit"
-                className="btn btn-outline-danger"
-                onClick={this.shorlisthandler}
-                value="confirm shortlisting"
-                id="submit"
-              />
-            </div>
-          </Modal>
+          <div className="submit">
+            <input
+              type="submit"
+              className="btn btn-outline-danger"
+              onClick={this.shorlisthandler}
+              value="confirm shortlisting"
+              id="submit"
+            />
+          </div>
+        </Modal>
 
-          {/* {!this.state.emailverified && (
+        {/* {!this.state.emailverified && (
             <div class="alert alert-danger" role="alert">
               please verify your email
               <br />
@@ -445,91 +456,88 @@ class dashboard extends Component {
             </div>
           )} */}
 
-          <div class="row">
-            <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
-              {this.state.newcandicates.length === 0 && (
-                <h6 className="noschedulecanh6"> no new candidates </h6>
-              )}
-              {this.state.newcandicates.map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return (
-                  <CandidateCard
-                    triggershrt={this.shortlisting}
-                    name={can.name}
-                    email={can.email}
-                    jobspec={can.jobspec}
-                    _id={can._id}
-                    date={can.date}
-                    status={can.primaryStatus}
-                    shortlisterId={can.shortlister}
-                    shortlisterName={can.shortlisterName}
-                    assignToshortlisterbyId={can.assignToshortlisterbyId}
-                    assignToshortlisterbyName={can.assignToshortlisterbyName}
-                    skills={can.skills}
-                  />
-                );
-              })}
-            </div>{" "}
-            <div className="col-s4-m4-l4" id="dashboardcardcontainer2">
-              {this.state.shortlistedcandicates.length === 0 && (
-                <h6 className="noschedulecanh6"> No Shortlisted Candidates </h6>
-              )}
+        <div class="row">
+          <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
+            {this.state.newcandicates.length === 0 && (
+              <h6 className="noschedulecanh6"> no new candidates </h6>
+            )}
+            {this.state.newcandicates.map(can => {
+              //console.log(can.name+can.email+can.jobspec)
+              return (
+                <CandidateCard
+                  triggershrt={this.shortlisting}
+                  name={can.name}
+                  email={can.email}
+                  jobspec={can.jobspec}
+                  _id={can._id}
+                  date={can.date}
+                  status={can.primaryStatus}
+                  shortlisterId={can.shortlister}
+                  shortlisterName={can.shortlisterName}
+                  assignToshortlisterbyId={can.assignToshortlisterbyId}
+                  assignToshortlisterbyName={can.assignToshortlisterbyName}
+                  skills={can.skills}
+                />
+              );
+            })}
+          </div>{" "}
+          <div className="col-s4-m4-l4" id="dashboardcardcontainer2">
+            {this.state.shortlistedcandicates.length === 0 && (
+              <h6 className="noschedulecanh6"> No Shortlisted Candidates </h6>
+            )}
 
-              {this.state.shortlistedcandicates.map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return (
-                  <CandidateCard
-                    triggershrt={this.shortlisting}
-                    name={can.name}
-                    email={can.email}
-                    jobspec={can.jobspec}
-                    _id={can._id}
-                    date={can.date}
-                    status={can.primaryStatus}
-                    shortlisterId={can.shortlister}
-                    shortlisterName={can.shortlisterName}
-                    assignToshortlisterbyId={can.assignToshortlisterbyId}
-                    assignToshortlisterbyName={can.assignToshortlisterbyName}
-                    skills={can.skills}
-                    disableshortcheck={true}
-                  />
-                );
-              })}
-            </div>{" "}
-            <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
-              {this.state.shortlistedcandicates.length === 0 && (
-                <h6 className="noschedulecanh6">No scheduled candidates</h6>
-              )}
-              {this.state.scheduledcandicates.map(can => {
-                //console.log(can.name+can.email+can.jobspec)
-                return (
-                  <CandidateCard
-                    triggershrt={this.shortlisting}
-                    name={can.name}
-                    email={can.email}
-                    jobspec={can.jobspec}
-                    _id={can._id}
-                    date={can.date}
-                    status={can.status}
-                    shortlisterId={can.shortlister}
-                    shortlisterName={can.shortlisterName}
-                    assignToshortlisterbyId={can.assignToshortlisterbyId}
-                    assignToshortlisterbyName={can.assignToshortlisterbyName}
-                    skills={can.skills}
-                    disableshortcheck={true}
-                  />
-                );
-              })}
-            </div>
+            {this.state.shortlistedcandicates.map(can => {
+              //console.log(can.name+can.email+can.jobspec)
+              return (
+                <CandidateCard
+                  triggershrt={this.shortlisting}
+                  name={can.name}
+                  email={can.email}
+                  jobspec={can.jobspec}
+                  _id={can._id}
+                  date={can.date}
+                  status={can.primaryStatus}
+                  shortlisterId={can.shortlister}
+                  shortlisterName={can.shortlisterName}
+                  assignToshortlisterbyId={can.assignToshortlisterbyId}
+                  assignToshortlisterbyName={can.assignToshortlisterbyName}
+                  skills={can.skills}
+                  disableshortcheck={true}
+                />
+              );
+            })}
+          </div>{" "}
+          <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
+            {this.state.shortlistedcandicates.length === 0 && (
+              <h6 className="noschedulecanh6">No scheduled candidates</h6>
+            )}
+            {this.state.scheduledcandicates.map(can => {
+              //console.log(can.name+can.email+can.jobspec)
+              return (
+                <CandidateCard
+                  triggershrt={this.shortlisting}
+                  name={can.name}
+                  email={can.email}
+                  jobspec={can.jobspec}
+                  _id={can._id}
+                  date={can.date}
+                  status={can.status}
+                  shortlisterId={can.shortlister}
+                  shortlisterName={can.shortlisterName}
+                  assignToshortlisterbyId={can.assignToshortlisterbyId}
+                  assignToshortlisterbyName={can.assignToshortlisterbyName}
+                  skills={can.skills}
+                  disableshortcheck={true}
+                />
+              );
+            })}
           </div>
-
-          <br />
-          <br />
         </div>
-      );
-    } else {
-      return <Redirect to={`/login`} />;
-    }
+
+        <br />
+        <br />
+      </div>
+    );
   }
 }
 
