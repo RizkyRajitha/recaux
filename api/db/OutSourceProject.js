@@ -39,14 +39,6 @@ let OutSourceProject = new Schema({
     type: String
   }, */
 
-  projects : [{
-    Company : String,
-    DesignationP : String,
-    Duration : Date,
-    Environment : String,
-    TechnologiesP : String ,
-     }],
-
 
   out_Qualification: {
     type: String

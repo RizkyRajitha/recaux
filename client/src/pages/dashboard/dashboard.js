@@ -296,7 +296,7 @@ class dashboard extends Component {
       this.props.history.push("/Login");
     }
 
-    this.setState({ isLoading: true });
+   
     var config = {
       headers: { authorization: jwt }
     };

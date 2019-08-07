@@ -185,7 +185,7 @@ router.post('/notificationseen',commonRoutes.notificationseen)
 router.get('/reportsjobspec',commonRoutes.reportsjobspec)
 router.post('/landingpage',commonRoutes.landingpage)
 router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
-
+router.post('/outproject/:id',deptheadRoutes.outproject)
 router.get("/testing", (req, res) => {
 
 })

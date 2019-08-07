@@ -7,6 +7,7 @@ const ObjectID = require("mongodb").ObjectID;
 var fs = require("fs");
 const pdf = require("html-pdf");
 const evaluationPdfTemplate = require("../config/evaluationPdf/template");
+const outprojectPdfTemplate = require("../config/outprojectPdf/outprojecttemplate");
 
 exports.shortlistData = (req, res, next) => {
   passport.authenticate(
@@ -711,3 +712,71 @@ exports.updatefinalstatus = (req, res, next) => {
     }
   )(req, res, next);
 };
+
+exports.outproject = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var info = {
+          out_Name: req.body.out_Name,
+          out_Designation: req.body.out_Designation,
+          out_ExeProfile: req.body.out_ExeProfile,
+          Skill: req.body.Skill,
+          Company: req.body.Company,
+          DesignationP: req.body.DesignationP,
+          Duration: req.body.Duration,
+          Environment: req.body.Environment,
+          TechnologiesP: req.body.TechnologiesP,
+          out_Qualification: req.body.out_Qualification
+        };
+
+        pdf
+          .create(outprojectPdfTemplate(info), {})
+          .toFile(
+            "../assets/outproject/" + req.params.id + "aouptoject.pdf",
+            function(err, pdfdata) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log(pdfdata);
+                res.download(
+                  pdfdata.filename,
+                  req.params.id + "aouptoject.pdf",
+                  function(err) {
+                    if (err) {
+                      console.log(err);
+                      // Handle error, but keep in mind the response may be partially-sent
+                      // so check res.headersSent
+                    } else {
+                      // decrement a download credit, etc.
+                    }
+                  }
+                );
+              }
+            }
+          );
+
+        // res.status(200).json({
+        //   msg: "sucsess",
+        //   url:
+        //     "http://localhost:3001/evaluation/" +
+        //     req.params.id +
+        //     "evaluationpdf.pdf"
+        // }); //"5d3de640973a806147d74de2evaluationpdf.pdf'})
+      }
+    }
+  )(req, res, next);
+};
+
+//
