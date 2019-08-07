@@ -16,6 +16,7 @@ const deptheadRoutes = require("./depthead.routes");
 const commonRoutes = require("./common.routes");
 const Jobspec = require("../db/jobspec");
 const fs = require("fs");
+const OutSourceProject = require("../db/OutSourceProject");
 
 const serverss = require('../server')
 
@@ -155,6 +156,7 @@ router.post("/searchbydate", commonRoutes.searchByDate);
 router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
 router.post("/searchbyname", commonRoutes.searchByName);
 router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
+router.post("/OutSourceProject/:id", deptheadRoutes.OutSourceProject);
 
 router.post("/editcandidatedetails/:id", commonRoutes.editCandidateDetails);
 router.post("/reg", adminRoutes.addNewUser);

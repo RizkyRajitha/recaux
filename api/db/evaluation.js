@@ -145,4 +145,4 @@ let Evaluation = new Schema({
   }
 });
 
-module.exports = mongoose.model("Evaluation", Evaluation);
+module.exports = mongoose.model("", Evaluation);

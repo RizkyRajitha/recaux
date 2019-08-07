@@ -740,6 +740,17 @@ class CandidateView extends Component {
     this.props.history.push("/evaluation/" + id);
   };
 
+  OutProjectHandler = () => {
+    const id = this.props.match.params.id;
+
+    console.log("hiii - " + JSON.stringify(this.state));
+
+    this.props.history.push("/OutSourceProject/" + id);
+  };
+
+
+
+
   chngehandlsel = e => {
     this.setState({ status_change: 0 });
     // this.setState({ status: e.target.value });
@@ -1564,6 +1575,9 @@ status: "New"
           </button>
           <button onClick={this.schedule} className="btn btn-primary">
             schedule
+          </button>
+          <button onClick={this.OutProjectHandler} className="btn btn-primary">
+            Out-Source Project
           </button>
           <br />
           <br />

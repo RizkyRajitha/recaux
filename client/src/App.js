@@ -40,6 +40,8 @@ import analyticsdashboard2 from "./pages/analytics/analyticsdashboard2";
 import Notfound from "./components/notFound";
 import Userlist from "./pages/userlist/userlist";
 import Interview from './pages/interviews/interviews'
+import OutSourceProject from "./pages/OutSourceProject/OutSourceProject";
+
 
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
@@ -62,6 +64,7 @@ class App extends Component {
             <Route path="/admin" component={adminlogin} />
             <Route path="/getcandidate/:id" component={CandidateView} />
             <Route path="/evaluation/:id" component={Evaluation} />
+            <Route path="/OutSourceProject/:id" component={OutSourceProject} />
             <Route path="/user/:id" component={Userprofile} />
             <Route path="/changepass/:id" component={Changepass} />
             <Route path="/avatar/:id" component={Avatar} />

@@ -2,6 +2,7 @@ const passport = require("passport");
 const User = require("../db/users");
 const Candidate = require("../db/candidates");
 const Evaluation = require("../db/evaluation");
+const OutSourceProject = require("../db/OutSourceProject");
 const Interview = require("../db/interviews");
 const ObjectID = require("mongodb").ObjectID;
 var fs = require("fs");
@@ -420,3 +421,38 @@ exports.interviews = (req, res, next) => {
     }
   )(req, res, next);
 };
+
+
+//OutSourceProject
+
+exports.OutSourceProject = (req, res) => {
+  console.log("outl");
+
+  console.log(req.params.id);
+
+  console.log(req.body);
+
+  console.log("outttt " + req.body.out_Name);
+  console.log("outtt " + req.body.out_Designation);
+
+  // const OutSourceProject = new OutSourceProject({
+  //   out_Name: req.body.out_Name,
+  //   out_Designation: req.body.out_Designation,
+  //   out_ExeProfile: req.body.out_ExeProfile,
+  //   Skill: req.body.Skill,
+  //   Projects: req.body.Projects[{Company:" ", DesignationP:" ",Duration:" ",Environment:" ",TechnologiesP:" "}],
+  //   out_Qualification: req.body.out_Qualification,
+
+  // });
+
+  // OutSourceProject
+  //   .save()
+  //   .then(doc => {
+  //     console.log(doc);
+  //     res.status(200).json(doc);
+  //   })
+  //   .catch(er => {
+  //     console.log(er);
+  //   });
+};
+
