@@ -300,9 +300,13 @@ function Dashboard(props) {
                   keepMounted
                   open={Boolean(anchorEl2)}
                   onClose={handleClose2}
+                  style={{ width: 600 }}
                 >
                   {data.length === 0 ? (
-                    <MenuItem> No Notifications </MenuItem>
+                    <MenuItem style={{ width: 50 }}>
+                      {" "}
+                      No Notifications{" "}
+                    </MenuItem>
                   ) : (
                     data.map((ele, index) => {
                       return (
@@ -416,7 +420,7 @@ function Dashboard(props) {
                 <ListItemText primary="Home" />
               </ListItem>
 
- <ListItem
+              <ListItem
                 button
                 onClick={() => {
                   props.history.push("/dashboard");
@@ -447,10 +451,23 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <PersonAdd />
+                  <i class="fas fa-user-plus" />
                 </ListItemIcon>
                 <ListItemText primary="Add new User" />
               </ListItem>
+
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/addcandidate");
+                }}
+              >
+                <ListItemIcon>
+                  <PersonAdd />
+                </ListItemIcon>
+                <ListItemText primary="Add new candidate" />
+              </ListItem>
+
               <ListItem
                 button
                 onClick={() => {

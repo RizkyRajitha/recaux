@@ -42,17 +42,6 @@ var candidateSchema = new Schema({
   }
 ,
 
-  statusHr: {
-    type: String
-  },
-  statusHrdate: {
-    type: String
-  },
-
-  statusHrsetby: {
-    type: String
-  },
-
   finalStatus: {
     type: String
   },

@@ -127,14 +127,29 @@ const customStyles5 = {
 
 const customStyles6 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "40%",
+    height: "70%",
     top: "55%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden"
+  }
+};
+
+const customStyles7 = {
+  content: {
+    width: "40%",
+    height: "70%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden"
   }
 };
 
@@ -173,15 +188,21 @@ class CandidateView extends Component {
     selectedOption: "",
     selectedJobspecOption: "",
     selectedinterviwerOption: "",
+    selectedinterviwerOptionreschdule: "",
     selectedDate: new Date(),
     snackbaropen: false,
     snackbarmsg: "",
     selectedinterviwertype: "",
     finalstatus: "",
     slectformchipplanal: false,
+    slectformchipplanalreschedule: false,
     interviewpanal: [],
     currentskillskeyvals: [],
-    rendercurrenskills: false
+    rendercurrenskills: false,
+    hrstatusintervietype: "",
+    interviewtypeoptions: [],
+    rescheduleinterviewtype: "",
+    selectedDatereschdule: new Date()
   };
   /****************************************** */
   openModal = () => {
@@ -303,6 +324,16 @@ class CandidateView extends Component {
   };
 
   changestatusforhr = () => {
+    this.setState({ hrstatusintervietype: "firstinterview" });
+    this.openModal5();
+  };
+
+  changestatusforhr2 = () => {
+    this.setState({ hrstatusintervietype: "secondinterview" });
+    this.openModal5();
+  };
+  changestatusforhr3 = () => {
+    this.setState({ hrstatusintervietype: "clientinterview" });
     this.openModal5();
   };
 
@@ -326,6 +357,35 @@ class CandidateView extends Component {
     this.openModal6();
   };
 
+  /***************************************** */
+
+  openModal7 = () => {
+    this.setState({ modalIsOpen7: true });
+  };
+
+  afterOpenModal7 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal7 = () => {
+    this.setState({ modalIsOpen7: false });
+  };
+
+  reschedulemodal1 = () => {
+    this.setState({ rescheduleinterviewtype: "firstinterview" });
+    this.openModal7();
+  };
+
+  reschedulemodal2 = () => {
+    this.setState({ rescheduleinterviewtype: "secondinterview" });
+    this.openModal7();
+  };
+  reschedulemodal3 = () => {
+    this.setState({ rescheduleinterviewtype: "clientinterview" });
+    this.openModal7();
+  };
   /***************************************** */
 
   onDocumentLoadSuccess = ({ numPages }) => {
@@ -677,6 +737,24 @@ class CandidateView extends Component {
     console.log(this.state.selectedinterviwerOption);
   };
 
+  handleChangemodalselectscheduleinterviewinterviewerreschdule = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({
+      selectedinterviwerOptionreschdule: selectedOption,
+      slectformchipplanalreschedule: false
+    });
+
+    //this.setState({ slectformchipplanal: true });
+
+    setTimeout(() => {
+      this.setState({ slectformchipplanalreschedule: true });
+    }, 100);
+
+    //this.forceUpdate()
+    console.log(this.state.selectedinterviwerOption);
+  };
+
   componentDidMount() {
     console.log("comp did mount");
 
@@ -719,10 +797,6 @@ class CandidateView extends Component {
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });
 
-        // var resdate = this.state.data.date
-        //  var alodate = this.state.data.allocatedDate
-        //  var shrtdate = this.state.data.shortlistedDate
-
         this.setState({
           id: datain.id,
           firstName: datain.firstName,
@@ -760,6 +834,51 @@ class CandidateView extends Component {
           data: res.data.candidateData,
           userarr: res.data.userData
         });
+
+        if (res.data.candidateData.interview3) {
+          this.setState({
+            interviewtypeoptions: []
+          });
+        } else if (res.data.candidateData.interview2) {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        } else if (res.data.candidateData.interview) {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "Second interview",
+                value: "secondinterview"
+              },
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        } else {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "First interview",
+                value: "firstinterview"
+              },
+              {
+                label: "Second interview",
+                value: "secondinterview"
+              },
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        }
 
         var arr = res.data.candidateData.skills;
 
@@ -823,6 +942,11 @@ class CandidateView extends Component {
     this.setState({ selectedDate: e });
   };
 
+  handleDateChangereschdule = e => {
+    console.log(e);
+    this.setState({ selectedDatereschdule: e });
+  };
+
   evalHndler = () => {
     const id = this.props.match.params.id;
 
@@ -883,7 +1007,10 @@ class CandidateView extends Component {
       headers: { authorization: token }
     };
 
-    var payload = { status: e.target.value };
+    var payload = {
+      status: e.target.value,
+      interivewtype: this.state.hrstatusintervietype
+    };
 
     axios
       .post("/usr/updatesecondstatus/" + id, payload, config)
@@ -960,50 +1087,108 @@ class CandidateView extends Component {
 
     console.log(payload);
 
-    if (this.state.data.interview) {
-      console.log("update"); //updateinterview
+    axios
+      .post("/usr/addinterview", payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          console.log("schedule first interview");
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: " scheduled interview succsessfully"
+          });
+          this.closeModal6();
+        }
 
-      axios
-        .post("/usr/updateinterview", payload, config)
-        .then(res => {
-          console.log(res.data.msg);
-          if (res.data.msg === "sucsess") {
-            //this.setState({ status_change: 1 });
-            console.log("schedule interview");
-            this.setState({
-              snackbaropen: true,
-              snackbarmsg: " Re-scheduled interview succsessfully"
-            });
-            this.closeModal6();
-          }
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
 
-          console.log("awoooooooooo");
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ status_change: 0 });
-        });
-    } else {
-      axios
-        .post("/usr/addinterview", payload, config)
-        .then(res => {
-          console.log(res.data.msg);
-          if (res.data.msg === "sucsess") {
-            console.log("schedule first interview");
-            this.setState({
-              snackbaropen: true,
-              snackbarmsg: " scheduled interview succsessfully"
-            });
-            this.closeModal6();
-          }
+    //for update
+    // axios
+    //   .post("/usr/updateinterview", payload, config)
+    //   .then(res => {
+    //     console.log(res.data.msg);
+    //     if (res.data.msg === "sucsess") {
+    //       //this.setState({ status_change: 1 });
+    //       console.log("schedule interview");
+    //       this.setState({
+    //         snackbaropen: true,
+    //         snackbarmsg: " Re-scheduled interview succsessfully"
+    //       });
+    //       this.closeModal6();
+    //     }
 
-          console.log("awoooooooooo");
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ status_change: 0 });
-        });
-    }
+    //     console.log("awoooooooooo");
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     this.setState({ status_change: 0 });
+    //   });
+  };
+
+  rescheduleHandler = e => {
+    e.preventDefault();
+    console.log("add interview");
+    console.log(this.state.selectedinterviwerOption);
+    console.log("add interview");
+    console.log(this.state.selectedDatereschdule);
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var dataeinter = moments(this.state.selectedDatereschdule._d);
+
+    console.log();
+
+    var panalset = [];
+
+    this.state.interviewpanal.forEach(element => {
+      console.log(element.key);
+      panalset.push(element.key);
+    });
+
+    console.log(this.state);
+
+    var payload = {
+      candidateid: this.state.data._id,
+      scheduler: this.state.id,
+      interviewer: this.state.selectedinterviwerOptionreschdule.value,
+      datetime: dataeinter.toISOString(),
+      interviewtype: this.state.rescheduleinterviewtype,
+      panal: panalset,
+      panalwname: this.state.interviewpanal
+    };
+
+    console.log(payload);
+
+    //for update
+    axios
+      .post("/usr/updateinterview", payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          //this.setState({ status_change: 1 });
+          console.log("schedule interview");
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: " Re-scheduled interview succsessfully"
+          });
+          this.closeModal7();
+        }
+
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
   };
 
   showevalpdf = () => {
@@ -1162,31 +1347,45 @@ class CandidateView extends Component {
               <h2 ref={subtitle => (this.subtitle = subtitle)}> cv list </h2>
 
               <div>
-                <ul>
-                  {this.state.cvUrl &&
-                    this.state.cvUrl
-                      // .slice()
-                      // .reverse()
-                      .map((singlecv, iidd) => {
-                        return (
-                          <li>
-                            {iidd + 1}
-                            {". "}
-                            recived -{" "}
-                            {moments(
-                              singlecv.recievedDate,
-                              "YYYY-MM-DD HH:mm:ssZ"
-                            ).fromNow()}
-                            <button
-                              className="btn btn-primary"
-                              onClick={() => this.viewoldcv(iidd)}
-                            >
-                              view
-                            </button>
-                          </li>
-                        );
-                      })}
-                </ul>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" />
+                      <th scope="col" />
+                      <th scope="col" />
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {this.state.cvUrl &&
+                      this.state.cvUrl
+                        // .slice()
+                        // .reverse()
+                        .map((singlecv, iidd) => {
+                          return (
+                            <tr>
+                              <td>{iidd + 1}</td>
+                              <td>
+                                {". "}
+                                Recieved -{" "}
+                                {moments(
+                                  singlecv.recievedDate,
+                                  "YYYY-MM-DD HH:mm:ssZ"
+                                ).fromNow()}
+                              </td>
+                              <td>
+                                <button
+                                  className="btn"
+                                  onClick={() => this.viewoldcv(iidd)}
+                                >
+                                  <i class="far fa-eye" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                  </tbody>
+                </table>
               </div>
             </Modal>
 
@@ -1234,7 +1433,7 @@ class CandidateView extends Component {
               )}
 
               {
-                <div>
+                <div hidden={true}>
                   <label className="uploadtaglable">
                     {this.state.data.cvUrl === null
                       ? "Upload resume    "
@@ -1498,70 +1697,425 @@ class CandidateView extends Component {
                 </div>
 
                 <div
-                  class="col-md-12 xx interviewseccanview "
+                  class="col col-lg-12 interviewseccanview "
                   hidden={!this.state.data.interviewscheduled}
                 >
-                  <h6 className="shortlistheadingcanview">
-                    {" "}
-                    Interview Details{" "}
-                  </h6>
-                  <table class="table table-borderless ssss">
+                  <div class="col order-lg-2">
+                    <ul class="nav nav-tabs">
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview1"
+                          data-toggle="tab"
+                          class="nav-link active"
+                        >
+                          First interivew
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview2"
+                          data-toggle="tab"
+                          class="nav-link"
+                          hidden={!this.state.data.interview2}
+                        >
+                          Second interivew
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview3"
+                          data-toggle="tab"
+                          class="nav-link"
+                          hidden={!this.state.data.interview3}
+                        >
+                          Client interivew
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="tab-content py-4">
+                      <div class="tab-pane active" id="interview1">
+                        <h6 className="shortlistheadingcanview">
+                          {" "}
+                          Interview Details First interivew
+                        </h6>
+                        <table class="table table-borderless ssss">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">Interview type</h6>
+                              </td>
+                              <td>{this.state.data.interviewtype}</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">
+                                  Interview Scheduled By
+                                </h6>
+                              </td>
+                              <td>{this.state.data.schedulerName}</td>
+                            </tr>
+                            <tr>
+                              {" "}
+                              <td>
+                                <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                              </td>
+                              <td>{this.state.data.interviewerName}</td>
+                            </tr>
+                            <tr>
+                              {" "}
+                              <td>
+                                <h6 class="h6colorcanview">Interviewe panal</h6>{" "}
+                              </td>
+                              <td>
+                                <ChipsArraywodelete
+                                  currentskills={this.state.data.panalwname}
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">Interviewe Time</h6>{" "}
+                              </td>
+                              <td>
+                                {moments(this.state.data.interviewtime)
+                                  .toDate()
+                                  .toDateString() +
+                                  "  " +
+                                  " at " +
+                                  moments(
+                                    this.state.data.interviewtime
+                                  ).hour() +
+                                  ":" +
+                                  moments(
+                                    this.state.data.interviewtime
+                                  ).minute()}
+                                <span>
+                                  {" "}
+                                  {moments(
+                                    this.state.data.interviewtime
+                                  ).fromNow()}{" "}
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">
+                                  Interviewe status
+                                </h6>{" "}
+                              </td>
+                              <td>
+                                {this.state.data.statusHrinterview
+                                  ? `${
+                                      this.state.data.statusHrinterview
+                                    } ${"Set by " +
+                                      this.state.data.statusHrsetby +
+                                      " on "}       ${moments(
+                                      this.state.data.statusHrdate
+                                    )
+                                      .toDate()
+                                      .toDateString() +
+                                      "  " +
+                                      " at " +
+                                      moments(
+                                        this.state.data.statusHrdate
+                                      ).hour() +
+                                      ":" +
+                                      moments(
+                                        this.state.data.statusHrdate
+                                      ).minute()} `
+                                  : "Pending..."}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <button
+                          hidden={
+                            this.state.usertype === "depthead" ? true : false
+                          }
+                          onClick={this.changestatusforhr}
+                          className="btn canviewbtngroup btn-primary"
+                        >
+                          change secondary status
+                        </button>
+                        <button
+                          hidden={
+                            this.state.usertype === "depthead" ? true : false
+                          }
+                          onClick={this.reschedulemodal1}
+                          className="btn canviewbtngroup btn-primary"
+                        >
+                          Re-schedule Interview
+                        </button>
+
+                        {this.state.data.interviewed ? (
+                          <button
+                            onClick={this.showevalpdf}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Evaluation PDF
+                          </button>
+                        ) : (
+                          <button
+                            onClick={this.evalHndler}
+                            hidden={
+                              !(this.state.id === this.state.data.interviewerId)
+                            }
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            evaluate
+                          </button>
+                        )}
+                      </div>
+
+                      <div class="tab-pane" id="interview2">
+                        <div class="tab-pane active" id="interview1">
+                          <h6 className="shortlistheadingcanview">
+                            Interview Details Second interivew
+                          </h6>
+                          <table class="table table-borderless ssss">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">Interview type</h6>
+                                </td>
+                                <td>{this.state.data.interviewtype2}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interview Scheduled By
+                                  </h6>
+                                </td>
+                                <td>{this.state.data.schedulerName2}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                                </td>
+                                <td>{this.state.data.interviewerName2}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe panal
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  <ChipsArraywodelete
+                                    currentskills={this.state.data.panalwname2}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe Time
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {moments(this.state.data.interviewtime2)
+                                    .toDate()
+                                    .toDateString() +
+                                    "  " +
+                                    " at " +
+                                    moments(
+                                      this.state.data.interviewtime2
+                                    ).hour() +
+                                    ":" +
+                                    moments(
+                                      this.state.data.interviewtime2
+                                    ).minute()}
+                                  <span>
+                                    {" "}
+                                    {moments(
+                                      this.state.data.interviewtime2
+                                    ).fromNow()}{" "}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe status
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {this.state.data.statusHrinterview2
+                                    ? `${
+                                        this.state.data.statusHrinterview2
+                                      } ${"Set by " +
+                                        this.state.data.statusHrsetby2 +
+                                        " on "}       ${moments(
+                                        this.state.data.statusHrdate2
+                                      )
+                                        .toDate()
+                                        .toDateString() +
+                                        "  " +
+                                        " at " +
+                                        moments(
+                                          this.state.data.statusHrdate2
+                                        ).hour() +
+                                        ":" +
+                                        moments(
+                                          this.state.data.statusHrdate2
+                                        ).minute()} `
+                                    : "Pending..."}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.changestatusforhr2}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            change secondary status
+                          </button>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.reschedulemodal2}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Re-schedule Interview
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="tab-pane" id="interview3">
+                        <div class="tab-pane active" id="interview1">
+                          <h6 className="shortlistheadingcanview">
+                            Interview Details Client interivew
+                          </h6>
+                          <table class="table table-borderless ssss">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">Interview type</h6>
+                                </td>
+                                <td>{this.state.data.interviewtype3}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interview Scheduled By
+                                  </h6>
+                                </td>
+                                <td>{this.state.data.schedulerName3}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                                </td>
+                                <td>{this.state.data.interviewerName3}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe panal
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  <ChipsArraywodelete
+                                    currentskills={this.state.data.panalwname3}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe Time
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {moments(this.state.data.interviewtime3)
+                                    .toDate()
+                                    .toDateString() +
+                                    "  " +
+                                    " at " +
+                                    moments(
+                                      this.state.data.interviewtime3
+                                    ).hour() +
+                                    ":" +
+                                    moments(
+                                      this.state.data.interviewtime3
+                                    ).minute()}
+                                  <span>
+                                    {" "}
+                                    {moments(
+                                      this.state.data.interviewtime3
+                                    ).fromNow()}{" "}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe status
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {this.state.data.statusHrinterview3
+                                    ? `${
+                                        this.state.data.statusHrinterview3
+                                      } ${"Set by " +
+                                        this.state.data.statusHrsetby3 +
+                                        " on "}       ${moments(
+                                        this.state.data.statusHrdate3
+                                      )
+                                        .toDate()
+                                        .toDateString() +
+                                        "  " +
+                                        " at " +
+                                        moments(
+                                          this.state.data.statusHrdate3
+                                        ).hour() +
+                                        ":" +
+                                        moments(
+                                          this.state.data.statusHrdate3
+                                        ).minute()} `
+                                    : "Pending..."}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.changestatusforhr3}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            change secondary status
+                          </button>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.reschedulemodal3}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Re-schedule Interview
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <table>
                     <tbody>
-                      <tr>
-                        <td>
-                          <h6 class="h6colorcanview">Interview type</h6>
-                        </td>
-                        <td>{this.state.data.interviewtype}</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h6 class="h6colorcanview">Interview Scheduled By</h6>
-                        </td>
-                        <td>{this.state.data.schedulerName}</td>
-                      </tr>
-                      <tr>
-                        {" "}
-                        <td>
-                          <h6 class="h6colorcanview">Interviewer</h6>{" "}
-                        </td>
-                        <td>{this.state.data.interviewerName}</td>
-                      </tr>
-                      <tr>
-                        {" "}
-                        <td>
-                          <h6 class="h6colorcanview">Interviewe panal</h6>{" "}
-                        </td>
-                        <td>
-                          <ChipsArraywodelete
-                            currentskills={this.state.data.panalwname}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h6 class="h6colorcanview">Interviewe Time</h6>{" "}
-                        </td>
-                        <td>
-                          {moments(this.state.data.interviewtime)
-                            .toDate()
-                            .toDateString() +
-                            "  " +
-                            " at " +
-                            moments(this.state.data.interviewtime).hour() +
-                            ":" +
-                            moments(this.state.data.interviewtime).minute()}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h6 class="h6colorcanview">Interviewe status</h6>{" "}
-                        </td>
-                        <td>
-                          {this.state.data.statusHr
-                            ? this.state.data.statusHr
-                            : "Pending..."}
-                        </td>
-                      </tr>
                       {this.state.data.finalStatussetby && (
                         <tr>
                           <td>
@@ -1597,32 +2151,6 @@ class CandidateView extends Component {
                   </table>
 
                   <button
-                    hidden={this.state.usertype === "depthead" ? true : false}
-                    onClick={this.changestatusforhr}
-                    className="btn canviewbtngroup btn-primary"
-                  >
-                    change secondary status
-                  </button>
-
-                  {this.state.data.interviewed ? (
-                    <button
-                      onClick={this.showevalpdf}
-                      className="btn canviewbtngroup btn-primary"
-                    >
-                      Evaluation PDF
-                    </button>
-                  ) : (
-                    <button
-                      onClick={this.evalHndler}
-                      hidden={
-                        !(this.state.id === this.state.data.interviewerId)
-                      }
-                      className="btn canviewbtngroup btn-primary"
-                    >
-                      evaluate
-                    </button>
-                  )}
-                  <button
                     onClick={this.outsourceproject}
                     className="btn canviewbtngroup btn-primary"
                     hidden={
@@ -1634,6 +2162,7 @@ class CandidateView extends Component {
                   >
                     generate formal resume
                   </button>
+
                   <div
                     className="finalstateforinterviewcanview"
                     hidden={
@@ -1803,30 +2332,11 @@ class CandidateView extends Component {
             style={customStyles6}
             contentLabel="Example 5 Modal"
           >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>Schedule</h2>
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              Schedule {" " + this.state.data.name + "'s interview"}{" "}
+            </h2>
 
             <Container>
-              {this.state.data.interview
-                ? "this candidate has been scheduled to interview " +
-                  this.state.data.interviewerName +
-                  " on  " +
-                  moments(this.state.data.interviewtime)
-                    .toDate()
-                    .toDateString() +
-                  " in  " +
-                  " on " +
-                  moments(this.state.data.interviewtime).hour() +
-                  ":" +
-                  moments(this.state.data.interviewtime).minute() +
-                  " do you want to update \n interview panal"
-                : ""}
-              <ul>
-                {this.state.data.panalwname &&
-                  this.state.data.panalwname.map(ele => {
-                    return <li> {ele.label} </li>;
-                  })}{" "}
-              </ul>
-
               <form onSubmit={this.scheduleHandler}>
                 <table style={{ textAlign: "left", width: "50%" }}>
                   <tr>
@@ -1850,21 +2360,8 @@ class CandidateView extends Component {
                         value={this.state.selectedinterviwertype}
                         //placeholder={this.state.selectedinterviwertype.label}
                         onChange={this.handleChangemodalselectedinterviwertype}
-                        options={[
-                          {
-                            label: "First interview",
-                            value: "firstinterview"
-                          },
-                          {
-                            label: "Second interview",
-                            value: "secondinterview"
-                          },
-                          {
-                            label: "Client interview",
-                            value: "clientinterview"
-                          }
-                        ]}
-                      />{" "}
+                        options={this.state.interviewtypeoptions}
+                      />
                     </td>
                   </tr>
 
@@ -1922,6 +2419,100 @@ class CandidateView extends Component {
                   type="submit"
                 >
                   Confirm Interview
+                </Button>
+              </form>
+            </Container>
+          </Modal>
+
+          <Modal
+            isOpen={this.state.modalIsOpen7}
+            onAfterOpen={this.afterOpenModal7}
+            onRequestClose={this.closeModal7}
+            style={customStyles7}
+            contentLabel="Modal Re-Schedule"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              Re-schedule {" " + this.state.data.name + "'s interview"}{" "}
+            </h2>
+
+            <Container>
+              <form onSubmit={this.rescheduleHandler}>
+                <table style={{ textAlign: "left", width: "50%" }}>
+                  <tr>
+                    <td>candidate name - </td>
+                    <td> {this.state.data.name} </td>
+                  </tr>
+                  <tr>
+                    <td>allocater name - </td>
+                    <td>
+                      {" "}
+                      {this.state.firstName + " " + this.state.lastName}{" "}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Interview type </td>
+                    <td>{this.state.rescheduleinterviewtype}</td>
+                  </tr>
+
+                  <tr>
+                    <td>interviewer - </td>
+                    <td>
+                      {" "}
+                      <Select
+                        isSearchable
+                        required
+                        value={this.state.selectedinterviwerOptionreschdule}
+                        placeholder={
+                          this.state.selectedinterviwerOptionreschdule.label
+                        }
+                        onChange={
+                          this
+                            .handleChangemodalselectscheduleinterviewinterviewerreschdule
+                        }
+                        options={this.state.userarr}
+                      />{" "}
+                    </td>
+                  </tr>
+                  <td>Date &amp; time</td>
+                  <td>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <DateTimePicker
+                        value={this.state.selectedDatereschdule}
+                        onChange={this.handleDateChangereschdule}
+                        disablePast={true}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </td>
+
+                  <tr>
+                    <td>interviewe panal- </td>
+                    <td>
+                      <div className="" />
+
+                      {this.state.slectformchipplanalreschedule && (
+                        <ChipsArrayPanal
+                          id={this.state.data._id}
+                          //remuser={this.state.selectedinterviwerOption}
+                          currentpanal={[
+                            {
+                              key: this.state.selectedinterviwerOptionreschdule
+                                .value,
+                              label: this.state
+                                .selectedinterviwerOptionreschdule.label
+                            }
+                          ]}
+                          setpanal={this.gteinterviewpanal}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                </table>
+                <Button
+                  className="btn canviewbtngroup btn-primary"
+                  type="submit"
+                >
+                  Confirm Interview Re-schedule
                 </Button>
               </form>
             </Container>

@@ -27,6 +27,17 @@ var InterviewSchema = new Schema({
   interviewtype: {
     type: String
   },
+  statusHrinterview: {
+    type: String,
+    default: "pending "
+  },
+  statusHrdate: {
+    type: String
+  },
+
+  statusHrsetby: {
+    type: String
+  },
 
   panal: [],
   panalwname: []

@@ -296,7 +296,6 @@ class dashboard extends Component {
       this.props.history.push("/Login");
     }
 
-   
     var config = {
       headers: { authorization: jwt }
     };
@@ -370,23 +369,20 @@ class dashboard extends Component {
           /> */}
         {/* <p className="usrtype">Logged in as : {this.state.usertype}</p> */}
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.usrprofile}
-          // className="btn btn-outline-primary"
-          id="userprofile"
-        >
-          edit profile
-        </Button>
-        <br />
         <br />
 
-        <Button
+        <button
           onClick={this.addcandidate}
-          variant="contained"
-          color="primary"
-          // className="btn btn-outline-primary"
+          className="btn btn-primary"
+          id="shortlist"
+          disabled={this.state.numofshort === 0}
+          onClick={this.shortlistmodal}
+        >
+          Shortlist Many
+        </button>
+        <button
+          onClick={this.addcandidate}
+          className="btn btn-primary"
           id="addcan"
           disabled={
             this.state.usertype === "hr_staff" ||
@@ -396,20 +392,7 @@ class dashboard extends Component {
           }
         >
           Add new candidate
-        </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.addcandidate}
-          // className="btn btn-outline-primary"
-          id="shortlist"
-          disabled={this.state.numofshort === 0}
-          onClick={this.shortlistmodal}
-        >
-          Shortlist Many
-        </Button>
-
+        </button>
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

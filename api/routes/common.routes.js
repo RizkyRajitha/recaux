@@ -190,35 +190,87 @@ exports.getOneCandidate = (req, res) => {
             };
           });
 
-          Interview.findOne({ candidateId: iid })
+          Interview.findOne({
+            candidateId: iid,
+            interviewtype: "firstinterview"
+          })
             .then(doc1 => {
-              console.log(doc1);
-              console.log(result);
-              var objRes = result.toObject();
+              Interview.findOne({
+                candidateId: iid,
+                interviewtype: "secondinterview"
+              })
+                .then(doc2 => {
+                  Interview.findOne({
+                    candidateId: iid,
+                    interviewtype: "clientinterview"
+                  })
+                    .then(doc3 => {
+                      console.log(doc1);
+                      console.log(result);
+                      var objRes = result.toObject();
 
-              if (doc1) {
-                objRes.interview = true;
-                objRes.interviewerName = doc1.interviwerName;
-                objRes.interviewerId = doc1.interviwerId;
-                objRes.scheduler = doc1.schedulerId;
-                objRes.schedulerName = doc1.schedulerName;
-                objRes.interviewtime = doc1.datetime;
-                objRes.panalwname = doc1.panalwname;
-                objRes.interviewtype = doc1.interviewtype;
-              } else {
-                objRes.interview = false;
-              }
+                      if (doc1) {
+                        objRes.interview = true;
+                        objRes.interviewerName = doc1.interviwerName;
+                        objRes.interviewerId = doc1.interviwerId;
+                        objRes.scheduler = doc1.schedulerId;
+                        objRes.schedulerName = doc1.schedulerName;
+                        objRes.interviewtime = doc1.datetime;
+                        objRes.panalwname = doc1.panalwname;
+                        objRes.interviewtype = doc1.interviewtype;
+                        objRes.statusHrinterview = doc1.statusHrinterview;
+                        objRes.statusHrdate = doc1.statusHrdate;
+                        objRes.statusHrsetby = doc1.statusHrsetby;
+                      } else {
+                        objRes.interview = false;
+                      }
 
-              const payload = {
-                userData: userDataArr,
-                candidateData: objRes
-              };
+                      if (doc2) {
+                        objRes.interview2 = true;
+                        objRes.interviewerName2 = doc2.interviwerName;
+                        objRes.interviewerId2 = doc2.interviwerId;
+                        objRes.scheduler2 = doc2.schedulerId;
+                        objRes.schedulerName2 = doc2.schedulerName;
+                        objRes.interviewtime2 = doc2.datetime;
+                        objRes.panalwname2 = doc2.panalwname;
+                        objRes.interviewtype2 = doc2.interviewtype;
+                        objRes.statusHrinterview2 = doc2.statusHrinterview;
+                        objRes.statusHrdate2 = doc2.statusHrdate;
+                        objRes.statusHrsetby2 = doc2.statusHrsetby;
+                      } else {
+                        objRes.interview2 = false;
+                      }
 
-              console.log("\n\n");
+                      if (doc3) {
+                        objRes.interview3 = true;
+                        objRes.interviewerName3 = doc3.interviwerName;
+                        objRes.interviewerId3 = doc3.interviwerId;
+                        objRes.scheduler3 = doc3.schedulerId;
+                        objRes.schedulerName3 = doc3.schedulerName;
+                        objRes.interviewtime3 = doc3.datetime;
+                        objRes.panalwname3 = doc3.panalwname;
+                        objRes.interviewtype3 = doc3.interviewtype;
+                        objRes.statusHrinterview3 = doc3.statusHrinterview;
+                        objRes.statusHrdate3 = doc3.statusHrdate;
+                        objRes.statusHrsetby3 = doc3.statusHrsetby;
+                      } else {
+                        objRes.interview3 = false;
+                      }
 
-              //console.log(result);
+                      const payload = {
+                        userData: userDataArr,
+                        candidateData: objRes
+                      };
 
-              res.status(200).json(payload);
+                      console.log("\n\n");
+
+                      //console.log(result);
+
+                      res.status(200).json(payload);
+                    })
+                    .catch(err => console.log(err));
+                })
+                .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
         })
@@ -669,17 +721,27 @@ exports.updatesecondstatus = (req, res, next) => {
         console.log(req.body);
         var datain = req.body;
 
-        Candidate.findOneAndUpdate(
-          { _id: iid },
-          { $set: { statusHr: datain.status } }
-        )
-          .then(doc => {
-            console.log(doc);
-            res.status(200).json({ msg: "sucsess" });
+        User.findById(ObjectID(user.id))
+          .then(userdoc => {
+            Interview.findOneAndUpdate(
+              { candidateId: iid, interviewtype: datain.interivewtype },
+              {
+                $set: {
+                  statusHrinterview: datain.status,
+                  statusHrdate: new Date().toISOString(),
+                  statusHrsetby: userdoc.firstName + " " + userdoc.lastName
+                }
+              }
+            )
+              .then(doc => {
+                console.log(doc);
+                res.status(200).json({ msg: "sucsess" });
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
-          .catch(err => {
-            console.log(err);
-          });
+          .catch(err => console.log(err));
       }
     }
   )(req, res, next);
@@ -1222,14 +1284,17 @@ exports.updateinterview = (req, res, next) => {
                 Candidate.findById(ObjectID(datain.candidateid))
                   .then(doc3 => {
                     Interview.findOneAndUpdate(
-                      { candidateId: datain.candidateid },
+                      {
+                        candidateId: datain.candidateid,
+                        interviewtype: datain.interviewtype
+                      },
                       {
                         $set: {
                           schedulerId: datain.scheduler,
                           schedulerName: doc1.firstName + " " + doc1.lastName,
                           interviwerId: datain.interviewer,
                           interviwerName: doc2.firstName + " " + doc2.lastName,
-                          interviewtype: datain.interviewtype,
+
                           datetime: datain.datetime,
                           panal: datain.panal,
                           panalwname: datain.panalwname
@@ -1465,6 +1530,64 @@ exports.landingpage = (req, res, next) => {
           .then(docs => {
             console.log(docs);
             res.status(200).json(docs);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.reportsstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.find({});
+      }
+    }
+  )(req, res, next);
+};
+
+//reportscansource
+
+exports.reportscansource = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Candidate.find({ source: "email" })
+          .then(doc1 => {
+            Candidate.find({ source: "manual" })
+              .then(doc2 => {
+                res
+                  .status(200)
+                  .json({ email: doc1.length, manual: doc2.length });
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
           .catch(err => {
             console.log(err);

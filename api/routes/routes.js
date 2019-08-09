@@ -186,6 +186,8 @@ router.get('/reportsjobspec',commonRoutes.reportsjobspec)
 router.post('/landingpage',commonRoutes.landingpage)
 router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
 router.post('/outproject/:id',deptheadRoutes.outproject)
+router.get('/reportscansource',commonRoutes.reportscansource)
+
 router.get("/testing", (req, res) => {
 
 })
@@ -763,14 +765,7 @@ router.get("/analytics", (req, res) => {
     yesterday27Candidates: 0,
     yesterday28Candidates: 0,
     yesterday29Candidates: 0,
-    seCandidates:0,
-    qaCandidates:0,
-    pmCandidates:0,
-    baCandidates:0,
-    shortlistedCandidates:0,
-    onholdCandidates:0,
-    rejectedCandidates:0,
-    manualCandidates:0,
+    
   };
 
   // ada.setDate(ada.getDate() -2);
@@ -1017,87 +1012,12 @@ router.get("/analytics", (req, res) => {
                                                               }).then(doc31 => {
                                                                 payload.yesterday29Candidates = doc31.length;
                                             
-                                                                // Candidate.find({
-                                                                //   date: {
-                                                                //     $gte:yesterday31.toISOString().slice(0, 10) + "T00:00:00.000Z", //new Date().toISOString().slice(0,10)
-                                                                //     $lt:yesterday30.toISOString().slice(0, 10) + "T23:59:59.000Z" 
-                                                                //   }
-                                                                // }).then(doc32 => {
-                                                                //   payload.yesterday30Candidates = doc32.length;
-                                              
-                                                                  // Candidate.find({
-                                                                  //   date: {
-                                                                  //     $gte:yesterday30.toISOString().slice(0, 10) + "T00:00:00.000Z", //new Date().toISOString().slice(0,10)
-                                                                  //     $lt:yesterday29.toISOString().slice(0, 10) + "T23:59:59.000Z" 
-                                                                  //   }
-                                                                  // }).then(doc33 => {
-                                                                  //   payload.yesterday29Candidates = doc33.length;
-                                                              
-                                                                    Candidate.find({
-                                                                      jobspec: "BA"
-                                                                      
-                                                                    }).then(doc34 => {
-                                                                      payload.baCandidates = doc34.length;
                                                                 
-                                                                      Candidate.find({
-                                                                        jobspec: "QA"
-                                                                        
-                                                                      }).then(doc35 => {
-                                                                        payload.qaCandidates = doc35.length;
                                                                   
-                                                                        Candidate.find({
-                                                                          jobspec: "PM"
-                                                                          
-                                                                        }).then(doc36 => {
-                                                                          payload.pmCandidates = doc36.length;
-                                                                    
-                                                                          Candidate.find({
-                                                                            jobspec: "SE"
-                                                                            
-                                                                          }).then(doc37 => {
-                                                                            payload.seCandidates = doc37.length;
                                                                       
-                                                                            Candidate.find({
-                                                                              status: "shortlisted"
-                                                                              
-                                                                            }).then(doc38 => {
-                                                                              payload.shortlistedCandidates = doc38.length;
-                                                                        
-                                                                              Candidate.find({
-                                                                                status: "rejected"
-                                                                                
-                                                                              }).then(doc39 => {
-                                                                                payload.rejectedCandidates = doc39.length;
-                                                                          
-                                                                                Candidate.find({
-                                                                                  status: "onhold"
-                                                                                  
-                                                                                }).then(doc40 => {
-                                                                                  payload.onholdCandidates = doc40.length;
-                                                                            
-                                                                                  Candidate.find({
-                                                                                    source: "manual"
-                                                                                    
-                                                                                  }).then(doc41 => {
-                                                                                    payload.manualCandidates = doc41.length;
-                                                                              
-                                                                                    Candidate.find({
-                                                                                      source: "email"
-                                                                                      
-                                                                                    }).then(doc42 => {
-                                                                                      payload.emailCandidates = doc42.length;
-                                                                                
-                                                                                      res.status(200).json(payload);
-                                                                                      console.log("docs - " + JSON.stringify(doc42));
-                                                                                    });
-                                                                                  });
-                                                                                });
-                                                                              });
-                                                                            });
-                                                                          });
-                                                                        });
-                                                                      });
-                                                                    });
+                                                                         
+                                                                           
+                                                                    
                                                                   });
                                                                 });
                                                               });
