@@ -47,7 +47,6 @@ transporter.use(
 //console.log(config.jwtexp)
 
 exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
-
   console.log("password reset");
   //console.log("path - " + path.join(__dirname, "emails", "mars"));
 
@@ -58,13 +57,14 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       from: "kithminiatdev@gmail.com",
       to: "rajithagunathilake@gmail.com",
       subject: "password reset",
-      text: "visit - ",
-      template: "temp2",
+
+      template: "Reset",
       context: {
         title: "password reset",
-        message: `${passwordResetApi}/${token}`,
+        msg: `${passwordResetApi}/${token}`,
         name: ursname,
-        uniqeid:Math.random()*1000000
+        date: new Date().toUTCString(),
+        uniqeid: Math.round(Math.random() * 10000000000000)
       }
       // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
     };
@@ -74,7 +74,7 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("mail senddd")
+        console.log("mail senddd");
         console.log("send email - ");
         console.log("Email sent: " + info.response);
       }
@@ -82,13 +82,7 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
   });
 };
 
-
-
 exports.mailhandleremailconfirm = (ursname, email, id) => {
-
-
-
-  
   try {
     var token = jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" });
   } catch (error) {
@@ -104,9 +98,9 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
     template: "templtt",
     context: {
       title: " confirm email ",
-      message: `${emailConfirmApi}/${token}`,
+      msg: `${emailConfirmApi}/${token}`,
       name: ursname,
-      uniqeid:Math.round(Math.random()*10000000000000)
+      uniqeid: Math.round(Math.random() * 10000000000000)
     }
   };
 
@@ -120,10 +114,7 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
   });
 };
 
-
-
 exports.mailhandlernewuseremail = (email, id, type) => {
- 
   jwt.sign(
     { id: id, email: email, usertype: type },
     "authdemo",
@@ -138,11 +129,12 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         to: "rajithagunathilake@gmail.com",
         subject: "email confirmation",
         text: "visit - ",
-        template: "newuser",
+        template: "confirmEmail",
         context: {
           title: " confirm email ",
           msg: `${newuserconfig}/${data}`,
-          uniqeid:Math.random()*1000000
+          uniqeid: Math.floor(Math.random() * 1000000),
+          date: new Date().toUTCString()
         }
       };
 
@@ -155,7 +147,7 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         }
       });
     }
-  )
+  );
 };
 
 //module.exports = {mailhandlerpasswordreset,mailhandleremailconfirm};

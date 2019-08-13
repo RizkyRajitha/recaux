@@ -21,7 +21,7 @@ class Userlist extends Component {
       headers: { authorization: jwt }
     };
 
-    if (usertype === "admin") {
+    if (usertype === "admin" || usertype === "hr_staff") {
       axios
         .get("/usr/userdata", config)
         .then(data => {
@@ -41,9 +41,8 @@ class Userlist extends Component {
     var temparr = [];
     this.setState({ seachname: nameKey });
     for (var i = 0; i < this.state.temp.length; i++) {
-      var fullname = this.state.temp[i].firstName.concat(
-        this.state.temp[i].lastName
-      );
+      var fullname =
+        this.state.temp[i].firstName + " " + this.state.temp[i].lastName;
 
       console.log(fullname);
       if (fullname.toLowerCase().match(nameKey.toLowerCase())) {

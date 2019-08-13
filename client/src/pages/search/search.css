@@ -10,7 +10,8 @@
 }
 
 .searchcontainer {
-  width: 80%;
+  text-align: center;
+  width: 60%;
   margin-left: 0%;
   margin-top: 0%;
 }
@@ -26,4 +27,17 @@
 
 .datecdivsearch {
   margin-left: 10%;
+}
+
+.seachbtn {
+  width: 100%;
+}
+
+.mainseachbtn {
+  height: 50%;
+  margin-top: 3.3%;
+}
+
+.sarchdatadiv {
+  margin-top: 2%;
 }

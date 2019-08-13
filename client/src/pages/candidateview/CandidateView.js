@@ -1585,6 +1585,7 @@ class CandidateView extends Component {
                 <button
                   onClick={this.openModal}
                   className="btn canviewbtngroup btn-primary"
+                  hidden={this.state.usertype === "depthead"}
                 >
                   Allocate for shortlisting
                 </button>
@@ -1674,7 +1675,7 @@ class CandidateView extends Component {
 
                   <button
                     hidden={
-                      !this.state.shortago || this.state.usertype === "depthead"
+                      this.state.usertype === "depthead" || !this.state.shortago 
                     }
                     onClick={this.schedule}
                     className="btn canviewbtngroup btn-primary"
@@ -2133,7 +2134,7 @@ class CandidateView extends Component {
                             )}
                             <br />
                             {"Set by " +
-                              this.state.data.primaryStatussetby +
+                              this.state.data.finalStatussetby +
                               " on "}
 
                             {moments(this.state.data.finalStatusdate)

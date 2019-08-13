@@ -36,7 +36,7 @@ export default function ChipsArray(props) {
   const [onload, setonload] = useState(false);
   const classes = useStyles(); //onload
   const [chipData, setChipData] = useState(props.currentskills);
-
+  // const [skillvalue, setskillvalue] = useState("");
   // useEffect(() => {
   // console.log("props - - -");
   // console.log(props.currentskills);
@@ -123,9 +123,9 @@ export default function ChipsArray(props) {
   const addskill = () => {
     var jar = chipData
       .map(function(e) {
-        return e.label;
+        return e.label.toLowerCase();
       })
-      .indexOf(newSkill);
+      .indexOf(newSkill.toLowerCase());
     if (jar < 0) {
       seterrorskill(false);
       setChipData(chips => [
@@ -148,8 +148,8 @@ export default function ChipsArray(props) {
         .then(res => {
           console.log(res.data);
           setonload(false);
-          document.getElementById("settingsaddskill").value = "";
-
+          document.getElementById("inputsettingsskilladd").value = "";
+          setnewSkill("");
           //this.setState({ skillset: res.data.skills });
           //this.forceUpdate();
           //setselectoptionsnamelist(res.data.skills);
@@ -164,9 +164,11 @@ export default function ChipsArray(props) {
     <div className="container settignjobspcmaindiv ">
       <input
         type="text"
+        id="inputsettingsskilladd"
         className="form-control settingsaddskill "
         placeholder="Enter new Skill"
         label="New skill"
+        value={newSkill}
         onChange={hndleskillchange}
         onKeyPress={handleKeyPress}
       />

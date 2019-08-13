@@ -14,7 +14,6 @@
   align-items: center;
 }
 
-
 .form-wrapper {
   width: 600px;
   display: flex;
@@ -52,4 +51,14 @@
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #666666;
   opacity: 1; /* Firefox */
+}
+#sticky-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  
+  
+  text-align: center;
+  flex-shrink: none;
 }

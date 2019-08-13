@@ -865,31 +865,29 @@ exports.addnewskill = (req, res, next) => {
       } else {
         User.findById(ObjectID(user.id))
           .then(data => {
-            if (data.usertype == "admin" || data.usertype == "hr_staff") {
-              console.log(req.body);
-              var datain = req.body;
+            console.log(req.body);
+            var datain = req.body;
 
-              var pt = path.join(__dirname, "../", "config", "skills.json");
-              console.log(pt);
+            var pt = path.join(__dirname, "../", "config", "skills.json");
+            console.log(pt);
 
-              try {
-                var ori = fs.readFileSync(pt, "utf8");
+            try {
+              var ori = fs.readFileSync(pt, "utf8");
 
-                jsonobj = JSON.parse(ori);
-                console.log(jsonobj.skills.length);
-                var skilllength = jsonobj.skills.length;
-                jsonobj.skills.push({
-                  value: skilllength,
-                  label: datain.skill
-                });
-                //var obj = { yolo: 55 };
+              jsonobj = JSON.parse(ori);
+              console.log(jsonobj.skills.length);
+              var skilllength = jsonobj.skills.length;
+              jsonobj.skills.push({
+                value: skilllength,
+                label: datain.skill
+              });
+              //var obj = { yolo: 55 };
 
-                fs.writeFileSync(pt, JSON.stringify(jsonobj));
+              fs.writeFileSync(pt, JSON.stringify(jsonobj));
 
-                res.status(200).json(jsonobj);
-              } catch (error) {
-                console.log(error);
-              }
+              res.status(200).json(jsonobj);
+            } catch (error) {
+              console.log(error);
             }
           })
           .catch(err => {
@@ -914,43 +912,41 @@ exports.deletenewskill = (req, res, next) => {
       } else {
         User.findById(ObjectID(user.id))
           .then(data => {
-            if (data.usertype == "admin" || data.usertype == "hr_staff") {
-              console.log(req.body);
-              var datain = req.body;
+            console.log(req.body);
+            var datain = req.body;
 
-              var pt = path.join(__dirname, "../", "config", "skills.json");
-              console.log(pt);
-              console.log("yoloylylylylylyylylyylylylyl");
-              try {
-                var ori = fs.readFileSync(pt, "utf8");
+            var pt = path.join(__dirname, "../", "config", "skills.json");
+            console.log(pt);
+            console.log("yoloylylylylylyylylyylylylyl");
+            try {
+              var ori = fs.readFileSync(pt, "utf8");
 
-                jsonobj = JSON.parse(ori);
-                //console.log(ori);
+              jsonobj = JSON.parse(ori);
+              //console.log(ori);
 
-                for (let index = 0; index < jsonobj.skills.length; index++) {
-                  const element = jsonobj.skills[index];
-                  console.log(element.label);
-                  if (element.label === datain.label) {
-                    console.log("found " + index);
-                    jsonobj.skills.splice(index, 1);
-                    break;
-                  }
+              for (let index = 0; index < jsonobj.skills.length; index++) {
+                const element = jsonobj.skills[index];
+                console.log(element.label);
+                if (element.label === datain.label) {
+                  console.log("found " + index);
+                  jsonobj.skills.splice(index, 1);
+                  break;
                 }
-
-                // console.log(jsonobj.skills.length);
-                // var skilllength = jsonobj.skills.length;
-                // jsonobj.skills.push({
-                //   value: skilllength,
-                //   label: datain.skill
-                // });
-                //var obj = { yolo: 55 };
-
-                fs.writeFileSync(pt, JSON.stringify(jsonobj));
-
-                res.status(200).json(jsonobj);
-              } catch (error) {
-                console.log(error);
               }
+
+              // console.log(jsonobj.skills.length);
+              // var skilllength = jsonobj.skills.length;
+              // jsonobj.skills.push({
+              //   value: skilllength,
+              //   label: datain.skill
+              // });
+              //var obj = { yolo: 55 };
+
+              fs.writeFileSync(pt, JSON.stringify(jsonobj));
+
+              res.status(200).json(jsonobj);
+            } catch (error) {
+              console.log(error);
             }
           })
           .catch(err => {
@@ -1011,37 +1007,35 @@ exports.addnewjobspec = (req, res, next) => {
       } else {
         User.findById(ObjectID(user.id))
           .then(data => {
-            if (data.usertype == "admin" || data.usertype == "hr_staff") {
-              console.log(req.body);
-              var datain = req.body;
-              var payload = [];
-              Jobspec.find()
-                .then(doc => {
-                  doc.forEach(item => {
-                    console.log(item.label);
-                    payload.push({ value: item.value, label: item.label });
+            console.log(req.body);
+            var datain = req.body;
+            var payload = [];
+            Jobspec.find()
+              .then(doc => {
+                doc.forEach(item => {
+                  console.log(item.label);
+                  payload.push({ value: item.value, label: item.label });
+                });
+
+                console.log(doc.length);
+
+                const newjobspec = new Jobspec({
+                  label: datain.jobspec,
+                  value: doc.length
+                });
+
+                newjobspec
+                  .save()
+                  .then(doc1 => {
+                    console.log(doc1);
+                    payload.push({ value: doc1.value, label: doc1.label });
+                    res.status(200).json({ jobs: payload });
+                  })
+                  .catch(err => {
+                    console.log(err);
                   });
-
-                  console.log(doc.length);
-
-                  const newjobspec = new Jobspec({
-                    label: datain.jobspec,
-                    value: doc.length
-                  });
-
-                  newjobspec
-                    .save()
-                    .then(doc1 => {
-                      console.log(doc1);
-                      payload.push({ value: doc1.value, label: doc1.label });
-                      res.status(200).json({ jobs: payload });
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
-                })
-                .catch(err => console.log(err));
-            }
+              })
+              .catch(err => console.log(err));
           })
           .catch(err => {
             console.log(err);
@@ -1112,6 +1106,7 @@ exports.searchmany = (req, res, next) => {
   var isDate = false;
   var isStatus = false;
   var isSource = false;
+  var isprimaryStatus = false;
   /**
 allocated date recieved date shortlisted date added by
 */
@@ -1121,6 +1116,7 @@ allocated date recieved date shortlisted date added by
   req.body.jobspec ? (isjobspec = true) : "";
   req.body.source ? (isSource = true) : "";
   req.body.reciveddate ? (isRecivedDate = true) : (isRecivedDate = false);
+  req.body.primarystatus ? (isprimaryStatus = true) : (isprimaryStatus = false);
 
   var searchQuery = {};
 
@@ -1165,6 +1161,15 @@ allocated date recieved date shortlisted date added by
       $gt: req.body.reciveddate.slice(0, 10) + "T00:00:00.000Z",
       $lt: req.body.reciveddate.slice(0, 10) + "T23:59:59.000Z"
     };
+  }
+
+  if (isprimaryStatus) {
+    console.log(" primary status  tyei");
+
+    //var regexemail = { $regex: req.body.source, $options: "i" };
+
+    // searchQuery.date = req.body.reciveddate;
+    searchQuery.primaryStatus = req.body.primarystatus;
   }
 
   Candidate.find(searchQuery).then(doc => {

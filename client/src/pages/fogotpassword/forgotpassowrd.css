@@ -1,0 +1,21 @@
+.forgotpassworddiv {
+  margin-top: 15%;
+
+  text-align: center;
+}
+
+.forgotpasswordform {
+  margin-top: 10%;
+  text-align: left;
+}
+#sticky-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    
+    
+    text-align: center;
+    flex-shrink: none;
+  }
+  
