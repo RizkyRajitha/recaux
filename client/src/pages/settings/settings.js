@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Redirect, Link } from "react-router-dom";
 import ChipsArray from "./components/skillschipsettings";
 import ChipsArray2 from "./components/jobspecchipsettings";
-
+import "./settings.css";
 const jsonwebtoken = require("jsonwebtoken");
 
 const axios = require("axios");
@@ -92,17 +92,21 @@ class Settings extends Component {
   render() {
     return (
       <div>
-        <h1>Settings</h1>
+        <div className="settingsmaindiv">
+          <h1>Preferances</h1>
 
-        {/* <input type="text" onChange={this.hndleskillchange} />
+          {/* <input type="text" onChange={this.hndleskillchange} />
         <button onClick={this.addskill}>add</button> */}
-        {/* <ChipsArray2 /> */}
+          {/* <ChipsArray2 /> */}
 
-        {this.state.jobspecset && (
-          <ChipsArray2 currentjobspecs={this.valtokeyjobs} />
-        )}
+          {this.state.jobspecset && (
+            <ChipsArray2 currentjobspecs={this.valtokeyjobs} />
+          )}
 
-        {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
+<div className='paddingdivsettings' ></div>
+
+          {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
+        </div>
       </div>
     );
   }

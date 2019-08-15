@@ -19,6 +19,8 @@
     "crypto-js": "^3.1.9-1",
     "errorhandler": "^1.5.0",
     "express": "^4.16.4",
+    "express-status-monitor": "^1.2.6",
+    "html-pdf": "^2.2.0",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.9",
     "morgan": "^1.9.1",

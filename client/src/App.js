@@ -6,9 +6,7 @@ import "./App.css";
 //import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 // const jsonwebtoken = require("jsonwebtoken");
 // const request = require("request");
-
 // import 'materialize-css/dist/css/materialize.min.css'
-
 // import M from 'materialize-css/dist/js/materialize.min.js'
 
 import Login from "./pages/login/login";
@@ -38,8 +36,12 @@ import TemporaryDrawer from "./components/sidenav_mat";
 //import SidenavContext from "./components/sidenav-context";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import analyticsdashboard from "./pages/analytics/analyticsdashboard";
+import analyticsdashboard2 from "./pages/analytics/analyticsdashboard2";
 import Notfound from "./components/notFound";
 import Userlist from "./pages/userlist/userlist";
+import Interview from "./pages/interviews/interviews";
+import OutSourceProject from "./pages/OutSourceProject/OutSourceProject";
+import LandingPage from "./pages/landingpage/landingpage";
 
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
@@ -51,10 +53,9 @@ class App extends Component {
         <div className="App">
           {jwt ? <TemporaryDrawer /> : ""}
           <Switch>
-            <Route exact path="/" component={Login} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/register" component={Register} />
-            <Route path="/addcandidate" component={Addcandidate} />
+
             <Route path="/Login" component={Login} />
             <Route path="/fogotpassword" render={() => <Fogotpassword />} />
             <Route path="/resetpassword/:id" component={resetpassword} />
@@ -65,20 +66,32 @@ class App extends Component {
             <Route path="/user/:id" component={Userprofile} />
             <Route path="/changepass/:id" component={Changepass} />
             <Route path="/avatar/:id" component={Avatar} />
-            <Route path="/shortlist" component={Shortlist} />
+
             <Route path="/drawer" component={Drawer} />
             <Route path="/pdftest" component={Pdftest} />
             <Route path="/spinner" component={Home} />
             <Route path="/search" component={Search} />
             <Route path="/newuserconfig/:id" component={NewUserConfig} />
             <Route path="/analytics" component={analyticsdashboard} />
-            {usertype === "admin" ? (
-              <Route path="/settings" component={Settings} />
+            <Route path="/searchAnalytics" component={analyticsdashboard2} />
+            <Route path="/outsourceprojects/:id" component={OutSourceProject} />
+            <Route path="/landingpage" component={LandingPage} />
+            <Route exact path="/" component={Login} />
+            {usertype === "admin" || usertype === "hr_staff" ? (
+              <Route path="/addcandidate" component={Addcandidate} />
             ) : (
               ""
             )}
-            {usertype === "admin" ? (
+
+            <Route path="/settings" component={Settings} />
+
+            {usertype === "admin" || usertype === "hr_staff" ? (
               <Route path="/userlist" component={Userlist} />
+            ) : (
+              ""
+            )}
+            {usertype === "admin" || usertype === "depthead" ? (
+              <Route path="/interviews" component={Interview} />
             ) : (
               ""
             )}

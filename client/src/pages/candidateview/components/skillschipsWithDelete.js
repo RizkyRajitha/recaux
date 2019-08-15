@@ -24,10 +24,15 @@ export default function ChipsArray(props) {
   const [selectedOption, setselectedOption] = useState({});
   const [selectoptionsnamelist, setselectoptionsnamelist] = useState([]);
   const classes = useStyles();
-  const [chipData, setChipData] = useState([]);
+  const [chipData, setChipData] = useState(props.currentskills);
 
   useEffect(() => {
-    setChipData(props.currentskills);
+    console.log("dddd");
+
+    //setChipData(props.currentskills);
+
+    console.log("chips current skill 0 ");
+    console.log(props.currentskills);
 
     var jwt = localStorage.getItem("jwt");
 
@@ -112,26 +117,27 @@ export default function ChipsArray(props) {
 
   return (
     <div>
+      {chipData.map(data => {
+        let icon;
+
+        return (
+          <Chip
+            key={data.key}
+            label={data.label}
+            onDelete={handleDelete(data)}
+            className={classes.chip}
+          />
+        );
+      })}
+
+      <Divider variant="inset" component="li" />
+      <div style={{ marginTop: "1%" }} />
+
       <Select
         value={selectedOption}
         onChange={handleChangemodalselect}
         options={selectoptionsnamelist}
       />
-      <Divider variant="inset" component="li" />
-      <Paper className={classes.root}>
-        {chipData.map(data => {
-          let icon;
-
-          return (
-            <Chip
-              key={data.key}
-              label={data.label}
-              onDelete={handleDelete(data)}
-              className={classes.chip}
-            />
-          );
-        })}
-      </Paper>
     </div>
   );
 }

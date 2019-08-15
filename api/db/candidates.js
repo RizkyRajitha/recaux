@@ -11,6 +11,11 @@ var candidateSchema = new Schema({
   name: {
     type: String
   },
+
+  addedby: {
+    type: String
+  },
+
   jobspec: {
     type: String
   },
@@ -18,30 +23,57 @@ var candidateSchema = new Schema({
     type: String
   },
   skills: [],
+
   status: {
     type: String,
     default: "New"
   },
-  statusHr: {
-    type: String
-  },
+
 
   primaryStatus: {
     type: String,
     default: "New"
   },
+  primaryStatussetby: {
+    type: String
+  },
+  primaryStatussetbyusertype: {
+    type: String
+  }
+,
 
+  finalStatus: {
+    type: String
+  },
+  finalStatusdate: {
+    type: String
+  },
+  finalStatussetby: {
+    type: String
+  },
   source: {
     type: String
   },
-  evaluationData: {
-    evaluatorId: String,
-    evaluationMarks: Number,
-    acadamicBackground: String,
-    indusrtyExperiance: String,
-    currentPosition: String,
-    JobPeriod: String
+  interviewed: {
+    type: Boolean,
+    default: false
   },
+
+  interviewscheduled: {
+    type: Boolean,
+    default: false
+  },
+
+  allocatedtoshorltistdone: {
+    type: Boolean,
+    default: false
+  },
+
+  shortlisted: {
+    type: Boolean,
+    default: false
+  },
+
   assignToshortlisterbyId: { type: String },
   assignToshortlisterbyName: { type: String },
   shortlister: { type: String },
@@ -49,6 +81,9 @@ var candidateSchema = new Schema({
   shortlistedDate: { type: String },
   allocatedDate: { type: String },
   shortlistStatus: { type: Boolean },
+
+  //shortlistStatus: { type: Boolean },
+
   cvUrl: [
     {
       url: { type: String, default: null },

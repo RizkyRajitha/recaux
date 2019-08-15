@@ -13,7 +13,17 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
+import RSelect from "react-select";
 import "./search.css";
+import moments from "moment";
+import {
+  DatePicker,
+  TimePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+
 const jwt = require("jsonwebtoken");
 
 const useStyles = theme => ({
@@ -63,11 +73,8 @@ Modal.setAppElement("#root");
 
 class Search extends Component {
   state = {
-    modalIsOpen: "",
     date: null,
-    bothdatesselected: false,
-    searchbydateResults: null,
-    searchbyname_value: "",
+    showtable: false,
     searchbynameResults: null,
     id: null,
     firstName: "",
@@ -81,119 +88,88 @@ class Search extends Component {
     searchjobspec: "",
     searchsource: "",
     searchresults: [],
-    searchnoresults: false
+    searchnoresults: false,
+    jobspeclist: [],
+    selectedOption: {},
+    selectedDate: new Date(),
+    clearselectedDate2: false,
+    seachrecievddat: "",
+    searchprimarystatus: ""
   };
 
-  openModal = () => {
-    this.setState({ modalIsOpen: true });
-  };
+  //////////////////////////////////////////////////////////////////////////////////////////
+  handleDateChange = e => {
+    console.log(e);
+    this.setState({
+      selectedDate: e,
+      seachrecievddat: e._d,
+      showtable: true
+    });
 
-  afterOpenModal = () => {
-    // references are now sync'd and can be accessed.
-    this.subtitle.style.color = "#f00";
-    this.subtitle.style.textAlign = "center";
-  };
+    var payload = {};
 
-  closeModal = () => {
-    this.setState({ modalIsOpen: false });
-  };
-
-  searchModal = () => {
-    this.openModal();
-    this.setState({ searchbydateclieked: true });
-  };
-
-  getdatefromdatepicke = dateobj => {
-    console.log("date from modal - " + JSON.stringify(dateobj));
-    this.setState({ date: dateobj });
-
-    if (dateobj.from && dateobj.to) {
-      this.setState({ bothdatesselected: true });
-    } else {
-      this.setState({ bothdatesselected: true });
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
     }
-  };
 
-  resetdatepicker = () => {
-    console.log("date reset - ");
-    this.setState({ bothdatesselected: false, date: null });
-  };
-
-  submitesearchbydate = () => {
-    if (this.state.date.from && this.state.date.to) {
-      const token = localStorage.getItem("jwt");
-
-      this.setState({ searchbynameResults: [] });
-
-      var config = {
-        headers: { authorization: token }
-      };
-
-      console.log("submit date - " + JSON.stringify(this.state.date));
-
-      var payload = this.state.date;
-
-      axios
-        .post("/usr/searchbydate", payload, config)
-        .then(data => {
-          console.log(data.data);
-          this.setState({ searchbydateResults: data.data });
-          this.closeModal();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } else {
-      console.log("select a date");
-      this.setState({ bothdatesselected: false, date: null });
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
     }
-  };
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
 
-  //searchbyname_value
+    var dataeinter = e._d;
+    payload.reciveddate = dataeinter.toISOString();
 
-  namehndlechange = e => {
-    console.log("tr - " + e.target.value);
-    this.setState({ searchbyname_value: e.target.value });
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
+
+    console.log("searcg query");
+    console.log(payload);
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
-    console.log("name sub - " + this.state.searchbyname_value);
-
-    var payload = { name: e.target.value };
-
     axios
-      .post("/usr/searchbyname", payload, config)
-      .then(res => {
-        console.log(res.data);
-        this.setState({ searchbynameResults: res.data });
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        } else {
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        }
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log(err);
+      });
   };
-
-  submitesearchbyname = () => {
-    var jwt = localStorage.getItem("jwt");
-
-    var config = {
-      headers: { authorization: jwt }
-    };
-
-    console.log("name sub - " + this.state.searchbyname_value);
-
-    var payload = { name: this.state.searchbyname_value };
-
-    axios
-      .post("/usr/searchbyname", payload, config)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {});
-  };
-
-  //searchbyname
 
   componentDidMount() {
     const token = localStorage.getItem("jwt");
@@ -210,7 +186,9 @@ class Search extends Component {
     }
 
     var config = {
-      headers: { authorization: token }
+      headers: {
+        authorization: token
+      }
     };
 
     axios
@@ -224,7 +202,9 @@ class Search extends Component {
         var config = "/w_290,h_295,c_thumb/";
 
         var baseUrl = preurl + config + posturl;
-        this.setState({ avatarUrl: baseUrl });
+        this.setState({
+          avatarUrl: baseUrl
+        });
 
         this.setState({
           id: datain._id,
@@ -234,23 +214,59 @@ class Search extends Component {
         });
       })
       .catch(err => {});
+
+    axios
+      .get("/usr/getjobspeclist", config)
+      .then(data => {
+        this.setState({
+          jobspeclist: data.data.jobspeclist
+        });
+      })
+      .catch(err => {});
   }
 
-  searchformsubmit = e => {
-    e.preventDefault();
-    var payload = {
-      name: this.state.searchName,
-      email: this.state.searchemail,
-      jobspec: this.state.searchjobspec,
-      source: this.state.searchsource
-    };
+  handleChangemodalselect = opt => {
+    console.log(opt);
+    this.setState({
+      searchjobspec: opt.label,
+      selectedOption: opt,
+      showtable: true
+    });
+    //e.preventDefault();
+
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    payload.jobspec = opt.label;
+
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
 
     console.log(payload);
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -261,11 +277,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -275,19 +299,44 @@ class Search extends Component {
 
   searchformsubmitsource = e => {
     e.preventDefault();
-    var payload = {
-      name: this.state.searchName,
-      email: this.state.searchemail,
-      jobspec: this.state.searchjobspec,
-      source: e.target.value
-    };
+
+    this.setState({
+      searchsource: e.target.value,
+      showtable: true
+    });
+
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+
+    payload.source = e.target.value;
+
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
 
     console.log(payload);
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -298,11 +347,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -312,19 +369,45 @@ class Search extends Component {
 
   searchformsubmitname = e => {
     e.preventDefault();
-    var payload = {
-      name: e.target.value,
-      email: this.state.searchemail,
-      jobspec: this.state.searchjobspec,
-      source: this.state.searchsource
-    };
+
+    var payload = {};
+
+    this.setState({
+      searchName: e.target.value,
+      showtable: true
+    });
+
+    payload.name = e.target.value;
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+        payload.source = "";
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
 
     console.log(payload);
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -335,11 +418,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -349,19 +440,52 @@ class Search extends Component {
 
   searchformsubmitemail = e => {
     e.preventDefault();
-    var payload = {
-      name: this.state.searchemail,
-      email: e.target.value,
-      jobspec: this.state.searchjobspec,
-      source: this.state.searchsource
-    };
+
+    this.setState({
+      searchemail: e.target.value,
+      showtable: true
+    });
+
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+
+    payload.email = e.target.value;
+
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+        payload.source = "";
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
+
+    if (this.state.clearselectedDate2) {
+      var dataeinter = moments(this.state.selectedDate2._d);
+      payload.reciveddate = dataeinter.toISOString();
+    }
 
     console.log(payload);
 
     var jwt = localStorage.getItem("jwt");
 
     var config = {
-      headers: { authorization: jwt }
+      headers: {
+        authorization: jwt
+      }
     };
 
     axios
@@ -372,11 +496,19 @@ class Search extends Component {
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
-          this.setState({ searchnoresults: true });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
         } else {
-          this.setState({ searchnoresults: false });
-          this.setState({ searchresults: data.data });
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
         }
       })
       .catch(err => {
@@ -384,157 +516,381 @@ class Search extends Component {
       });
   };
 
+  //
+
+  searchbyprimarystatus = e => {
+    console.log("primayr status");
+    console.log(e.target.value);
+    this.setState({
+      searchprimarystatus: e.target.value,
+      showtable: true
+    });
+
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+        payload.source = "";
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+
+    payload.primarystatus = e.target.value;
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: {
+        authorization: jwt
+      }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        } else {
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  searchformsubmitrecieveddate = e => {
+    //e.preventDefault();
+
+    var dataeinter = moments(e._d);
+    this.setState({
+      showtable: true
+    });
+
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+        payload.source = "";
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
+
+    payload.reciveddate = dataeinter.toISOString();
+
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: {
+        authorization: jwt
+      }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        } else {
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  mainsearch = () => {
+    var payload = {};
+
+    if (this.state.searchName) {
+      payload.name = this.state.searchName;
+    }
+
+    if (this.state.searchjobspec) {
+      payload.jobspec = this.state.searchjobspec;
+    }
+    if (this.state.searchemail) {
+      payload.email = this.state.searchemail;
+    }
+    if (this.state.searchsource) {
+      if (this.state.searchsource === "default") {
+        payload.source = "";
+      } else {
+        payload.source = this.state.searchsource;
+      }
+    }
+    if (this.state.seachrecievddat) {
+      var dataeinter = this.state.seachrecievddat;
+      payload.reciveddate = dataeinter.toISOString();
+    }
+    if (this.state.searchprimarystatus) {
+      payload.primarystatus = this.state.searchprimarystatus;
+    }
+
+    console.log("searcg query");
+    console.log(payload);
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: {
+        authorization: jwt
+      }
+    };
+
+    axios
+      .post("/usr/searchmany", payload, config)
+      .then(data => {
+        console.log(data);
+
+        console.log("len - " + data.data.length);
+
+        if (data.data.length === 0) {
+          this.setState({
+            searchnoresults: true
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        } else {
+          this.setState({
+            searchnoresults: false
+          });
+          this.setState({
+            searchresults: data.data
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  clearinput = e => {
+    e.preventDefault();
+    this.setState({
+      searchemail: "",
+      searchName: "",
+      searchjobspec: "",
+      searchsource: "default",
+      searchjobspec: "",
+      seachrecievddat: "",
+      selectedDate: new Date(),
+      selectedOption: { label: "Select Job ", value: 0 },
+      searchnoresults: false,
+      searchresults: [],
+      showtable: false
+    });
+  };
+
   render() {
     const { classes } = this.props;
     return (
       <div>
-        {/* <Navbar />
-        <Drawer
-          avatarUrl={this.state.avatarUrl}
-          username={this.state.firstName + " " + this.state.lastName}
-          type={this.state.usertype}
-        /> */}
+        <div className="container">
+          <form className={classes.root} autoComplete="off">
+            <div className="form-row">
+              <div class="form-group  col-md-4 ">
+                <label for="exampleFormControlSelect9966">Candidate name</label>
+                <input
+                  id="exampleFormControlSelect9966"
+                  class="form-control"
+                  placeholder="Enter candidate name"
+                  type="text"
+                  value={this.state.searchName}
+                  onChange={e => {
+                    this.setState({
+                      searchName: e.target.value
+                    });
+                    this.searchformsubmitname(e);
+                  }}
+                />
+              </div>
 
-        <button
-          id="searchbydatebtn"
-          className="btn btn-primary"
-          onClick={this.searchModal}
-        >
-          search by date
-        </button>
-
-        <div className="searchParamsdiv">
-          <form
-            className={classes.root}
-            autoComplete="off"
-            onSubmit={this.searchformsubmit}
-          >
-            <TextField
-              id="standard-name"
-              label="Name"
-              className={classes.textField}
-              //value={"ciao"}
-              onChange={e => {
-                this.setState({ searchName: e.target.value });
-                this.searchformsubmitname(e);
-              }}
-              margin="normal"
-            />
-            <TextField
-              id="standard-uncontrolled"
-              label="email"
-              className={classes.textField}
-              onChange={e => {
-                this.setState({ searchemail: e.target.value });
-                this.searchformsubmitemail(e);
-              }}
-              margin="normal"
-            />
-
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="searchsource">source</InputLabel>
-              <Select
-                value={this.state.searchsource}
-                onChange={e => {
-                  console.log(e.target.value);
-                  this.setState({ searchsource: e.target.value });
-                  this.searchformsubmitsource(e);
-                }}
-                inputProps={{
-                  name: "source",
-                  id: "searchsource"
-                }}
+              <div class="form-group  col-md-4 ">
+                <label for="exampleFormControlSelect99">Candidate email</label>
+                <input
+                  id="exampleFormControlSelect99"
+                  class="form-control"
+                  placeholder="Enter candiate email"
+                  type="text"
+                  value={this.state.searchemail}
+                  onChange={e => {
+                    this.setState({
+                      searchemail: e.target.value
+                    });
+                    this.searchformsubmitemail(e);
+                  }}
+                />
+              </div>
+              <div class="form-group col-md-4 ">
+                <label for="exampleFormControlSelect1">Source</label>
+                <select
+                  class="form-control"
+                  id="exampleFormControlSelect1"
+                  value={this.state.searchsource}
+                  onChange={e => {
+                    console.log(e.target.value);
+                    this.setState({
+                      searchsource: e.target.value
+                    });
+                    this.searchformsubmitsource(e);
+                  }}
+                >
+                  <option value="default">Select one</option>
+                  <option value="email"> Via email </option>
+                  <option value="manual"> Via refereal </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group col-md-4 ">
+              <label for="exampleFormControlSelect1">Job specification</label>
+              <div className="">
+                <RSelect
+                  defaultValue={{ label: "Select Dept", value: 0 }}
+                  value={this.state.selectedOption}
+                  onChange={this.handleChangemodalselect}
+                  options={this.state.jobspeclist}
+                />{" "}
+              </div>
+            </div>
+            <div class="form-group col-md-3 seachbtn ">
+              <label for="exampleFormControlSelect14444">Recived date</label>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <DatePicker
+                  id="exampleFormControlSelect14444"
+                  value={this.state.selectedDate}
+                  onChange={this.handleDateChange}
+                  disableFuture={true}
+                  className=""
+                />{" "}
+              </MuiPickersUtilsProvider>{" "}
+            </div>
+            <div class="form-group col-md-4 ">
+              <label for="exampleFormControlSelect14444aaaa">
+                Primary status
+              </label>
+              <select
+                id="exampleFormControlSelect14444aaaa"
+                class="form-control"
+                onChange={this.searchbyprimarystatus}
               >
-                <MenuItem value={"email"}>Via email</MenuItem>
-                <MenuItem value={"manual"}>Via refereal</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="age-simple">Job spec</InputLabel>
-              <Select
-                value={this.state.searchjobspec}
-                onChange={e => {
-                  //  console.log(e.target.value);
-                  this.setState({ searchjobspec: e.target.value });
-                }}
-                inputProps={{
-                  name: "age",
-                  id: "age-simple"
-                }}
-              >
-                <MenuItem value={"CEO"}>CEO</MenuItem>
-                <MenuItem value={"HR"}>Human resource</MenuItem>
-                <MenuItem value={"TECH_LEAD"}>leader</MenuItem>
-              </Select>
-            </FormControl>
-
-           
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              type="submit"
-              //onClick={}
+                <option selected>Select...</option>
+                <option id="status" value="rejected">
+                  Rejected
+                </option>
+                <option id="status" value="onhold">
+                  onhold
+                </option>
+                <option id="status" value="shortlisted">
+                  shortlisted
+                </option>
+              </select>
+            </div>
+            <button
+              className="btn btn-primary mainseachbtn "
+              type="Search"
+              onClick={this.mainsearch}
             >
               <i class="fa fa-search" />
-            </Button>
-          </form>
+            </button>
+            <button className="btn mainseachbtn " onClick={this.clearinput}>
+              clear
+              <i class="far fa-times-circle" />
+            </button>
+          </form>{" "}
         </div>
 
-        <div className="searchcontainer">
-          {/* <div>
-            <input
-              type="text"
-              // onChange={this.namehndlechange}
-              // className="searchname"
-              name="search"
-              placeholder="Search.."
-            />
-            <input type="radio" name="source" value="email" /> via email
-            <input type="radio" name="source" value="manual" /> via manual
-            <Datepicker
-              datechnage={this.getdatefromdatepicke}
-              datereset={this.resetdatepicker}
-            />
-            jobspec add
-          </div> */}
-
-          {this.state.searchresults && (
-            <div>
+        <div className="container sarchdatadiv " hidden={!this.state.showtable}>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col" />
+              </tr>
+            </thead>
+            <tbody>
               {this.state.searchresults &&
                 this.state.searchresults.map(can => {
-                  //console.log(can.name+can.email+can.jobspec)
-                  return <Searchcard name={can.name} _id={can._id} />;
+                  // console.log(can.name + can.email + can.jobspec);
+                  return (
+                    <tr>
+                      <th scope="row">{can.name}</th>
+                      <td>
+                        <a target="_blank" href={"/getcandidate/" + can._id}>
+                          view
+                        </a>
+                        <br />
+                      </td>
+                    </tr>
+                  );
                 })}
-            </div>
-          )}
+            </tbody>
+          </table>
 
           {this.state.searchnoresults && <p> no results found </p>}
         </div>
-
-        <Modal
-          isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <h2 ref={subtitle => (this.subtitle = subtitle)}>search by date</h2>
-          <div>
-            <Datepicker
-              datechnage={this.getdatefromdatepicke}
-              datereset={this.resetdatepicker}
-            />
-
-            <button
-              disabled={!this.state.bothdatesselected}
-              onClick={this.submitesearchbydate}
-            >
-              search{" "}
-            </button>
-          </div>
-        </Modal>
       </div>
     );
   }

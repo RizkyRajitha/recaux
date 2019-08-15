@@ -47,7 +47,6 @@ transporter.use(
 //console.log(config.jwtexp)
 
 exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
-
   console.log("password reset");
   //console.log("path - " + path.join(__dirname, "emails", "mars"));
 
@@ -58,13 +57,14 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       from: "kithminiatdev@gmail.com",
       to: "rajithagunathilake@gmail.com",
       subject: "password reset",
-      text: "visit - ",
-      template: "temp2",
+
+      template: "Reset",
       context: {
         title: "password reset",
-        message: `${passwordResetApi}/${token}`,
+        msg: `${passwordResetApi}/${token}`,
         name: ursname,
-        uniqeid:Math.random()*1000000
+        date: new Date().toUTCString(),
+        uniqeid: Math.round(Math.random() * 10000000000000)
       }
       // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
     };
@@ -74,7 +74,7 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("mail senddd")
+        console.log("mail senddd");
         console.log("send email - ");
         console.log("Email sent: " + info.response);
       }
@@ -82,31 +82,53 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
   });
 };
 
+exports.mailhandlerinterviewconfirmation = (
+  candidatename,
+  hrname,
+  canemail,
+  date
+) => {
+  console.log(candidatename);
+  console.log(hrname);
+  console.log(canemail);
+  console.log(date);
 
+  var datetime = new Date(date);
 
-exports.mailhandleremailconfirm = (ursname, email, id) => {
+  var interviewdate = datetime.toString().slice(0, 15);
 
+  console.log("date - " + interviewdate);
 
+  var options = {
+    // weekday: "long",
+    // year: "numeric",
+    // month: "long",
+    // day: "numeric",
+    timeZone: "Asia/Colombo"
+  };
 
-  
-  try {
-    var token = jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" });
-  } catch (error) {
-    console.log(error);
-  }
+  var interviewtime = datetime.toLocaleTimeString("en-US", options);
 
-  console.log("sending confirm email ............");
+  console.log("time " + interviewtime);
+
+  // console.log(event.toLocaleDateString('de-DE', options));
+
+  console.log("date - " + interviewdate);
+
+  console.log("sending confirm interview email ............");
   var mailOptions = {
     from: "kithminiatdev@gmail.com",
     to: "rajithagunathilake@gmail.com",
-    subject: "email confirmation",
+    subject: "Interview confirmation",
     text: "visit - ",
-    template: "templtt",
+    template: "Interview",
     context: {
-      title: " confirm email ",
-      message: `${emailConfirmApi}/${token}`,
-      name: ursname,
-      uniqeid:Math.round(Math.random()*10000000000000)
+      date: interviewdate,
+      time: interviewtime,
+      name: candidatename,
+      hrperson: hrname,
+      genon: new Date().toUTCString(),
+      uniqeid: Math.round(Math.random() * 10000000000000)
     }
   };
 
@@ -114,16 +136,13 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
     if (error) {
       console.log(error);
     } else {
-      console.log("send email - " + email);
+      // console.log("send email - " + email);
       console.log("Email sent: " + info.response);
     }
   });
 };
 
-
-
 exports.mailhandlernewuseremail = (email, id, type) => {
- 
   jwt.sign(
     { id: id, email: email, usertype: type },
     "authdemo",
@@ -138,11 +157,12 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         to: "rajithagunathilake@gmail.com",
         subject: "email confirmation",
         text: "visit - ",
-        template: "newuser",
+        template: "confirmEmail",
         context: {
           title: " confirm email ",
           msg: `${newuserconfig}/${data}`,
-          uniqeid:Math.random()*1000000
+          uniqeid: Math.floor(Math.random() * 1000000),
+          date: new Date().toUTCString()
         }
       };
 
@@ -155,7 +175,7 @@ exports.mailhandlernewuseremail = (email, id, type) => {
         }
       });
     }
-  )
+  );
 };
 
 //module.exports = {mailhandlerpasswordreset,mailhandleremailconfirm};

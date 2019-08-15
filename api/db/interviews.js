@@ -23,7 +23,24 @@ var InterviewSchema = new Schema({
   },
   datetime: {
     type: String
-  }
+  },
+  interviewtype: {
+    type: String
+  },
+  statusHrinterview: {
+    type: String,
+    default: "pending "
+  },
+  statusHrdate: {
+    type: String
+  },
+
+  statusHrsetby: {
+    type: String
+  },
+
+  panal: [],
+  panalwname: []
 });
 
 const Interview = mongoose.model("Interview", InterviewSchema);

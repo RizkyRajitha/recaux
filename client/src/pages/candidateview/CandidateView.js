@@ -5,7 +5,7 @@ import jsonwebtoken from "jsonwebtoken";
 import Navbar from "../../components/navbar";
 //import exp from "../pdf.pdf";
 import Modal from "react-modal";
-import Select from "react-select";
+import BaseSelect from "react-select";
 import Drawer from "../../components/sidenav";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -27,6 +27,12 @@ import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
 import ChipsArraywdelete from "./components/skillschipsWithDelete";
 import ChipsArraywodelete from "./components/skillChipsWithoutDeleye";
+import ChipsArrayPanal from "./components/skillsChipWithDeletePanal";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
 import moments from "moment";
 import {
   DatePicker,
@@ -36,17 +42,28 @@ import {
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { Button } from "@material-ui/core";
+import FixRequiredSelect from "./fixreqselect";
+
+const Select = props => (
+  <FixRequiredSelect
+    {...props}
+    SelectComponent={BaseSelect}
+    options={props.options}
+    value={props.value}
+    onChange={props.onChange}
+  />
+);
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
 }/pdf.worker.js`;
-
+const FileDownload = require("file-saver");
 // import { Document } from 'react-pdf/dist/entry.webpack';
 
 const customStyles = {
   content: {
     width: "50%",
-    height: "40%",
+    height: "30%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -84,8 +101,8 @@ const customStyles3 = {
 
 const customStyles4 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "60%",
+    height: "60%",
     top: "55%",
     left: "50%",
     right: "auto",
@@ -97,8 +114,8 @@ const customStyles4 = {
 
 const customStyles5 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "80%",
+    height: "70%",
     top: "55%",
     left: "50%",
     right: "auto",
@@ -110,14 +127,29 @@ const customStyles5 = {
 
 const customStyles6 = {
   content: {
-    width: "50%",
-    height: "40%",
+    width: "40%",
+    height: "70%",
     top: "55%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden"
+  }
+};
+
+const customStyles7 = {
+  content: {
+    width: "40%",
+    height: "70%",
+    top: "55%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden"
   }
 };
 
@@ -152,11 +184,25 @@ class CandidateView extends Component {
     newest_cv_date: null,
     changedjobspec: null,
     editcanSuccess: false,
-    selectoptionsnamelist: [],
+    selectoptionsjobspeclist: [],
     selectedOption: "",
     selectedJobspecOption: "",
     selectedinterviwerOption: "",
-    selectedDate: ""
+    selectedinterviwerOptionreschdule: "",
+    selectedDate: new Date(),
+    snackbaropen: false,
+    snackbarmsg: "",
+    selectedinterviwertype: "",
+    finalstatus: "",
+    slectformchipplanal: false,
+    slectformchipplanalreschedule: false,
+    interviewpanal: [],
+    currentskillskeyvals: [],
+    rendercurrenskills: false,
+    hrstatusintervietype: "",
+    interviewtypeoptions: [],
+    rescheduleinterviewtype: "",
+    selectedDatereschdule: new Date()
   };
   /****************************************** */
   openModal = () => {
@@ -278,6 +324,16 @@ class CandidateView extends Component {
   };
 
   changestatusforhr = () => {
+    this.setState({ hrstatusintervietype: "firstinterview" });
+    this.openModal5();
+  };
+
+  changestatusforhr2 = () => {
+    this.setState({ hrstatusintervietype: "secondinterview" });
+    this.openModal5();
+  };
+  changestatusforhr3 = () => {
+    this.setState({ hrstatusintervietype: "clientinterview" });
     this.openModal5();
   };
 
@@ -303,9 +359,60 @@ class CandidateView extends Component {
 
   /***************************************** */
 
+  openModal7 = () => {
+    this.setState({ modalIsOpen7: true });
+  };
+
+  afterOpenModal7 = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeModal7 = () => {
+    this.setState({ modalIsOpen7: false });
+  };
+
+  reschedulemodal1 = () => {
+    this.setState({ rescheduleinterviewtype: "firstinterview" });
+    this.openModal7();
+  };
+
+  reschedulemodal2 = () => {
+    this.setState({ rescheduleinterviewtype: "secondinterview" });
+    this.openModal7();
+  };
+  reschedulemodal3 = () => {
+    this.setState({ rescheduleinterviewtype: "clientinterview" });
+    this.openModal7();
+  };
+  /***************************************** */
+
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
   };
+
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
+
+  /******************************************************************* */
+
+  handleChangemodalselectedinterviwertype = int => {
+    console.log(int);
+
+    this.setState({ selectedinterviwertype: int });
+  }; //handlefinalstatus
+
+  // handlefinalstatus = int => {
+  //   console.log(int);
+
+  //   this.setState({ finalstatus: int.value });
+  // }; //handlefinalstatus
 
   chngehndlcv = e => {
     this.setState({ cvFile: e.target.files[0] });
@@ -434,10 +541,14 @@ class CandidateView extends Component {
         //this.setState({shorlistSuccess:true})
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
-          this.setState({ editcanSuccess: true });
+          //this.setState({ editcanSuccess: true });
           //window.location.reload(false);
+          this.closeModal4();
         }
-        this.closeModal4();
+
+        setTimeout(() => {
+          this.setState({ open: true });
+        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -448,6 +559,41 @@ class CandidateView extends Component {
   handleChangemodalselect = selectedOption => {
     this.setState({ selectedOption });
     console.log(`Option selected:`, selectedOption);
+  };
+
+  handlefinalstatus = finaloption => {
+    // this.setState({ finalstatus: });
+    console.log(`final status selected:`, finaloption);
+
+    const jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .post(
+        "/usr/updatefinalstatus",
+        { canid: this.state.data._id, finalstatus: finaloption.value },
+        config
+      )
+      .then(res => {
+        console.log("updatefinal");
+        console.log(res.data);
+
+        if (res.data.msg === "sucsess") {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Final state updated sucessfully"
+          });
+        } else {
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Final state updated error , less previladges"
+          });
+        }
+      })
+      .catch(err => console.log(err));
   };
 
   viewoldcv = cancvid => {
@@ -498,7 +644,11 @@ class CandidateView extends Component {
           this.setState({ isLoading: false });
           if (results.data.msg == "allocated_success") {
             this.setState({ shorlistSuccess: true });
-            window.location.reload(false);
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: "shortlist updated succsessfully"
+            });
+            //window.location.reload(false);
           }
           this.closeModal();
         })
@@ -513,8 +663,12 @@ class CandidateView extends Component {
           //this.setState({shorlistSuccess:true})
           this.setState({ isLoading: false });
           if (res.data.msg == "allocated_success") {
-            this.setState({ shorlistSuccess: true });
-            window.location.reload(false);
+            this.setState({
+              snackbaropen: true,
+              snackbarmsg: "added to shortlist succsessfully"
+            });
+
+            //window.location.reload(false);
           }
           this.closeModal();
         })
@@ -525,7 +679,7 @@ class CandidateView extends Component {
     }
   };
 
-  handleChangemodalselect = selectedOption => {
+  handleChangemodalselectjobspec = selectedOption => {
     console.log("jobspec selected -  " + selectedOption);
     this.setState({ isLoading: true });
     var jwt = localStorage.getItem("jwt");
@@ -541,16 +695,23 @@ class CandidateView extends Component {
     console.log(this.state.data._id);
 
     axios
-      .post("/usr/edituserdetails/" + this.state.data._id, payload, config)
+      .post("/usr/editcandidatedetails/" + this.state.data._id, payload, config)
       .then(res => {
         console.log(JSON.stringify(res.data));
         //this.setState({shorlistSuccess:true})
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
-          this.setState({ editcanSuccess: true });
+          //this.setState({ editcanSuccess: true });
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "candidate edited successfully"
+          });
           //window.location.reload(false);
         }
-        this.closeModal4();
+
+        setTimeout(() => {
+          this.closeModal4();
+        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -561,7 +722,36 @@ class CandidateView extends Component {
   handleChangemodalselectscheduleinterviewinterviewer = selectedOption => {
     console.log(selectedOption);
     console.log("................");
-    this.setState({ selectedinterviwerOption: selectedOption });
+    this.setState({
+      selectedinterviwerOption: selectedOption,
+      slectformchipplanal: false
+    });
+
+    //this.setState({ slectformchipplanal: true });
+
+    setTimeout(() => {
+      this.setState({ slectformchipplanal: true });
+    }, 100);
+
+    //this.forceUpdate()
+    console.log(this.state.selectedinterviwerOption);
+  };
+
+  handleChangemodalselectscheduleinterviewinterviewerreschdule = selectedOption => {
+    console.log(selectedOption);
+    console.log("................");
+    this.setState({
+      selectedinterviwerOptionreschdule: selectedOption,
+      slectformchipplanalreschedule: false
+    });
+
+    //this.setState({ slectformchipplanal: true });
+
+    setTimeout(() => {
+      this.setState({ slectformchipplanalreschedule: true });
+    }, 100);
+
+    //this.forceUpdate()
     console.log(this.state.selectedinterviwerOption);
   };
 
@@ -607,10 +797,6 @@ class CandidateView extends Component {
         var baseUrl = preurl + config + posturl;
         this.setState({ avatarUrl: baseUrl });
 
-        // var resdate = this.state.data.date
-        //  var alodate = this.state.data.allocatedDate
-        //  var shrtdate = this.state.data.shortlistedDate
-
         this.setState({
           id: datain.id,
           firstName: datain.firstName,
@@ -649,6 +835,61 @@ class CandidateView extends Component {
           userarr: res.data.userData
         });
 
+        if (res.data.candidateData.interview3) {
+          this.setState({
+            interviewtypeoptions: []
+          });
+        } else if (res.data.candidateData.interview2) {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        } else if (res.data.candidateData.interview) {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "Second interview",
+                value: "secondinterview"
+              },
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        } else {
+          this.setState({
+            interviewtypeoptions: [
+              {
+                label: "First interview",
+                value: "firstinterview"
+              },
+              {
+                label: "Second interview",
+                value: "secondinterview"
+              },
+              {
+                label: "Client interview",
+                value: "clientinterview"
+              }
+            ]
+          });
+        }
+
+        var arr = res.data.candidateData.skills;
+
+        var keyrr = [];
+
+        arr.forEach(element => {
+          keyrr.push({ key: element.value, label: element.label });
+        });
+
+        this.setState({ currentskillskeyvals: keyrr });
+
         var newesturl = "";
         if (res.data.candidateData.cvUrl) {
           newesturl =
@@ -670,17 +911,24 @@ class CandidateView extends Component {
           newest_cv_url: newesturl
         });
 
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
+        console.log("jobslistasds;kd;sankd;ks - - ");
         axios
           .get("/usr/getjobspeclist", config)
           .then(res => {
-            console.log("skillset - - ");
-            console.log(res.data.jobspeclist);
+            console.log("jobslistasds;kd;sankd;ks - - ");
+            console.log(res.data);
 
-            this.setState({ selectoptionsnamelist: res.data.jobspeclist });
+            this.setState({ selectoptionsjobspeclist: res.data.jobspeclist });
           })
           .catch(err => {});
 
-        setTimeout(() => console.log(this.state), 1000);
+        setTimeout(() => {
+          console.log(this.state);
+          this.setState({ rendercurrenskills: true });
+        }, 1000);
       })
       .catch(err => {
         console.log(err);
@@ -692,6 +940,11 @@ class CandidateView extends Component {
   handleDateChange = e => {
     console.log(e);
     this.setState({ selectedDate: e });
+  };
+
+  handleDateChangereschdule = e => {
+    console.log(e);
+    this.setState({ selectedDatereschdule: e });
   };
 
   evalHndler = () => {
@@ -723,7 +976,10 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === "sucsess") {
-          this.setState({ status_change: 1 });
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: "Primary status update successfully"
+          });
           this.closeModal1();
         }
 
@@ -731,7 +987,11 @@ class CandidateView extends Component {
       })
       .catch(err => {
         console.log(err);
-        this.setState({ status_change: 0 });
+        this.setState({
+          snackbaropen: true,
+          snackbarmsg: "Primary status update error"
+        });
+        //this.setState({ status_change: 0 });
       });
   };
 
@@ -747,27 +1007,39 @@ class CandidateView extends Component {
       headers: { authorization: token }
     };
 
-    var payload = { status: e.target.value };
+    var payload = {
+      status: e.target.value,
+      interivewtype: this.state.hrstatusintervietype
+    };
 
     axios
       .post("/usr/updatesecondstatus/" + id, payload, config)
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === "sucsess") {
-          this.setState({ status_change: 1 });
-          this.closeModal5();
+          this.setState({ snackbaropen: true });
+          this.setState({
+            snackbarmsg: "Secondary status changed successfully"
+          });
+          // this.closeModal5();
         }
 
         console.log("awoooooooooo");
       })
       .catch(err => {
         console.log(err);
-        this.setState({ status_change: 0 });
+        this.setState({ snackbaropen: true });
+        this.setState({
+          snackbarmsg:
+            "Secondary status changed Failed : Error " + err.response.data.msg
+        });
       });
   };
 
-  valtokey = () => {
-    var arr = this.state.data.skills;
+  valtokey = () => {};
+
+  valtokeypanal = () => {
+    var arr = [this.state.selectedinterviwerOption];
 
     var keyrr = [];
 
@@ -794,50 +1066,179 @@ class CandidateView extends Component {
 
     console.log();
 
+    var panalset = [];
+
+    this.state.interviewpanal.forEach(element => {
+      console.log(element.key);
+      panalset.push(element.key);
+    });
+
+    console.log(this.state);
+
     var payload = {
       candidateid: this.state.data._id,
       scheduler: this.state.id,
       interviewer: this.state.selectedinterviwerOption.value,
-      datetime: dataeinter.toISOString()
+      datetime: dataeinter.toISOString(),
+      interviewtype: this.state.selectedinterviwertype.value,
+      panal: panalset,
+      panalwname: this.state.interviewpanal
     };
 
     console.log(payload);
 
-    if (this.state.data.interview) {
-      console.log("update"); //updateinterview
+    axios
+      .post("/usr/addinterview", payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          console.log("schedule first interview");
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: " scheduled interview succsessfully"
+          });
+          this.closeModal6();
+        }
 
-      axios
-        .post("/usr/updateinterview", payload, config)
-        .then(res => {
-          console.log(res.data.msg);
-          if (res.data.msg === "sucsess") {
-            this.setState({ status_change: 1 });
-            this.closeModal6();
-          }
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
 
-          console.log("awoooooooooo");
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ status_change: 0 });
-        });
-    } else {
-      axios
-        .post("/usr/addinterview", payload, config)
-        .then(res => {
-          console.log(res.data.msg);
-          if (res.data.msg === "sucsess") {
-            this.setState({ status_change: 1 });
-            this.closeModal5();
-          }
+    //for update
+    // axios
+    //   .post("/usr/updateinterview", payload, config)
+    //   .then(res => {
+    //     console.log(res.data.msg);
+    //     if (res.data.msg === "sucsess") {
+    //       //this.setState({ status_change: 1 });
+    //       console.log("schedule interview");
+    //       this.setState({
+    //         snackbaropen: true,
+    //         snackbarmsg: " Re-scheduled interview succsessfully"
+    //       });
+    //       this.closeModal6();
+    //     }
 
-          console.log("awoooooooooo");
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ status_change: 0 });
-        });
-    }
+    //     console.log("awoooooooooo");
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     this.setState({ status_change: 0 });
+    //   });
+  };
+
+  rescheduleHandler = e => {
+    e.preventDefault();
+    console.log("add interview");
+    console.log(this.state.selectedinterviwerOption);
+    console.log("add interview");
+    console.log(this.state.selectedDatereschdule);
+
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token }
+    };
+
+    var dataeinter = moments(this.state.selectedDatereschdule._d);
+
+    console.log();
+
+    var panalset = [];
+
+    this.state.interviewpanal.forEach(element => {
+      console.log(element.key);
+      panalset.push(element.key);
+    });
+
+    console.log(this.state);
+
+    var payload = {
+      candidateid: this.state.data._id,
+      scheduler: this.state.id,
+      interviewer: this.state.selectedinterviwerOptionreschdule.value,
+      datetime: dataeinter.toISOString(),
+      interviewtype: this.state.rescheduleinterviewtype,
+      panal: panalset,
+      panalwname: this.state.interviewpanal
+    };
+
+    console.log(payload);
+
+    //for update
+    axios
+      .post("/usr/updateinterview", payload, config)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === "sucsess") {
+          //this.setState({ status_change: 1 });
+          console.log("schedule interview");
+          this.setState({
+            snackbaropen: true,
+            snackbarmsg: " Re-scheduled interview succsessfully"
+          });
+          this.closeModal7();
+        }
+
+        console.log("awoooooooooo");
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ status_change: 0 });
+      });
+  };
+
+  showevalpdf = () => {
+    var token = localStorage.getItem("jwt");
+
+    var config = {
+      headers: { authorization: token },
+      responseType: "blob"
+    };
+
+    var id = this.props.match.params.id;
+
+    //window.open("/usr/getevalpdf/" + id);
+
+    // axios({
+    //   url: "/usr/getevalpdf/" + id, //your url
+    //   method: 'POST',
+    //   responseType: 'blob', // important
+    // }).then((response) => {
+    //    const url = window.URL.createObjectURL(new Blob([response.data]));
+    //    const link = document.createElement('a');
+    //    link.href = url;
+    //    link.setAttribute('download', 'file.pdf'); //or any other extension
+    //    document.body.appendChild(link);
+    //    link.click();
+    // });
+
+    axios
+      .get("/usr/getevalpdf/" + id, config)
+      .then(res => {
+        console.log(res);
+        //FileDownload(res.data);
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        //FileDownload(res.data, "evalpdf.pdf");
+        FileDownload.saveAs(pdfBlob, this.state.data.name + "_evalpdf.pdf");
+
+        if (res.data.msg === "sucsess") {
+          // FileDownload()
+        }
+      })
+      .catch(err => {});
+  };
+
+  gteinterviewpanal = panal => {
+    console.log(panal);
+    this.setState({ interviewpanal: panal });
+  };
+
+  outsourceproject = () => {
+    this.props.history.push("/outsourceprojects/" + this.state.data._id);
   };
 
   render() {
@@ -866,7 +1267,7 @@ class CandidateView extends Component {
     // }
 
     const { selectedOption, selectoptionsnamelist } = this.state;
-
+    const { snackbaropen } = this.state;
     return (
       <div>
         {/* <Navbar />
@@ -876,8 +1277,8 @@ class CandidateView extends Component {
           type={this.state.usertype}
         /> */}
 
-        <div className="canview">
-          <div className="canview2">
+        <div className="">
+          <div className="">
             {this.state.status_change === 1 && (
               <div class="alert alert-success" role="alert">
                 status change succsessfuly
@@ -890,11 +1291,11 @@ class CandidateView extends Component {
               </div>
             )}
 
-            {this.state.editcanSuccess && (
+            {/* {this.state.editcanSuccess && (
               <div class="alert alert-success" role="alert">
                 edited candidate succsessfuly
               </div>
-            )}
+            )} */}
 
             <Modal
               isOpen={this.state.modalIsOpen}
@@ -917,6 +1318,8 @@ class CandidateView extends Component {
                 <p>{this.state.shortedcanarrnamelist}</p>
 
                 <Select
+                  isSearchable
+                  required
                   value={selectedOption}
                   onChange={this.handleChangemodalselect}
                   options={this.state.userarr}
@@ -944,94 +1347,45 @@ class CandidateView extends Component {
               <h2 ref={subtitle => (this.subtitle = subtitle)}> cv list </h2>
 
               <div>
-                <ul>
-                  {this.state.cvUrl &&
-                    this.state.cvUrl
-                      // .slice()
-                      // .reverse()
-                      .map((singlecv, iidd) => {
-                        return (
-                          <li>
-                            {iidd + 1}
-                            {". "}
-                            recived -{" "}
-                            {moments(
-                              singlecv.recievedDate,
-                              "YYYY-MM-DD HH:mm:ssZ"
-                            ).fromNow()}
-                            <button
-                              className="btn btn-primary"
-                              onClick={() => this.viewoldcv(iidd)}
-                            >
-                              view
-                            </button>
-                          </li>
-                        );
-                      })}
-                </ul>
-              </div>
-            </Modal>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" />
+                      <th scope="col" />
+                      <th scope="col" />
+                    </tr>
+                  </thead>
 
-            <Modal
-              isOpen={this.state.modalIsOpen4}
-              onAfterOpen={this.afterOpenModal4}
-              onRequestClose={this.closeModal4}
-              style={customStyles4}
-              contentLabel="Example Modal"
-            >
-              <h2 ref={subtitle => (this.subtitle = subtitle)}>
-                {" "}
-                edit {this.state.data.name}{" "}
-              </h2>
-              <div>
-                <form onSubmit={this.edidcandidatedetails}>
-                  <div className="">
-                    <input
-                      required
-                      type="text"
-                      name="Candidate name"
-                      className="form-control"
-                      onChange={this.chngehandlfname}
-                      id="firstName"
-                      value={this.state.data.name}
-                      disabled={true}
-                    />
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      className="form-control"
-                      placeholder="enter candidate email"
-                      onChange={this.chngehandlemail}
-                      id="email"
-                      value={this.state.data.email}
-                      disabled={true}
-                    />
-                    {/* <input
-                      required
-                      type="text"
-                      name="job specification "
-                      className="form-control"
-                      onChange={this.onchangejobspec}
-                      placeholder="enter new job specification"
-                      id="jobspec"
-                      value={this.state.data.jobspec}
-                      // disabled={true}
-                    /> */}
-
-                    <Select
-                      placeholder={this.state.data.jobspec}
-                      value={this.selectedJobspecOption}
-                      onChange={this.handleChangemodalselect}
-                      options={this.state.selectoptionsnamelist}
-                    />
-
-                    <ChipsArraywdelete
-                      id={this.state.data._id}
-                      currentskills={this.valtokey}
-                    />
-                  </div>
-                </form>
+                  <tbody>
+                    {this.state.cvUrl &&
+                      this.state.cvUrl
+                        // .slice()
+                        // .reverse()
+                        .map((singlecv, iidd) => {
+                          return (
+                            <tr>
+                              <td>{iidd + 1}</td>
+                              <td>
+                                {". "}
+                                Recieved -{" "}
+                                {moments(
+                                  singlecv.recievedDate,
+                                  "YYYY-MM-DD HH:mm:ssZ"
+                                ).fromNow()}
+                              </td>
+                              <td>
+                                <button
+                                  className="btn"
+                                  onClick={() => this.viewoldcv(iidd)}
+                                >
+                                  <i class="far fa-eye" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                  </tbody>
+                </table>
               </div>
             </Modal>
 
@@ -1079,7 +1433,7 @@ class CandidateView extends Component {
               )}
 
               {
-                <div>
+                <div hidden={true}>
                   <label className="uploadtaglable">
                     {this.state.data.cvUrl === null
                       ? "Upload resume    "
@@ -1088,6 +1442,13 @@ class CandidateView extends Component {
                   <input type="file" name="cv" onChange={this.chngehndlcv} />
                 </div>
               }
+
+              <a href={this.state.newest_cv_url} target="_blank">
+                view externally
+              </a>
+
+              <br />
+
               <label>
                 Recieved -
                 {moments(
@@ -1114,222 +1475,760 @@ class CandidateView extends Component {
               </div>
             </Modal>
 
-            {/**
-  assignToshortlisterbyId: "5caa511c56a61d6a2492ec96"
-assignToshortlisterbyName: "Bharana perera"
-date: "2019-05-03T14:55:20.889Z"
-email: "mark@facebook.com"
-jobspec: "CCO"
-name: "Mark Zuckerburg"
-shortlister: "5caa511c56a61d6a2492ec96"
-shortlisterName: "Bharana perera"
-status: "New"
-  */}
+            <div class="container">
+              <div class="row my-2">
+                <div class="col-lg-8 order-lg-2">
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a
+                        href=""
+                        data-target="#profile"
+                        data-toggle="tab"
+                        class="nav-link active"
+                      >
+                        Profile
+                      </a>
+                    </li>
 
-            <Container maxWidth="sm">
-              <List
-                style={{
-                  width: "100%",
-                  maxWidth: 360,
-                  marginTop: -100
-                }}
-              >
-                {this.state.recivedago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <SubdirectoryArrowRight />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Received"
-                      secondary={this.state.recivedago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.data.shortlisterName && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <WorkIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Assigned to"
-                      secondary={this.state.data.shortlisterName}
-                    />
-                  </ListItem>
-                )}{" "}
-                <Divider variant="inset" component="li" />
-                {this.state.data.assignToshortlisterbyName && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Assigned by"
-                      secondary={this.state.data.assignToshortlisterbyName}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.alocatedago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <WatchLater />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="allocated"
-                      secondary={this.state.alocatedago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                {this.state.shortago && (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="shortlist"
-                      secondary={this.state.shortago}
-                    />
-                  </ListItem>
-                )}
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <AccountCircle />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Name"
-                    secondary={this.state.data.name}
+                    <li class="nav-item">
+                      <a
+                        href=""
+                        data-target="#edit"
+                        data-toggle="tab"
+                        class="nav-link"
+                      >
+                        Edit
+                      </a>
+                    </li>
+
+                    <p className="rec"> Received:{this.state.recivedago}</p>
+                  </ul>
+                  <div class="tab-content py-4">
+                    <div class="tab-pane active" id="profile">
+                      {/* <h5 class="mb-3">User Profile</h5> */}
+                      <div class="row">
+                        <div class="col-md-6">
+                          <h6 class="h6colorcanview">Email</h6>
+                          <p class="pcolorcanview">{this.state.data.email}</p>
+                          <Divider />
+                          <h6 class="h6colorcanview"> Job Specification</h6>
+                          <p class="pcolorcanview">{this.state.data.jobspec}</p>
+                          <Divider />
+                        </div>
+                        <div class="col-md-6">
+                          <h6 class="h6colorcanview">Skills</h6>
+
+                          <ChipsArraywodelete
+                            currentskills={this.state.data.skills}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane" id="edit">
+                      <div>
+                        <form onSubmit={this.edidcandidatedetails}>
+                          <div className="">
+                            <div className="canviewborderdividcandidtaeeditdetails" />
+                            <Select
+                              isSearchable
+                              required
+                              placeholder={this.state.data.jobspec}
+                              value={this.selectedJobspecOption}
+                              onChange={this.handleChangemodalselectjobspec}
+                              options={this.state.selectoptionsjobspeclist}
+                            />
+                            <div className="canviewborderdividcandidtaeeditdetails" />
+                            {this.state.rendercurrenskills && (
+                              <ChipsArraywdelete
+                                id={this.state.data._id}
+                                currentskills={this.state.currentskillskeyvals}
+                              />
+                            )}
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 order-lg-1 text-center">
+                  <img
+                    src="https://www.pinclipart.com/picdir/big/200-2008697_account-customer-login-man-user-icon-login-icon.png"
+                    style={{ width: 200, height: 200 }}
+                    class="mx-auto img-fluid img-circle d-block"
+                    alt="avatar"
                   />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Drafts />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Email"
-                    secondary={this.state.data.email}
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <NextWeek />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Job specification"
-                    secondary={this.state.data.jobspec}
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <Gavel />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Current status"
-                    secondary={this.state.data.status}
-                  />
-                </ListItem>
-              </List>
-            </Container>
+                  <h3 class="mt-2">{this.state.data.name}</h3>
+                  <div className="">
+                    <span className="badge badge-pill badge-danger">
+                      {this.state.data.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-            <ul className="list-group list-group-flush ">
-              {/* {this.state.data.shortlisterName && (
-                <li className="list-group-item">
-                  Allocated to shortlist to - {this.state.data.shortlisterName}
-                </li>
-              )}
+              <div className="btngroupdivcanview">
+                <button
+                  onClick={this.addcvmodal}
+                  className="btn canviewbtngroup btn-primary"
+                >
+                  view cv
+                </button>
 
-              {this.state.data.assignToshortlisterbyName && (
-                <li className="list-group-item">
-                  Assigned by - {this.state.data.assignToshortlisterbyName}
-                </li>
-              )}
+                <button
+                  onClick={this.viewcvsmodal}
+                  className="btn canviewbtngroup btn-primary"
+                >
+                  candidate history
+                </button>
 
-              {this.state.recivedago && (
-                <li className="list-group-item">
-                  {" "}
-                  recived - : {this.state.recivedago}
-                </li>
-              )}
-              {this.state.alocatedago && (
-                <li className="list-group-item">
-                  {" "}
-                  allocated - : {this.state.alocatedago}
-                </li>
-              )}
-              {this.state.shortago && (
-                <li className="list-group-item">
-                  {" "}
-                  shortlist - : {this.state.shortago}
-                </li>
-              )}
-              <li className="list-group-item">
-                {" "}
-                name : {this.state.data.name}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                email : {this.state.data.email}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                job spec : {this.state.data.jobspec}
-              </li>
-              <li className="list-group-item">
-                {" "}
-                current candidate status : {this.state.data.status}
-              </li> */}
+                <button
+                  onClick={this.openModal}
+                  className="btn canviewbtngroup btn-primary"
+                  hidden={this.state.usertype === "depthead"}
+                >
+                  Allocate for shortlisting
+                </button>
+              </div>
 
-              <ChipsArraywodelete currentskills={this.state.data.skills} />
-            </ul>
+              <div class="threecol">
+                <div
+                  class="col-md-12 xx"
+                  hidden={!this.state.data.allocatedtoshorltistdone}
+                >
+                  <h6 className="shortlistheadingcanview">
+                    {" "}
+                    Shortlist Details{" "}
+                  </h6>
+
+                  <table class="table table-borderless ssss">
+                    <tbody>
+                      {/* <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Assigned to</h6>
+                        </td>
+                        <td>angela jayathissa</td>
+                      </tr> */}
+                      {this.state.data.shortlisterName && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview"> Assigned to</h6>
+                          </td>
+                          <td>{this.state.data.shortlisterName}</td>
+                        </tr>
+                      )}
+                      {this.state.data.assignToshortlisterbyName && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview"> Assigned by</h6>
+                          </td>
+                          <td>{this.state.data.assignToshortlisterbyName}</td>
+                        </tr>
+                      )}
+                      {this.state.alocatedago && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">allocated</h6>
+                          </td>
+                          <td>{this.state.alocatedago}</td>
+                        </tr>
+                      )}
+                      {this.state.data.allocatedtoshorltistdone && ( //allocatedtoshorltistdone
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">shortlist</h6>
+                          </td>
+                          <td>
+                            {this.state.shortago
+                              ? this.state.shortago
+                              : "Pending"}
+                          </td>
+                        </tr>
+                      )}
+
+                      {this.state.data.primaryStatussetbyusertype && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">
+                              Status{" "}
+                              {this.state.data.primaryStatussetbyusertype ===
+                              "admin"
+                                ? "overide by "
+                                : "set by"}
+                            </h6>
+                          </td>
+                          <td>
+                            {this.state.data.primaryStatussetby + " "}{" "}
+                            {this.state.data.primaryStatussetbyusertype ===
+                            "admin" ? (
+                              <span className="badge badge-pill badge-danger">
+                                Admin
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+
+                  <button
+                    hidden={
+                      this.state.usertype === "depthead" || !this.state.shortago
+                    }
+                    onClick={this.schedule}
+                    className="btn canviewbtngroup btn-primary"
+                  >
+                    schedule
+                  </button>
+
+                  <button
+                    hidden={
+                      this.state.data.shortlister !== this.state.id &&
+                      !(this.state.usertype === "admin")
+                        ? true
+                        : false
+                    }
+                    onClick={this.changeStatusmodal}
+                    className="btn canviewbtngroup btn-primary"
+                  >
+                    shorlist
+                  </button>
+                </div>
+
+                <div
+                  class="col col-lg-12 interviewseccanview "
+                  hidden={!this.state.data.interviewscheduled}
+                >
+                  <div class="col order-lg-2">
+                    <ul class="nav nav-tabs">
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview1"
+                          data-toggle="tab"
+                          class="nav-link active"
+                        >
+                          First interivew
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview2"
+                          data-toggle="tab"
+                          class="nav-link"
+                          hidden={!this.state.data.interview2}
+                        >
+                          Second interivew
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a
+                          href=""
+                          data-target="#interview3"
+                          data-toggle="tab"
+                          class="nav-link"
+                          hidden={!this.state.data.interview3}
+                        >
+                          Client interivew
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="tab-content py-4">
+                      <div class="tab-pane active" id="interview1">
+                        <h6 className="shortlistheadingcanview">
+                          {" "}
+                          Interview Details First interivew
+                        </h6>
+                        <table class="table table-borderless ssss">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">Interview type</h6>
+                              </td>
+                              <td>{this.state.data.interviewtype}</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">
+                                  Interview Scheduled By
+                                </h6>
+                              </td>
+                              <td>{this.state.data.schedulerName}</td>
+                            </tr>
+                            <tr>
+                              {" "}
+                              <td>
+                                <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                              </td>
+                              <td>{this.state.data.interviewerName}</td>
+                            </tr>
+                            <tr>
+                              {" "}
+                              <td>
+                                <h6 class="h6colorcanview">Interviewe panal</h6>{" "}
+                              </td>
+                              <td>
+                                <ChipsArraywodelete
+                                  currentskills={this.state.data.panalwname}
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">Interviewe Time</h6>{" "}
+                              </td>
+                              <td>
+                                {moments(this.state.data.interviewtime)
+                                  .toDate()
+                                  .toDateString() +
+                                  "  " +
+                                  " at " +
+                                  moments(
+                                    this.state.data.interviewtime
+                                  ).hour() +
+                                  ":" +
+                                  moments(
+                                    this.state.data.interviewtime
+                                  ).minute()}
+                                <span>
+                                  {" "}
+                                  {moments(
+                                    this.state.data.interviewtime
+                                  ).fromNow()}{" "}
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <h6 class="h6colorcanview">
+                                  Interview status
+                                </h6>{" "}
+                              </td>
+                              <td>
+                                {this.state.data.statusHrinterview === "pending "
+                                  ? "Pending"
+                                  :`${
+                                      this.state.data.statusHrinterview
+                                    } ${"Set by " +
+                                      this.state.data.statusHrsetby +
+                                      " on "}       ${moments(
+                                      this.state.data.statusHrdate
+                                    )
+                                      .toDate()
+                                      .toDateString() +
+                                      "  " +
+                                      " at " +
+                                      moments(
+                                        this.state.data.statusHrdate
+                                      ).hour() +
+                                      ":" +
+                                      moments(
+                                        this.state.data.statusHrdate
+                                      ).minute()} `}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <button
+                          hidden={
+                            this.state.usertype === "depthead" ? true : false
+                          }
+                          onClick={this.changestatusforhr}
+                          className="btn canviewbtngroup btn-primary"
+                        >
+                          change secondary status
+                        </button>
+                        <button
+                          hidden={
+                            this.state.usertype === "depthead" ? true : false
+                          }
+                          onClick={this.reschedulemodal1}
+                          className="btn canviewbtngroup btn-primary"
+                        >
+                          Re-schedule Interview
+                        </button>
+
+                        {this.state.data.interviewed ? (
+                          <button
+                            onClick={this.showevalpdf}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Evaluation PDF
+                          </button>
+                        ) : (
+                          <button
+                            onClick={this.evalHndler}
+                            hidden={
+                              !(this.state.id === this.state.data.interviewerId)
+                            }
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            evaluate
+                          </button>
+                        )}
+                      </div>
+
+                      <div class="tab-pane" id="interview2">
+                        <div class="tab-pane active" id="interview1">
+                          <h6 className="shortlistheadingcanview">
+                            Interview Details Second interivew
+                          </h6>
+                          <table class="table table-borderless ssss">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">Interview type</h6>
+                                </td>
+                                <td>{this.state.data.interviewtype2}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interview Scheduled By
+                                  </h6>
+                                </td>
+                                <td>{this.state.data.schedulerName2}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                                </td>
+                                <td>{this.state.data.interviewerName2}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe panal
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  <ChipsArraywodelete
+                                    currentskills={this.state.data.panalwname2}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe Time
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {moments(this.state.data.interviewtime2)
+                                    .toDate()
+                                    .toDateString() +
+                                    "  " +
+                                    " at " +
+                                    moments(
+                                      this.state.data.interviewtime2
+                                    ).hour() +
+                                    ":" +
+                                    moments(
+                                      this.state.data.interviewtime2
+                                    ).minute()}
+                                  <span>
+                                    {" "}
+                                    {moments(
+                                      this.state.data.interviewtime2
+                                    ).fromNow()}{" "}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe status
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {this.state.data.statusHrinterview2
+                                    ? `${
+                                        this.state.data.statusHrinterview2
+                                      } ${"Set by " +
+                                        this.state.data.statusHrsetby2 +
+                                        " on "}       ${moments(
+                                        this.state.data.statusHrdate2
+                                      )
+                                        .toDate()
+                                        .toDateString() +
+                                        "  " +
+                                        " at " +
+                                        moments(
+                                          this.state.data.statusHrdate2
+                                        ).hour() +
+                                        ":" +
+                                        moments(
+                                          this.state.data.statusHrdate2
+                                        ).minute()} `
+                                    : "Pending..."}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.changestatusforhr2}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            change secondary status
+                          </button>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.reschedulemodal2}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Re-schedule Interview
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="tab-pane" id="interview3">
+                        <div class="tab-pane active" id="interview1">
+                          <h6 className="shortlistheadingcanview">
+                            Interview Details Client interivew
+                          </h6>
+                          <table class="table table-borderless ssss">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">Interview type</h6>
+                                </td>
+                                <td>{this.state.data.interviewtype3}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interview Scheduled By
+                                  </h6>
+                                </td>
+                                <td>{this.state.data.schedulerName3}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">Interviewer</h6>{" "}
+                                </td>
+                                <td>{this.state.data.interviewerName3}</td>
+                              </tr>
+                              <tr>
+                                {" "}
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe panal
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  <ChipsArraywodelete
+                                    currentskills={this.state.data.panalwname3}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe Time
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {moments(this.state.data.interviewtime3)
+                                    .toDate()
+                                    .toDateString() +
+                                    "  " +
+                                    " at " +
+                                    moments(
+                                      this.state.data.interviewtime3
+                                    ).hour() +
+                                    ":" +
+                                    moments(
+                                      this.state.data.interviewtime3
+                                    ).minute()}
+                                  <span>
+                                    {" "}
+                                    {moments(
+                                      this.state.data.interviewtime3
+                                    ).fromNow()}{" "}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <h6 class="h6colorcanview">
+                                    Interviewe status
+                                  </h6>{" "}
+                                </td>
+                                <td>
+                                  {this.state.data.statusHrinterview3
+                                    ? `${
+                                        this.state.data.statusHrinterview3
+                                      } ${"Set by " +
+                                        this.state.data.statusHrsetby3 +
+                                        " on "}       ${moments(
+                                        this.state.data.statusHrdate3
+                                      )
+                                        .toDate()
+                                        .toDateString() +
+                                        "  " +
+                                        " at " +
+                                        moments(
+                                          this.state.data.statusHrdate3
+                                        ).hour() +
+                                        ":" +
+                                        moments(
+                                          this.state.data.statusHrdate3
+                                        ).minute()} `
+                                    : "Pending..."}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.changestatusforhr3}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            change secondary status
+                          </button>
+                          <button
+                            hidden={
+                              this.state.usertype === "depthead" ? true : false
+                            }
+                            onClick={this.reschedulemodal3}
+                            className="btn canviewbtngroup btn-primary"
+                          >
+                            Re-schedule Interview
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <table>
+                    <tbody>
+                      {this.state.data.finalStatussetby && (
+                        <tr>
+                          <td>
+                            <h6 class="h6colorcanview">Final Status</h6>
+                          </td>
+                          <td>
+                            {this.state.data.finalStatus === "accepted" ? (
+                              <span className="badge badge-pill badge-success">
+                                Accepted
+                              </span>
+                            ) : (
+                              <span className="badge badge-pill badge-danger">
+                                Rejected
+                              </span>
+                            )}
+                            <br />
+                            {"Set by " +
+                              this.state.data.finalStatussetby +
+                              " on "}
+
+                            {moments(this.state.data.finalStatusdate)
+                              .toDate()
+                              .toDateString() +
+                              "  " +
+                              " at " +
+                              moments(this.state.data.finalStatusdate).hour() +
+                              ":" +
+                              moments(this.state.data.finalStatusdate).minute()}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+
+                  <button
+                    onClick={this.outsourceproject}
+                    className="btn canviewbtngroup btn-primary"
+                    hidden={
+                      this.state.usertype === "depthead" ||
+                      this.state.usertype === "admin"
+                        ? false
+                        : true
+                    }
+                  >
+                    generate formal resume
+                  </button>
+
+                  <div
+                    className="finalstateforinterviewcanview"
+                    hidden={
+                      this.state.data.interviewerId === this.state.id ||
+                      this.state.usertype === "admin"
+                        ? false
+                        : true
+                    }
+                  >
+                    Final Status
+                    <BaseSelect
+                      value={this.state.finalstatus}
+                      //placeholder={this.state.selectedinterviwertype.label}
+                      onChange={this.handlefinalstatus}
+                      options={[
+                        {
+                          label: "Accepted",
+                          value: "accepted"
+                        },
+                        {
+                          label: "Rejected",
+                          value: "rejected"
+                        }
+                      ]}
+                    />
+                  </div>
+                </div>
+                {/* 
+                <div className="paddingdivforcanview">
+                  <p className="paddingdivforcanview">
+                    Sorry i had no choice :( sad devoloper
+                  </p>
+                </div> */}
+
+                {/* <div class="col-md-12 xx">
+                  <h6 className="shortlistheadingcanview">
+                    {" "}
+                    Evaluation Details{" "}
+                  </h6>
+                  <table class="table table-borderless ">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h6 class="h6colorcanview">Assigned to</h6>
+                        </td>
+                        <td>angela jayathissa</td>
+                      </tr>
+                      <tr>
+                        <td>Assigned by</td>
+                        <td>kalani welagedara</td>
+                      </tr>
+                      <tr>
+                        <td>shortlist</td>
+                        <td>20 hours</td>
+                      </tr>
+                      <tr>
+                        <td>allocated</td>
+                        <td>2 days ago</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div> */}
+              </div>
+            </div>
           </div>
-
-          <button
-            disabled={this.state.usertype === "depthead" ? true : false}
-            onClick={this.shortlistmodal}
-            className="btn btn-primary"
-          >
-            allocate to shortlist
-          </button>
-
-          <button onClick={this.addcvmodal} className="btn btn-primary">
-            view cv
-          </button>
-
-          <button
-            disabled={
-              this.state.data.shortlister !== this.state.id ||
-              this.state.usertype === "admin"
-                ? true
-                : false
-            }
-            onClick={this.changeStatusmodal}
-            className="btn btn-primary"
-          >
-            shorlist
-          </button>
 
           <Modal
             isOpen={this.state.modalIsOpen1}
@@ -1366,14 +2265,11 @@ status: "New"
                 onChange={this.chngehandlsel}
               >
                 <option selected>Select...</option>
-                <option id="status" value="hr_interview">
-                  HR interview
+                <option id="status" value="rejected">
+                  Rejected
                 </option>
                 <option id="status" value="onhold">
                   onhold
-                </option>
-                <option id="status" value="accepted">
-                  accepted
                 </option>
                 <option id="status" value="shortlisted">
                   shortlisted
@@ -1397,7 +2293,7 @@ status: "New"
                 for="exampleFormControlSelect2"
                 hidden={
                   this.state.usertype === "admin" ||
-                  this.state.usertype === "depthead"
+                  this.state.usertype === "hr_staff"
                     ? false
                     : true
                 }
@@ -1417,6 +2313,9 @@ status: "New"
                 <option id="status" value="noshow">
                   No show
                 </option>
+                <option id="status" value="present">
+                  present
+                </option>
                 {/* <option id="status" value="accepted">
                   accepted
                 </option>
@@ -1434,24 +2333,11 @@ status: "New"
             style={customStyles6}
             contentLabel="Example 5 Modal"
           >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>Schedule</h2>
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              Schedule {" " + this.state.data.name + "'s interview"}{" "}
+            </h2>
 
             <Container>
-              {this.state.data.interview
-                ? "this candidate has been scheduled to interview " +
-                  this.state.data.interviewerName +
-                  " on  " +
-                  moments(this.state.data.interviewtime)
-                    .toDate()
-                    .toDateString() +
-                  " in  " +
-                  " on " +
-                  moments(this.state.data.interviewtime).hour() +
-                  ":" +
-                  moments(this.state.data.interviewtime).minute() +
-                  " do you want to update "
-                : ""}
-
               <form onSubmit={this.scheduleHandler}>
                 <table style={{ textAlign: "left", width: "50%" }}>
                   <tr>
@@ -1465,12 +2351,28 @@ status: "New"
                       {this.state.firstName + " " + this.state.lastName}{" "}
                     </td>
                   </tr>
+
+                  <tr>
+                    <td>Interview type </td>
+                    <td>
+                      <Select
+                        isSearchable
+                        required
+                        value={this.state.selectedinterviwertype}
+                        //placeholder={this.state.selectedinterviwertype.label}
+                        onChange={this.handleChangemodalselectedinterviwertype}
+                        options={this.state.interviewtypeoptions}
+                      />
+                    </td>
+                  </tr>
+
                   <tr>
                     <td>interviewer - </td>
                     <td>
                       {" "}
                       <Select
-                        required={true}
+                        isSearchable
+                        required
                         value={this.state.selectedinterviwerOption}
                         placeholder={this.state.selectedinterviwerOption.label}
                         onChange={
@@ -1485,42 +2387,163 @@ status: "New"
                   <td>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                       <DateTimePicker
-                        value={this.selectedDate}
+                        value={this.state.selectedDate}
                         onChange={this.handleDateChange}
                         disablePast={true}
                       />
                     </MuiPickersUtilsProvider>
                   </td>
+
+                  <tr>
+                    <td>interviewe panal- </td>
+                    <td>
+                      <div className="" />
+
+                      {this.state.slectformchipplanal && (
+                        <ChipsArrayPanal
+                          id={this.state.data._id}
+                          //remuser={this.state.selectedinterviwerOption}
+                          currentpanal={[
+                            {
+                              key: this.state.selectedinterviwerOption.value,
+                              label: this.state.selectedinterviwerOption.label
+                            }
+                          ]}
+                          setpanal={this.gteinterviewpanal}
+                        />
+                      )}
+                    </td>
+                  </tr>
                 </table>
-                <Button className="btn btn-primary" type="submit">
+                <Button
+                  className="btn canviewbtngroup btn-primary"
+                  type="submit"
+                >
                   Confirm Interview
                 </Button>
               </form>
             </Container>
           </Modal>
 
-          <button
-            disabled={this.state.usertype === "depthead" ? true : false}
-            onClick={this.changestatusforhr}
-            className="btn btn-primary"
+          <Modal
+            isOpen={this.state.modalIsOpen7}
+            onAfterOpen={this.afterOpenModal7}
+            onRequestClose={this.closeModal7}
+            style={customStyles7}
+            contentLabel="Modal Re-Schedule"
           >
-            change secondary status
-          </button>
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              Re-schedule {" " + this.state.data.name + "'s interview"}{" "}
+            </h2>
 
-          <button onClick={this.evalHndler} className="btn btn-primary">
-            evaluate
-          </button>
-          <button onClick={this.viewcvsmodal} className="btn btn-primary">
-            candidate history
-          </button>
-          <button onClick={this.editcandidatemodal} className="btn btn-primary">
-            edit candidate
-          </button>
-          <button onClick={this.schedule} className="btn btn-primary">
-            schedule
-          </button>
-          <br />
-          <br />
+            <Container>
+              <form onSubmit={this.rescheduleHandler}>
+                <table style={{ textAlign: "left", width: "50%" }}>
+                  <tr>
+                    <td>candidate name - </td>
+                    <td> {this.state.data.name} </td>
+                  </tr>
+                  <tr>
+                    <td>allocater name - </td>
+                    <td>
+                      {" "}
+                      {this.state.firstName + " " + this.state.lastName}{" "}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Interview type </td>
+                    <td>{this.state.rescheduleinterviewtype}</td>
+                  </tr>
+
+                  <tr>
+                    <td>interviewer - </td>
+                    <td>
+                      {" "}
+                      <Select
+                        isSearchable
+                        required
+                        value={this.state.selectedinterviwerOptionreschdule}
+                        placeholder={
+                          this.state.selectedinterviwerOptionreschdule.label
+                        }
+                        onChange={
+                          this
+                            .handleChangemodalselectscheduleinterviewinterviewerreschdule
+                        }
+                        options={this.state.userarr}
+                      />{" "}
+                    </td>
+                  </tr>
+                  <td>Date &amp; time</td>
+                  <td>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <DateTimePicker
+                        value={this.state.selectedDatereschdule}
+                        onChange={this.handleDateChangereschdule}
+                        disablePast={true}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </td>
+
+                  <tr>
+                    <td>interviewe panal- </td>
+                    <td>
+                      <div className="" />
+
+                      {this.state.slectformchipplanalreschedule && (
+                        <ChipsArrayPanal
+                          id={this.state.data._id}
+                          //remuser={this.state.selectedinterviwerOption}
+                          currentpanal={[
+                            {
+                              key: this.state.selectedinterviwerOptionreschdule
+                                .value,
+                              label: this.state
+                                .selectedinterviwerOptionreschdule.label
+                            }
+                          ]}
+                          setpanal={this.gteinterviewpanal}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                </table>
+                <Button
+                  className="btn canviewbtngroup btn-primary"
+                  type="submit"
+                >
+                  Confirm Interview Re-schedule
+                </Button>
+              </form>
+            </Container>
+          </Modal>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "center"
+            }}
+            open={snackbaropen}
+            autoHideDuration={2000}
+            onClose={() => this.setState({ snackbaropen: false })}
+            //onClose={this.handleClose}
+            ContentProps={{
+              "aria-describedby": "message-id"
+            }}
+            message={<span id="message-id">{this.state.snackbarmsg}</span>}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                //className={classes.close}
+                onClick={this.handleClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
 
           {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>

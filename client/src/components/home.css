@@ -1,0 +1,26 @@
+.rec {
+  text-align: right;
+  margin: auto 0;
+  margin-left: 45%;
+  color: brown;
+}
+.sk{
+    margin:0 5px 0 0;
+}
+
+
+
+.h6colorcanview{
+
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.threecol{
+flex-flow: row nowrap;
+}
+.xx{
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 32%;
+}

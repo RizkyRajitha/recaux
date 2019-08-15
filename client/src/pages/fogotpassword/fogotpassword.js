@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import "./forgotpassowrd.css";
 
 class fogotpassword extends Component {
   state = {
@@ -59,13 +60,13 @@ class fogotpassword extends Component {
     } else if (this.state.succsee) {
       return (
         <div role="">
-           <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h6" style={{ flexGrow: 1 }}>
-                  Recruitement @ Auxenta
-                </Typography>
-              </Toolbar>
-            </AppBar>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" style={{ flexGrow: 1 }}>
+                Recruitement @ Auxenta
+              </Typography>
+            </Toolbar>
+          </AppBar>
           <br />
           <h1> reset link set to your email </h1>
         </div>
@@ -82,34 +83,46 @@ class fogotpassword extends Component {
               </Toolbar>
             </AppBar>
           </div>
-          <h1>we all forget and that's cool </h1>
-
-          <h1> just enter your registered email</h1>
           <div className="container">
-            <div className="row">
-              <div className="col-sm" />
-              <div className="col-sm">
-                <form onSubmit={this.btn1handler}>
-                  <div className="form-group">
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="enter your email "
-                      className="form-control"
-                      onChange={this.changeHandler}
-                    />
-                  </div>
-                  <input
-                    type="submit"
-                    className="btn btn-primary"
-                    value="verifiy"
-                  />
-                </form>
-              </div>
-              <div className="col-sm" />
+            <div className="forgotpassworddiv">
+              <h1>we all forget and that's cool </h1>
+
+              <h1> just enter your registered email</h1>
             </div>
+            <div className="container">
+              <div className="row">
+                <div className="col-sm" />
+                <div className="col-sm">
+                  <form
+                    className="forgotpasswordform"
+                    onSubmit={this.btn1handler}
+                  >
+                    <div className="form-group">
+                      <input
+                        required
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="enter your email "
+                        className="form-control"
+                        onChange={this.changeHandler}
+                      />
+                    </div>
+                    <input
+                      type="submit"
+                      className="btn btn-primary"
+                      value="verifiy"
+                    />
+                  </form>
+                </div>
+                <div className="col-sm" />
+              </div>
+            </div>
+            <footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+              <div class="container text-center">
+                <small>Copyright RECRUITMENT@Auxenta &copy; </small>
+              </div>
+            </footer>
           </div>
         </div>
       );

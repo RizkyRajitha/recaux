@@ -1,0 +1,16 @@
+.userlistusertypespan {
+  color: rgba(0, 0, 0, 54);
+}
+.searchdeilsduserlist {
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* flex-wrap: nowrap; */
+  /* flex: 0 0 100%; */
+}
+.searchdeilsduserlistinputs {
+  margin: 0.6%;
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* flex-wrap: nowrap; */
+  /* flex: 0 0 100%; */
+}

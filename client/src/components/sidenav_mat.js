@@ -19,6 +19,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import Link from "@material-ui/core/Link";
@@ -26,33 +27,38 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import YoutubeSearchedFor from "@material-ui/icons/YoutubeSearchedFor";
+import CardTravel from "@material-ui/icons/CardTravel";
 import Settings from "@material-ui/icons/Settings";
+import Menu from "@material-ui/core/Menu";
+import Apps from "@material-ui/icons/Apps";
+import MenuItem from "@material-ui/core/MenuItem";
 import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
-
-function MadeWithLove() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Built with love by the "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
-      </Link>
-      {" team."}
-    </Typography>
-  );
-}
+import "./sidenav_mat.css";
+import io from "socket.io-client";
 
 const drawerWidth = 240;
 const drawerHeight = 960;
+//let socket = "";
+
+//do work
+
+//socket = io();
+
+// const socket = io("http://127.0.0.1:3001", {
+//   transports: ["websocket"],
+//   upgrade: false
+// });
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
   },
   toolbar: {
-    paddingRight: 24 // keep right padding when drawer closed
+    paddingRight: 24
+    // keep right padding when drawer closed
   },
   toolbarIcon: {
     display: "flex",
@@ -85,7 +91,8 @@ const useStyles = makeStyles(theme => ({
     display: "none"
   },
   title: {
-    flexGrow: 1
+    flexGrow: 0,
+    width: "40%"
   },
   drawerPaper: {
     position: "relative",
@@ -134,6 +141,9 @@ const useStyles = makeStyles(theme => ({
   },
   logoutButton: {
     marginLeft: 36
+  },
+  divcontnotify: {
+    marginLeft: "75%"
   }
 }));
 
@@ -141,8 +151,14 @@ function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [logedin, setlogedin] = React.useState(false);
-
+  const [avatarUrl, setavatarUrl] = React.useState("");
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open2, setOpen2] = React.useState(false);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [username, setusername] = React.useState("");
   const usertype = localStorage.getItem("usertype");
+
+  const [data, setdata] = React.useState([]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -150,6 +166,21 @@ function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  function handleClick(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClick2(event) {
+    setAnchorEl2(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
+  function handleClose2() {
+    setAnchorEl2(null);
+  }
 
   React.useEffect(() => {
     var jwt = localStorage.getItem("jwt");
@@ -162,35 +193,58 @@ function Dashboard(props) {
         headers: { authorization: jwt }
       };
 
-      // axios
-      //   .get("/usr/basicuserdetails", config)
-      //   .then(res => {
-      //     console.log(res.data);
-      //     var datain = res.data;
+      axios
+        .get("/usr/basicuserdetails", config)
+        .then(res => {
+          console.log(res.data);
+          var datain = res.data;
 
-      //     var preurl = res.data.avatarUrl.slice(0, 48);
-      //     var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
-      //     var config = "/w_290,h_295,c_thumb/";
+          var preurl = res.data.avatarUrl.slice(0, 48);
+          var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
+          var config = "/w_290,h_295,c_thumb/";
 
-      //     var baseUrl = preurl + config + posturl;
-      //     // this.setState({ avatarUrl: baseUrl });
-
-      //     this.setState({
-      //       id: datain._id,
-      //       firstName: datain.firstName,
-      //       lastName: datain.lastName,
-      //       usertype: datain.usertype,
-      //       avatarUrl: baseUrl
-      //     });
-      //   })
-      //   .catch(err => {});
+          var baseUrl = preurl + config + posturl;
+          // this.setState({ avatarUrl: baseUrl });
+          setavatarUrl(baseUrl);
+          setusername(datain.firstName + " " + datain.lastName);
+          // this.setState({
+          //   id: datain._id,
+          //   firstName: datain.firstName,
+          //   lastName: datain.lastName,
+          //   usertype: datain.usertype,
+          //   avatarUrl: baseUrl
+          // });
+        })
+        .catch(err => {});
     } catch (error) {
       console.log(error);
-      props.history.push("/login");
+      //props.history.push("/login");
       setlogedin(false);
       //this.setState({ loggedin: false });
       //this.props.history.push("/login");
     }
+
+    axios
+      .get("/usr/notifications", config)
+      .then(res => {
+        console.log(
+          "5555555555555555555555555 nortifications 55555555555555555555555"
+        );
+
+        console.log(res.data);
+        setdata(res.data);
+      })
+      .catch(err => console.log(err));
+
+    // socket.on("new_interview", newitne => {
+    //   console.log("awa");
+    //   console.log(newitne);
+    //   setdata(state => {
+    //     return state.concat([newitne]);
+    //   });
+
+    // console.log(data);
+    // });
   }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -220,29 +274,125 @@ function Dashboard(props) {
               component="h1"
               variant="h6"
               color="inherit"
-              noWrap
               className={classes.title}
             >
-              Recrutement@Auxenta
+              RECRUITMENT@AUXENTA
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon onClick={() => console.log("cliked")} />
-              </Badge>
-              <Button
-                className={classes.logoutButton}
-                color="inherit"
-                onClick={() => {
-                  localStorage.removeItem("jwt");
-                  localStorage.removeItem("userId");
-                  localStorage.removeItem("usertype");
-                  props.history.push("/login");
-                  window.location.reload(false);
-                }}
-              >
-                Logout
-              </Button>
-            </IconButton>
+
+            <div className="divcontnotify">
+              <span style={{}}> {username}</span>
+              <IconButton color="inherit">
+                <Badge badgeContent={data.length} color="secondary">
+                  <NotificationsIcon
+                    onClick={handleClick2}
+                    style={{ width: 30, height: 30 }}
+                  />
+                </Badge>
+
+                <Avatar
+                  alt="Remy Sharp"
+                  src={avatarUrl}
+                  style={{ marginLeft: 48, width: 40, height: 40 }}
+                  onClick={handleClick}
+                  //className={classes.avatar}
+                />
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl2}
+                  keepMounted
+                  open={Boolean(anchorEl2)}
+                  onClose={handleClose2}
+                  style={{ width: 600 }}
+                >
+                  {data.length === 0 ? (
+                    <MenuItem style={{ width: 50 }}>
+                      {" "}
+                      No Notifications{" "}
+                    </MenuItem>
+                  ) : (
+                    data.map((ele, index) => {
+                      return (
+                        <MenuItem
+                          onClick={() => {
+                            setdata(sata => {
+                              return sata.splice(index, 1);
+                            });
+
+                            props.history.push(
+                              "/getcandidate/" + ele.candidateId
+                            );
+                            var jwt = localStorage.getItem("jwt");
+
+                            var config = {
+                              headers: { authorization: jwt }
+                            };
+
+                            axios
+                              .post(
+                                "/usr/notificationseen",
+                                {
+                                  nortid: ele._id
+                                },
+                                config
+                              )
+                              .then()
+                              .catch(err => console.log(err)); //nortid
+                          }}
+                        >
+                          {ele.dis}
+                        </MenuItem>
+                      );
+                    })
+                  )}
+                </Menu>
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      var id = localStorage.getItem("userId");
+                      props.history.push("/user/" + id);
+                      handleClose();
+                    }}
+                  >
+                    Profile
+                  </MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      localStorage.removeItem("jwt");
+                      localStorage.removeItem("userId");
+                      localStorage.removeItem("usertype");
+                      props.history.push("/login");
+                      setlogedin(false);
+                      //window.location.reload(false);
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
+
+                {/* <Button
+                  className={classes.logoutButton}
+                  color="inherit"
+                  onClick={() => {
+                    localStorage.removeItem("jwt");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("usertype");
+                    props.history.push("/login");
+                    window.location.reload(false);
+                  }}
+                >
+                  Logout
+                </Button> */}
+              </IconButton>
+            </div>
           </Toolbar>
         </AppBar>
 
@@ -264,6 +414,18 @@ function Dashboard(props) {
               <ListItem
                 button
                 onClick={() => {
+                  props.history.push("/landingpage");
+                }}
+              >
+                <ListItemIcon>
+                  <Apps />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+
+              <ListItem
+                button
+                onClick={() => {
                   props.history.push("/dashboard");
                 }}
               >
@@ -272,6 +434,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItem>
+
               <ListItem
                 button
                 onClick={() => {
@@ -291,10 +454,27 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <PersonAdd />
+                  <i class="fas fa-user-plus" />
                 </ListItemIcon>
                 <ListItemText primary="Add new User" />
               </ListItem>
+
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/addcandidate");
+                  }}
+                >
+                  <ListItemIcon>
+                    <PersonAdd />
+                  </ListItemIcon>
+                  <ListItemText primary="Add new candidate" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+
               <ListItem
                 button
                 onClick={() => {
@@ -307,17 +487,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Analytics" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/shortlist");
-                }}
-              >
-                <ListItemIcon>
-                  <ImportExport />
-                </ListItemIcon>
-                <ListItemText primary="Shortlist" />
-              </ListItem>
+
               <ListItem
                 button
                 onClick={() => {
@@ -329,7 +499,24 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Search" />
               </ListItem>
-              {usertype === "admin" || usertype === "hr_staff" ? (
+
+              {usertype === "admin" || usertype === "depthead" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/interviews");
+                  }}
+                >
+                  <ListItemIcon>
+                    <CardTravel />
+                  </ListItemIcon>
+                  <ListItemText primary="Interviews" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+
+              
                 <ListItem
                   button
                   onClick={() => {
@@ -341,9 +528,7 @@ function Dashboard(props) {
                   </ListItemIcon>
                   <ListItemText primary="Settings" />
                 </ListItem>
-              ) : (
-                ""
-              )}
+              
               {usertype === "admin" || usertype === "hr_staff" ? (
                 <ListItem
                   button
@@ -359,7 +544,7 @@ function Dashboard(props) {
               ) : (
                 ""
               )}
-              <ListItem
+              {/* <ListItem
                 button
                 onClick={() => {
                   localStorage.removeItem("jwt");
@@ -373,8 +558,7 @@ function Dashboard(props) {
                   <CallReceived />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
-              </ListItem>
-              
+              </ListItem> */}
             </div>
           </List>
 

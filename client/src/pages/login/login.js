@@ -25,7 +25,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import jsonwebtoken from "jsonwebtoken";
 //import Navbar from "../../components/navbar";
-//import "./login.css";
+import "./login.css";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -52,10 +52,12 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     flexGrow: 1
-  },appbar: {
+  },
+  appbar: {
     flexGrow: 1,
-    alignItems: 'center',
-
+    alignItems: "center",
+    letterSpacing: 5,
+    fontWeight: "bold"
   }
 }));
 
@@ -91,13 +93,24 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 
   return (
     <div>
-      <AppBar position="static" >
+      <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap align="center" className={classes.appbar} >
-            Recruitement @ Auxenta
+          <Typography
+            variant="h6"
+            color="inherit"
+            noWrap
+            align="center"
+            className={classes.appbar}
+          >
+            RECRUITMENT@AUXENTA
           </Typography>
         </Toolbar>
       </AppBar>
+      <br />
+      <h1 className="sameera"> </h1>
+      <br />
+      <br />
+
       <Container component="main" maxWidth="xs">
         {errors.invalidcred && (
           <div class="alert alert-danger" role="alert">
@@ -195,6 +208,11 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
         </div>
         <Box mt={5} />
       </Container>
+      <footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+        <div class="container text-center">
+          <small>Copyright RECRUITMENT@Auxenta &copy; </small>
+        </div>
+      </footer>
     </div>
   );
 };
@@ -244,13 +262,8 @@ const Login = withFormik({
 
           console.log(props);
 
-          if (data.data.usertype === "depthead") {
-            props.history.push("/shortlist");
-            window.location.reload(false);
-          } else {
-            props.history.push("/dashboard");
-            window.location.reload(false);
-          }
+          props.history.push("/dashboard");
+          window.location.reload(false);
         }
 
         // if (body) {

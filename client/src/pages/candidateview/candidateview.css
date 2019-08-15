@@ -1,11 +1,11 @@
 .canview {
   margin: auto;
-  width: 50%;
+  /* width: 50%; */
   padding: 10px;
 }
 .canview2 {
   margin: auto;
-  width: 50%;
+  /* width: 50%; */
   padding: 10px;
 }
 
@@ -27,11 +27,15 @@
   margin-right: 20px;
 }
 
-.canviewshortlistform{
+.canviewborderdividcandidtaeeditdetails {
+  margin-top: 2%;
+}
+
+.canviewshortlistform {
   margin-left: 40%;
 }
 
-.canviewmodal2closebtn{
+.canviewmodal2closebtn {
   background-color: #246ad3;
 }
 
@@ -52,4 +56,62 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.rec {
+  text-align: right;
+  margin: auto 0;
+  margin-left: 45%;
+  color: brown;
+}
+.sk {
+  margin: 0 5px 0 0;
+}
+
+.pcolorcanview {
+  margin-bottom: 1%;
+}
+.h6colorcanview {
+  margin-top: 1%;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.threecol {
+  flex-flow: row nowrap;
+  /* margin-bottom: 10%; */
+}
+
+.btngroupdivcanview {
+  margin-left: 5%;
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.finalstateforinterviewcanview {
+  text-align: center;
+  /* float: right; */
+  /* width: 20%; */
+  margin-bottom: 20%;
+  align-content: center;
+  /* margin-left: 40%; */
+}
+
+.canviewbtngroup {
+  margin: 0.3%;
+}
+.shortlistheadingcanview {
+  text-align: center;
+}
+
+.interviewseccanview {
+  margin-left: 10%;
+  width: 60%;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+.paddingdivforcanview {
+  /* margin-bottom: 10%; */
+  /* height: 100%; */
+  color: #ffffff;
 }
