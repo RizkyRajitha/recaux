@@ -185,7 +185,7 @@ class Addcandidate extends Component {
           <div className="container">
             <div className="row">
               <div className="col-sm" />
-              <div className="col-sm">
+              <div className="col-6">
                 {this.state.addedsucsess == 2 && (
                   <div class="alert alert-success" role="alert">
                     candidate added successfully
@@ -277,12 +277,33 @@ class Addcandidate extends Component {
                     />
                   </div>
 
-                  <input
+                  <div class="input-group mb-3">
+                    <div class="custom-file">
+                      <input
+                        class="custom-file-input"
+                        id="inputGroupFile01"
+                        required
+                        type="file"
+                        name="cv"
+                        onChange={this.chngehndlcv}
+                      />
+                      <label class="custom-file-label" for="inputGroupFile01">
+                        {this.state.cvFile
+                          ? this.state.cvFile.name +
+                            " " +
+                            (this.state.cvFile.size / 1024 / 1024).toFixed(2) +
+                            "Mb"
+                          : "Choose file"}
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* <input
                     required
                     type="file"
                     name="cv"
                     onChange={this.chngehndlcv}
-                  />
+                  /> */}
                   {this.state.errchoseefilelater && (
                     <div class="alert alert-danger" role="alert">
                       you can add a resume later using candidate profile

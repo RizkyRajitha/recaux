@@ -1,14 +1,17 @@
-.maindiv{
-    width: 75%;
-    text-align: center;
+.maindivregister {
+  /* margin-left: 30%; */
+  width: 65%;
+  text-align: center;
 }
 
-.formdiv{
-    width: 75%;
-    text-align: center;
-    margin-left: 33%;
+.formdivregister {
+  width: 55%;
+  text-align: center;
+  margin-left: 33%;
 }
 
-.wrapper{
-    margin-left: 21%;
+.wrapperregister {
+  text-align: center;
+  margin-left: 51%;
+  margin-bottom: 10%;
 }

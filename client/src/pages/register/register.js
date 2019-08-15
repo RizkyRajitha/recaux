@@ -34,8 +34,6 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
       console.log(error);
       history.push("/login");
     }
-
-   
   });
 
   return (
@@ -48,9 +46,9 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
         type={usertype}
       /> */}
 
-      <div className="maindiv">
-        <div className="wrapper">
-          <div className="form-wrapper">
+      <div className="maindivregister">
+        <div className="wrapperregister">
+          <div className="form-wrapperregister">
             <div>
               <h2> Add new user </h2>
 
@@ -121,7 +119,6 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
                   />
                 </div>
 
-               
                 <div className="form-group">
                   {/* <label> enter email </label> */}
 
@@ -166,12 +163,12 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
 const Login = withFormik({
   mapPropsToValues({
     email1,
-   
+
     usertype
   }) {
     return {
       email1: email1 || "",
-     
+
       usertype: usertype || "default"
     };
   },
@@ -191,7 +188,7 @@ const Login = withFormik({
 
     var payload = {
       email: values.email1,
-      
+
       usertype: values.usertype
     };
 
@@ -268,7 +265,7 @@ const Login = withFormik({
     email1: Yup.string()
       .email("Email must be a valid email")
       .required("Email is required"),
-  
+
     usertype: Yup.string().oneOf(
       ["hr_staff", "depthead", "admin"],
       "please select type"

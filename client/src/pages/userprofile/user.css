@@ -20,6 +20,7 @@
 .userprofilebtnsdiv {
   margin-top: -10rem;
   margin-right: 5rem;
+  text-align: center;
 }
 
 .loader-userprofile {
@@ -112,4 +113,8 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.btsuserprofile {
+  margin: 0.3%;
 }

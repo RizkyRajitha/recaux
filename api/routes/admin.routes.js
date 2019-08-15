@@ -41,7 +41,7 @@ exports.userlist = (req, res, next) => {
         console.log("in user list data");
 
         User.findById(ObjectID(user.id)).then(result => {
-          if (result.usertype === "admin") {
+          if (result.usertype === "admin" || result.usertype === "hr_staff") {
             User.find()
               .then(doc => {
                 payloadarr = [];
@@ -60,8 +60,8 @@ exports.userlist = (req, res, next) => {
                     usertype: element.usertype,
                     candidatesAssinged: pendingcan,
                     id: element._id,
-                    state:element.state,
-                    avatarUrl:element.avatarUrl
+                    state: element.state,
+                    avatarUrl: element.avatarUrl
                   };
                   payloadarr.push(temp);
                 });
@@ -105,7 +105,7 @@ exports.addNewUser = (req, res, next) => {
                 email: datain.email,
                 usertype: datain.usertype
               });
- 
+
               newuser
                 .save()
                 .then(doc => {
@@ -114,7 +114,7 @@ exports.addNewUser = (req, res, next) => {
                   emailhandler.mailhandlernewuseremail(
                     datain.email,
                     doc._id,
-                    datain.usertype,
+                    datain.usertype
                   );
                   res.status(200).send();
                 })
@@ -154,10 +154,10 @@ exports.changeuserstate = (req, res, next) => {
       if (!user) {
         res.status(401).send(info);
       } else {
-        console.log("*********************************")
+        console.log("*********************************");
         console.log(req.body);
-        console.log("*********************************")
-               var datain = req.body;
+        console.log("*********************************");
+        var datain = req.body;
 
         console.log(req.params.id);
         var iid = req.params.id;
@@ -184,8 +184,6 @@ exports.changeuserstate = (req, res, next) => {
     }
   )(req, res, next);
 };
-
-
 
 exports.settingsadd = (req, res, next) => {
   passport.authenticate(

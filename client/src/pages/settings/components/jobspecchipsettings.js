@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import Select from "react-select";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
 import Divider from "@material-ui/core/Divider";
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -161,34 +161,29 @@ export default function ChipsArray2(props) {
   };
 
   return (
-    <Container>
-      <TextField
-        id="settingsaddskill"
-        label="New Jobspec"
-        //className={clsx(classes.textField, classes.dense)}
-        margin="dense"
-        variant="outlined"
+    <div className="container settignjobspcmaindiv ">
+      <input
         type="text"
+        label="New Jobspec"
         onChange={hndleskillchange}
         onKeyPress={handleKeyPress}
-        className="settingsaddskill"
+        className="form-control settingsaddskill settignjobspinput "
+        placeholder="Enter new job specification"
       />
 
-      <Button
-        id={!onload ? "settingsaddskillbtn" : "settingsaddskillbtnonload"}
-        variant="contained"
-        color="primary"
+      <button
+        className="btn btn-primary settingsaddskillbtn"
         onClick={addskill}
       >
         add
-      </Button>
-      <CircularProgress
+      </button>
+      {/* <CircularProgress
         id="settingsloadingspinner"
         hidden={!onload}
         className={classes.progress}
-      />
-      <Divider variant="inset" component="li" />
-      <Paper className={classes.root}>
+      /> */}
+
+      <div className="settingsjobspecchipdiv">
         {chipData.map(data => {
           return (
             <Chip
@@ -199,7 +194,7 @@ export default function ChipsArray2(props) {
             />
           );
         })}
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }

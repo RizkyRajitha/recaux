@@ -53,10 +53,9 @@ class App extends Component {
         <div className="App">
           {jwt ? <TemporaryDrawer /> : ""}
           <Switch>
-            <Route exact path="/" component={Login} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/register" component={Register} />
-            <Route path="/addcandidate" component={Addcandidate} />
+
             <Route path="/Login" component={Login} />
             <Route path="/fogotpassword" render={() => <Fogotpassword />} />
             <Route path="/resetpassword/:id" component={resetpassword} />
@@ -67,7 +66,7 @@ class App extends Component {
             <Route path="/user/:id" component={Userprofile} />
             <Route path="/changepass/:id" component={Changepass} />
             <Route path="/avatar/:id" component={Avatar} />
-            <Route path="/shortlist" component={Shortlist} />
+
             <Route path="/drawer" component={Drawer} />
             <Route path="/pdftest" component={Pdftest} />
             <Route path="/spinner" component={Home} />
@@ -77,12 +76,16 @@ class App extends Component {
             <Route path="/searchAnalytics" component={analyticsdashboard2} />
             <Route path="/outsourceprojects/:id" component={OutSourceProject} />
             <Route path="/landingpage" component={LandingPage} />
-            {usertype === "admin" ? (
-              <Route path="/settings" component={Settings} />
+            <Route exact path="/" component={Login} />
+            {usertype === "admin" || usertype === "hr_staff" ? (
+              <Route path="/addcandidate" component={Addcandidate} />
             ) : (
               ""
             )}
-            {usertype === "admin" ? (
+
+            <Route path="/settings" component={Settings} />
+
+            {usertype === "admin" || usertype === "hr_staff" ? (
               <Route path="/userlist" component={Userlist} />
             ) : (
               ""

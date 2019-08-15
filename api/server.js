@@ -12,6 +12,7 @@ const bp = require("body-parser");
 const passport = require("passport");
 const User = require("./db/users");
 const Candidate = require("./db/candidates");
+const Notifications = require("./db/nortification");
 const ObjectID = require("mongodb").ObjectID;
 // const swaggerUi = require("swagger-ui-express");
 // const swaggerDocument = require("./config/swagger.json");
@@ -27,7 +28,7 @@ const port = process.env.PORT || 3001;
 mongoose.Promise = global.Promise;
 //"mongodb://127.0.0.1:27017/authdb" ||
 const mongodbAPI = "mongodb://127.0.0.1:27017/authdb"; //keys.mongouri;
-
+app.use(require("express-status-monitor")());
 //const app = express();
 app.use(passport.initialize());
 app.use(cors());
@@ -117,17 +118,26 @@ var channel = pusher.subscribe("my-channel");
 channel.bind("my-event", function(data) {
   console.log("new candidate recieved");
   console.log(JSON.stringify(data));
-  console.log(data.skillset[2]);
+  // console.log(data.skillset[2]);
   ///home/dealwithit/machine_learning_venv
+
+  var skillarr = [];
+
+  data.skillset.forEach((element, index) => {
+    skillarr.push({ value: index, label: element });
+  });
+
+  console.log(skillarr);
 
   const newcandidate = new Candidate({
     email: data.from_email,
     name: data.from_name,
     date: new Date().toISOString(),
     source: "email",
-    skills: data.skillset
+    skills: skillarr,
+    jobspec: data.jobspec
   });
-
+  var nortiflist = [];
   newcandidate
     .save()
     .then(result => {
@@ -176,29 +186,43 @@ channel.bind("my-event", function(data) {
               fs.unlinkSync(filePath);
               console.log(cvuploaddata);
 
-              const newnot = new Notifications({
-                dis: ` you have new candidate  ${result.name} `,
-                title: "new candidate",
-                time: new Date().toISOString(),
-                userIdShow: datain.interviewer,
-                candidateId: datain.candidateid
-              });
+              User.find({
+                $or: [{ usertype: "hr_staff" }]
+              })
+                .then(doc => {
+                  // var nortiflist = [];
+                  nortiflist = [];
+                  doc.forEach(ele => {
+                    nortiflist.push(ele._id);
+                  });
 
-              newnot
-                .save()
-                .then(docs => {
-                  var objdocs = docs.toObject();
-                  objdocs.candidateId = datain.candidateid;
-                  serverss.wsfunc("new_interview", docs);
-                  res.status(200).json({ msg: "sucsess" });
+                  const newnot = new Notifications({
+                    dis: ` you have new candidate  ${result.name} `,
+                    title: "new candidate",
+                    time: new Date().toISOString(),
+                    userIdShow: nortiflist,
+                    candidateId: result._id
+                  });
+
+                  newnot
+                    .save()
+                    .then(docs => {
+                      var objdocs = docs.toObject();
+                      objdocs.candidateId = datain.candidateid;
+                      // serverss.wsfunc("new_interview", docs);
+                      // res.status(200).json({ msg: "sucsess" });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+
+                  //io.emit("new_candidate", result);
                 })
                 .catch(err => {
                   console.log(err);
                 });
-
-              //io.emit("new_candidate", result);
             })
-            .catch(err => {});
+            .catch(err => console.log(err));
 
           //res.status(200).json(result);
         }
@@ -218,6 +242,7 @@ channel.bind("my-event", function(data) {
           var cvno = dupcandoc.cvUrl.length;
           console.log("cv number - " + cvno);
           console.log("file name - " + data.message);
+
           var filePath =
             "/home/dealwithit/Documents/dev/recaux/assets/cv/" + data.message;
           //var cvexte = path.extname(req.file.originalname);
@@ -250,20 +275,50 @@ channel.bind("my-event", function(data) {
                       url: cvuploaddata.url,
                       recievedDate: new Date().toISOString()
                     }
+                  },
+                  $set: {
+                    skills: skillarr,
+                    jobspec: data.jobspec
                   }
                 }
               )
                 .then(doc => {
-                  fs.unlinkSync(filePath);
-                  Candidate.findById(ObjectID(dupcandoc._id))
-                    .then(canupdateddco => {
-                      console.log(canupdateddco);
-                      io.emit("new_candidate", canupdateddco);
-                      ress.status(200).json(canupdateddco.cvUrl);
+                  User.find({
+                    usertype: "hr_staff"
+                  })
+                    .then(doc => {
+                      console.log(doc);
+                      nortiflist = [];
+                      doc.forEach(ele => {
+                        nortiflist.push(ele._id.toString());
+                      });
+
+                      const newnot = new Notifications({
+                        dis: ` you have new cv from a old \\n candidate  ${
+                          dupcandoc.name
+                        } `,
+                        title: "new candidate",
+                        time: new Date().toISOString(),
+                        userIdShow: nortiflist,
+                        candidateId: dupcandoc._id
+                      });
+                      console.log("new ");
+                      newnot.save(doc => {
+                        console.log("new nortif");
+                      });
                     })
-                    .catch(err => {
-                      console.log(err);
-                    });
+                    .catch(err => console.log(err));
+
+                  fs.unlinkSync(filePath);
+                  // Candidate.findById(ObjectID(dupcandoc._id))
+                  //   .then(canupdateddco => {
+                  //     console.log(canupdateddco);
+                  //     io.emit("new_candidate", canupdateddco);
+                  //     ress.status(200).json(canupdateddco.cvUrl);
+                  //   })
+                  //   .catch(err => {
+                  //     console.log(err);
+                  //   });
                 })
                 .catch(err => {});
 

@@ -1,9 +1,31 @@
-#settingsaddskillbtn {
+.settingsaddskill {
   margin-top: 0.6%;
   height: 39px;
+  width: 40%;
 }
 #settingsaddskillbtnonload {
-    margin-top: -2.5%;
-    height: 39px;
-  }
-  
+  margin-top: -2.5%;
+  height: 39px;
+}
+
+.settingsjobspecchipdiv {
+  margin-top: 1%;
+}
+
+.settignjobspcmaindiv {
+  text-align: left;
+  display: flex;
+}
+
+.settingsaddskillbtn {
+  height: 11%;
+  margin: 0.7%;
+}
+
+.settignjobspinput {
+  width: 58%;
+}
+
+.paddingdivsettings {
+  margin-bottom: 4%;
+}

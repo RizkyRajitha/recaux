@@ -342,127 +342,127 @@ export default class analyticsdashboard extends Component {
       data3: [
         {
           name: date31,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date30,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date29,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date28,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date27,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date26,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date25,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date24,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date23,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date22,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date21,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date20,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date19,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date18,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date17,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date16,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date15,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date14,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date13,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date12,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date11,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date10,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date9,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date8,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date1,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date2,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date3,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date4,
-          NumberOfCVs: 10
+          NumberOfCVs: 0
         },
         {
           name: date5,
-          NumberOfCVs: 10 //daybeforeyesterday
+          NumberOfCVs: 0 //daybeforeyesterday
         },
         {
           name: date6,
-          NumberOfCVs: 10 //yesterday
+          NumberOfCVs: 0 //yesterday
         },
         {
           name: date7,
-          NumberOfCVs: 10 //today
+          NumberOfCVs: 0 //today
         }
       ]
     };
@@ -476,10 +476,7 @@ export default class analyticsdashboard extends Component {
         this.state.data1[0].value = response.data.shortlistedCandidates;
         this.state.data1[1].value = response.data.onholdCandidates;
         this.state.data1[2].value = response.data.rejectedCandidates;
-        // this.state.data2[0].value = response.data.qaCandidates;
-        // this.state.data2[1].value = response.data.seCandidates;
-        // this.state.data2[2].value = response.data.baCandidates;
-        // this.state.data2[3].value = response.data.pmCandidates;
+
         this.state.data3[0].NumberOfCVs = response.data.yesterday29Candidates;
         this.state.data3[1].NumberOfCVs = response.data.yesterday28Candidates;
         this.state.data3[2].NumberOfCVs = response.data.yesterday27Candidates;
@@ -511,8 +508,7 @@ export default class analyticsdashboard extends Component {
         this.state.data3[28].NumberOfCVs = response.data.yesterday1Candidates;
         this.state.data3[29].NumberOfCVs = response.data.yesterdayCandidates;
         this.state.data3[30].NumberOfCVs = response.data.todayCandidates;
-        this.state.data4[0].value = response.data.manualCandidates;
-        this.state.data4[1].value = response.data.emailCandidates;
+
         this.forceUpdate();
       })
       .catch(function(error) {
@@ -534,7 +530,23 @@ export default class analyticsdashboard extends Component {
         this.forceUpdate();
       })
       .catch(err => console.log(err));
+
+    axios
+      .get("/usr/reportscansource", config)
+      .then(data => {
+        console.log("source docss");
+        console.log(data.data);
+
+        this.state.data4[0].value = data.data.manual;
+        this.state.data4[1].value = data.data.email;
+
+        // this.state.data2 = data.data;
+
+        this.forceUpdate();
+      })
+      .catch(err => console.log(err));
   }
+
   // piechart2() {
   //   return this.state.data2.map(function(currentData2, i){
   //       return <Data2 data2={currentData2} key={i} />;

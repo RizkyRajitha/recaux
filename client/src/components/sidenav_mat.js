@@ -155,6 +155,7 @@ function Dashboard(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
   const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [username, setusername] = React.useState("");
   const usertype = localStorage.getItem("usertype");
 
   const [data, setdata] = React.useState([]);
@@ -205,6 +206,7 @@ function Dashboard(props) {
           var baseUrl = preurl + config + posturl;
           // this.setState({ avatarUrl: baseUrl });
           setavatarUrl(baseUrl);
+          setusername(datain.firstName + " " + datain.lastName);
           // this.setState({
           //   id: datain._id,
           //   firstName: datain.firstName,
@@ -216,7 +218,7 @@ function Dashboard(props) {
         .catch(err => {});
     } catch (error) {
       console.log(error);
-      props.history.push("/login");
+      //props.history.push("/login");
       setlogedin(false);
       //this.setState({ loggedin: false });
       //this.props.history.push("/login");
@@ -278,6 +280,7 @@ function Dashboard(props) {
             </Typography>
 
             <div className="divcontnotify">
+              <span style={{}}> {username}</span>
               <IconButton color="inherit">
                 <Badge badgeContent={data.length} color="secondary">
                   <NotificationsIcon
@@ -300,9 +303,13 @@ function Dashboard(props) {
                   keepMounted
                   open={Boolean(anchorEl2)}
                   onClose={handleClose2}
+                  style={{ width: 600 }}
                 >
                   {data.length === 0 ? (
-                    <MenuItem> No Notifications </MenuItem>
+                    <MenuItem style={{ width: 50 }}>
+                      {" "}
+                      No Notifications{" "}
+                    </MenuItem>
                   ) : (
                     data.map((ele, index) => {
                       return (
@@ -416,7 +423,7 @@ function Dashboard(props) {
                 <ListItemText primary="Home" />
               </ListItem>
 
- <ListItem
+              <ListItem
                 button
                 onClick={() => {
                   props.history.push("/dashboard");
@@ -447,10 +454,27 @@ function Dashboard(props) {
                 }}
               >
                 <ListItemIcon>
-                  <PersonAdd />
+                  <i class="fas fa-user-plus" />
                 </ListItemIcon>
                 <ListItemText primary="Add new User" />
               </ListItem>
+
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/addcandidate");
+                  }}
+                >
+                  <ListItemIcon>
+                    <PersonAdd />
+                  </ListItemIcon>
+                  <ListItemText primary="Add new candidate" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+
               <ListItem
                 button
                 onClick={() => {
@@ -463,17 +487,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Analytics" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/shortlist");
-                }}
-              >
-                <ListItemIcon>
-                  <ImportExport />
-                </ListItemIcon>
-                <ListItemText primary="Shortlist" />
-              </ListItem>
+
               <ListItem
                 button
                 onClick={() => {
@@ -485,18 +499,24 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="Search" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/interviews");
-                }}
-              >
-                <ListItemIcon>
-                  <CardTravel />
-                </ListItemIcon>
-                <ListItemText primary="Interviews" />
-              </ListItem>
+
               {usertype === "admin" || usertype === "depthead" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/interviews");
+                  }}
+                >
+                  <ListItemIcon>
+                    <CardTravel />
+                  </ListItemIcon>
+                  <ListItemText primary="Interviews" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+
+              
                 <ListItem
                   button
                   onClick={() => {
@@ -508,9 +528,7 @@ function Dashboard(props) {
                   </ListItemIcon>
                   <ListItemText primary="Settings" />
                 </ListItem>
-              ) : (
-                ""
-              )}
+              
               {usertype === "admin" || usertype === "hr_staff" ? (
                 <ListItem
                   button

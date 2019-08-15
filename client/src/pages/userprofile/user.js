@@ -276,24 +276,7 @@ class Userprofile extends Component {
 
     return (
       <div>
-        {/* <Navbar />
-        <Drawer
-          avatarUrl={this.state.baseUrl}
-          username={
-            this.state.userdata.firstName + " " + this.state.userdata.lastName
-          }
-          type={this.state.userdata.usertype}
-        /> */}
-
         <div className="container">
-          {/* {this.state.userdata.avatarUrl && (
-            <img
-              id="avatarimage"
-              src={this.state.baseUrl}
-              className="rounded-circle"
-            />
-          )} */}
-
           <Grid container justify="center" alignItems="center">
             <Avatar
               alt="Remy Sharp"
@@ -334,25 +317,6 @@ class Userprofile extends Component {
                 </tr>
               </tbody>
             </table>
-            <label
-              hidden={!this.state.isauthorizeduser}
-              className="disableuserlable"
-            >
-              {" "}
-              {this.state.userdata.state
-                ? "Disable this User"
-                : "User Disabled"}
-            </label>
-            <label class="switch" hidden={!this.state.isauthorizeduser}>
-              <input
-                type="checkbox"
-                name="state"
-                checked={!this.state.userdata.state}
-                disabled={!this.state.isauthorizeduser}
-                onChange={this.deactivateuser}
-              />
-              <span class="slider round" />
-            </label>
 
             {/* 
               {this.state.userdata.avatarUrl && (
@@ -430,12 +394,13 @@ class Userprofile extends Component {
                         onChange={this.chngehandlemail}
                         id="email"
                         value={this.state.userdata.email}
+                        disabled={true}
                       />
                     </div>
                   </div>
                   <input
                     type="submit"
-                    className="btn btn-primary"
+                    className="btn btsuserprofile btn-primary"
                     value="save edited details"
                   />
                 </form>
@@ -459,8 +424,28 @@ class Userprofile extends Component {
           </div>
 
           <div className="userprofilebtnsdiv">
+            <label
+              hidden={!this.state.isauthorizeduser}
+              className="disableuserlable"
+            >
+              {" "}
+              {this.state.userdata.state
+                ? "Disable this User"
+                : "User Disabled"}
+            </label>
+            <label class="switch" hidden={!this.state.isauthorizeduser}>
+              <input
+                type="checkbox"
+                name="state"
+                checked={!this.state.userdata.state}
+                disabled={!this.state.isauthorizeduser || this.state.userowner}
+                onChange={this.deactivateuser}
+              />
+              <span class="slider round" />
+            </label>
+            <br />
             <button
-              className="btn btn-primary"
+              className="btn btsuserprofile btn-primary"
               disabled={this.state.userowner}
               onClick={this.chngpss}
             >
@@ -469,7 +454,7 @@ class Userprofile extends Component {
             <input
               disabled={this.state.userowner}
               type="button"
-              className="btn btn-primary"
+              className="btn btsuserprofile btn-primary"
               onClick={this.imagehndle}
               value="Edit profile"
             />

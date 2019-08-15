@@ -7,6 +7,7 @@ const ObjectID = require("mongodb").ObjectID;
 var fs = require("fs");
 const pdf = require("html-pdf");
 const evaluationPdfTemplate = require("../config/evaluationPdf/template");
+const outprojectPdfTemplate = require("../config/outprojectPdf/outprojecttemplate");
 
 exports.shortlistData = (req, res, next) => {
   passport.authenticate(
@@ -355,7 +356,43 @@ exports.getevalpdf = (req, res, next) => {
                   currentPosition: doc[0].currentPosition,
                   currentEmployer: doc[0].currentEmployer,
                   interviwerName: doc[0].interviewedByName,
-                  approve: doc[0].approve
+                  approve: doc[0].approve,
+                  skill1: doc[0].skill1,
+                  skill2: doc[0].skill2,
+                  skill3: doc[0].skill3,
+                  skill4: doc[0].skill4,
+                  skill5: doc[0].skill5,
+                  skill6: doc[0].skill6,
+                  skill7: doc[0].skill7,
+                  skill8: doc[0].skill8,
+                  skill9: doc[0].skill9,
+                  skill10: doc[0].skill10,
+                  skill11: doc[0].skill11,
+                  skill12: doc[0].skill12,
+                  skill13: doc[0].skill13,
+                  skill14: doc[0].skill14,
+                  rate1: doc[0].rate1,
+                  rate2: doc[0].rate2,
+                  rate3: doc[0].rate3,
+                  rate4: doc[0].rate4,
+                  rate5: doc[0].rate5,
+                  rate6: doc[0].rate6,
+                  rate7: doc[0].rate7,
+                  rate8: doc[0].rate8,
+                  rate9: doc[0].rate9,
+                  rate10: doc[0].rate10,
+                  rate11: doc[0].rate11,
+                  rate12: doc[0].rate12,
+                  rate13: doc[0].rate13,
+                  rate14: doc[0].rate14,
+                  overrallRating: doc[0].overrallRating,
+                  summary: doc[0].summary,
+                  salary1: doc[0].salary1,
+                  salary2: doc[0].salary2,
+                  salary3: doc[0].salary3,
+                  salary4: doc[0].salary4,
+                  period1: doc[0].period1,
+                  period2: doc[0].period2
                 }),
                 {}
               )
@@ -675,3 +712,71 @@ exports.updatefinalstatus = (req, res, next) => {
     }
   )(req, res, next);
 };
+
+exports.outproject = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        var info = {
+          out_Name: req.body.out_Name,
+          out_Designation: req.body.out_Designation,
+          out_ExeProfile: req.body.out_ExeProfile,
+          Skill: req.body.Skill,
+          Company: req.body.Company,
+          DesignationP: req.body.DesignationP,
+          Duration: req.body.Duration,
+          Environment: req.body.Environment,
+          TechnologiesP: req.body.TechnologiesP,
+          out_Qualification: req.body.out_Qualification
+        };
+
+        pdf
+          .create(outprojectPdfTemplate(info), {})
+          .toFile(
+            "../assets/outproject/" + req.params.id + "aouptoject.pdf",
+            function(err, pdfdata) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log(pdfdata);
+                res.download(
+                  pdfdata.filename,
+                  req.params.id + "aouptoject.pdf",
+                  function(err) {
+                    if (err) {
+                      console.log(err);
+                      // Handle error, but keep in mind the response may be partially-sent
+                      // so check res.headersSent
+                    } else {
+                      // decrement a download credit, etc.
+                    }
+                  }
+                );
+              }
+            }
+          );
+
+        // res.status(200).json({
+        //   msg: "sucsess",
+        //   url:
+        //     "http://localhost:3001/evaluation/" +
+        //     req.params.id +
+        //     "evaluationpdf.pdf"
+        // }); //"5d3de640973a806147d74de2evaluationpdf.pdf'})
+      }
+    }
+  )(req, res, next);
+};
+
+//
