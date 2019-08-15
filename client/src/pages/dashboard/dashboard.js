@@ -371,7 +371,7 @@ class dashboard extends Component {
 
         <br />
 
-        <button
+        {/* <button
           onClick={this.addcandidate}
           className="btn btn-primary"
           id="shortlist"
@@ -392,7 +392,7 @@ class dashboard extends Component {
           }
         >
           Add new candidate
-        </button>
+        </button> */}
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -491,7 +491,7 @@ class dashboard extends Component {
             })}
           </div>{" "}
           <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
-            {this.state.shortlistedcandicates.length === 0 && (
+            {this.state.scheduledcandicates.length === 0 && (
               <h6 className="noschedulecanh6">No scheduled candidates</h6>
             )}
             {this.state.scheduledcandicates.map(can => {

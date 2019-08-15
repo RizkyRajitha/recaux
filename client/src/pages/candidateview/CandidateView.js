@@ -1675,7 +1675,7 @@ class CandidateView extends Component {
 
                   <button
                     hidden={
-                      this.state.usertype === "depthead" || !this.state.shortago 
+                      this.state.usertype === "depthead" || !this.state.shortago
                     }
                     onClick={this.schedule}
                     className="btn canviewbtngroup btn-primary"
@@ -1806,12 +1806,13 @@ class CandidateView extends Component {
                             <tr>
                               <td>
                                 <h6 class="h6colorcanview">
-                                  Interviewe status
+                                  Interview status
                                 </h6>{" "}
                               </td>
                               <td>
-                                {this.state.data.statusHrinterview
-                                  ? `${
+                                {this.state.data.statusHrinterview === "pending "
+                                  ? "Pending"
+                                  :`${
                                       this.state.data.statusHrinterview
                                     } ${"Set by " +
                                       this.state.data.statusHrsetby +
@@ -1828,8 +1829,7 @@ class CandidateView extends Component {
                                       ":" +
                                       moments(
                                         this.state.data.statusHrdate
-                                      ).minute()} `
-                                  : "Pending..."}
+                                      ).minute()} `}
                               </td>
                             </tr>
                           </tbody>
