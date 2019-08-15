@@ -82,24 +82,52 @@ exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
   });
 };
 
-exports.mailhandleremailconfirm = (ursname, email, id) => {
-  try {
-    var token = jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" });
-  } catch (error) {
-    console.log(error);
-  }
+exports.mailhandlerinterviewconfirmation = (
+  candidatename,
+  hrname,
+  canemail,
+  date
+) => {
+  console.log(candidatename);
+  console.log(hrname);
+  console.log(canemail);
+  console.log(date);
 
-  console.log("sending confirm email ............");
+  var datetime = new Date(date);
+
+  var interviewdate = datetime.toString().slice(0, 15);
+
+  console.log("date - " + interviewdate);
+
+  var options = {
+    // weekday: "long",
+    // year: "numeric",
+    // month: "long",
+    // day: "numeric",
+    timeZone: "Asia/Colombo"
+  };
+
+  var interviewtime = datetime.toLocaleTimeString("en-US", options);
+
+  console.log("time " + interviewtime);
+
+  // console.log(event.toLocaleDateString('de-DE', options));
+
+  console.log("date - " + interviewdate);
+
+  console.log("sending confirm interview email ............");
   var mailOptions = {
     from: "kithminiatdev@gmail.com",
     to: "rajithagunathilake@gmail.com",
-    subject: "email confirmation",
+    subject: "Interview confirmation",
     text: "visit - ",
-    template: "templtt",
+    template: "Interview",
     context: {
-      title: " confirm email ",
-      msg: `${emailConfirmApi}/${token}`,
-      name: ursname,
+      date: interviewdate,
+      time: interviewtime,
+      name: candidatename,
+      hrperson: hrname,
+      genon: new Date().toUTCString(),
       uniqeid: Math.round(Math.random() * 10000000000000)
     }
   };
@@ -108,7 +136,7 @@ exports.mailhandleremailconfirm = (ursname, email, id) => {
     if (error) {
       console.log(error);
     } else {
-      console.log("send email - " + email);
+      // console.log("send email - " + email);
       console.log("Email sent: " + info.response);
     }
   });

@@ -1245,6 +1245,8 @@ exports.addinterview = (req, res, next) => {
                             )
                               .then(doc => {})
                               .catch(err => {});
+                          //candidatename , hrname , canemail,date , time
+                            emailhandler.mailhandlerinterviewconfirmation(doc3.name ,doc1.firstName + " " + doc1.lastName,doc3.email,datain.datetime )
 
                             var objdocs = docs.toObject();
                             objdocs.candidateId = datain.candidateid;
