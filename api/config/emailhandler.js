@@ -46,40 +46,45 @@ transporter.use(
 //var a = require("./emails/mars/")
 //console.log(config.jwtexp)
 
-exports.mailhandlerpasswordreset = (ursname, emaill, id) => {
+exports.mailhandlerpasswordreset = (ursname, emaill, id, hash) => {
   console.log("password reset");
   //console.log("path - " + path.join(__dirname, "emails", "mars"));
 
   console.log(ursname);
 
-  jwt.sign({ id: id }, "authdemo", { expiresIn: "10m" }, function(err, token) {
-    const mailOptions = {
-      from: "kithminiatdev@gmail.com",
-      to: "rajithagunathilake@gmail.com",
-      subject: "password reset",
+  jwt.sign(
+    { id: id, prehash: hash },
+    "authdemo",
+    { expiresIn: "10m" },
+    function(err, token) {
+      const mailOptions = {
+        from: "kithminiatdev@gmail.com",
+        to: "rajithagunathilake@gmail.com",
+        subject: "password reset",
 
-      template: "Reset",
-      context: {
-        title: "password reset",
-        msg: `${passwordResetApi}/${token}`,
-        name: ursname,
-        date: new Date().toUTCString(),
-        uniqeid: Math.round(Math.random() * 10000000000000)
-      }
-      // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
-    };
+        template: "Reset",
+        context: {
+          title: "password reset",
+          msg: `${passwordResetApi}/${token}`,
+          name: ursname,
+          date: new Date().toUTCString(),
+          uniqeid: Math.round(Math.random() * 10000000000000)
+        }
+        // html: `<h1> please visit -${passwordResetApi}/${token}  to reset your password </h1>`
+      };
 
-    console.log("send > > > > >> > ");
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("mail senddd");
-        console.log("send email - ");
-        console.log("Email sent: " + info.response);
-      }
-    });
-  });
+      console.log("send > > > > >> > ");
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("mail senddd");
+          console.log("send email - ");
+          console.log("Email sent: " + info.response);
+        }
+      });
+    }
+  );
 };
 
 exports.mailhandlerinterviewconfirmation = (

@@ -14,6 +14,7 @@ const User = require("./db/users");
 const Candidate = require("./db/candidates");
 const Notifications = require("./db/nortification");
 const ObjectID = require("mongodb").ObjectID;
+const fs = require('fs')
 // const swaggerUi = require("swagger-ui-express");
 // const swaggerDocument = require("./config/swagger.json");
 const Pusher = require("pusher-js/node");

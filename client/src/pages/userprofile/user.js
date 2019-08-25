@@ -82,10 +82,27 @@ class Userprofile extends Component {
     const jwt = localStorage.getItem("jwt");
     console.log("jwt token -- - -- >>>" + jwt);
 
-    var usertype = localStorage.getItem("usertype");
-    if (usertype === "admin" || usertype === "hr_staff") {
-      this.setState({ isauthorizeduser: true });
-    }
+    var config = {
+      headers: { authorization: jwt }
+    };
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+
+        var usertype = datain.usertype;
+
+        console.log(usertype);
+
+        if (usertype === "admin" || usertype === "hr_staff") {
+          this.setState({ isauthorizeduser: true });
+        } else {
+          this.setState({ isauthorizeduser: false });
+        }
+      })
+      .catch(err => console.log(err));
 
     try {
       console.log("in register");
@@ -93,6 +110,10 @@ class Userprofile extends Component {
       console.log("payload - " + JSON.stringify(pay));
       console.log("************************************");
       console.log("id - params - " + this.props.match.params.id);
+      console.log("getting user owner");
+      console.log(this.props.match.params.id);
+      console.log(pay.id);
+      console.log(this.props.match.params.id === pay.id);
       if (!(this.props.match.params.id === pay.id)) {
         this.setState({ userowner: true });
       }
@@ -438,7 +459,7 @@ class Userprofile extends Component {
                 type="checkbox"
                 name="state"
                 checked={!this.state.userdata.state}
-                disabled={!this.state.isauthorizeduser || this.state.userowner}
+                disabled={!this.state.userowner || !this.state.isauthorizeduser}
                 onChange={this.deactivateuser}
               />
               <span class="slider round" />

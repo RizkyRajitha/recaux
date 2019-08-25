@@ -169,7 +169,7 @@ class OutSourceProject extends Component {
             </div>
 
             <div className="form-group ">
-              <label>Skills/Technologies:</label>
+              <label>Technologies:</label>
               <br />
 
               {this.state.Skill && (

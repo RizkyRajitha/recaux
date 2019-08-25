@@ -58,6 +58,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     letterSpacing: 5,
     fontWeight: "bold"
+  },
+  loginpara: {
+    alignItems: "center",
+    letterSpacing: 5
   }
 }));
 
@@ -128,12 +132,17 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
           </div>
         )}
         <CssBaseline />
+
+        <div style={{ "text-align": "center" }}>
+          Welcome to RECRUITMENT @ AUXENTA . Login to continue
+        </div>
+
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Login in
           </Typography>
           <Form className={classes.form}>
             {/* <form className={classes.form} noValidate> */}
@@ -194,7 +203,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              Login
             </Button>
             <Grid container>
               <Grid item xs>
@@ -204,6 +213,10 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
               </Grid>
               <Grid item />
             </Grid>
+            <div style={{ "text-align": "center" }}>
+              If you are not registered please contact a administrator to get
+              you started
+            </div>
           </Form>
         </div>
         <Box mt={5} />

@@ -1858,7 +1858,7 @@ class CandidateView extends Component {
                             onClick={this.showevalpdf}
                             className="btn canviewbtngroup btn-primary"
                           >
-                            Evaluation PDF
+                            Download evaluation PDF form
                           </button>
                         ) : (
                           <button

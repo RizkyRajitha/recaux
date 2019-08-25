@@ -11,6 +11,7 @@ const Notifications = require("../db/nortification");
 require("../config/passport");
 const serverss = require("../server");
 const emailhandler = require("../config/emailhandler");
+const jwt = require("jsonwebtoken");
 
 exports.configureNewUser = (req, res, next) => {
   passport.authenticate(
@@ -360,32 +361,47 @@ exports.getAllCandidates = (req, res) => {
 exports.resetpassword = (req, res) => {
   id = req.params.id;
   newpassword = req.body.password;
+  passresetjwt = req.body.token;
+
+  try {
+    var decode = jwt.verify(passresetjwt, "authdemo");
+    console.log("decode jwt - " + JSON.stringify(decode));
+
+    User.findById({ _id: ObjectID(id) })
+      .then(result => {
+        if (result.hash === decode.prehash) {
+          console.log("hash verified");
+          console.log("found " + result.email);
+
+          var salt = bcrypt.genSaltSync(saltRounds);
+          var hash = bcrypt.hashSync(newpassword, salt);
+
+          result.hash = hash;
+          result
+            .save()
+            .then(doc => {
+              console.log("password changed succesfully");
+              res.send("password changed succesfully");
+            })
+            .catch(err => {
+              console.log(err);
+              res.status(500).send(err);
+            });
+        } else {
+          res.send("tokendisbled");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        res.send("error");
+      });
+  } catch (error) {
+    console.log(error);
+  }
+
   console.log(id);
   console.log(newpassword);
   // res.send("hahahaha  " + id);
-  User.findById({ _id: ObjectID(id) })
-    .then(result => {
-      console.log("found " + result.email);
-
-      var salt = bcrypt.genSaltSync(saltRounds);
-      var hash = bcrypt.hashSync(newpassword, salt);
-
-      result.hash = hash;
-      result
-        .save()
-        .then(doc => {
-          console.log("password changed succesfully");
-          res.send("password changed succesfully");
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send(err);
-        });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send("error");
-    });
 };
 
 exports.changePass = (req, res) => {
@@ -434,7 +450,8 @@ exports.forgotPassword = (req, res) => {
         emailhandler.mailhandlerpasswordreset(
           result[0].firstName + " " + result[0].lastName,
           email,
-          result[0]._id
+          result[0]._id,
+          result[0].hash
         );
         console.log(result[0]._id);
         res.json(result);
@@ -1245,8 +1262,13 @@ exports.addinterview = (req, res, next) => {
                             )
                               .then(doc => {})
                               .catch(err => {});
-                          //candidatename , hrname , canemail,date , time
-                            emailhandler.mailhandlerinterviewconfirmation(doc3.name ,doc1.firstName + " " + doc1.lastName,doc3.email,datain.datetime )
+                            //candidatename , hrname , canemail,date , time
+                            emailhandler.mailhandlerinterviewconfirmation(
+                              doc3.name,
+                              doc1.firstName + " " + doc1.lastName,
+                              doc3.email,
+                              datain.datetime
+                            );
 
                             var objdocs = docs.toObject();
                             objdocs.candidateId = datain.candidateid;
