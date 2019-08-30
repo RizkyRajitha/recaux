@@ -11,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import FixRequiredSelect from "./fixreqselect";
 
+import "./evaluation.css";
+
 const Select = props => (
   <FixRequiredSelect
     {...props}
@@ -125,7 +127,20 @@ export default class CreateEvaluationForm extends Component {
       selectedinterviwerOption: "",
       snackbaropen: false,
       snackbarmsg: "",
-      skilllist: []
+      skilllist: [],
+      rate1err: null,
+      rate2err: null,
+      rate3err: null,
+      rate4err: null,
+      rate5err: null,
+      rate6err: null,
+      rate7err: null,
+      rate8err: null,
+      rate9err: null,
+      rate10err: null,
+      rate11err: null,
+      rate12err: null,
+      rate13err: null
     };
   }
 
@@ -244,75 +259,298 @@ export default class CreateEvaluationForm extends Component {
     });
   }
   onChangeRate1(e) {
-    this.setState({
-      rate1: e.target.value
-    });
+    this.setState(
+      {
+        rate1: e.target.value
+      },
+      () => {
+        this.validater1();
+      }
+    );
+    console.log("con chnage");
+    console.log(e.target.value);
+    this.findTotal();
+
+    // var overallratesum =
+    //   parseInt(e.target.value) +
+    //   parseInt(this.state.rate2) +
+    //   parseInt(this.state.rate3)
+    //   // parseInt(this.state.rate4) +
+    //   // parseInt(this.state.rate5) +
+    //   // parseInt(this.state.rate6) +
+    //   // parseInt(this.state.rate7) +
+    //   // parseInt(this.state.rate8);
+
+    // var overallrate = overallratesum / 8;
+    // this.setState({ overrallRating: overallrate });
   }
+
+  validater1 = () => {
+    const { rate1 } = this.state;
+    this.setState({
+      rate1err:
+        parseInt(rate1) >= 0 && parseInt(rate1) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
   onChangeRate2(e) {
-    this.setState({
-      rate2: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate2: e.target.value
+      },
+      () => {
+        this.validater2();
+      }
+    );
   }
+
+  validater2 = () => {
+    const { rate2 } = this.state;
+    this.setState({
+      rate2err:
+        parseInt(rate2) >= 0 && parseInt(rate2) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
   onChangeRate3(e) {
-    this.setState({
-      rate3: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate3: e.target.value
+      },
+      () => {
+        this.validater3();
+      }
+    );
   }
+  validater3 = () => {
+    const { rate3 } = this.state;
+    this.setState({
+      rate3err:
+        parseInt(rate3) >= 0 && parseInt(rate3) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
   onChangeRate4(e) {
-    this.setState({
-      rate4: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate4: e.target.value
+      },
+      () => {
+        this.validater4();
+      }
+    );
   }
+
+  validater4 = () => {
+    const { rate4 } = this.state;
+    this.setState({
+      rate4err:
+        parseInt(rate4) >= 0 && parseInt(rate4) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate5(e) {
-    this.setState({
-      rate5: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate5: e.target.value
+      },
+      () => {
+        this.validater5();
+      }
+    );
   }
+
+  validater5 = () => {
+    const { rate5 } = this.state;
+    this.setState({
+      rate5err:
+        parseInt(rate5) >= 0 && parseInt(rate5) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
   onChangeRate6(e) {
-    this.setState({
-      rate6: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate6: e.target.value
+      },
+      () => this.validater6()
+    );
   }
+
+  validater6 = () => {
+    const { rate6 } = this.state;
+    this.setState({
+      rate6err:
+        parseInt(rate6) >= 0 && parseInt(rate6) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate7(e) {
-    this.setState({
-      rate7: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate7: e.target.value
+      },
+      () => this.validater7()
+    );
   }
+
+  validater7 = () => {
+    const { rate7 } = this.state;
+    this.setState({
+      rate7err:
+        parseInt(rate7) >= 0 && parseInt(rate7) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate8(e) {
-    this.setState({
-      rate8: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate8: e.target.value
+      },
+      () => this.validater8()
+    );
   }
+
+  validater8 = () => {
+    const { rate8 } = this.state;
+    this.setState({
+      rate8err:
+        parseInt(rate8) >= 0 && parseInt(rate8) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate9(e) {
-    this.setState({
-      rate9: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate9: e.target.value
+      },
+      () => this.validater9()
+    );
   }
+  validater9 = () => {
+    const { rate9 } = this.state;
+    this.setState({
+      rate9err:
+        parseInt(rate9) >= 0 && parseInt(rate9) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate10(e) {
-    this.setState({
-      rate10: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate10: e.target.value
+      },
+      () => this.validater10()
+    );
   }
+  validater10 = () => {
+    const { rate10 } = this.state;
+    this.setState({
+      rate10err:
+        parseInt(rate10) >= 0 && parseInt(rate10) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate11(e) {
-    this.setState({
-      rate11: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate11: e.target.value
+      },
+      () => this.validater11()
+    );
   }
+  validater11 = () => {
+    const { rate11 } = this.state;
+    this.setState({
+      rate11err:
+        parseInt(rate11) >= 0 && parseInt(rate11) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeRate12(e) {
-    this.setState({
-      rate12: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate12: e.target.value
+      },
+      () => this.validater12()
+    );
   }
-  onChangeRate13(e) {
+  validater12 = () => {
+    const { rate12 } = this.state;
     this.setState({
-      rate13: e.target.value
+      rate12err:
+        parseInt(rate12) >= 0 && parseInt(rate12) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
     });
+  };
+
+  onChangeRate13(e) {
+    this.findTotal();
+    this.setState(
+      {
+        rate13: e.target.value
+      },
+      () => this.validater13()
+    );
   }
   onChangeRate14(e) {
-    this.setState({
-      rate14: e.target.value
-    });
+    this.findTotal();
+    this.setState(
+      {
+        rate14: e.target.value
+      },
+      () => this.validater14()
+    );
   }
+  validater14 = () => {
+    const { rate14 } = this.state;
+    this.setState({
+      rate14err:
+        parseInt(rate14) >= 0 && parseInt(rate14) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+  validater13 = () => {
+    const { rate13 } = this.state;
+    this.setState({
+      rate13err:
+        parseInt(rate13) >= 0 && parseInt(rate13) <= 5
+          ? null
+          : "value must be in range of 0 to 5"
+    });
+  };
+
   onChangeOverrallRating(e) {
     this.setState({
       overrallRating: e.target.value
@@ -359,6 +597,25 @@ export default class CreateEvaluationForm extends Component {
       approve: e.target.value
     });
   }
+
+  findTotal = () => {
+    var arr = document.getElementsByName("qty");
+    var tot = 0;
+    var j = 0;
+    console.log(arr);
+    for (var i = 0; i < arr.length; i++) {
+      if (parseInt(arr[i].value)) {
+        console.log("val - " + parseInt(arr[i].value));
+        tot += parseInt(arr[i].value);
+        j++;
+      }
+    }
+
+    var avg = (tot / j).toFixed(2);
+    console.log("avggg " + j);
+    this.setState({ overrallRating: avg });
+    // document.getElementById("total").value = tot;
+  };
 
   onSubmit(e) {
     e.preventDefault();
@@ -667,6 +924,67 @@ export default class CreateEvaluationForm extends Component {
     this.setState({ open: false });
   };
 
+  //add event construct for modern browsers or IE
+  //which fires the callback with a pre-converted target reference
+  addEvent = (node, type, callback) => {
+    if (node.addEventListener) {
+      node.addEventListener(
+        type,
+        function(e) {
+          callback(e, e.target);
+        },
+        false
+      );
+    } else if (node.attachEvent) {
+      node.attachEvent("on" + type, function(e) {
+        callback(e, e.srcElement);
+      });
+    }
+  };
+
+  //identify whether a field should be validated
+  //ie. true if the field is neither readonly nor disabled,
+  //and has either "pattern", "required" or "aria-invalid"
+  shouldBeValidated = field => {
+    return (
+      !(field.getAttribute("readonly") || field.readonly) &&
+      !(field.getAttribute("disabled") || field.disabled) &&
+      (field.getAttribute("pattern") || field.getAttribute("required"))
+    );
+  };
+
+  //field testing and validation function
+  instantValidation = field => {
+    //if the field should be validated
+    if (this.shouldBeValidated(field)) {
+      //the field is invalid if:
+      //it's required but the value is empty
+      //it has a pattern but the (non-empty) value doesn't pass
+      var invalid =
+        (field.getAttribute("required") && !field.value) ||
+        (field.getAttribute("pattern") &&
+          field.value &&
+          !new RegExp(field.getAttribute("pattern")).test(field.value));
+
+      //add or remove the attribute is indicated by
+      //the invalid flag and the current attribute state
+      if (!invalid && field.getAttribute("aria-invalid")) {
+        field.removeAttribute("aria-invalid");
+      } else if (invalid && !field.getAttribute("aria-invalid")) {
+        field.setAttribute("aria-invalid", "true");
+      }
+    }
+  };
+
+  //now bind a delegated change event
+  //== THIS FAILS IN INTERNET EXPLORER <= 8 ==//
+  //addEvent(document, 'change', function(e, target)
+  //{
+  //	instantValidation(target);
+  //});
+
+  //now bind a change event to each applicable for field
+
   render() {
     return (
       <React.Fragment>
@@ -689,7 +1007,6 @@ export default class CreateEvaluationForm extends Component {
                   />
                 </div>
               </div>
-
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Role: </label>
                 <div class="col-sm-10">
@@ -704,7 +1021,6 @@ export default class CreateEvaluationForm extends Component {
                   />
                 </div>
               </div>
-
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Date:</label>
                 <div class="col-sm-10">
@@ -734,7 +1050,6 @@ export default class CreateEvaluationForm extends Component {
                   />
                 </div>
               </div>
-
               <div class="form-group">
                 <label>Academic Background : </label>
                 <textarea
@@ -745,7 +1060,6 @@ export default class CreateEvaluationForm extends Component {
                   onChange={this.onChangeAcademicBackground}
                 />
               </div>
-
               <div class="form-group">
                 <label>Industry Experience : </label>
                 <textarea
@@ -756,7 +1070,6 @@ export default class CreateEvaluationForm extends Component {
                   onChange={this.onChangeIndustryExperience}
                 />
               </div>
-
               <div class="form-group">
                 <label>Current position & period : </label>
                 <textarea
@@ -767,7 +1080,6 @@ export default class CreateEvaluationForm extends Component {
                   onChange={this.onChangeCurrentPosition}
                 />
               </div>
-
               <div class="form-group">
                 <label>Current Empolyer : </label>
                 <textarea
@@ -778,205 +1090,282 @@ export default class CreateEvaluationForm extends Component {
                   onChange={this.onChangeCurrentEmployer}
                 />
               </div>
-
               <p>Technical skill set(Rate out of 5 & 5 is the high rate ) : </p>
-              <input
-                placeholder=""
-                type="text"
-                size="50"
-                name="skill1"
-                value={this.state.skill1}
-                onChange={this.onChangeSkill1}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate1"
-                value={this.state.rate1}
-                onChange={this.onChangeRate1}
-              />
+              {this.state.skill1 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  size="50"
+                  name="skill1"
+                  value={this.state.skill1}
+                  onChange={this.onChangeSkill1}
+                />
+              )}
+              {this.state.skill1 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate1}
+                  onChange={this.onChangeRate1}
+                  className={this.state.rate1err ? "errorratenumber" : ""}
+                />
+              )}
+              {this.state.rate1err && (
+                <span className="errorspanrate"> {this.state.rate1err} </span>
+              )}
+              {this.state.skill2 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill2"
+                  size="50"
+                  value={this.state.skill2}
+                  onChange={this.onChangeSkill2}
+                />
+              )}
+              {this.state.skill2 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate2}
+                  onChange={this.onChangeRate2}
+                  className={this.state.rate2err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate2err && (
+                <span className="errorspanrate"> {this.state.rate2err} </span>
+              )}
+              {this.state.skill3 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  size="50"
+                  name="skill3"
+                  value={this.state.skill3}
+                  onChange={this.onChangeSkill3}
+                />
+              )}
+              {this.state.skill3 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate3}
+                  onChange={this.onChangeRate3}
+                  className={this.state.rate3err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate3err && (
+                <span className="errorspanrate"> {this.state.rate3err} </span>
+              )}
+              {this.state.skill4 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill4"
+                  size="50"
+                  value={this.state.skill4}
+                  onChange={this.onChangeSkill4}
+                />
+              )}
+              {this.state.skill4 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate4}
+                  onChange={this.onChangeRate4}
+                  className={this.state.rate4err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate4err && (
+                <span className="errorspanrate"> {this.state.rate4err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill2"
-                size="50"
-                value={this.state.skill2}
-                onChange={this.onChangeSkill2}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate2"
-                value={this.state.rate2}
-                onChange={this.onChangeRate2}
-              />
+              {this.state.skill5 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  size="50"
+                  name="skill5"
+                  value={this.state.skill5}
+                  onChange={this.onChangeSkill5}
+                />
+              )}
+              {this.state.skill5 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate5}
+                  onChange={this.onChangeRate5}
+                  className={this.state.rate5err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate5err && (
+                <span className="errorspanrate"> {this.state.rate5err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                size="50"
-                name="skill3"
-                value={this.state.skill3}
-                onChange={this.onChangeSkill3}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate3"
-                value={this.state.rate3}
-                onChange={this.onChangeRate3}
-              />
+              {this.state.skill6 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  size="50"
+                  name="skill6"
+                  value={this.state.skill6}
+                  onChange={this.onChangeSkill6}
+                />
+              )}
+              {this.state.skill6 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  required
+                  name="qty"
+                  value={this.state.rate6}
+                  onChange={this.onChangeRate6}
+                  className={this.state.rate6err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate6err && (
+                <span className="errorspanrate"> {this.state.rate6err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill4"
-                size="50"
-                value={this.state.skill4}
-                onChange={this.onChangeSkill4}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate4"
-                value={this.state.rate4}
-                onChange={this.onChangeRate4}
-              />
+              {this.state.skill7 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill7"
+                  size="50"
+                  value={this.state.skill7}
+                  onChange={this.onChangeSkill7}
+                />
+              )}
+              {this.state.skill7 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate7}
+                  onChange={this.onChangeRate7}
+                  className={this.state.rate7err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate7err && (
+                <span className="errorspanrate"> {this.state.rate7err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                size="50"
-                name="skill5"
-                value={this.state.skill5}
-                onChange={this.onChangeSkill5}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate5"
-                value={this.state.rate5}
-                onChange={this.onChangeRate5}
-              />
+              {this.state.skill8 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill8"
+                  size="50"
+                  value={this.state.skill8}
+                  onChange={this.onChangeSkill8}
+                />
+              )}
+              {this.state.skill8 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate8}
+                  onChange={this.onChangeRate8}
+                  className={this.state.rate9err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate8err && (
+                <span className="errorspanrate"> {this.state.rate8err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                size="50"
-                name="skill6"
-                value={this.state.skill6}
-                onChange={this.onChangeSkill6}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate6"
-                value={this.state.rate6}
-                onChange={this.onChangeRate6}
-              />
+              {this.state.skill9 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill9"
+                  size="50"
+                  value={this.state.skill9}
+                  onChange={this.onChangeSkill9}
+                />
+              )}
+              {this.state.skill9 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate9}
+                  onChange={this.onChangeRate9}
+                  className={this.state.rate9err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate9err && (
+                <span className="errorspanrate"> {this.state.rate9err} </span>
+              )}
               <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill7"
-                size="50"
-                value={this.state.skill7}
-                onChange={this.onChangeSkill7}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate7"
-                value={this.state.rate7}
-                onChange={this.onChangeRate7}
-              />
-              <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill8"
-                size="50"
-                value={this.state.skill8}
-                onChange={this.onChangeSkill8}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate8"
-                value={this.state.rate8}
-                onChange={this.onChangeRate8}
-              />
-              <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill9"
-                size="50"
-                value={this.state.skill9}
-                onChange={this.onChangeSkill9}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate9"
-                value={this.state.rate9}
-                onChange={this.onChangeRate9}
-              />
-              <br />
-
-              <input
-                placeholder=""
-                type="text"
-                name="skill10"
-                size="50"
-                value={this.state.skill10}
-                onChange={this.onChangeSkill10}
-              />
-              <input
-                placeholder=""
-                type="number"
-                max="5"
-                min="0"
-                name="rate10"
-                value={this.state.rate10}
-                onChange={this.onChangeRate10}
-              />
+              {this.state.skill10 && (
+                <input
+                  placeholder=""
+                  type="text"
+                  name="skill10"
+                  size="50"
+                  value={this.state.skill10}
+                  onChange={this.onChangeSkill10}
+                />
+              )}
+              {this.state.skill10 && (
+                <input
+                  placeholder=""
+                  type="number"
+                  max="5"
+                  min="0"
+                  name="qty"
+                  required
+                  value={this.state.rate10}
+                  onChange={this.onChangeRate10}
+                  className={this.state.rate10err ? "errorratenumber" : ""}
+                />
+              )}{" "}
+              {this.state.rate10err && (
+                <span className="errorspanrate"> {this.state.rate10err} </span>
+              )}
               <br />
               <br />
-              <p>Communication : </p>
+              {/* <p>Communication : </p> */}
               <input
                 placeholder=""
                 type="text"
                 name="skill11"
                 size="50"
-                value={this.state.skill11}
+                value="Communication"
                 onChange={this.onChangeSkill11}
               />
               <input
@@ -984,20 +1373,24 @@ export default class CreateEvaluationForm extends Component {
                 type="number"
                 max="5"
                 min="0"
-                name="rate11"
+                name="qty"
+                required
                 value={this.state.rate11}
                 onChange={this.onChangeRate11}
-              />
+                className={this.state.rate11err ? "errorratenumber" : ""}
+              />{" "}
+              {this.state.rate11err && (
+                <span className="errorspanrate"> {this.state.rate11err} </span>
+              )}
               <br />
               <br />
-
-              <p>Leadership Skills: </p>
+              {/* <p>: </p> */}
               <input
                 placeholder=""
                 type="text"
                 name="skill12"
                 size="50"
-                value={this.state.skill12}
+                value="Leadership Skills"
                 onChange={this.onChangeSkill12}
               />
               <input
@@ -1005,20 +1398,24 @@ export default class CreateEvaluationForm extends Component {
                 type="number"
                 max="5"
                 min="0"
-                name="rate12"
+                name="qty"
+                required
                 value={this.state.rate12}
                 onChange={this.onChangeRate12}
-              />
+                className={this.state.rate12err ? "errorratenumber" : ""}
+              />{" "}
+              {this.state.rate12err && (
+                <span className="errorspanrate"> {this.state.rate12err} </span>
+              )}
               <br />
               <br />
-
-              <p>Team work: </p>
+              {/* <p>Team work: </p> */}
               <input
                 placeholder=""
                 type="text"
                 name="skill13"
                 size="50"
-                value={this.state.skill13}
+                value="Team work"
                 onChange={this.onChangeSkill13}
               />
               <input
@@ -1026,14 +1423,18 @@ export default class CreateEvaluationForm extends Component {
                 type="number"
                 max="5"
                 min="0"
-                name="rate13"
+                name="qty"
+                required
                 value={this.state.rate13}
                 onChange={this.onChangeRate13}
-              />
+                className={this.state.rate13err ? "errorratenumber" : ""}
+              />{" "}
+              {this.state.rate13err && (
+                <span className="errorspanrate"> {this.state.rate13err} </span>
+              )}
               <br />
               <br />
-
-              <p>Special Notes : </p>
+              {/* <p>Special Notes : </p>
               <input
                 placeholder=""
                 type="text"
@@ -1050,7 +1451,7 @@ export default class CreateEvaluationForm extends Component {
                 name="rate14"
                 value={this.state.rate14}
                 onChange={this.onChangeRate14}
-              />
+              /> */}
               <br />
               <br />
               <p>Overrall Rating</p>
@@ -1061,10 +1462,11 @@ export default class CreateEvaluationForm extends Component {
                 name="overrallRating"
                 value={this.state.overrallRating}
                 onChange={this.onChangeOverrallRating}
+                disabled={true}
+                className={this.state.rate14err ? "errorratenumber" : ""}
               />
               <br />
               <br />
-
               <div class="form-group">
                 <label>Summary & Recomandation from the interviewer</label>
                 <textarea
@@ -1075,10 +1477,8 @@ export default class CreateEvaluationForm extends Component {
                   onChange={this.onChangeSummary}
                 />
               </div>
-
               <hr />
               <p>HR Report</p>
-
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>Salary Expected : </label>
@@ -1101,7 +1501,6 @@ export default class CreateEvaluationForm extends Component {
                   />
                 </div>
               </div>
-
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>Salary Band : </label>
@@ -1124,12 +1523,12 @@ export default class CreateEvaluationForm extends Component {
                   />
                 </div>
               </div>
-
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label>Notice period : </label>
                   <input
-                    type="text"
+                    type="date"
+                    min={new Date().toISOString().slice(0, 10)}
                     name="period1"
                     class="form-control"
                     value={this.state.period1}
@@ -1141,6 +1540,7 @@ export default class CreateEvaluationForm extends Component {
                   <input
                     type="Date"
                     name="period2"
+                    min={new Date().toISOString().slice(0, 10)}
                     class="form-control"
                     value={this.state.period2}
                     onChange={this.onChangePeriod2}
@@ -1175,7 +1575,6 @@ export default class CreateEvaluationForm extends Component {
                 </div>
               </div>
               <br />
-
               <br />
               <div className="form-group">
                 <input

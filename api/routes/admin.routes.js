@@ -33,7 +33,7 @@ exports.adminLogin = function(req, res, next) {
 exports.userlist = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
-    { session: false },
+    { session: false }, 
     (err, user, info) => {
       if (!user) {
         res.status(401).send(info);

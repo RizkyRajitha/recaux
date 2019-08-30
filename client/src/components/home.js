@@ -13,7 +13,7 @@ const drawerHeight = 960;
 // const socket = io();
 
 const home = () => {
-  const [data, setdata] = React.useState({});
+  const [data, setdata] = React.useState(true);
 
   React.useEffect(() => {
     // socket.on("new_candidate", data => {
@@ -21,10 +21,16 @@ const home = () => {
     //   console.log(data);
     //   setdata(data);
     // });
+
+    setTimeout(() => {
+      setdata(false);
+    }, 5000);
   });
 
   return (
     <div>
+      <div class="loader-addcandidate-withback"  />
+
       {/* data : {data.msg}
       <div class="lds-spinner">
         <div />

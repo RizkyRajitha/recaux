@@ -94,11 +94,13 @@ class Search extends Component {
     selectedDate: new Date(),
     clearselectedDate2: false,
     seachrecievddat: "",
-    searchprimarystatus: ""
+    searchprimarystatus: "",
+    isLoading: false
   };
 
   //////////////////////////////////////////////////////////////////////////////////////////
   handleDateChange = e => {
+    this.setState({ isLoading: true });
     console.log(e);
     this.setState({
       selectedDate: e,
@@ -147,7 +149,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -172,6 +174,7 @@ class Search extends Component {
   };
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     const token = localStorage.getItem("jwt");
     //console.log("jwt token -- - -- >>>" + jwt);
 
@@ -205,7 +208,7 @@ class Search extends Component {
         this.setState({
           avatarUrl: baseUrl
         });
-
+        this.setState({ isLoading: false });
         this.setState({
           id: datain._id,
           firstName: datain.firstName,
@@ -226,6 +229,7 @@ class Search extends Component {
   }
 
   handleChangemodalselect = opt => {
+    this.setState({ isLoading: true });
     console.log(opt);
     this.setState({
       searchjobspec: opt.label,
@@ -273,7 +277,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -299,7 +303,7 @@ class Search extends Component {
 
   searchformsubmitsource = e => {
     e.preventDefault();
-
+    this.setState({ isLoading: true });
     this.setState({
       searchsource: e.target.value,
       showtable: true
@@ -343,7 +347,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -369,7 +373,7 @@ class Search extends Component {
 
   searchformsubmitname = e => {
     e.preventDefault();
-
+    this.setState({ isLoading: true });
     var payload = {};
 
     this.setState({
@@ -414,7 +418,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -440,7 +444,7 @@ class Search extends Component {
 
   searchformsubmitemail = e => {
     e.preventDefault();
-
+    this.setState({ isLoading: true });
     this.setState({
       searchemail: e.target.value,
       showtable: true
@@ -492,7 +496,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -519,6 +523,7 @@ class Search extends Component {
   //
 
   searchbyprimarystatus = e => {
+    this.setState({ isLoading: true });
     console.log("primayr status");
     console.log(e.target.value);
     this.setState({
@@ -564,7 +569,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -590,7 +595,7 @@ class Search extends Component {
 
   searchformsubmitrecieveddate = e => {
     //e.preventDefault();
-
+    this.setState({ isLoading: true });
     var dataeinter = moments(e._d);
     this.setState({
       showtable: true
@@ -636,7 +641,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -662,7 +667,7 @@ class Search extends Component {
 
   mainsearch = () => {
     var payload = {};
-
+    this.setState({ isLoading: true });
     if (this.state.searchName) {
       payload.name = this.state.searchName;
     }
@@ -703,7 +708,7 @@ class Search extends Component {
       .post("/usr/searchmany", payload, config)
       .then(data => {
         console.log(data);
-
+        this.setState({ isLoading: false });
         console.log("len - " + data.data.length);
 
         if (data.data.length === 0) {
@@ -748,6 +753,7 @@ class Search extends Component {
     const { classes } = this.props;
     return (
       <div>
+        <div class="loader-searchcan" hidden={!this.state.isLoading} />
         <div className="container">
           <form className={classes.root} autoComplete="off">
             <div className="form-row">

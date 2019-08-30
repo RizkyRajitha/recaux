@@ -58,6 +58,54 @@ class Userprofile extends Component {
     this.setState({ file: e.target.files[0] });
     console.log(e.target.files);
     this.setState({ id: this.props.match.params.id });
+
+    e.preventDefault();
+    this.setState({ isLoading: true });
+    console.log("hahah");
+    console.log(this.props.match.params.id);
+
+    const formdata = new FormData();
+    formdata.append("avatar", e.target.files[0]);
+    //
+
+    var jwt = localStorage.getItem("jwt");
+
+    var config = {
+      headers: {
+        "content-type": "multipart/form-data",
+        authorization: jwt
+      }
+    };
+
+    axios
+      .post("/usr/avatar/" + this.props.match.params.id, formdata, config)
+      .then(result => {
+        console.log("resaaaal - ");
+        console.log(result);
+        this.setState({ url: result.data.url });
+
+        var preurl = result.data.url.slice(0, 48);
+        var posturl = result.data.url.slice(49, result.data.url.length);
+        var config = "/w_250,h_250,c_thumb/";
+
+        var baseUrl = preurl + config + posturl;
+        this.setState({ baseUrl: baseUrl });
+        this.setState({ isLoading: false });
+        //document.querySelector('.images').setAttribute('src',this.state.url)
+      })
+      .catch(
+        function(error) {
+          console.log(error.response.data);
+          this.setState({ isLoading: false });
+          if ("file_too_large" === error.response.data) {
+            this.setState({ errfiletoolarge: true });
+          }
+
+          if ("unsupported_file_format" === error.response.data) {
+            this.setState({ unsupportedFormat: true });
+          }
+        }.bind(this)
+      );
   };
 
   chngehandlfname = e => {
@@ -79,6 +127,7 @@ class Userprofile extends Component {
   };
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     const jwt = localStorage.getItem("jwt");
     console.log("jwt token -- - -- >>>" + jwt);
 
@@ -91,7 +140,7 @@ class Userprofile extends Component {
       .then(res => {
         console.log(res.data);
         var datain = res.data;
-
+        this.setState({ isLoading: false });
         var usertype = datain.usertype;
 
         console.log(usertype);
@@ -297,6 +346,8 @@ class Userprofile extends Component {
 
     return (
       <div>
+        <div className="loader-userprofile" hidden={!this.state.isLoading} />
+
         <div className="container">
           <Grid container justify="center" alignItems="center">
             <Avatar
@@ -339,15 +390,6 @@ class Userprofile extends Component {
               </tbody>
             </table>
 
-            {/* 
-              {this.state.userdata.avatarUrl && (
-                <img
-                  className="images"
-                  src={this.state.baseUrl}
-                  className="rounded-circle"
-                />
-              )} */}
-
             <Modal
               isOpen={this.state.modalIsOpen}
               onAfterOpen={this.afterOpenModal}
@@ -355,11 +397,7 @@ class Userprofile extends Component {
               style={customStyles}
               contentLabel="Example Modal"
             >
-              <h2 ref={subtitle => (this.subtitle = subtitle)}>
-                Change Profile Image
-              </h2>
-
-              <div class="loader-userprofile" hidden={!this.state.isLoading} />
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>My Profile</h2>
 
               <div class="input-field col s12">
                 <p>{this.state.shortedcanarrnamelist}</p>
@@ -374,14 +412,14 @@ class Userprofile extends Component {
                     Unsupported File, select another file
                   </div>
                 )}
-                <form onSubmit={this.btn1handler}>
+                <form>
                   <div className="row">
                     <div className="col">
                       <input
                         required
                         type="text"
                         name="firstName"
-                        className="form-control"
+                        className="form-control myprofiletextdiabled"
                         onChange={this.chngehandlfname}
                         placeholder="enter first name"
                         id="firstName"
@@ -395,7 +433,7 @@ class Userprofile extends Component {
                         required
                         type="text"
                         name="lastName"
-                        className="form-control"
+                        className="form-control myprofiletextdiabled"
                         onChange={this.chngehandllname}
                         placeholder="enter last name"
                         id="lastName"
@@ -410,7 +448,7 @@ class Userprofile extends Component {
                         required
                         type="email"
                         name="email"
-                        className="form-control"
+                        className="form-control myprofiletextdiabled"
                         placeholder="enter candidate email"
                         onChange={this.chngehandlemail}
                         id="email"
@@ -419,23 +457,30 @@ class Userprofile extends Component {
                       />
                     </div>
                   </div>
-                  <input
-                    type="submit"
-                    className="btn btsuserprofile btn-primary"
-                    value="save edited details"
-                  />
                 </form>
+
                 <form onSubmit={this.submitHndleimg}>
-                  <input
-                    type="file"
-                    name="avatar"
-                    onChange={this.chngehndlimg}
-                  />
-                  <input type="submit" value="submit" />
+                  <div class="custom-file">
+                    <input
+                      className="custom-file-input"
+                      type="file"
+                      name="avatar"
+                      id="inputGroupFile01"
+                      onChange={this.chngehndlimg}
+                    />
+                    <label class="custom-file-label" for="inputGroupFile01">
+                      {this.state.file
+                        ? this.state.file.name +
+                          " " +
+                          (this.state.file.size / 1024 / 1024).toFixed(2) +
+                          "Mb"
+                        : "Choose file"}
+                    </label>
+                  </div>
                 </form>
-                {this.state.url && (
+                {/* {this.state.url && (
                   <img src={this.state.baseUrl} className="rounded-circle" />
-                )}
+                )} */}
               </div>
             </Modal>
 

@@ -13,6 +13,7 @@ class Userlist extends Component {
   state = { isLoading: false, userdata: "", temp: [], seachname: "" };
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     const usertype = localStorage.getItem("usertype");
 
     var jwt = localStorage.getItem("jwt");
@@ -94,6 +95,7 @@ class Userlist extends Component {
 
     return (
       <div>
+        <div class="loader-userlist" hidden={!this.state.isLoading} />
         <div className=" container userlistmaindiv">
           <div className="form-row">
             <div class="form-group  col-md-4 ">

@@ -17,7 +17,8 @@ class OutSourceProject extends Component {
     Duration: "",
     Environment: "",
     TechnologiesP: "",
-    out_Qualification: ""
+    out_Qualification: "",
+    isLoading: false
   };
 
   onChangeOutName = e => {
@@ -46,7 +47,7 @@ class OutSourceProject extends Component {
 
   componentDidMount() {
     var jwt = localStorage.getItem("jwt");
-
+    this.setState({ isLoading: true });
     var config = {
       headers: { authorization: jwt }
     };
@@ -59,7 +60,7 @@ class OutSourceProject extends Component {
       .then(res => {
         console.log("candatadtasdttatas");
         console.log(res.data);
-
+        this.setState({ isLoading: false });
         var skillssaa = [];
 
         res.data.candidateData.skills.forEach((element, index) => {
@@ -80,6 +81,7 @@ class OutSourceProject extends Component {
   }
 
   submithandle = e => {
+    this.setState({ isLoading: true });
     e.preventDefault();
     console.log(" submitted ");
     console.log(this.state);
@@ -111,7 +113,7 @@ class OutSourceProject extends Component {
       .then(res => {
         console.log("awa res");
         console.log(res.data);
-
+        this.setState({ isLoading: false });
         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         //FileDownload(res.data, "evalpdf.pdf");
         FileDownload.saveAs(
@@ -136,7 +138,7 @@ class OutSourceProject extends Component {
           <b>Auxenta Profile</b>
         </h1>
         <br />
-
+        <div class="loader-outproject" hidden={!this.state.isLoading} />
         <div>
           <form onSubmit={this.submithandle} class="form-horizontal">
             <div className="form-group row">

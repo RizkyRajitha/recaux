@@ -1,5 +1,20 @@
-.eval{
-    margin: auto;
-    width: 50%;
-    padding: 10px;
+.eval {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border: 1px solid #f00;
+  box-shadow: 0 0 4px 0 #f00;
+}
+
+.errorratenumber {
+  border: 1px solid #f00;
+  box-shadow: 0 0 4px 0 #f00;
+}
+
+.errorspanrate {
+  color: #f00;
 }

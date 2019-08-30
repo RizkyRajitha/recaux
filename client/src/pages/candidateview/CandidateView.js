@@ -54,9 +54,7 @@ const Select = props => (
   />
 );
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
-  pdfjs.version
-}/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 const FileDownload = require("file-saver");
 // import { Document } from 'react-pdf/dist/entry.webpack';
 
@@ -509,15 +507,6 @@ class CandidateView extends Component {
 
   /***************************************** */
 
-  onchangejobspec = e => {
-    console.log("hai" + e.target.value);
-    //this.setState({changedjobspec:e.target.value})
-    //this.setState({ ...this.state.data, jobspec: e.target.value });
-    this.state.data.jobspec = e.target.value;
-    this.forceUpdate();
-    console.log("hai" + this.state.data.jobspec);
-  };
-
   edidcandidatedetails = e => {
     e.preventDefault();
     //console.log("hai"+e.target.value);
@@ -541,14 +530,11 @@ class CandidateView extends Component {
         //this.setState({shorlistSuccess:true})
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
+          // this.state.data.jobspec = this.state.data.jobspec
+          // this.setState( { data  } )
           //this.setState({ editcanSuccess: true });
           //window.location.reload(false);
-          this.closeModal4();
         }
-
-        setTimeout(() => {
-          this.setState({ open: true });
-        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -702,16 +688,30 @@ class CandidateView extends Component {
         this.setState({ isLoading: false });
         if (res.data.msg == "edit_success") {
           //this.setState({ editcanSuccess: true });
+
+          // selectedOption.label
+          console.log("in edit can jobspec");
+          this.state.data.jobspec = selectedOption.label;
+          this.forceUpdate();
+          // this.setState(
+          //   prevState => {
+          //     console.log("setting data to new jobspec");
+          //     let newbjobspecs = Object.assign({}, prevState.data); // creating copy of state variable jasper
+          //     newbjobspecs.jobspec = selectedOption.label; //"someothername"; // update the name property, assign a new value
+          //     return { newbjobspecs }; // return new object jasper object
+          //   },
+          //   () => {
+          //     console.log("as state");
+          //     console.log(this.state);
+          //   }
+          // );
+
           this.setState({
             snackbaropen: true,
             snackbarmsg: "candidate edited successfully"
           });
           //window.location.reload(false);
         }
-
-        setTimeout(() => {
-          this.closeModal4();
-        }, 2500);
       })
       .catch(err => {
         console.log(err);
@@ -757,7 +757,7 @@ class CandidateView extends Component {
 
   componentDidMount() {
     console.log("comp did mount");
-
+    this.setState({ isLoading: true });
     const id = this.props.match.params.id;
     console.log(id);
 
@@ -789,7 +789,7 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data);
         var datain = res.data;
-
+        this.setState({ isLoading: false });
         var preurl = res.data.avatarUrl.slice(0, 48);
         var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
         var config = "/w_290,h_295,c_thumb/";
@@ -1200,7 +1200,7 @@ class CandidateView extends Component {
     };
 
     var id = this.props.match.params.id;
-
+    this.setState({ isLoading: true });
     //window.open("/usr/getevalpdf/" + id);
 
     // axios({
@@ -1219,17 +1219,20 @@ class CandidateView extends Component {
     axios
       .get("/usr/getevalpdf/" + id, config)
       .then(res => {
+        this.setState({ isLoading: false });
         console.log(res);
-        //FileDownload(res.data);
+
         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-        //FileDownload(res.data, "evalpdf.pdf");
+
         FileDownload.saveAs(pdfBlob, this.state.data.name + "_evalpdf.pdf");
 
         if (res.data.msg === "sucsess") {
-          // FileDownload()
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log(err);
+        this.setState({ isLoading: false });
+      });
   };
 
   gteinterviewpanal = panal => {
@@ -1290,6 +1293,8 @@ class CandidateView extends Component {
                 Allocated for shorlisting succsessfuly
               </div>
             )}
+
+            <div class="loader-canview" hidden={!this.state.isLoading} />
 
             {/* {this.state.editcanSuccess && (
               <div class="alert alert-success" role="alert">
@@ -1527,7 +1532,7 @@ class CandidateView extends Component {
 
                     <div class="tab-pane" id="edit">
                       <div>
-                        <form onSubmit={this.edidcandidatedetails}>
+                        <form>
                           <div className="">
                             <div className="canviewborderdividcandidtaeeditdetails" />
                             <Select
@@ -1805,14 +1810,13 @@ class CandidateView extends Component {
                             </tr>
                             <tr>
                               <td>
-                                <h6 class="h6colorcanview">
-                                  Interview status
-                                </h6>{" "}
+                                <h6 class="h6colorcanview">Interview status</h6>{" "}
                               </td>
                               <td>
-                                {this.state.data.statusHrinterview === "pending "
+                                {this.state.data.statusHrinterview ===
+                                "pending "
                                   ? "Pending"
-                                  :`${
+                                  : `${
                                       this.state.data.statusHrinterview
                                     } ${"Set by " +
                                       this.state.data.statusHrsetby +
@@ -1948,7 +1952,8 @@ class CandidateView extends Component {
                                   </h6>{" "}
                                 </td>
                                 <td>
-                                  {this.state.data.statusHrinterview2
+                                  {this.state.data.statusHrinterview2 !=
+                                  "pending "
                                     ? `${
                                         this.state.data.statusHrinterview2
                                       } ${"Set by " +
@@ -2068,7 +2073,8 @@ class CandidateView extends Component {
                                   </h6>{" "}
                                 </td>
                                 <td>
-                                  {this.state.data.statusHrinterview3
+                                  {this.state.data.statusHrinterview3 !=
+                                  "pending "
                                     ? `${
                                         this.state.data.statusHrinterview3
                                       } ${"Set by " +

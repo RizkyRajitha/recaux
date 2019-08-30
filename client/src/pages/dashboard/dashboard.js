@@ -73,18 +73,6 @@ class dashboard extends Component {
     this.setState({ modalIsOpen: false });
   };
 
-  verifyemail = () => {
-    //this.props.history.push('/fogotpassword')
-    axios
-      .get("/usr/sendconfirmemail/" + this.state.id)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   greet = () => {
     var now = new Date();
     var hour = now.getHours();
@@ -98,21 +86,6 @@ class dashboard extends Component {
     } else {
       this.setState({ greet: "Good morning" });
     }
-  };
-
-  reg = e => {
-    e.preventDefault();
-    this.props.history.push("/register");
-  };
-
-  usrprofile = e => {
-    e.preventDefault();
-    this.props.history.push("/user/" + this.state.id);
-  };
-
-  addcandidate = e => {
-    e.preventDefault();
-    this.props.history.push("/addcandidate");
   };
 
   getcandidatedata = () => {
@@ -252,7 +225,7 @@ class dashboard extends Component {
   };
 
   getuserdata = () => {
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     console.log("in user data");
     console.log("usr type" + this.state.usertype);
     console.log(this.state);
@@ -283,7 +256,7 @@ class dashboard extends Component {
     //this.greet();
     console.log("mount");
     var jwt = localStorage.getItem("jwt");
-
+    this.setState({ isLoading: true });
     try {
       console.log("in register");
       var pay = jsonwebtoken.verify(jwt, "authdemo");
@@ -304,7 +277,7 @@ class dashboard extends Component {
       .get("/usr/dashboard", config)
       .then(result => {
         console.log("sucsess" + result.data);
-
+        this.setState({ isLoading: false });
         if (result.data) {
           console.log("menna apu data");
           console.log(result.data);
@@ -338,7 +311,7 @@ class dashboard extends Component {
           //console.log(this.state);
           this.getcandidatedata();
           this.getuserdata();
-          this.setState({ isLoading: false });
+
           localStorage.setItem("userId", result.data.id);
         } else {
           this.setState({ logedin: false });
@@ -347,7 +320,6 @@ class dashboard extends Component {
       .catch(err => {
         this.setState({ logedin: false });
         console.log("error" + err);
-        this.setState({ isLoading: true });
       });
 
     setTimeout(() => {
@@ -361,38 +333,7 @@ class dashboard extends Component {
     const { selectedOption, selectoptionsnamelist } = this.state;
     return (
       <div className="dashboardmain">
-        {/* <Navbar />
-          <Drawer
-            avatarUrl={this.state.avatarUrl}
-            username={this.state.firstName + " " + this.state.lastName}
-            type={this.state.usertype}
-          /> */}
-        {/* <p className="usrtype">Logged in as : {this.state.usertype}</p> */}
-
-        <br />
-
-        {/* <button
-          onClick={this.addcandidate}
-          className="btn btn-primary"
-          id="shortlist"
-          disabled={this.state.numofshort === 0}
-          onClick={this.shortlistmodal}
-        >
-          Shortlist Many
-        </button>
-        <button
-          onClick={this.addcandidate}
-          className="btn btn-primary"
-          id="addcan"
-          disabled={
-            this.state.usertype === "hr_staff" ||
-            this.state.usertype === "admin"
-              ? false
-              : true
-          }
-        >
-          Add new candidate
-        </button> */}
+        <div class="loader-dashboard" hidden={!this.state.isLoading} />
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -423,21 +364,6 @@ class dashboard extends Component {
             />
           </div>
         </Modal>
-
-        {/* {!this.state.emailverified && (
-            <div class="alert alert-danger" role="alert">
-              please verify your email
-              <br />
-              <button
-                type="button"
-                class="btn btn-outline-danger "
-                id="verifyemailbtn"
-                onClick={this.verifyemail}
-              >
-                verify email
-              </button>
-            </div>
-          )} */}
 
         <div class="row">
           <div className="col-s4-m4-l4" id="dashboardcardcontainer1">

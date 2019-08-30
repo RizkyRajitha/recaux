@@ -114,7 +114,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
       <h1 className="sameera"> </h1>
       <br />
       <br />
-
+      <div class="loader-login" hidden={!isSubmitting} />
       <Container component="main" maxWidth="xs">
         {errors.invalidcred && (
           <div class="alert alert-danger" role="alert">

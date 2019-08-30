@@ -45,7 +45,7 @@ const Formic = ({ errors, history, touched, isSubmitting }) => {
         username={firstName + " " + lastName}
         type={usertype}
       /> */}
-
+      <div class="loader-register" hidden={!isSubmitting} />
       <div className="maindivregister">
         <div className="wrapperregister">
           <div className="form-wrapperregister">
