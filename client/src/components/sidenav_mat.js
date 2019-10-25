@@ -38,7 +38,7 @@ import axios from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import "./sidenav_mat.css";
 import io from "socket.io-client";
-
+import moments from "moment";
 const drawerWidth = 240;
 const drawerHeight = 960;
 //let socket = "";
@@ -280,12 +280,12 @@ function Dashboard(props) {
             </Typography>
 
             <div className="divcontnotify">
-              <span style={{}}> {username}</span>
+              <span style={{ marginRight: "15%" }}> {username}</span>
               <IconButton color="inherit">
                 <Badge badgeContent={data.length} color="secondary">
                   <NotificationsIcon
                     onClick={handleClick2}
-                    style={{ width: 30, height: 30 }}
+                    style={{ width: 30, height: 30, marginRight: "10%" }}
                   />
                 </Badge>
 
@@ -306,9 +306,9 @@ function Dashboard(props) {
                   style={{ width: 600 }}
                 >
                   {data.length === 0 ? (
-                    <MenuItem style={{ width: 50 }}>
+                    <MenuItem style={{ whiteSpace: "normal" }}>
                       {" "}
-                      No Notifications{" "}
+                      No new notifications{" "}
                     </MenuItem>
                   ) : (
                     data.map((ele, index) => {
@@ -339,8 +339,21 @@ function Dashboard(props) {
                               .then()
                               .catch(err => console.log(err)); //nortid
                           }}
+                          style={{ whiteSpace: "normal", width: 390 }}
                         >
-                          {ele.dis}
+                          <div className='divnortifidropdownappbarlargediv' >
+                            <div className="divnortifidropdownappbar">
+                              <span style={{ color: "#499fe6" }}>
+                                {ele.title}
+                              </span>
+                              <span className="spannortitime">{`${moments(
+                                ele.time,
+                                "YYYY-MM-DD HH:mm:ssZ"
+                              ).fromNow()}`}</span>
+                            </div>
+
+                            <p>{ele.dis}</p>
+                          </div>
                         </MenuItem>
                       );
                     })
@@ -516,19 +529,18 @@ function Dashboard(props) {
                 ""
               )}
 
-              
-                <ListItem
-                  button
-                  onClick={() => {
-                    props.history.push("/settings");
-                  }}
-                >
-                  <ListItemIcon>
-                    <Settings />
-                  </ListItemIcon>
-                  <ListItemText primary="Settings" />
-                </ListItem>
-              
+              <ListItem
+                button
+                onClick={() => {
+                  props.history.push("/settings");
+                }}
+              >
+                <ListItemIcon>
+                  <Settings />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+
               {usertype === "admin" || usertype === "hr_staff" ? (
                 <ListItem
                   button

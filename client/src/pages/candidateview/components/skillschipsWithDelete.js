@@ -73,6 +73,8 @@ export default function ChipsArray(props) {
         { key: selectedOption.value, label: selectedOption.label }
       ]);
 
+    props.editskills(selectedOption,'add')
+
       console.log(`Option selected:`, selectedOption);
 
       var jwt = localStorage.getItem("jwt");
@@ -95,6 +97,8 @@ export default function ChipsArray(props) {
 
   const handleDelete = chipToDelete => () => {
     console.log(chipToDelete);
+
+ props.editskills(chipToDelete,'rem')
 
     setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
 

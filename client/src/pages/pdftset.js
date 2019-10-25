@@ -1,81 +1,60 @@
-//import exp from "./pdf.pdf";
 import React, { Component } from "react";
-//import worker from './pdf.worker'
 //import "./pdftest.css";
-import { Document, Page ,pdfjs} from "react-pdf";
-// pdfjs.GlobalWorkerOptions.workerSrc = worker
-// console.log(pdfjs.version)
+import { Document, Page, pdfjs } from "react-pdf";
+import Badge from "@material-ui/core/Badge";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-//2.1.266
-//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.1.266/pdf.worker.js
-var exp = ""
+
+var exp = "";
 export default class Pdf extends Component {
-  state = { numPages: null, pageNumber: 1 };
+  state = { numPages: null, pageNumber: 1, isopen: true };
 
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
   };
 
-  goToPrevPage = () =>
-    this.setState(state => ({ pageNumber: state.pageNumber - 1 }));
-  goToNextPage = () =>
-    this.setState(state => ({ pageNumber: state.pageNumber + 1 }));
-
   render() {
-    const { pageNumber, numPages } = this.state;
-
     return (
-      <div>
-        <nav>
-          <button onClick={this.goToPrevPage}>Prev</button>
-          <button onClick={this.goToNextPage}>Next</button>
-        </nav>
+      <div className="container">
+        {/* <div class="btn-group">
+          <Badge badgeContent={4} color="secondary">
+            <NotificationsIcon
+              class="btn  dropdown-toggle"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              onClick={() => {
+                console.log("arrrrrrrrrrrrrrr");
+                this.setState({ isopen: !this.state.isopen });
+              }}
+              style={{ width: 30, height: 30 }}
+            />
+          </Badge>
+        </div> */}
 
-        <div className='pdf' style={{ width: 1500 }}>
-          <Document file={exp} onLoadSuccess={this.onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} width={1500} />
-          </Document>
+        <div class="dropdown">
+          <NotificationsIcon
+            class="btn  dropdown-toggle"
+            // type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          /><span class="badge badge-light">9</span>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">
+              Action
+            </a>
+            <a class="dropdown-item" href="#">
+              Another action
+            </a>
+            <a class="dropdown-item" href="#">
+              Something else here
+            </a>
+          </div>
         </div>
-
-        <p>
-          Page {pageNumber} of {numPages}
-        </p>
       </div>
     );
   }
 }
-
-/**
- * 
- 
-class Pdf extends Component {
-  state = {
-    numPages: null,
-    pageNumber: 1,
-  }
- 
-  onDocumentLoadSuccess = ({ numPages }) => {
-    this.setState({ numPages });
-  }
- 
-  render() {
-    const { pageNumber, numPages } = this.state;
- 
-    return (
-      <div>
-          <p>pdf</p>
-        <Document
-        className='pdf'
-        loading="loading the pdf filez"
-          file={exp}
-          onLoadSuccess={this.onDocumentLoadSuccess}
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <p>Page {pageNumber} of {numPages}</p>
-      </div>
-    );
-  }
-}
-
-export default Pdf*/

@@ -1,5 +1,18 @@
 .divcontnotify {
   margin-left: 70%;
   margin-right: 35%;
-  display: flex
+  display: flex;
+}
+
+.spannortitime {
+  color: #152683;
+  font-size: 0.9rem;
+  margin-left: 2%;
+}
+.divnortifidropdownappbar {
+  width: 100%;
+}
+
+.divnortifidropdownappbarlargediv {
+  width: 100%;
 }

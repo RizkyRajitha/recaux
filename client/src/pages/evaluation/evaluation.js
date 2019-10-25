@@ -726,7 +726,7 @@ export default class CreateEvaluationForm extends Component {
 
     axios
       .post(
-        "http://localhost:3001/usr/evaluationadd/" + this.props.match.params.id,
+        "/usr/evaluationadd/" + this.props.match.params.id,
         newEvaluation,
         config
       )
@@ -1357,9 +1357,8 @@ export default class CreateEvaluationForm extends Component {
               {this.state.rate10err && (
                 <span className="errorspanrate"> {this.state.rate10err} </span>
               )}
-              <br />
-              <br />
-              {/* <p>Communication : </p> */}
+              
+              
               <input
                 placeholder=""
                 type="text"
@@ -1382,9 +1381,7 @@ export default class CreateEvaluationForm extends Component {
               {this.state.rate11err && (
                 <span className="errorspanrate"> {this.state.rate11err} </span>
               )}
-              <br />
-              <br />
-              {/* <p>: </p> */}
+             
               <input
                 placeholder=""
                 type="text"
@@ -1407,9 +1404,7 @@ export default class CreateEvaluationForm extends Component {
               {this.state.rate12err && (
                 <span className="errorspanrate"> {this.state.rate12err} </span>
               )}
-              <br />
-              <br />
-              {/* <p>Team work: </p> */}
+              
               <input
                 placeholder=""
                 type="text"

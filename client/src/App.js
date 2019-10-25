@@ -42,7 +42,7 @@ import Userlist from "./pages/userlist/userlist";
 import Interview from "./pages/interviews/interviews";
 import OutSourceProject from "./pages/OutSourceProject/OutSourceProject";
 import LandingPage from "./pages/landingpage/landingpage";
-
+import Log from "./components/log";
 const jwt = localStorage.getItem("jwt");
 const usertype = localStorage.getItem("usertype");
 
@@ -66,7 +66,7 @@ class App extends Component {
             <Route path="/user/:id" component={Userprofile} />
             <Route path="/changepass/:id" component={Changepass} />
             <Route path="/avatar/:id" component={Avatar} />
-
+            <Route path="/log" component={Log} />
             <Route path="/drawer" component={Drawer} />
             <Route path="/pdftest" component={Pdftest} />
             <Route path="/spinner" component={Home} />

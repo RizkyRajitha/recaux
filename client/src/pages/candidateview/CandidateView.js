@@ -634,7 +634,7 @@ class CandidateView extends Component {
               snackbaropen: true,
               snackbarmsg: "shortlist updated succsessfully"
             });
-            //window.location.reload(false);
+            window.location.reload(false);
           }
           this.closeModal();
         })
@@ -654,7 +654,7 @@ class CandidateView extends Component {
               snackbarmsg: "added to shortlist succsessfully"
             });
 
-            //window.location.reload(false);
+            window.location.reload(false);
           }
           this.closeModal();
         })
@@ -1009,7 +1009,7 @@ class CandidateView extends Component {
 
     var payload = {
       status: e.target.value,
-      interivewtype: this.state.hrstatusintervietype
+      interviewtype: this.state.hrstatusintervietype
     };
 
     axios
@@ -1097,6 +1097,7 @@ class CandidateView extends Component {
             snackbaropen: true,
             snackbarmsg: " scheduled interview succsessfully"
           });
+          window.location.reload(false);
           this.closeModal6();
         }
 
@@ -1180,6 +1181,7 @@ class CandidateView extends Component {
             snackbaropen: true,
             snackbarmsg: " Re-scheduled interview succsessfully"
           });
+          window.location.reload(false);
           this.closeModal7();
         }
 
@@ -1189,6 +1191,29 @@ class CandidateView extends Component {
         console.log(err);
         this.setState({ status_change: 0 });
       });
+  };
+
+  editskillspropfunc = (skill, stt) => {
+    console.log("edit skkll");
+    console.log(skill);
+    console.log(stt);
+
+    var tempskk = this.state.data.skills;
+
+    if (stt === "rem") {
+      for (let index = 0; index < this.state.data.skills.length; index++) {
+        if (this.state.data.skills[index].label === skill.label) {
+          tempskk.splice(index, 1);
+          break;
+        }
+      }
+      this.state.data.skills = tempskk;
+      this.forceUpdate();
+    } else if (stt === "add") {
+      tempskk.push(skill);
+      this.state.data.skills = tempskk;
+      this.forceUpdate();
+    }
   };
 
   showevalpdf = () => {
@@ -1268,6 +1293,25 @@ class CandidateView extends Component {
     //   // var shortago =  moments(shrtdate, "YYYY-MM-DD HH:mm:ssZ");
 
     // }
+
+    var shortliststatushidden1 =
+      this.state.data.shortlister !== this.state.id &&
+      !(this.state.usertype === "admin")
+        ? true
+        : false;
+    console.log("is hidden 1 " + shortliststatushidden1);
+
+    var interviewstate =
+      this.state.data.interview ||
+      this.state.data.interview2 ||
+      this.state.data.interview3
+        ? true
+        : false;
+    console.log("is interssdsdsdsd " + this.state.data.interview);
+    console.log("is interssdsdsdsd " + interviewstate);
+    var shortliststatushidden =
+      shortliststatushidden1 || interviewstate ? true : false;
+    console.log("is hidden " + shortliststatushidden);
 
     const { selectedOption, selectoptionsnamelist } = this.state;
     const { snackbaropen } = this.state;
@@ -1548,6 +1592,7 @@ class CandidateView extends Component {
                               <ChipsArraywdelete
                                 id={this.state.data._id}
                                 currentskills={this.state.currentskillskeyvals}
+                                editskills={this.editskillspropfunc}
                               />
                             )}
                           </div>
@@ -1590,9 +1635,27 @@ class CandidateView extends Component {
                 <button
                   onClick={this.openModal}
                   className="btn canviewbtngroup btn-primary"
-                  hidden={this.state.usertype === "depthead"}
+                  hidden={
+                    this.state.usertype === "depthead" ||
+                    this.state.data.interview ||
+                    this.state.data.interview2 ||
+                    this.state.data.interview3
+                  }
                 >
                   Allocate for shortlisting
+                </button>
+                <button
+                  onClick={this.outsourceproject}
+                  className="btn canviewbtngroup btn-primary"
+                  hidden={
+                    (this.state.data.primaryStatus === "onhold" &&
+                      this.state.usertype === "depthead") ||
+                    this.state.usertype === "admin"
+                      ? false
+                      : true
+                  }
+                >
+                  Generate Formal Resume
                 </button>
               </div>
 
@@ -1689,16 +1752,11 @@ class CandidateView extends Component {
                   </button>
 
                   <button
-                    hidden={
-                      this.state.data.shortlister !== this.state.id &&
-                      !(this.state.usertype === "admin")
-                        ? true
-                        : false
-                    }
+                    hidden={shortliststatushidden}
                     onClick={this.changeStatusmodal}
                     className="btn canviewbtngroup btn-primary"
                   >
-                    shorlist
+                    Shortlist Candidate
                   </button>
                 </div>
 
@@ -1715,7 +1773,7 @@ class CandidateView extends Component {
                           data-toggle="tab"
                           class="nav-link active"
                         >
-                          First interivew
+                          First interview
                         </a>
                       </li>
 
@@ -1727,7 +1785,7 @@ class CandidateView extends Component {
                           class="nav-link"
                           hidden={!this.state.data.interview2}
                         >
-                          Second interivew
+                          Second interview
                         </a>
                       </li>
 
@@ -1739,7 +1797,7 @@ class CandidateView extends Component {
                           class="nav-link"
                           hidden={!this.state.data.interview3}
                         >
-                          Client interivew
+                          Client interview
                         </a>
                       </li>
                     </ul>
@@ -1747,7 +1805,7 @@ class CandidateView extends Component {
                       <div class="tab-pane active" id="interview1">
                         <h6 className="shortlistheadingcanview">
                           {" "}
-                          Interview Details First interivew
+                          Interview Details First interview
                         </h6>
                         <table class="table table-borderless ssss">
                           <tbody>
@@ -1880,7 +1938,7 @@ class CandidateView extends Component {
                       <div class="tab-pane" id="interview2">
                         <div class="tab-pane active" id="interview1">
                           <h6 className="shortlistheadingcanview">
-                            Interview Details Second interivew
+                            Interview Details Second interview
                           </h6>
                           <table class="table table-borderless ssss">
                             <tbody>
@@ -2001,7 +2059,7 @@ class CandidateView extends Component {
                       <div class="tab-pane" id="interview3">
                         <div class="tab-pane active" id="interview1">
                           <h6 className="shortlistheadingcanview">
-                            Interview Details Client interivew
+                            Interview Details Client interview
                           </h6>
                           <table class="table table-borderless ssss">
                             <tbody>
@@ -2156,19 +2214,6 @@ class CandidateView extends Component {
                       )}
                     </tbody>
                   </table>
-
-                  <button
-                    onClick={this.outsourceproject}
-                    className="btn canviewbtngroup btn-primary"
-                    hidden={
-                      this.state.usertype === "depthead" ||
-                      this.state.usertype === "admin"
-                        ? false
-                        : true
-                    }
-                  >
-                    generate formal resume
-                  </button>
 
                   <div
                     className="finalstateforinterviewcanview"
