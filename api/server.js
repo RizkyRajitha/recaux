@@ -14,7 +14,8 @@ const User = require("./db/users");
 const Candidate = require("./db/candidates");
 const Notifications = require("./db/nortification");
 const ObjectID = require("mongodb").ObjectID;
-const fs = require('fs')
+const fs = require("fs");
+const jwt = require("jsonwebtoken");
 // const swaggerUi = require("swagger-ui-express");
 // const swaggerDocument = require("./config/swagger.json");
 const Pusher = require("pusher-js/node");
@@ -31,12 +32,72 @@ mongoose.Promise = global.Promise;
 const mongodbAPI = "mongodb://127.0.0.1:27017/authdb"; //keys.mongouri;
 app.use(require("express-status-monitor")());
 //const app = express();
+
 app.use(passport.initialize());
 app.use(cors());
 app.use(require("morgan")("dev"));
 app.use(bp.urlencoded({ extended: false }));
 app.use(bp.json());
+var logger = function(req, res, next) {
+  var eventtime = new Date().toLocaleString("en-US", {
+    timeZone: "Asia/Colombo"
+  });
 
+  var usertoken = req.headers.authorization;
+  var uname = "";
+  var ipaddr = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  if (usertoken) {
+    try {
+      var decode = jwt.verify(usertoken, "authdemo");
+      User.findOne({ _id: decode.id })
+        .then(ussr => {
+          uname = ussr.firstName + " " + ussr.lastName;
+
+          console.log("on :" + eventtime);
+
+          var str = ` ${eventtime} ; ip  ${ipaddr}  ; endpoint - ${
+            req.originalUrl
+          } ; user - ${uname} ; data - ${JSON.stringify(req.body)}  \n`;
+
+          var pt = path.join(__dirname, "config", "log.txt");
+          console.log(pt);
+          console.log("yoloylylylylylyylylyylylylyl");
+          try {
+            fs.appendFile(pt, str, function(err) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Saved!");
+              }
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          var str = ` ${eventtime} : endpoint - ${
+            req.originalUrl
+          } | user - ${uname} | data - ${JSON.stringify(req.body)}  \n`;
+          try {
+            fs.appendFile(pt, str, function(err) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Saved!");
+              }
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  next();
+};
+app.use(logger);
 //app.use("/static", express.static(path.join(__dirname, "../assets")));
 //app.use(express.static('../client/public'));
 
@@ -295,9 +356,7 @@ channel.bind("my-event", function(data) {
                       });
 
                       const newnot = new Notifications({
-                        dis: ` you have new cv from a old \\n candidate  ${
-                          dupcandoc.name
-                        } `,
+                        dis: ` you have new cv from a old \\n candidate  ${dupcandoc.name} `,
                         title: "new candidate",
                         time: new Date().toISOString(),
                         userIdShow: nortiflist,

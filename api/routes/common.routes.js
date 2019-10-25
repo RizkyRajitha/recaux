@@ -92,7 +92,7 @@ exports.addCandidate = (req, res, next) => {
                     });
 
                     const newnot = new Notifications({
-                      dis: ` new candidate ${result.name} `,
+                      dis: ` New candidate ${result.name}             `,
                       title: "New candidate",
                       time: new Date().toISOString(),
                       userIdShow: userarr,
@@ -1236,13 +1236,19 @@ exports.addinterview = (req, res, next) => {
                     newinterview
                       .save()
                       .then(doc => {
+                        var eventtime = new Date(
+                          datain.datetime
+                        ).toLocaleString("en-US", {
+                          timeZone: "Asia/Colombo"
+                        });
+
                         console.log(doc);
                         const newnot = new Notifications({
-                          dis: ` you have new interview with ${doc3.name} on ${
-                            datain.datetime
-                          } scheduled by ${doc1.firstName +
+                          dis: `New interview with ${
+                            doc3.name
+                          } on ${eventtime} scheduled by ${doc1.firstName +
                             " " +
-                            doc1.lastName} `,
+                            doc1.lastName}`,
                           title: "Interview",
                           time: new Date().toISOString(),
                           userIdShow: datain.panal,
@@ -1331,10 +1337,16 @@ exports.updateinterview = (req, res, next) => {
                       }
                     )
                       .then(doc => {
+                        var eventtime = new Date(
+                          datain.datetime
+                        ).toLocaleString("en-US", {
+                          timeZone: "Asia/Colombo"
+                        });
+
                         const newnot = new Notifications({
-                          dis: ` you have new interview with ${doc3.name} on ${
-                            datain.datetime
-                          } scheduled by ${doc1.firstName +
+                          dis: `New interview with ${
+                            doc3.name
+                          } on ${eventtime} scheduled by ${doc1.firstName +
                             " " +
                             doc1.lastName} `,
                           title: "Interview update",

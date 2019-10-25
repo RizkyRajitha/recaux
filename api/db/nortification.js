@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var nortificationSchema = new Schema({
   title: { type: String },
   dis: { type: String },
-  timeCre: { type: String },
+  time: { type: String },
   userIdShow: [],
   viwed: { type: Boolean, default: false },
   candidateId: { type: String }

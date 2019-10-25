@@ -2,7 +2,8 @@ const passport = require("passport");
 const User = require("../db/users");
 const ObjectID = require("mongodb").ObjectID;
 const emailhandler = require("../config/emailhandler");
-
+const path = require("path");
+const fs = require("fs");
 exports.adminLogin = function(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
     console.log("ppppp");
@@ -33,7 +34,7 @@ exports.adminLogin = function(req, res, next) {
 exports.userlist = (req, res, next) => {
   passport.authenticate(
     "jwtstrategy",
-    { session: false }, 
+    { session: false },
     (err, user, info) => {
       if (!user) {
         res.status(401).send(info);
@@ -199,6 +200,30 @@ exports.settingsadd = (req, res, next) => {
       } else {
         console.log(req.body);
         var datain = req.body;
+      }
+    }
+  )(req, res, next);
+};
+
+exports.logger = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+
+        var datain = req.body;
+        var pt = path.join(__dirname, "../", "config", "log.txt");
+        fs.readFile(pt, function(err, data) {
+          res.send(data);
+        });
       }
     }
   )(req, res, next);
