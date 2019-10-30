@@ -39,7 +39,6 @@
   background-color: #246ad3;
 }
 
-
 .loader-canview {
   position: fixed;
   width: 100%;
@@ -69,6 +68,40 @@
   }
 }
 
+.shortlistcanbtn {
+  margin-top: 1%;
+}
+
+.interviewshcedulecan {
+  text-align: center;
+  align-content: center;
+}
+
+.schedulemodaltable {
+  margin-left: 16%;
+  width: 138%;
+  margin-top: 12%;
+}
+
+.tablerowschedulemodal {
+  padding-top: 10%;
+}
+
+.shortlistmodeldiv {
+  text-align: center;
+}
+
+.shortlistmodal {
+  margin-top: 10%;
+}
+
+.realocalterpara {
+  margin-bottom: 2%;
+  margin-top: 2%;
+  color: red;
+  font-size: 1.4rem;
+}
+
 .loader-canview::after {
   content: "";
   display: block;
@@ -88,7 +121,6 @@
   -webkit-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
-
 
 .rec {
   text-align: right;

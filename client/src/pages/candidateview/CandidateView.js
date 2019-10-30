@@ -47,13 +47,15 @@ const FileDownload = require("file-saver");
 const customStyles = {
   content: {
     width: "50%",
-    height: "30%",
+    height: "50%",
     top: "50%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -66,7 +68,9 @@ const customStyles2 = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -79,7 +83,9 @@ const customStyles3 = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -92,7 +98,9 @@ const customStyles4 = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
+    transform: "translate(-50%, -50%)",
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -105,6 +113,7 @@ const customStyles5 = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
+    "border-color": "black",
     transform: "translate(-50%, -50%)"
   }
 };
@@ -119,7 +128,8 @@ const customStyles6 = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    "overflow-x": "hidden"
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -133,7 +143,8 @@ const customStyles7 = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    "overflow-x": "hidden"
+    "overflow-x": "hidden",
+    "border-color": "black"
   }
 };
 
@@ -962,6 +973,7 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === "sucsess") {
+          window.location.reload();
           this.setState({
             snackbaropen: true,
             snackbarmsg: "Primary status update successfully"
@@ -1339,32 +1351,34 @@ class CandidateView extends Component {
               style={customStyles}
               contentLabel="Example Modal"
             >
-              <h2 ref={subtitle => (this.subtitle = subtitle)}>confirm list</h2>
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>
+                Shortlist {this.state.data.name}
+              </h2>
 
-              {this.state.data.assignToshortlisterbyName && (
-                <p>
-                  {" "}
-                  This candidate is currently assiged to{" "}
-                  {this.state.data.shortlisterName} do you want to re-allocate
-                  it.{" "}
-                </p>
-              )}
-              <div class="input-field col s12">
-                <p>{this.state.shortedcanarrnamelist}</p>
+              <div className="shortlistmodeldiv">
+                {this.state.data.assignToshortlisterbyName && (
+                  <p className="realocalterpara">
+                    {" "}
+                    This candidate is currently assiged to{" "}
+                    {this.state.data.shortlisterName} do you want to re-allocate
+                    it.{" "}
+                  </p>
+                )}
+                <div class="input-field col s12">
+                  <p>{this.state.shortedcanarrnamelist}</p>
 
-                <Select
-                  isSearchable
-                  required
-                  value={selectedOption}
-                  onChange={this.handleChangemodalselect}
-                  options={this.state.userarr}
-                />
-              </div>
+                  <Select
+                    isSearchable
+                    required
+                    value={selectedOption}
+                    onChange={this.handleChangemodalselect}
+                    options={this.state.userarr}
+                  />
+                </div>
 
-              <div className="submit">
                 <input
                   type="submit"
-                  className="btn"
+                  className="btn shortlistcanbtn btn-outline-primary "
                   onClick={this.shorlisthandler}
                   value="confirm shortlisting"
                   id="submit"
@@ -2276,7 +2290,7 @@ class CandidateView extends Component {
           >
             <h2 ref={subtitle => (this.subtitle = subtitle)}>shortlist</h2>
 
-            <div class="form-group">
+            <div class="form-group shortlistmodal ">
               <label
                 className="canviewshortlistform"
                 for="exampleFormControlSelect2"
@@ -2374,84 +2388,94 @@ class CandidateView extends Component {
               Schedule {" " + this.state.data.name + "'s interview"}{" "}
             </h2>
 
-            <Container>
+            <div className=" container interviewshcedulecan">
               <form onSubmit={this.scheduleHandler}>
-                <table style={{ textAlign: "left", width: "50%" }}>
-                  <tr>
-                    <td>candidate name - </td>
-                    <td> {this.state.data.name} </td>
-                  </tr>
-                  <tr>
-                    <td>allocater name - </td>
-                    <td>
-                      {" "}
-                      {this.state.firstName + " " + this.state.lastName}{" "}
-                    </td>
-                  </tr>
+                <div className="schedulemodaltable">
+                  <table
+                    className="table table-borderless"
+                    style={{ textAlign: "left", width: "50%" }}
+                  >
+                    <tr>
+                      <td>Candidate </td>
+                      <td> {this.state.data.name} </td>
+                    </tr>
+                    <tr>
+                      <td>Allocater </td>
+                      <td>
+                        {" "}
+                        {this.state.firstName + " " + this.state.lastName}{" "}
+                      </td>
+                    </tr>
 
-                  <tr>
-                    <td>Interview type </td>
-                    <td>
-                      <Select
-                        isSearchable
-                        required
-                        value={this.state.selectedinterviwertype}
-                        //placeholder={this.state.selectedinterviwertype.label}
-                        onChange={this.handleChangemodalselectedinterviwertype}
-                        options={this.state.interviewtypeoptions}
-                      />
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>interviewer - </td>
-                    <td>
-                      {" "}
-                      <Select
-                        isSearchable
-                        required
-                        value={this.state.selectedinterviwerOption}
-                        placeholder={this.state.selectedinterviwerOption.label}
-                        onChange={
-                          this
-                            .handleChangemodalselectscheduleinterviewinterviewer
-                        }
-                        options={this.state.userarr}
-                      />{" "}
-                    </td>
-                  </tr>
-                  <td>Date &amp; time</td>
-                  <td>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <DateTimePicker
-                        value={this.state.selectedDate}
-                        onChange={this.handleDateChange}
-                        disablePast={true}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </td>
-
-                  <tr>
-                    <td>interviewe panal- </td>
-                    <td>
-                      <div className="" />
-
-                      {this.state.slectformchipplanal && (
-                        <ChipsArrayPanal
-                          id={this.state.data._id}
-                          //remuser={this.state.selectedinterviwerOption}
-                          currentpanal={[
-                            {
-                              key: this.state.selectedinterviwerOption.value,
-                              label: this.state.selectedinterviwerOption.label
-                            }
-                          ]}
-                          setpanal={this.gteinterviewpanal}
+                    <tr>
+                      <td>Interview type </td>
+                      <td>
+                        <Select
+                          isSearchable
+                          required
+                          value={this.state.selectedinterviwertype}
+                          //placeholder={this.state.selectedinterviwertype.label}
+                          onChange={
+                            this.handleChangemodalselectedinterviwertype
+                          }
+                          options={this.state.interviewtypeoptions}
                         />
-                      )}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>Interviewer - </td>
+                      <td>
+                        {" "}
+                        <Select
+                          isSearchable
+                          required
+                          value={this.state.selectedinterviwerOption}
+                          placeholder={
+                            this.state.selectedinterviwerOption.label
+                          }
+                          onChange={
+                            this
+                              .handleChangemodalselectscheduleinterviewinterviewer
+                          }
+                          options={this.state.userarr}
+                        />{" "}
+                      </td>
+                    </tr>
+                    <td>Date &amp; time</td>
+                    <td>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <DateTimePicker
+                          value={this.state.selectedDate}
+                          onChange={this.handleDateChange}
+                          disablePast={true}
+                        />
+                      </MuiPickersUtilsProvider>
                     </td>
-                  </tr>
-                </table>
+
+                    <tr>
+                      <td>Interview panal </td>
+                      <td>
+                        <div className="" />
+
+                        {this.state.slectformchipplanal && (
+                          <ChipsArrayPanal
+                            id={this.state.data._id}
+                            //remuser={this.state.selectedinterviwerOption}
+                            currentpanal={[
+                              {
+                                key: this.state.selectedinterviwerOption.value,
+                                label: this.state.selectedinterviwerOption.label
+                              }
+                            ]}
+                            setpanal={this.gteinterviewpanal}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
                 <button
                   className="btn canviewbtngroup btn-primary"
                   type="submit"
@@ -2459,7 +2483,7 @@ class CandidateView extends Component {
                   Confirm Interview
                 </button>
               </form>
-            </Container>
+            </div>
           </Modal>
 
           <Modal
