@@ -6,23 +6,9 @@ import Navbar from "../../components/navbar";
 //import exp from "../pdf.pdf";
 import Modal from "react-modal";
 import BaseSelect from "react-select";
-import Drawer from "../../components/sidenav";
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+
 import Container from "@material-ui/core/Container/Container";
-import Avatar from "@material-ui/core/Avatar";
-import ImageIcon from "@material-ui/icons/Image";
-import WorkIcon from "@material-ui/icons/Work";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Drafts from "@material-ui/icons/Drafts";
-import NextWeek from "@material-ui/icons/NextWeek";
-import SubdirectoryArrowRight from "@material-ui/icons/SubdirectoryArrowRight";
-import BeachAccessIcon from "@material-ui/icons/BeachAccess";
-import Gavel from "@material-ui/icons/Gavel";
-import WatchLater from "@material-ui/icons/WatchLater";
+
 import Divider from "@material-ui/core/Divider";
 import { Document, Page, pdfjs } from "react-pdf";
 import ChipsArraywdelete from "./components/skillschipsWithDelete";
@@ -41,7 +27,7 @@ import {
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import { Button } from "@material-ui/core";
+// import { Button } from "@material-ui/core";
 import FixRequiredSelect from "./fixreqselect";
 
 const Select = props => (
@@ -1583,7 +1569,7 @@ class CandidateView extends Component {
                               isSearchable
                               required
                               placeholder={this.state.data.jobspec}
-                              value={this.selectedJobspecOption}
+                              value={this.state.selectedJobspecOption}
                               onChange={this.handleChangemodalselectjobspec}
                               options={this.state.selectoptionsjobspeclist}
                             />
@@ -2466,12 +2452,12 @@ class CandidateView extends Component {
                     </td>
                   </tr>
                 </table>
-                <Button
+                <button
                   className="btn canviewbtngroup btn-primary"
                   type="submit"
                 >
                   Confirm Interview
-                </Button>
+                </button>
               </form>
             </Container>
           </Modal>
@@ -2560,12 +2546,12 @@ class CandidateView extends Component {
                     </td>
                   </tr>
                 </table>
-                <Button
+                <button
                   className="btn canviewbtngroup btn-primary"
                   type="submit"
                 >
                   Confirm Interview Re-schedule
-                </Button>
+                </button>
               </form>
             </Container>
           </Modal>

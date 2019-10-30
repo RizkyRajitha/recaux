@@ -81,7 +81,9 @@ class Settings extends Component {
         //this.forceUpdate();
         //setselectoptionsnamelist(res.data.skills);
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   hndleskillchange = e => {
@@ -103,7 +105,7 @@ class Settings extends Component {
             <ChipsArray2 currentjobspecs={this.valtokeyjobs} />
           )}
 
-<div className='paddingdivsettings' ></div>
+          <div className="paddingdivsettings"></div>
 
           {this.state.skillset && <ChipsArray currentskills={this.valtokey} />}
         </div>

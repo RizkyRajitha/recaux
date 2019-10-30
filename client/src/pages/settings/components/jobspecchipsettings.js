@@ -148,7 +148,7 @@ export default function ChipsArray2(props) {
         .then(res => {
           console.log(res.data);
           setonload(false);
-          document.getElementById("settingsaddskill").value = "";
+          document.getElementById("settingsjobspecinput").value = "";
 
           //this.setState({ skillset: res.data.skills });
           //this.forceUpdate();
@@ -163,6 +163,7 @@ export default function ChipsArray2(props) {
   return (
     <div className="container settignjobspcmaindiv ">
       <input
+        id="settingsjobspecinput"
         type="text"
         label="New Jobspec"
         onChange={hndleskillchange}

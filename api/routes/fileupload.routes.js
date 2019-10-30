@@ -166,17 +166,31 @@ exports.cvupload = (req, ress, next) => {
             console.log("multer errorr-  " + JSON.stringify(err));
 
             if (err.code == "LIMIT_FILE_SIZE") {
-              ress.status(400).send("file_too_large");
+              Candidate.findByIdAndRemove(ObjectID(req.params.id))
+                .then(doc => {
+                  ress.status(400).send("file_too_large");
+                })
+                .catch(err => {
+                  ress.status(500).send("file_too_large");
+                });
             }
             if (err.msg == "unsupported_format") {
-              ress.status(400).send("unsupported_file_format");
+              Candidate.findByIdAndRemove(ObjectID(req.params.id))
+                .then(doc => {
+                  ress.status(400).send("unsupported_file_format");
+                })
+                .catch(err => {
+                  ress.status(500).send("unsupported_file_format");
+                });
+
+              // Candidate.findById(ObjectID(req.params.id))
             }
           } else {
             console.log(path.extname(req.file.originalname));
             var cvexte = path.extname(req.file.originalname);
 
-            Candidate.findById(ObjectID(req.params.id))
-              .then(candoc => {
+            Candidate.findById(ObjectID(req.params.id))   
+               .then(candoc => {
                 var cvno = candoc.cvUrl.length;
                 console.log("cv number - " + cvno);
                 var filePath =
