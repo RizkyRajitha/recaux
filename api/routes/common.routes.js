@@ -407,30 +407,35 @@ exports.resetpassword = (req, res) => {
 exports.changePass = (req, res) => {
   id = req.params.id;
   newpassword = req.body.password;
-  console.log(id);
-  console.log("pppppppppppppppppppppppppp");
-  console.log(newpassword);
-  console.log("pppppppppppppppppppppppppp");
+
+  oldpassword = req.body.oldpassword;
 
   User.findById({ _id: ObjectID(id) })
     .then(result => {
       console.log("found " + result.email);
 
-      var salt = bcrypt.genSaltSync(saltRounds);
-      var hash = bcrypt.hashSync(newpassword, salt);
+      if (bcrypt.compareSync(oldpassword, result.hash)) {
+        console.log("password correct");
 
-      result.hash = hash;
-      //result.hash = newpassword;
-      result
-        .save()
-        .then(doc => {
-          console.log("password changed succesfully");
-          res.send("password changed succesfully");
-        })
-        .catch(err => {
-          console.log(err);
-          res.status(500).send(err);
-        });
+        var salt = bcrypt.genSaltSync(saltRounds);
+        var hash = bcrypt.hashSync(newpassword, salt);
+
+        result.hash = hash;
+        //result.hash = newpassword;
+        result
+          .save()
+          .then(doc => {
+            console.log("password changed succesfully");
+            res.json({ msg: "passchanged" });
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+          });
+      } else {
+        console.log("old pass incorrect")
+        res.json({ msg: "oldpassserror" });
+      }
     })
     .catch(err => {
       console.log(err);

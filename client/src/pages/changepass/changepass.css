@@ -1,9 +1,12 @@
-.maindivchngpass{
-    width: 61%;
-    align-content: center
-    
+.maindivchngpass {
+  width: 61%;
+  align-content: center;
 }
 
+.changepassform {
+  margin: 0 auto;
+  text-align: center;
+}
 /* #pass1{
     width: 50%;
     

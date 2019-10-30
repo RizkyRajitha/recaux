@@ -10,8 +10,10 @@ class Changepass extends Component {
     pass1: "",
     pass2: "",
     id: "",
+    oldpass: "",
     errorpassmatch: false,
     passchngsuccess: false,
+    oldpassserror: false,
     firstName: "",
     lastName: "",
     greet: "",
@@ -26,8 +28,7 @@ class Changepass extends Component {
   };
 
   componentWillMount() {
-
-console.log('is -- - -- '+this.props.match.params.id)
+    console.log("is -- - -- " + this.props.match.params.id);
 
     this.setState({ id: this.props.match.params.id });
     //var jwt = localStorage.getItem('jwt')
@@ -46,31 +47,18 @@ console.log('is -- - -- '+this.props.match.params.id)
       //e.preventDefault();
       this.props.history.push("/Login");
     }
-
-    var config = {
-      headers: { authorization: jwt }
-    };
-
-    axios
-      .get("/usr/basicuserdetails", config)
-      .then(res => {
-        console.log(res.data);
-        var datain = res.data;
-        this.setState({
-          
-          firstName: datain.firstName,
-          lastName: datain.lastName,
-          usertype: datain.usertype,
-          avatarUrl: datain.avatarUrl
-        });
-      })
-      .catch(err => {});
   }
 
   submitHndl = e => {
     e.preventDefault();
 
     var jwt = localStorage.getItem("jwt");
+
+    this.setState({
+      errorpassmatch: false,
+      passchngsuccess: false,
+      oldpassserror: false
+    });
 
     var config = {
       headers: { authorization: jwt }
@@ -87,12 +75,17 @@ console.log('is -- - -- '+this.props.match.params.id)
       axios
         .post(
           "/usr/changepass/" + this.state.id,
-          { password: this.state.pass1 },
+          { password: this.state.pass1, oldpassword: this.state.oldpass },
           config
         )
         .then(response => {
           console.log(response);
-          this.setState({ passchngsuccess: true });
+          if (response.data.msg === "passchanged") {
+            this.setState({ passchngsuccess: true });
+          } else if (response.data.msg === "oldpassserror") {
+            this.setState({ oldpassserror: true });
+          }
+          //
         })
         .catch(err => {
           console.log(err);
@@ -105,14 +98,6 @@ console.log('is -- - -- '+this.props.match.params.id)
   render() {
     return (
       <div>
-        {/* <Navbar />
-        <Drawer
-          avatarUrl={this.state.avatarUrl}
-          username={this.state.firstName + " " + this.state.lastName}
-          type={this.state.usertype}
-        /> */}
-        <p className="usrtype"> Logged in as : {this.state.usertype}</p>
-
         <br />
         <br />
         <br />
@@ -126,13 +111,28 @@ console.log('is -- - -- '+this.props.match.params.id)
                   password does not match
                 </div>
               )}
-
+              {this.state.oldpassserror && (
+                <div class="alert  alert-warning" role="alert">
+                  Your old old password is incorrect
+                </div>
+              )}
               {this.state.passchngsuccess && (
                 <div class="alert alert-success" role="alert">
                   password changed successfully
                 </div>
               )}
-              <form onSubmit={this.submitHndl}>
+              <form className="changepassform" onSubmit={this.submitHndl}>
+                <div class="form-group">
+                  <input
+                    required
+                    type="password"
+                    className="form-control"
+                    id="oldpass"
+                    name="oldpass"
+                    onChange={e => this.setState({ oldpass: e.target.value })}
+                    placeholder="enter old password"
+                  />
+                </div>
                 <div class="form-group">
                   <input
                     required
@@ -156,6 +156,7 @@ console.log('is -- - -- '+this.props.match.params.id)
                   />
                 </div>
                 <input
+                  disabled={this.state.pass1 !== this.state.pass2}
                   type="submit"
                   className="btn btn-primary"
                   value="change password"
