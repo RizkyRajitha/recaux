@@ -366,21 +366,29 @@ class Userprofile extends Component {
             <table id="userdetailstable" class="table table-borderless">
               <tbody className="cancardTable">
                 <tr>
-                  <th scope="row">Firstname</th>
-                  <td>{this.state.userdata.firstName}</td>
+                  <th scope="row">Full name</th>
+                  <td>
+                    {this.state.userdata.firstName +
+                      " " +
+                      this.state.userdata.lastName}
+                  </td>
                 </tr>
-                <tr>
-                  <th scope="row">Lastname</th>
-                  <td>{this.state.userdata.lastName}</td>
-                </tr>
+
                 <tr>
                   <th scope="row">Email</th>
                   <td>{this.state.userdata.email}</td>
                 </tr>
-
                 <tr>
                   <th scope="row">User Type</th>
-                  <td>{this.state.userdata.usertype}</td>
+                  {this.state.userdata.usertype === "admin" && (
+                    <td>Administrator</td>
+                  )}
+                  {this.state.userdata.usertype === "depthead" && (
+                    <td>Department head</td>
+                  )}
+                  {this.state.userdata.usertype === "hr_staff" && (
+                    <td>Human resource staff</td>
+                  )}
                 </tr>
 
                 <tr>
@@ -490,35 +498,40 @@ class Userprofile extends Component {
           </div>
 
           <div className="userprofilebtnsdiv">
-            <label
-              hidden={!this.state.isauthorizeduser}
-              className="disableuserlable"
-            >
-              {" "}
-              {this.state.userdata.state
-                ? "Disable this User"
-                : "User Disabled"}
-            </label>
-            <label class="switch" hidden={!this.state.isauthorizeduser}>
-              <input
-                type="checkbox"
-                name="state"
-                checked={!this.state.userdata.state}
-                disabled={!this.state.userowner || !this.state.isauthorizeduser}
-                onChange={this.deactivateuser}
-              />
-              <span class="slider round" />
-            </label>
+            <div hidden={!this.state.userowner || !this.state.isauthorizeduser}>
+              <label
+                hidden={!this.state.isauthorizeduser}
+                className="disableuserlable"
+              >
+                {" "}
+                {this.state.userdata.state
+                  ? "Disable this User"
+                  : "User Disabled"}
+              </label>
+              <label class="switch" hidden={!this.state.isauthorizeduser}>
+                <input
+                  type="checkbox"
+                  name="state"
+                  checked={!this.state.userdata.state}
+                  disabled={
+                    !this.state.userowner || !this.state.isauthorizeduser
+                  }
+                  onChange={this.deactivateuser}
+                />
+                <span class="slider round" />
+              </label>
+            </div>
+
             <br />
             <button
               className="btn btsuserprofile btn-primary"
-              disabled={this.state.userowner}
+              hidden={this.state.userowner}
               onClick={this.chngpss}
             >
               change password
             </button>
             <input
-              disabled={this.state.userowner}
+              hidden={this.state.userowner}
               type="button"
               className="btn btsuserprofile btn-primary"
               onClick={this.imagehndle}
