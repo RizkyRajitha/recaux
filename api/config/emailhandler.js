@@ -32,13 +32,10 @@ transporter.use(
   hbs({
     viewEngine: {
       extName: ".hbs",
-      partialsDir:
-        "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
-      layoutsDir:
-        "/home/dealwithit/Documents/dev/recaux/api/config/views/layouts/"
+      partialsDir: path.join(__dirname, "./views/partials"),
+      layoutsDir: path.join(__dirname, "./views/layouts")
     },
-    viewPath:
-      "/home/dealwithit/Documents/dev/recaux/api/config/views/partials/",
+    viewPath: path.join(__dirname, "./views/partials"),
     extName: ".hbs"
   })
 );

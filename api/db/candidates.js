@@ -29,7 +29,6 @@ var candidateSchema = new Schema({
     default: "New"
   },
 
-
   primaryStatus: {
     type: String,
     default: "New"
@@ -39,9 +38,7 @@ var candidateSchema = new Schema({
   },
   primaryStatussetbyusertype: {
     type: String
-  }
-,
-
+  },
   finalStatus: {
     type: String
   },
@@ -87,7 +84,9 @@ var candidateSchema = new Schema({
   cvUrl: [
     {
       url: { type: String, default: null },
-      recievedDate: { type: String, default: null }
+      recievedDate: { type: String, default: null },
+      addedby: { type: String, default: null },
+      jobspec: { type: String, default: null }
     }
   ]
 

@@ -197,8 +197,28 @@ class CandidateView extends Component {
     hrstatusintervietype: "",
     interviewtypeoptions: [],
     rescheduleinterviewtype: "",
-    selectedDatereschdule: new Date()
+    selectedDatereschdule: new Date(),
+    newjobspecadd: ""
   };
+  /********************************************** */
+  openaddmoresvModal = () => {
+    this.setState({ addmoresvmodalIsOpen: true });
+  };
+
+  afterOpenaddmoresvModal = () => {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = "#f00";
+    this.subtitle.style.textAlign = "center";
+  };
+
+  closeaddmoresvModal = () => {
+    this.setState({ addmoresvmodalIsOpen: false });
+  };
+
+  addnewcvvmodal = () => {
+    this.openaddmoresvModal();
+  };
+
   /****************************************** */
   openModal = () => {
     this.setState({ modalIsOpen: true });
@@ -412,6 +432,10 @@ class CandidateView extends Component {
   chngehndlcv = e => {
     this.setState({ cvFile: e.target.files[0] });
     console.log(e.target.files);
+  };
+
+  cvUploadHandler = e => {
+    e.preventDefault();
     this.setState({ id: this.props.match.params.id });
     this.setState({ isLoading: true });
 
@@ -424,8 +448,8 @@ class CandidateView extends Component {
     console.log(this.props.match.params.id);
 
     const formdata = new FormData();
-    formdata.append("cv", e.target.files[0]);
-    //
+    formdata.append("cv", this.state.cvFile);
+
     var jwt = localStorage.getItem("jwt");
 
     var config = {
@@ -435,8 +459,19 @@ class CandidateView extends Component {
       }
     };
 
+    var username = this.state.firstName + " " + this.state.lastName;
+
     axios
-      .post("/usr/cv/" + this.props.match.params.id, formdata, config)
+      .post(
+        "/usr/cv/" +
+          this.props.match.params.id +
+          "/" +
+          username +
+          "/" +
+          this.state.newjobspecadd,
+        formdata,
+        config
+      )
       .then(result => {
         console.log("awoooo" + JSON.stringify(result));
         this.setState({ cvUrl: result.data });
@@ -458,48 +493,6 @@ class CandidateView extends Component {
           }
         }.bind(this)
       );
-  };
-
-  cvUploadHandler = () => {
-    if (this.state.cvFile === null) {
-      this.setState({ cvNotFOundErr: true });
-    } else {
-      // this.setState({ isLoading: true });
-      // this.setState({ cvNotFOundErr: false });
-      // console.log(this.state.data);
-      // console.log(this.state.data.cvUrl);
-      // console.log("hahah");
-      // console.log(this.props.match.params.id);
-      // const formdata = new FormData();
-      // formdata.append("cv", this.state.cvFile);
-      // //
-      // var jwt = localStorage.getItem("jwt");
-      // var config = {
-      //   headers: {
-      //     "content-type": "multipart/form-data",
-      //     authorization: jwt
-      //   }
-      // };
-      // axios
-      //   .post("/usr/cv/" + this.props.match.params.id, formdata, config)
-      //   .then(result => {
-      //     console.log("awoooo" + JSON.stringify(result));
-      //     this.setState({ cvUrl: result.data.url });
-      //     this.setState({ isLoading: false });
-      //   })
-      //   .catch(
-      //     function(error) {
-      //       console.log(error.response.data);
-      //       this.setState({ isLoading: false });
-      //       if ("file_too_large" === error.response.data) {
-      //         this.setState({ errfiletoolarge: true });
-      //       }
-      //       if ("unsupported_file_format" === error.response.data) {
-      //         this.setState({ unsupportedFormat: true });
-      //       }
-      //     }.bind(this)
-      //   );
-    }
   };
 
   /***************************************** */
@@ -660,6 +653,10 @@ class CandidateView extends Component {
           this.setState({ isLoading: false });
         });
     }
+  };
+
+  handlenewjobspec = newjobspecc => {
+    this.setState({ newjobspecadd: newjobspecc.label });
   };
 
   handleChangemodalselectjobspec = selectedOption => {
@@ -900,7 +897,7 @@ class CandidateView extends Component {
             .recievedDate;
 
         this.setState({
-          cvUrl: res.data.candidateData.cvUrl,
+          cvUrl: res.data.candidateData.cvUrl.reverse(),
           recivedago: recivedago,
           alocatedago: alocatedago,
           shortago: shortago,
@@ -1393,14 +1390,19 @@ class CandidateView extends Component {
               style={customStyles3}
               contentLabel="Example Modal"
             >
-              <h2 ref={subtitle => (this.subtitle = subtitle)}> cv list </h2>
+              <h2 ref={subtitle => (this.subtitle = subtitle)}>
+                {" "}
+                {this.state.data.name + "'s"} cv list{" "}
+              </h2>
 
               <div>
                 <table className="table">
                   <thead>
                     <tr>
                       <th scope="col" />
-                      <th scope="col" />
+                      <th scope="col"> Date </th>
+                      <th scope="col"> Added by </th>
+                      <th scope="col"> Job Specification </th>
                       <th scope="col" />
                     </tr>
                   </thead>
@@ -1422,6 +1424,8 @@ class CandidateView extends Component {
                                   "YYYY-MM-DD HH:mm:ssZ"
                                 ).fromNow()}
                               </td>
+                              <td>{singlecv.addedby}</td>{" "}
+                              <td>{singlecv.jobspec}</td>
                               <td>
                                 <button
                                   className="btn"
@@ -1623,6 +1627,19 @@ class CandidateView extends Component {
                   className="btn canviewbtngroup btn-primary"
                 >
                   view cv
+                </button>
+
+                <button
+                  onClick={this.addnewcvvmodal}
+                  className="btn canviewbtngroup btn-primary"
+                  hidden={
+                    this.state.usertype === "admin" ||
+                    this.state.usertype === "hr_staff"
+                      ? false
+                      : true
+                  }
+                >
+                  Add new cv
                 </button>
 
                 <button
@@ -2327,6 +2344,55 @@ class CandidateView extends Component {
                 </option>
               </select>
             </div>
+          </Modal>
+
+          <Modal
+            isOpen={this.state.addmoresvmodalIsOpen}
+            onAfterOpen={this.afterOpenaddmoresvModal}
+            onRequestClose={this.closeaddmoresvModal}
+            style={customStyles}
+            contentLabel="Example 5 Modal"
+          >
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              Add new Cv for {this.state.data.name}
+            </h2>
+
+            <form onSubmit={this.cvUploadHandler}>
+              <div class="form-group">
+                <Select
+                  isSearchable
+                  required
+                  placeholder={this.state.data.jobspec}
+                  value={this.state.newjobspecadd}
+                  onChange={this.handlenewjobspec}
+                  options={this.state.selectoptionsjobspeclist}
+                />
+              </div>
+
+              <div class="custom-file">
+                <input
+                  class="custom-file-input"
+                  id="inputGroupFile01"
+                  required
+                  type="file"
+                  name="cv"
+                  onChange={this.chngehndlcv}
+                />
+                <label class="custom-file-label" for="inputGroupFile01">
+                  {this.state.cvFile
+                    ? this.state.cvFile.name +
+                      " " +
+                      (this.state.cvFile.size / 1024 / 1024).toFixed(2) +
+                      "Mb"
+                    : "Choose file"}
+                </label>
+              </div>
+              <input
+                type="submit"
+                className="btn btn-primary"
+                value="Add new cv"
+              />
+            </form>
           </Modal>
 
           <Modal

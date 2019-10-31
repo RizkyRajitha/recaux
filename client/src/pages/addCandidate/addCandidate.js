@@ -33,7 +33,8 @@ class Addcandidate extends Component {
     isLoading: false,
     resumeupoadsuccsess: false,
     jobspeclist: [],
-    jobspec: ""
+    jobspec: "",
+    username: ""
   };
   chngehandl = e => {
     //console.log(e.target.name,)
@@ -69,6 +70,17 @@ class Addcandidate extends Component {
       .then(res => {
         console.log(res.data.jobspeclist);
         this.setState({ jobspeclist: res.data.jobspeclist });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    axios
+      .get("/usr/basicuserdetails", config)
+      .then(res => {
+        console.log(res.data);
+        var datain = res.data;
+        this.setState({ username: datain.firstName + " " + datain.lastName });
       })
       .catch(err => {
         console.log(err);
@@ -130,6 +142,8 @@ class Addcandidate extends Component {
           console.log("uploading cv inticiated");
           const formdata = new FormData();
           formdata.append("cv", this.state.cvFile);
+
+          console.log(formdata);
           //
 
           var jwt = localStorage.getItem("jwt");
@@ -141,7 +155,16 @@ class Addcandidate extends Component {
             }
           };
           axios
-            .post("/usr/cv/" + addeduserid, formdata, config)
+            .post(
+              "/usr/cv/" +
+                addeduserid +
+                "/" +
+                this.state.username +
+                "/" +
+                this.state.jobspec.label,
+              formdata,
+              config
+            )
             .then(result => {
               console.log("awoooo" + result);
               console.log("awoooo" + JSON.stringify(result));
@@ -191,6 +214,26 @@ class Addcandidate extends Component {
     // document.querySelector("#email").value = "";
     // document.querySelector("#job").value = "";
     // this.setState({ nullfielderr: false });
+  };
+
+  clear = () => {
+    this.setState({
+      name: "",
+      email: "",
+
+      addedsucsess: 0,
+
+      cvFile: null,
+      errfiletoolarge: false,
+      unsupportedFormat: false,
+      duplicateemailerr: false,
+      dupcanid: null,
+
+      isLoading: false,
+      resumeupoadsuccsess: false,
+
+      jobspec: ""
+    });
   };
 
   render() {
@@ -263,6 +306,7 @@ class Addcandidate extends Component {
                       required
                       type="text"
                       name="name"
+                      value={this.state.name}
                       className="form-control"
                       onChange={this.chngehandl}
                       placeholder="enter candidate name"
@@ -274,6 +318,7 @@ class Addcandidate extends Component {
                       required
                       type="email"
                       name="email"
+                      value={this.state.email}
                       className="form-control"
                       placeholder="enter candidate email"
                       onChange={this.chngehandl}
@@ -301,7 +346,6 @@ class Addcandidate extends Component {
                       id="job"
                     /> */}
                   </div>
-
                   <div class="input-group mb-3">
                     <div class="custom-file">
                       <input
@@ -310,6 +354,7 @@ class Addcandidate extends Component {
                         required
                         type="file"
                         name="cv"
+                        // value={this.state.cvFile}
                         onChange={this.chngehndlcv}
                       />
                       <label class="custom-file-label" for="inputGroupFile01">
@@ -322,7 +367,6 @@ class Addcandidate extends Component {
                       </label>
                     </div>
                   </div>
-
                   {/* <input
                     required
                     type="file"
@@ -339,6 +383,13 @@ class Addcandidate extends Component {
                     className="btn btn-primary"
                     value="add"
                   />
+                  <a
+                    className="btn addcanclear btn-outline-primary"
+                    onClick={this.clear}
+                    value="add"
+                  >
+                    Clear
+                  </a>
                 </form>
 
                 <br />

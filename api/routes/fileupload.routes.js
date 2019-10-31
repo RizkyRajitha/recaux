@@ -146,7 +146,8 @@ exports.profileimgup = (req, ress, next) => {
 
 exports.cvupload = (req, ress, next) => {
   console.log("canid - " + req.params.id);
-
+  console.log("usr - " + req.params.username);
+  console.log("jobspec - " + req.params.jobspec);
   var res = "";
   console.log(JSON.stringify(req.headers.authorization));
   passport.authenticate(
@@ -189,22 +190,20 @@ exports.cvupload = (req, ress, next) => {
             console.log(path.extname(req.file.originalname));
             var cvexte = path.extname(req.file.originalname);
 
-            Candidate.findById(ObjectID(req.params.id))   
-               .then(candoc => {
+            Candidate.findById(ObjectID(req.params.id))
+              .then(candoc => {
                 var cvno = candoc.cvUrl.length;
                 console.log("cv number - " + cvno);
-                var filePath =
-                  "/home/dealwithit/Documents/dev/recaux/assets/cv/" +
-                  req.params.id +
-                  cvexte;
+                var pttt = path.join(
+                  __dirname,
+                  "../",
+                  "../",
+                  "assets",
+                  "cv/" + `${req.params.id + cvexte}`
+                );
+
                 cloudinary.uploader.upload(
-                  path.join(
-                    __dirname,
-                    "../",
-                    "../",
-                    "assets",
-                    "cv/" + `${req.params.id + cvexte}`
-                  ),
+                  pttt,
                   {
                     tags: "basic_sample",
                     folder: "recaux/resume",
@@ -223,20 +222,25 @@ exports.cvupload = (req, ress, next) => {
                     console.log("* " + cvuploaddata.public_id);
                     console.log("* " + cvuploaddata.url);
                     // Candidate.updateOne({_id:req.params.id},{$set:{cvUrl:cvuploaddata.url}})
-                    Candidate.updateOne(
+
+                    console.log("usr - " + req.params.username);
+                    console.log("jobspec - " + req.params.jobspec);
+                    Candidate.updateOne( 
                       { _id: req.params.id },
                       {
                         $push: {
                           cvUrl: {
                             url: cvuploaddata.url,
-                            recievedDate: new Date().toISOString()
+                            recievedDate: new Date().toISOString(),
+                            addedby: req.params.username,
+                            jobspec: req.params.jobspec
                           }
                         }
                       }
                     )
                       .then(doc => {
                         //var filePath = 'c:/book/discovery.docx';
-                        fs.unlinkSync(filePath);
+                        fs.unlinkSync(pttt);
                         Candidate.findById(ObjectID(req.params.id))
                           .then(canupdateddco => {
                             console.log(canupdateddco);
@@ -247,7 +251,9 @@ exports.cvupload = (req, ress, next) => {
                             console.log(err);
                           });
                       })
-                      .catch(err => {});
+                      .catch(err => {
+                        console.log(err);
+                      });
 
                     //ress.status(200).json(cvuploaddata);
 

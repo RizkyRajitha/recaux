@@ -708,7 +708,7 @@ exports.getbasicuserdetails = (req, res, next) => {
           .then(doc => {
             var payload = {
               id: doc._id,
-              firstName: doc.firstName,
+              firstName: doc.firstName, 
               lastName: doc.lastName,
               usertype: doc.usertype,
               avatarUrl: doc.avatarUrl

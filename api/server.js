@@ -30,7 +30,7 @@ const port = process.env.PORT || 3001;
 mongoose.Promise = global.Promise;
 //"mongodb://127.0.0.1:27017/authdb" ||
 const mongodbAPI = "mongodb://127.0.0.1:27017/authdb"; //keys.mongouri;
-app.use(require("express-status-monitor")());
+// app.use(require("express-status-monitor")());
 //const app = express();
 
 app.use(passport.initialize());
@@ -209,12 +209,10 @@ channel.bind("my-event", function(data) {
       var cvno = result.cvUrl.length;
       console.log("cv number - " + cvno);
 
-      var filePath =
-        "/home/dealwithit/Documents/dev/recaux/assets/cv/" + data.message;
-
+      var pttt = path.join(__dirname, "assets", "cv/" + data.message);
       cloudinary.uploader.upload(
         ///home/dealwithit/machine_learning_venv/rajithagunathilake@gmail.com-16.pdf
-        filePath,
+        pttt,
         {
           tags: "basic_sample",
           folder: "recaux/resume",
@@ -239,7 +237,9 @@ channel.bind("my-event", function(data) {
               $push: {
                 cvUrl: {
                   url: cvuploaddata.url,
-                  recievedDate: new Date().toISOString()
+                  recievedDate: new Date().toISOString(),
+                  addedby: "via email",
+                  jobspec: data.jobspec
                 }
               }
             }
@@ -305,8 +305,7 @@ channel.bind("my-event", function(data) {
           console.log("cv number - " + cvno);
           console.log("file name - " + data.message);
 
-          var filePath =
-            "/home/dealwithit/Documents/dev/recaux/assets/cv/" + data.message;
+          var filePath = path.join(__dirname, "assets", "cv/" + data.message);
           //var cvexte = path.extname(req.file.originalname);
           cloudinary.uploader.upload(
             ///home/dealwithit/machine_learning_venv/rajithagunathilake@gmail.com-16.pdf
@@ -335,7 +334,9 @@ channel.bind("my-event", function(data) {
                   $push: {
                     cvUrl: {
                       url: cvuploaddata.url,
-                      recievedDate: new Date().toISOString()
+                      recievedDate: new Date().toISOString(),
+                      addedby: "via email",
+                      jobspec: data.jobspec
                     }
                   },
                   $set: {

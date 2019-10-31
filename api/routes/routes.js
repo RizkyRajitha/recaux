@@ -153,7 +153,7 @@ router.post("/updatestatus/:id", deptheadRoutes.updateStatus);
 router.post("/updatesecondstatus/:id", commonRoutes.updatesecondstatus);
 router.post("/evaluationadd/:id", deptheadRoutes.evaluationAdd);
 router.post("/avatar/:id", fileUpload.profileimgup);
-router.post("/cv/:id", fileUpload.cvupload);
+router.post("/cv/:id/:username/:jobspec", fileUpload.cvupload);
 router.post("/adminlogin", adminRoutes.adminLogin);
 router.get("/userdata", adminRoutes.userlist);
 router.get("/getshortlistdata/:id", deptheadRoutes.shortlistData); //get the data of allocated candidates to  shortlister (dept head)
