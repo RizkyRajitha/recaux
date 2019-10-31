@@ -169,8 +169,7 @@ class Addcandidate extends Component {
               console.log("awoooo" + result);
               console.log("awoooo" + JSON.stringify(result));
 
-              document.getElementById("addcanname").value = "";
-              document.getElementById("addcanemail").value = "";
+              this.clear();
               this.setState({
                 cvFile: null,
                 addedsucsess: 2,

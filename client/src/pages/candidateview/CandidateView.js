@@ -896,7 +896,32 @@ class CandidateView extends Component {
           res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
             .recievedDate;
 
+        var pay = jsonwebtoken.verify(jwt, "authdemo");
+        console.log(pay);
+
+        var shortliststatushidden1 =
+          res.data.candidateData.shortlister !== pay.id &&
+          !(this.state.usertype === "admin")
+            ? true
+            : false;
+        // console.log("is hidden  1asasas " + res.data.candidateData.shortlister);
+        // console.log("is hidden  1asasas " + pay.id);
+        // console.log("is hidden 1 " + shortliststatushidden1);
+
+        var interviewstate =
+          res.data.candidateData.interview ||
+          res.data.candidateData.interview2 ||
+          res.data.candidateData.interview3
+            ? true
+            : false;
+        // console.log("is interssdsdsdsd " + res.data.candidateData.interview);
+        // console.log("is interssdsdsdsd " + pay);
+        var shortliststatushidden =
+          shortliststatushidden1 || interviewstate ? true : false;
+        // console.log("is hidden shrhrhrrhr" + shortliststatushidden);
+
         this.setState({
+          shortliststatushidden: shortliststatushidden,
           cvUrl: res.data.candidateData.cvUrl.reverse(),
           recivedago: recivedago,
           alocatedago: alocatedago,
@@ -1286,27 +1311,6 @@ class CandidateView extends Component {
     //   var recivedago =  moments(resdate, "YYYY-MM-DD HH:mm:ssZ");
     //   // var alocatedago =  moments(alodate, "YYYY-MM-DD HH:mm:ssZ");
     //   // var shortago =  moments(shrtdate, "YYYY-MM-DD HH:mm:ssZ");
-
-    // }
-
-    var shortliststatushidden1 =
-      this.state.data.shortlister !== this.state.id &&
-      !(this.state.usertype === "admin")
-        ? true
-        : false;
-    console.log("is hidden 1 " + shortliststatushidden1);
-
-    var interviewstate =
-      this.state.data.interview ||
-      this.state.data.interview2 ||
-      this.state.data.interview3
-        ? true
-        : false;
-    console.log("is interssdsdsdsd " + this.state.data.interview);
-    console.log("is interssdsdsdsd " + interviewstate);
-    var shortliststatushidden =
-      shortliststatushidden1 || interviewstate ? true : false;
-    console.log("is hidden " + shortliststatushidden);
 
     const { selectedOption, selectoptionsnamelist } = this.state;
     const { snackbaropen } = this.state;
@@ -1769,7 +1773,7 @@ class CandidateView extends Component {
                   </button>
 
                   <button
-                    hidden={shortliststatushidden}
+                    hidden={this.state.shortliststatushidden}
                     onClick={this.changeStatusmodal}
                     className="btn canviewbtngroup btn-primary"
                   >
@@ -2305,7 +2309,9 @@ class CandidateView extends Component {
             style={customStyles}
             contentLabel="Example 1 Modal"
           >
-            <h2 ref={subtitle => (this.subtitle = subtitle)}>shortlist</h2>
+            <h2 ref={subtitle => (this.subtitle = subtitle)}>
+              shortlist {this.state.data.name}{" "}
+            </h2>
 
             <div class="form-group shortlistmodal ">
               <label
@@ -2320,13 +2326,11 @@ class CandidateView extends Component {
               >
                 change candidate status
               </label>
-
+              {console.log("fuccccc ", this.state.usertype)}
               <select
                 disabled={
                   this.state.usertype === "admin" ||
-                  this.state.usertype === "depthead"
-                    ? false
-                    : true
+                  this.state.usertype === "depthead" ? false : true
                 }
                 class="form-control"
                 id="status"
