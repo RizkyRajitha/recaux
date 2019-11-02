@@ -433,7 +433,7 @@ exports.changePass = (req, res) => {
             res.status(500).send(err);
           });
       } else {
-        console.log("old pass incorrect")
+        console.log("old pass incorrect");
         res.json({ msg: "oldpassserror" });
       }
     })
@@ -708,7 +708,7 @@ exports.getbasicuserdetails = (req, res, next) => {
           .then(doc => {
             var payload = {
               id: doc._id,
-              firstName: doc.firstName, 
+              firstName: doc.firstName,
               lastName: doc.lastName,
               usertype: doc.usertype,
               avatarUrl: doc.avatarUrl
@@ -746,7 +746,7 @@ exports.updatesecondstatus = (req, res, next) => {
         User.findById(ObjectID(user.id))
           .then(userdoc => {
             Interview.findOneAndUpdate(
-              { candidateId: iid, interviewtype: datain.interivewtype },
+              { candidateId: iid, interviewtype: datain.interviewtype },
               {
                 $set: {
                   statusHrinterview: datain.status,
@@ -1599,8 +1599,38 @@ exports.reportsstatus = (req, res, next) => {
       } else {
         console.log(req.body);
         var datain = req.body;
-
-        Candidate.find({});
+        Candidate.find({ primaryStatus: "shortlisted" })
+          .then(doc1 => {
+            Candidate.find({ primaryStatus: "rejected" })
+              .then(doc2 => {
+                Candidate.find({ primaryStatus: "onhold" })
+                  .then(doc3 => {
+                    Candidate.find({ primaryStatus: "New" })
+                      .then(doc4 => {
+                        res
+                          .status(200)
+                          .json({
+                            shortlisted: doc1.length,
+                            rejected: doc2.length,
+                            onhold: doc3.length,
+                            unset: doc4.length
+                          });
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   )(req, res, next);

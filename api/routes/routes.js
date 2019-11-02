@@ -137,7 +137,6 @@ router.post("/login1", function(req, res, next) {
     });
   })(req, res, next);
 });
-
 router.get("/dashboard", commonRoutes.dashboard); //send basic user details for the dashboard
 router.get("/user/:id", commonRoutes.userProfile); //send data to the user profile
 router.post("/edituser/:id", commonRoutes.editUserDetails); //edit user data routes
@@ -161,7 +160,6 @@ router.post("/searchbydate", commonRoutes.searchByDate);
 router.post("/shortlistOneOveride", deptheadRoutes.shortlistOverideOne);
 router.post("/searchbyname", commonRoutes.searchByName);
 router.get("/basicuserdetails", commonRoutes.getbasicuserdetails);
-
 router.post("/editcandidatedetails/:id", commonRoutes.editCandidateDetails);
 router.post("/reg", adminRoutes.addNewUser);
 router.post("/configurenewuser", commonRoutes.configureNewUser);
@@ -187,6 +185,7 @@ router.post('/landingpage',commonRoutes.landingpage)
 router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
 router.post('/outproject/:id',deptheadRoutes.outproject)
 router.get('/reportscansource',commonRoutes.reportscansource)
+router.get('/reportscanstatus',commonRoutes.reportsstatus)
 router.get('/log',adminRoutes.logger)
 router.get("/testing", (req, res) => {
 

@@ -783,7 +783,6 @@ class CandidateView extends Component {
       .then(res => {
         console.log(res.data);
         var datain = res.data;
-        this.setState({ isLoading: false });
         var preurl = res.data.avatarUrl.slice(0, 48);
         var posturl = res.data.avatarUrl.slice(49, res.data.avatarUrl.length);
         var config = "/w_290,h_295,c_thumb/";
@@ -803,152 +802,180 @@ class CandidateView extends Component {
     axios
       .get("/usr/getcandidate/" + id)
       .then(res => {
-        console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
+        axios.get("/usr/basicuserdetails", config).then(res222 => {
+          console.log("data candidate - -  - - - -" + JSON.stringify(res.data));
 
-        var recivedago = res.data.candidateData.date
-          ? moments(
-              res.data.candidateData.date,
-              "YYYY-MM-DD HH:mm:ssZ"
-            ).fromNow()
-          : false;
-        var alocatedago = res.data.candidateData.allocatedDate
-          ? moments(
-              res.data.candidateData.allocatedDate,
-              "YYYY-MM-DD HH:mm:ssZ"
-            ).fromNow()
-          : false;
-        var shortago = res.data.candidateData.shortlistedDate
-          ? moments(
-              res.data.candidateData.shortlistedDate,
-              "YYYY-MM-DD HH:mm:ssZ"
-            ).fromNow()
-          : false;
+          var recivedago = res.data.candidateData.date
+            ? moments(
+                res.data.candidateData.date,
+                "YYYY-MM-DD HH:mm:ssZ"
+              ).fromNow()
+            : false;
+          var alocatedago = res.data.candidateData.allocatedDate
+            ? moments(
+                res.data.candidateData.allocatedDate,
+                "YYYY-MM-DD HH:mm:ssZ"
+              ).fromNow()
+            : false;
+          var shortago = res.data.candidateData.shortlistedDate
+            ? moments(
+                res.data.candidateData.shortlistedDate,
+                "YYYY-MM-DD HH:mm:ssZ"
+              ).fromNow()
+            : false;
 
-        this.setState({
-          data: res.data.candidateData,
-          userarr: res.data.userData
-        });
-
-        if (res.data.candidateData.interview3) {
           this.setState({
-            interviewtypeoptions: []
+            data: res.data.candidateData,
+            userarr: res.data.userData,
+            isLoading: false
           });
-        } else if (res.data.candidateData.interview2) {
-          this.setState({
-            interviewtypeoptions: [
-              {
-                label: "Client interview",
-                value: "clientinterview"
-              }
-            ]
+
+          if (res.data.candidateData.interview3) {
+            this.setState({
+              interviewtypeoptions: []
+            });
+          } else if (res.data.candidateData.interview2) {
+            this.setState({
+              interviewtypeoptions: [
+                {
+                  label: "Client interview",
+                  value: "clientinterview"
+                }
+              ]
+            });
+          } else if (res.data.candidateData.interview) {
+            this.setState({
+              interviewtypeoptions: [
+                {
+                  label: "Second interview",
+                  value: "secondinterview"
+                }
+              ]
+            });
+          } else {
+            this.setState({
+              interviewtypeoptions: [
+                {
+                  label: "First interview",
+                  value: "firstinterview"
+                }
+              ]
+            });
+          }
+
+          var arr = res.data.candidateData.skills;
+
+          var keyrr = [];
+
+          arr.forEach(element => {
+            keyrr.push({ key: element.value, label: element.label });
           });
-        } else if (res.data.candidateData.interview) {
-          this.setState({
-            interviewtypeoptions: [
-              {
-                label: "Second interview",
-                value: "secondinterview"
-              },
-              {
-                label: "Client interview",
-                value: "clientinterview"
-              }
-            ]
-          });
-        } else {
-          this.setState({
-            interviewtypeoptions: [
-              {
-                label: "First interview",
-                value: "firstinterview"
-              },
-              {
-                label: "Second interview",
-                value: "secondinterview"
-              },
-              {
-                label: "Client interview",
-                value: "clientinterview"
-              }
-            ]
-          });
-        }
 
-        var arr = res.data.candidateData.skills;
+          this.setState({ currentskillskeyvals: keyrr });
 
-        var keyrr = [];
+          var newesturl = "";
+          if (res.data.candidateData.cvUrl) {
+            newesturl =
+              res.data.candidateData.cvUrl[
+                res.data.candidateData.cvUrl.length - 1
+              ].url;
+          }
 
-        arr.forEach(element => {
-          keyrr.push({ key: element.value, label: element.label });
-        });
-
-        this.setState({ currentskillskeyvals: keyrr });
-
-        var newesturl = "";
-        if (res.data.candidateData.cvUrl) {
-          newesturl =
+          var newestdate =
             res.data.candidateData.cvUrl[
               res.data.candidateData.cvUrl.length - 1
-            ].url;
-        }
+            ].recievedDate;
 
-        var newestdate =
-          res.data.candidateData.cvUrl[res.data.candidateData.cvUrl.length - 1]
-            .recievedDate;
+          var pay = jsonwebtoken.verify(jwt, "authdemo");
+          console.log(pay);
 
-        var pay = jsonwebtoken.verify(jwt, "authdemo");
-        console.log(pay);
+          var shortliststatushidden1 =
+            res.data.candidateData.shortlister !== pay.id &&
+            !(this.state.usertype === "admin")
+              ? true
+              : false;
+          // console.log("is hidden  1asasas " + res.data.candidateData.shortlister);
+          // console.log("is hidden  1asasas " + pay.id);
+          // console.log("is hidden 1 " + shortliststatushidden1);
 
-        var shortliststatushidden1 =
-          res.data.candidateData.shortlister !== pay.id &&
-          !(this.state.usertype === "admin")
-            ? true
-            : false;
-        // console.log("is hidden  1asasas " + res.data.candidateData.shortlister);
-        // console.log("is hidden  1asasas " + pay.id);
-        // console.log("is hidden 1 " + shortliststatushidden1);
+          var interviewstate =
+            res.data.candidateData.interview ||
+            res.data.candidateData.interview2 ||
+            res.data.candidateData.interview3
+              ? true
+              : false;
 
-        var interviewstate =
-          res.data.candidateData.interview ||
-          res.data.candidateData.interview2 ||
-          res.data.candidateData.interview3
-            ? true
-            : false;
-        // console.log("is interssdsdsdsd " + res.data.candidateData.interview);
-        // console.log("is interssdsdsdsd " + pay);
-        var shortliststatushidden =
-          shortliststatushidden1 || interviewstate ? true : false;
-        // console.log("is hidden shrhrhrrhr" + shortliststatushidden);
+          var hideallocateforshortlistbtn =
+            res222.data.usertype === "depthead" ||
+            res.data.candidateData.interview ||
+            res.data.candidateData.interview2 ||
+            res.data.candidateData.interview3;
 
-        this.setState({
-          shortliststatushidden: shortliststatushidden,
-          cvUrl: res.data.candidateData.cvUrl.reverse(),
-          recivedago: recivedago,
-          alocatedago: alocatedago,
-          shortago: shortago,
-          newest_cv_date: newestdate,
-          newest_cv_url: newesturl
+          // console.log("is interssdsdsdsd " + res.data.candidateData.interview);
+          // console.log("is interssdsdsdsd " + pay);
+          var shortliststatushidden =
+            shortliststatushidden1 || interviewstate ? true : false;
+          // console.log("is hidden shrhrhrrhr" + shortliststatushidden);
+
+          var hideshcedulebtn =
+            res222.data.usertype === "depthead" ||
+            !shortago ||
+            res.data.candidateData.primaryStatus !== "shortlisted";
+
+          console.log("-------------------------");
+          console.log(!this.state.shortago);
+          console.log(res222.data.usertype);
+          console.log(hideshcedulebtn);
+          console.log("-------------------------");
+
+          var hideevalbtn = !(pay.id === res.data.candidateData.interviewerId);
+
+          var hidefinalstatus =
+            res.data.candidateData.interviewerId === pay.id ||
+            res222.data.usertype === "admin"
+              ? false
+              : true;
+
+          var hideseconstatus =
+            res222.data.usertype === "depthead" ? true : false;
+
+          this.setState({
+            hideseconstatus: hideseconstatus,
+            hidefinalstatus: hidefinalstatus,
+            hideevalbtn: hideevalbtn,
+            hideallocateforshortlistbtn: hideallocateforshortlistbtn,
+            hideshcedulebtn: hideshcedulebtn,
+            shortliststatushidden: shortliststatushidden,
+            cvUrl: res.data.candidateData.cvUrl.reverse(),
+            recivedago: recivedago,
+            alocatedago: alocatedago,
+            shortago: shortago,
+            newest_cv_date: newestdate,
+            newest_cv_url: newesturl
+          });
+
+          console.log("jobslistasds;kd;sankd;ks - - ");
+          console.log("jobslistasds;kd;sankd;ks - - ");
+          console.log("jobslistasds;kd;sankd;ks - - ");
+          console.log("jobslistasds;kd;sankd;ks - - ");
+          axios
+            .get("/usr/getjobspeclist", config)
+            .then(res => {
+              console.log("jobslistasds;kd;sankd;ks - - ");
+              console.log(res.data);
+
+              this.setState({ selectoptionsjobspeclist: res.data.jobspeclist });
+            })
+            .catch(err => {});
+
+          setTimeout(() => {
+            console.log(this.state);
+            this.setState({ rendercurrenskills: true });
+          }, 1000);
         });
-
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        console.log("jobslistasds;kd;sankd;ks - - ");
-        axios
-          .get("/usr/getjobspeclist", config)
-          .then(res => {
-            console.log("jobslistasds;kd;sankd;ks - - ");
-            console.log(res.data);
-
-            this.setState({ selectoptionsjobspeclist: res.data.jobspeclist });
-          })
-          .catch(err => {});
-
-        setTimeout(() => {
-          console.log(this.state);
-          this.setState({ rendercurrenskills: true });
-        }, 1000);
       })
+      .catch(err => {})
+
       .catch(err => {
         console.log(err);
       });
@@ -1656,12 +1683,7 @@ class CandidateView extends Component {
                 <button
                   onClick={this.openModal}
                   className="btn canviewbtngroup btn-primary"
-                  hidden={
-                    this.state.usertype === "depthead" ||
-                    this.state.data.interview ||
-                    this.state.data.interview2 ||
-                    this.state.data.interview3
-                  }
+                  hidden={this.state.hideallocateforshortlistbtn}
                 >
                   Allocate for shortlisting
                 </button>
@@ -1763,13 +1785,11 @@ class CandidateView extends Component {
                   </table>
 
                   <button
-                    hidden={
-                      this.state.usertype === "depthead" || !this.state.shortago
-                    }
+                    hidden={this.state.hideshcedulebtn}
                     onClick={this.schedule}
                     className="btn canviewbtngroup btn-primary"
                   >
-                    schedule
+                    Schedule interview
                   </button>
 
                   <button
@@ -1834,7 +1854,10 @@ class CandidateView extends Component {
                               <td>
                                 <h6 class="h6colorcanview">Interview type</h6>
                               </td>
-                              <td>{this.state.data.interviewtype}</td>
+                              <td>
+                                {this.state.data.interviewtype &&
+                                  "First Interview"}
+                              </td>
                             </tr>
                             <tr>
                               <td>
@@ -1918,42 +1941,19 @@ class CandidateView extends Component {
                           </tbody>
                         </table>
                         <button
-                          hidden={
-                            this.state.usertype === "depthead" ? true : false
-                          }
+                          hidden={this.state.hideseconstatus}
                           onClick={this.changestatusforhr}
                           className="btn canviewbtngroup btn-primary"
                         >
-                          change secondary status
+                          First Interview status
                         </button>
                         <button
-                          hidden={
-                            this.state.usertype === "depthead" ? true : false
-                          }
+                          hidden={this.state.hideseconstatus}
                           onClick={this.reschedulemodal1}
                           className="btn canviewbtngroup btn-primary"
                         >
                           Re-schedule Interview
                         </button>
-
-                        {this.state.data.interviewed ? (
-                          <button
-                            onClick={this.showevalpdf}
-                            className="btn canviewbtngroup btn-primary"
-                          >
-                            Download evaluation PDF form
-                          </button>
-                        ) : (
-                          <button
-                            onClick={this.evalHndler}
-                            hidden={
-                              !(this.state.id === this.state.data.interviewerId)
-                            }
-                            className="btn canviewbtngroup btn-primary"
-                          >
-                            evaluate
-                          </button>
-                        )}
                       </div>
 
                       <div class="tab-pane" id="interview2">
@@ -1967,7 +1967,10 @@ class CandidateView extends Component {
                                 <td>
                                   <h6 class="h6colorcanview">Interview type</h6>
                                 </td>
-                                <td>{this.state.data.interviewtype2}</td>
+                                <td>
+                                  {this.state.data.interviewtype2 &&
+                                    "Second Interview"}
+                                </td>
                               </tr>
                               <tr>
                                 <td>
@@ -2057,18 +2060,14 @@ class CandidateView extends Component {
                             </tbody>
                           </table>
                           <button
-                            hidden={
-                              this.state.usertype === "depthead" ? true : false
-                            }
+                            hidden={this.state.hideseconstatus}
                             onClick={this.changestatusforhr2}
                             className="btn canviewbtngroup btn-primary"
                           >
-                            change secondary status
+                            Second Interview status
                           </button>
                           <button
-                            hidden={
-                              this.state.usertype === "depthead" ? true : false
-                            }
+                            hidden={this.state.hideseconstatus}
                             onClick={this.reschedulemodal2}
                             className="btn canviewbtngroup btn-primary"
                           >
@@ -2088,7 +2087,10 @@ class CandidateView extends Component {
                                 <td>
                                   <h6 class="h6colorcanview">Interview type</h6>
                                 </td>
-                                <td>{this.state.data.interviewtype3}</td>
+                                <td>
+                                  {this.state.data.interviewtype3 &&
+                                    "Client Interview"}
+                                </td>
                               </tr>
                               <tr>
                                 <td>
@@ -2178,18 +2180,14 @@ class CandidateView extends Component {
                             </tbody>
                           </table>
                           <button
-                            hidden={
-                              this.state.usertype === "depthead" ? true : false
-                            }
+                            hidden={this.state.hideseconstatus}
                             onClick={this.changestatusforhr3}
                             className="btn canviewbtngroup btn-primary"
                           >
-                            change secondary status
+                            Client interview status
                           </button>
                           <button
-                            hidden={
-                              this.state.usertype === "depthead" ? true : false
-                            }
+                            hidden={this.state.hideseconstatus}
                             onClick={this.reschedulemodal3}
                             className="btn canviewbtngroup btn-primary"
                           >
@@ -2236,15 +2234,28 @@ class CandidateView extends Component {
                     </tbody>
                   </table>
 
+                  {this.state.data.interviewed ? (
+                      <button
+                        onClick={this.showevalpdf}
+                        className="btn canviewbtngroup btn-primary"
+                      >
+                        Download evaluation PDF form
+                      </button>
+                    ) : (
+                      <button
+                        onClick={this.evalHndler}
+                        hidden={this.state.hideevalbtn}
+                        className="btn canviewbtngroup btn-primary"
+                      >
+                        evaluate
+                      </button>
+                    )}
+
                   <div
                     className="finalstateforinterviewcanview"
-                    hidden={
-                      this.state.data.interviewerId === this.state.id ||
-                      this.state.usertype === "admin"
-                        ? false
-                        : true
-                    }
+                    hidden={this.state.hidefinalstatus}
                   >
+                    
                     Final Status
                     <BaseSelect
                       value={this.state.finalstatus}
@@ -2328,10 +2339,6 @@ class CandidateView extends Component {
               </label>
               {console.log("fuccccc ", this.state.usertype)}
               <select
-                disabled={
-                  this.state.usertype === "admin" ||
-                  this.state.usertype === "depthead" ? false : true
-                }
                 class="form-control"
                 id="status"
                 onChange={this.chngehandlsel}
@@ -2569,7 +2576,7 @@ class CandidateView extends Component {
 
             <Container>
               <form onSubmit={this.rescheduleHandler}>
-                <table style={{ textAlign: "left", width: "50%" }}>
+                <table className="table table-borderless ssss">
                   <tr>
                     <td>candidate name - </td>
                     <td> {this.state.data.name} </td>
@@ -2644,7 +2651,7 @@ class CandidateView extends Component {
                   className="btn canviewbtngroup btn-primary"
                   type="submit"
                 >
-                  Confirm Interview Re-schedule
+                  Re-schedule Interview
                 </button>
               </form>
             </Container>
@@ -2675,8 +2682,6 @@ class CandidateView extends Component {
               </IconButton>
             ]}
           />
-
-          {/* <Document file='http://localhost:3001/static/cv/5ca0526e92b4ad35ec5a314d.pdf'/> */}
         </div>
       </div>
     );

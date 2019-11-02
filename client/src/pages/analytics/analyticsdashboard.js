@@ -12,19 +12,10 @@ import {
 import { PieChart, Pie } from "recharts";
 import "./analyticsDashboard.css";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-//import { textAlign } from '@material-ui/system';
 import axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Fab from "@material-ui/core/Fab";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
-import NavigationIcon from "@material-ui/icons/Navigation";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import Statuspie from "./components/candidadtestatuspie";
 
 const card = {
   minWidth: 275,
@@ -557,7 +548,7 @@ export default class analyticsdashboard extends Component {
     return (
       <div className="main">
         {/* <Button variant="contained" color="secondary" className="button">Learn more</Button> */}
-        <div className="button">
+        {/* <div className="button">
           <Fab
             variant="extended"
             size="medium"
@@ -568,7 +559,7 @@ export default class analyticsdashboard extends Component {
             <NavigationIcon />
             LEARN MORE
           </Fab>
-        </div>
+        </div> */}
         <br />
         <div className="container1">
           <Card className="bar">
@@ -619,40 +610,6 @@ export default class analyticsdashboard extends Component {
           <Card style={pie} className={pie}>
             <CardContent>
               <Typography variant="h6" component="h2">
-                Candidate Status
-              </Typography>
-              <div className="pie">
-                <PieChart width={400} height={400}>
-                  <Pie
-                    data={this.state.data1}
-                    cx={200}
-                    cy={170}
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    innerRadius={0}
-                    outerRadius={120}
-                    paddingAngle={5}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {this.state.data1.map((entry, index) => (
-                      <Cell
-                        key={"cell-${index}"}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card style={pie} className={pie}>
-            <CardContent>
-              <Typography variant="h6" component="h2">
                 Job Specification
               </Typography>
               <br />
@@ -684,6 +641,8 @@ export default class analyticsdashboard extends Component {
               </div>
             </CardContent>
           </Card>
+
+          <Statuspie />
 
           <Card style={pie} className={pie}>
             <CardContent>
