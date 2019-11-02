@@ -341,7 +341,7 @@ function Dashboard(props) {
                           }}
                           style={{ whiteSpace: "normal", width: 390 }}
                         >
-                          <div className='divnortifidropdownappbarlargediv' >
+                          <div className="divnortifidropdownappbarlargediv">
                             <div className="divnortifidropdownappbar">
                               <span style={{ color: "#499fe6" }}>
                                 {ele.title}
@@ -424,29 +424,37 @@ function Dashboard(props) {
           <Divider />
           <List>
             <div>
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/landingpage");
-                }}
-              >
-                <ListItemIcon>
-                  <Apps />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/dashboard");
-                }}
-              >
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
+              {usertype === "admin" || usertype === "depthead" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/landingpage");
+                  }}
+                >
+              
+                  <ListItemIcon>
+                    <Apps />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+              ) : (
+                ""
+              )}
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/dashboard");
+                  }}
+                >
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
+                </ListItem>
+              ) : (
+                ""
+              )}
 
               <ListItem
                 button
@@ -460,17 +468,22 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText primary="User" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/register");
-                }}
-              >
-                <ListItemIcon>
-                  <i class="fas fa-user-plus" />
-                </ListItemIcon>
-                <ListItemText primary="Add new User" />
-              </ListItem>
+
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/register");
+                  }}
+                >
+                  <ListItemIcon>
+                    <i class="fas fa-user-plus" />
+                  </ListItemIcon>
+                  <ListItemText primary="Add new User" />
+                </ListItem>
+              ) : (
+                ""
+              )}
 
               {usertype === "admin" || usertype === "hr_staff" ? (
                 <ListItem
@@ -488,19 +501,22 @@ function Dashboard(props) {
                 ""
               )}
 
-              <ListItem
-                button
-                onClick={() => {
-                  props.history.push("/analytics");
-                  window.location.reload(false);
-                }}
-              >
-                <ListItemIcon>
-                  <BarChartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Analytics" />
-              </ListItem>
-
+              {usertype === "admin" || usertype === "hr_staff" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    props.history.push("/analytics");
+                    window.location.reload(false);
+                  }}
+                >
+                  <ListItemIcon>
+                    <BarChartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Analytics" />
+                </ListItem>
+              ) : (
+                ""
+              )}
               <ListItem
                 button
                 onClick={() => {
@@ -513,7 +529,7 @@ function Dashboard(props) {
                 <ListItemText primary="Search" />
               </ListItem>
 
-              {usertype === "admin" || usertype === "depthead" ? (
+              {/* {usertype === "admin" || usertype === "depthead" ? (
                 <ListItem
                   button
                   onClick={() => {
@@ -527,7 +543,7 @@ function Dashboard(props) {
                 </ListItem>
               ) : (
                 ""
-              )}
+              )} */}
 
               <ListItem
                 button

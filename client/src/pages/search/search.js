@@ -100,7 +100,7 @@ class Search extends Component {
 
   //////////////////////////////////////////////////////////////////////////////////////////
   handleDateChange = e => {
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     console.log(e);
     this.setState({
       selectedDate: e,
@@ -174,7 +174,7 @@ class Search extends Component {
   };
 
   componentDidMount() {
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     const token = localStorage.getItem("jwt");
     //console.log("jwt token -- - -- >>>" + jwt);
 
@@ -229,7 +229,7 @@ class Search extends Component {
   }
 
   handleChangemodalselect = opt => {
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     console.log(opt);
     this.setState({
       searchjobspec: opt.label,
@@ -303,7 +303,7 @@ class Search extends Component {
 
   searchformsubmitsource = e => {
     e.preventDefault();
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     this.setState({
       searchsource: e.target.value,
       showtable: true
@@ -373,7 +373,7 @@ class Search extends Component {
 
   searchformsubmitname = e => {
     e.preventDefault();
-    this.setState({ isLoading: true });
+    // this.setState({ isLoading: true });
     var payload = {};
 
     this.setState({

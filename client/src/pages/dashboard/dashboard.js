@@ -367,8 +367,11 @@ class dashboard extends Component {
 
         <div class="row">
           <div className="col-s4-m4-l4" id="dashboardcardcontainer1">
+            {this.state.newcandicates.length !== 0 && (
+              <h5 className="noschedulecanh6"> New candidates </h5>
+            )}
             {this.state.newcandicates.length === 0 && (
-              <h6 className="noschedulecanh6"> no new candidates </h6>
+              <h5 className="noschedulecanh6"> no new candidates </h5>
             )}
             {this.state.newcandicates.map(can => {
               //console.log(can.name+can.email+can.jobspec)
@@ -391,10 +394,12 @@ class dashboard extends Component {
             })}
           </div>{" "}
           <div className="col-s4-m4-l4" id="dashboardcardcontainer2">
+            {this.state.shortlistedcandicates.length !== 0 && (
+              <h5 className="noschedulecanh6"> Shortlisted Candidates </h5>
+            )}{" "}
             {this.state.shortlistedcandicates.length === 0 && (
-              <h6 className="noschedulecanh6"> No Shortlisted Candidates </h6>
+              <h5 className="noschedulecanh6"> No Shortlisted Candidates </h5>
             )}
-
             {this.state.shortlistedcandicates.map(can => {
               //console.log(can.name+can.email+can.jobspec)
               return (
@@ -417,8 +422,12 @@ class dashboard extends Component {
             })}
           </div>{" "}
           <div className="col-s4-m4-l4" id="dashboardcardcontainer3">
+            {this.state.scheduledcandicates.length !== 0 && (
+              <h5 className="noschedulecanh6">Scheduled candidates</h5>
+            )}
+
             {this.state.scheduledcandicates.length === 0 && (
-              <h6 className="noschedulecanh6">No scheduled candidates</h6>
+              <h5 className="noschedulecanh6">No scheduled candidates</h5>
             )}
             {this.state.scheduledcandicates.map(can => {
               //console.log(can.name+can.email+can.jobspec)

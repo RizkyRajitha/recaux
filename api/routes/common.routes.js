@@ -1607,14 +1607,12 @@ exports.reportsstatus = (req, res, next) => {
                   .then(doc3 => {
                     Candidate.find({ primaryStatus: "New" })
                       .then(doc4 => {
-                        res
-                          .status(200)
-                          .json({
-                            shortlisted: doc1.length,
-                            rejected: doc2.length,
-                            onhold: doc3.length,
-                            unset: doc4.length
-                          });
+                        res.status(200).json({
+                          shortlisted: doc1.length,
+                          rejected: doc2.length,
+                          onhold: doc3.length,
+                          unset: doc4.length
+                        });
                       })
                       .catch(err => {
                         console.log(err);
@@ -1660,6 +1658,51 @@ exports.reportscansource = (req, res, next) => {
                 res
                   .status(200)
                   .json({ email: doc1.length, manual: doc2.length });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
+  )(req, res, next);
+};
+
+exports.reportshrstatus = (req, res, next) => {
+  passport.authenticate(
+    "jwtstrategy",
+    { session: false },
+    (err, user, info) => {
+      console.log("error - " + err);
+      console.log("user - " + JSON.stringify(user));
+      console.log("info -- " + info);
+
+      if (!user) {
+        res.status(401).send(info);
+      } else {
+        console.log(req.body);
+        var datain = req.body;
+
+        Interview.find({ interviewtype: "firstinterview" })
+          .then(doc1 => {
+            Interview.find({ interviewtype: "secondinterview" })
+              .then(doc2 => {
+                Interview.find({ interviewtype: "clientinterview" })
+                  .then(doc3 => {
+                    res
+                      .status(200)
+                      .json({
+                        firstinterview: doc1.length,
+                        secondinterview: doc2.length,
+                        clientinterview: doc3.length
+                      });
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(err => {
                 console.log(err);

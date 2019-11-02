@@ -16,6 +16,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import Statuspie from "./components/candidadtestatuspie";
+import Hrstatuspie from "./components/canhrstatuspie";
 
 const card = {
   minWidth: 275,
@@ -643,6 +644,7 @@ export default class analyticsdashboard extends Component {
           </Card>
 
           <Statuspie />
+          {/* <Hrstatuspie /> */}
 
           <Card style={pie} className={pie}>
             <CardContent>
@@ -664,40 +666,6 @@ export default class analyticsdashboard extends Component {
                     dataKey="value"
                   >
                     {this.state.data4.map((entry, index) => (
-                      <Cell
-                        key={"cell-${index}"}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card style={pie} className={pie}>
-            <CardContent>
-              <Typography variant="h6" component="h2">
-                Interview
-              </Typography>
-              <div className="pie">
-                <PieChart width={400} height={400}>
-                  <Pie
-                    data={this.state.data5}
-                    cx={200}
-                    cy={170}
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    innerRadius={0}
-                    outerRadius={120}
-                    paddingAngle={5}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {this.state.data5.map((entry, index) => (
                       <Cell
                         key={"cell-${index}"}
                         fill={COLORS[index % COLORS.length]}

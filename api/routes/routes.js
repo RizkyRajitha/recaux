@@ -186,6 +186,7 @@ router.post('/updatefinalstatus',deptheadRoutes.updatefinalstatus)
 router.post('/outproject/:id',deptheadRoutes.outproject)
 router.get('/reportscansource',commonRoutes.reportscansource)
 router.get('/reportscanstatus',commonRoutes.reportsstatus)
+router.get('/reportshrstatus' , commonRoutes.reportshrstatus)
 router.get('/log',adminRoutes.logger)
 router.get("/testing", (req, res) => {
 

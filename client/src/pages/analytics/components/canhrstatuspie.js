@@ -45,7 +45,7 @@ const renderCustomizedLabel = ({
   );
 };
 
-class Statuspie extends Component {
+class Hrstatuspie extends Component {
   state = {
     data1: [
       { name: "Shortlisted", value: 400 },
@@ -63,10 +63,11 @@ class Statuspie extends Component {
     };
 
     axios
-      .get("/usr/reportscanstatus", config)
+      .get("/usr/reportshrstatus", config)
       .then(result => {
         console.log(result.data);
 
+        
         var arr = [];
         arr.push({ name: "On hold", value: result.data.onhold });
         arr.push({ name: "Rejected", value: result.data.rejected });
@@ -84,12 +85,12 @@ class Statuspie extends Component {
       <Card style={pie} className={pie}>
         <CardContent>
           <Typography variant="h6" component="h2">
-            Candidate Status
+            Interview
           </Typography>
           <div className="pie">
             <PieChart width={400} height={400}>
               <Pie
-                data={this.state.data}
+                data={this.state.data1}
                 cx={200}
                 cy={170}
                 labelLine={false}
@@ -100,7 +101,7 @@ class Statuspie extends Component {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {this.state.data1.map((entry, index) => (
+                {this.state.data5.map((entry, index) => (
                   <Cell
                     key={"cell-${index}"}
                     fill={COLORS[index % COLORS.length]}
@@ -118,4 +119,4 @@ class Statuspie extends Component {
   }
 }
 
-export default Statuspie;
+export default Hrstatuspie;
